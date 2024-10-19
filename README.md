@@ -26,19 +26,25 @@ npm run dev
 
 To only run **frontend** follow the step in terminal
 
- 1. ```
+ 1. 
+ ```
  cd frontend
  ```
- 2. ```
+ 2. 
+ ```
  npm run dev
  ```
  
 To only run **backend** follow the step in terminal
 
-1. ```
-cd backend```
-2. ```
-node server.js``` 
+1. 
+```
+cd backend
+```
+2.
+```
+node server.js
+``` 
  
 To terminate the server enter **CTRL+C** in terminal
 
