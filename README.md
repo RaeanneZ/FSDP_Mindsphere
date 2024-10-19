@@ -20,31 +20,18 @@ Currently, two official plugins are available:
 # Notes
 
 To run the **backend and frontend** at the same time run this in the root folder in terminal
-```
-npm run dev
-```
+
+ `npm run dev`
 
 To only run **frontend** follow the step in terminal
 
- 1. 
- ```
- cd frontend
- ```
- 2. 
- ```
- npm run dev
- ```
+ 1. `cd frontend`
+ 2. `npm run dev`
  
 To only run **backend** follow the step in terminal
 
-1. 
-```
-cd backend
-```
-2.
-```
-node server.js
-``` 
+1. `cd backend`
+2. `node server.js` 
  
 To terminate the server enter **CTRL+C** in terminal
 
