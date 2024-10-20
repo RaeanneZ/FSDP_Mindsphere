@@ -7,11 +7,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from "./pages/LandingPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import PersonalisationCoverPage from "./pages/PersonalisationCoverPage.jsx";
+import AudienceQuestionPage from "./pages/AudienceQuestionPage.jsx";
+import InterestQuestionPage from "./pages/InterestQuestionPage.jsx";
+import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
 
 // Import CSS
 import "../public/css/index.css";
-import AudienceQuestionPage from "./pages/AudienceQuestionPage.jsx";
-import InterestQuestionPage from "./pages/InterestQuestionPage.jsx";
 
 // Fill in with all the roots of React Pages
 // Parameters: Path (define the link), Element (the page itself)
@@ -39,6 +40,11 @@ const router = createBrowserRouter([
   {
     path: "/personalisation/interest",
     element: <InterestQuestionPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/welcome",
+    element: <CompleteSignupMsgPage />,
     errorElement: <div>404 Not Found</div>,
   },
 ]);
