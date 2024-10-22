@@ -19,6 +19,8 @@ Currently, two official plugins are available:
 
 # Notes
 
+Need to first `cd` into **both** frontend and backend folder and `npm install` in **both** the folders
+
 To run the **backend and frontend** at the same time run this in the root folder in terminal
 
  `npm run dev`
