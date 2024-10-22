@@ -1,5 +1,11 @@
 import React from "react";
 import { mindsphere } from "../utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFacebook,
+  faLinkedin,
+  faWhatsapp,
+} from "@fortawesome/free-brands-svg-icons";
 
 const Footer = () => {
   return (
@@ -35,15 +41,24 @@ const Footer = () => {
         </ul>
       </nav>
       <footer className="mt-8">
-        <div className="flex justify-center space-x-4 mb-4">
-          <a href="#" className="text-blue-600 hover:text-blue-800">
-            <i className="fab fa-facebook-f"></i>
+        <div className="flex justify-center space-x-8 mb-4">
+          <a
+            href="https://www.facebook.com/people/Mindsphere-Singapore/61562453783240/"
+            className="text-blue-600 hover:text-blue-800 text-3xl"
+          >
+            <FontAwesomeIcon icon={faFacebook} />
           </a>
-          <a href="#" className="text-blue-600 hover:text-blue-800">
-            <i className="fab fa-linkedin-in"></i>
+          <a
+            href="https://www.linkedin.com/company/mindsphere-singapore/"
+            className="text-blue-600 hover:text-blue-800 text-3xl"
+          >
+            <FontAwesomeIcon icon={faLinkedin} />
           </a>
-          <a href="#" className="text-green-600 hover:text-green-800">
-            <i className="fab fa-whatsapp"></i>
+          <a
+            href="https://api.whatsapp.com/send/?phone=6581804413&text&type=phone_number&app_absent=0"
+            className="text-green-600 hover:text-green-800 text-3xl"
+          >
+            <FontAwesomeIcon icon={faWhatsapp} />
           </a>
         </div>
         <address className="not-italic mb-2">

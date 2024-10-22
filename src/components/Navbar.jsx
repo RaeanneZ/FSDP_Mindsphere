@@ -1,5 +1,12 @@
 import React from "react";
 import { mindsphere } from "../utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBars,
+  faTimes,
+  faChevronDown,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   const { useState } = React;
@@ -7,7 +14,7 @@ const Navbar = () => {
 
   return (
     <div className="relative">
-      <div className="flex justify-between items-center px-20 py-4">
+      <div className="flex justify-between items-center px-10 md:px-20 py-4">
         <div className="flex items-center">
           <img
             src={mindsphere}
@@ -16,7 +23,7 @@ const Navbar = () => {
             width={120}
           />
         </div>
-        <div className="hidden md:flex items-center space-x-6 text-gray-700 text-sm">
+        <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-sm">
           <a href="#" className="hover:text-gray-900">
             Home
           </a>
@@ -27,13 +34,13 @@ const Navbar = () => {
             CSR
           </a>
           <a href="#" className="hover:text-gray-900">
-            Programmes <i className="fas fa-chevron-down"></i>
+            Programmes <FontAwesomeIcon icon={faChevronDown} />
           </a>
           <a href="#" className="hover:text-gray-900">
-            Media <i className="fas fa-chevron-down"></i>
+            Media <FontAwesomeIcon icon={faChevronDown} />
           </a>
           <div className="flex items-center space-x-2">
-            <i className="fas fa-user text-gray-700"></i>
+            <FontAwesomeIcon icon={faUser} />
             <a href="#" className="hover:text-gray-900">
               Login
             </a>
@@ -44,22 +51,22 @@ const Navbar = () => {
             </button>
           </a>
         </div>
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="text-gray-700 focus:outline-none"
           >
-            <i className="fas fa-bars text-2xl"></i>
+            <FontAwesomeIcon icon={faBars} />
           </button>
         </div>
       </div>
       {menuOpen && (
-        <div className="absolute top-0 right-0 w-64 h-screen bg-white shadow-lg p-4 md:hidden">
+        <div className="absolute top-0 right-0 z-50 w-64 h-screen bg-white shadow-lg p-4 lg:hidden">
           <button
             onClick={() => setMenuOpen(false)}
-            className="text-gray-700 focus:outline-none mb-4"
+            className="text-gray-700 focus:outline-none mb-4 flex justify-end w-full"
           >
-            <i className="fas fa-times text-2xl"></i>
+            <FontAwesomeIcon icon={faTimes} />
           </button>
           <nav className="flex flex-col space-y-4 text-gray-700 text-sm">
             <a href="#" className="hover:text-gray-900">
@@ -72,18 +79,18 @@ const Navbar = () => {
               CSR
             </a>
             <a href="#" className="hover:text-gray-900">
-              Programmes <i className="fas fa-chevron-down"></i>
+              Programmes <FontAwesomeIcon icon={faChevronDown} />
             </a>
             <a href="#" className="hover:text-gray-900">
-              Media <i className="fas fa-chevron-down"></i>
+              Media <FontAwesomeIcon icon={faChevronDown} />
             </a>
             <div className="flex items-center space-x-2">
-              <i className="fas fa-user text-gray-700"></i>
+              <FontAwesomeIcon icon={faUser} />
               <a href="#" className="hover:text-gray-900">
                 Login
               </a>
             </div>
-            <button className="bg-yellow-500 text-white px-4 py-2 rounded-full hover:bg-yellow-600">
+            <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
               Sign Up
             </button>
           </nav>
