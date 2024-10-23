@@ -39,15 +39,10 @@ const Navbar = () => {
           <a href="#" className="hover:text-gray-900">
             Media <FontAwesomeIcon icon={faChevronDown} />
           </a>
-          <div className="flex items-center space-x-2">
-            <FontAwesomeIcon icon={faUser} />
-            <a href="#" className="hover:text-gray-900">
-              Login
-            </a>
-          </div>
           <a href="/signup">
             <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
-              Sign Up
+              <FontAwesomeIcon icon={faUser} className="pr-2" />
+              Login
             </button>
           </a>
         </div>
@@ -84,15 +79,12 @@ const Navbar = () => {
             <a href="#" className="hover:text-gray-900">
               Media <FontAwesomeIcon icon={faChevronDown} />
             </a>
-            <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faUser} />
-              <a href="#" className="hover:text-gray-900">
+            <a href="/signup">
+              <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
+                <FontAwesomeIcon icon={faUser} className="pr-2" />
                 Login
-              </a>
-            </div>
-            <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
-              Sign Up
-            </button>
+              </button>
+            </a>
           </nav>
         </div>
       )}
