@@ -7,8 +7,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from "./pages/LandingPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import PersonalisationCoverPage from "./pages/PersonalisationCoverPage.jsx";
-import AudienceQuestionPage from "./pages/AudienceQuestionPage.jsx";
-import InterestQuestionPage from "./pages/InterestQuestionPage.jsx";
 import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
 
 // Import CSS
@@ -36,16 +34,6 @@ const router = createBrowserRouter([
   {
     path: "/personalisation",
     element: <PersonalisationCoverPage />,
-    errorElement: <div>404 Not Found</div>,
-  },
-  {
-    path: "/personalisation/forwho",
-    element: <AudienceQuestionPage />,
-    errorElement: <div>404 Not Found</div>,
-  },
-  {
-    path: "/personalisation/interest",
-    element: <InterestQuestionPage />,
     errorElement: <div>404 Not Found</div>,
   },
   {
