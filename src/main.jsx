@@ -13,6 +13,7 @@ import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
 
 // Import CSS
 import "../public/css/index.css";
+import LoginPage from "./pages/LoginPage.jsx";
 
 // Fill in with all the roots of React Pages
 // Parameters: Path (define the link), Element (the page itself)
@@ -21,6 +22,11 @@ const router = createBrowserRouter([
     path: "/",
     element: <LandingPage />,
     errorElement: <div>404 Not Found</div>, // Change it to a error page component
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+    errorElement: <div>404 Not Found</div>,
   },
   {
     path: "/signup",

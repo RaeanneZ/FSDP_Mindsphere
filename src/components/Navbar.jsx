@@ -39,7 +39,7 @@ const Navbar = () => {
           <a href="#" className="hover:text-gray-900">
             Media <FontAwesomeIcon icon={faChevronDown} />
           </a>
-          <a href="/signup">
+          <a href="/login">
             <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
               <FontAwesomeIcon icon={faUser} className="pr-2" />
               Login
@@ -79,7 +79,7 @@ const Navbar = () => {
             <a href="#" className="hover:text-gray-900">
               Media <FontAwesomeIcon icon={faChevronDown} />
             </a>
-            <a href="/signup">
+            <a href="/login">
               <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
                 <FontAwesomeIcon icon={faUser} className="pr-2" />
                 Login
