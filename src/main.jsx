@@ -13,6 +13,7 @@ import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
 import "../public/css/index.css";
 import LoginPage from "./pages/LoginPage.jsx";
 import ChildrenInfoPage from "./pages/ChildrenInfoPage.jsx";
+import ChildrenNamePage from "./pages/ChildrenNamePage.jsx";
 
 // Fill in with all the roots of React Pages
 // Parameters: Path (define the link), Element (the page itself)
@@ -40,6 +41,11 @@ const router = createBrowserRouter([
   {
     path: "/childInfo",
     element: <ChildrenInfoPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/childName",
+    element: <ChildrenNamePage />,
     errorElement: <div>404 Not Found</div>,
   },
   {
