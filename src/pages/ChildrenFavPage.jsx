@@ -105,7 +105,9 @@ const ChildrenFavPage = () => {
         </div>
 
         {/* Next Button */}
-        <NextBtn />
+        <a href="/childAmbition">
+          <NextBtn />
+        </a>
       </div>
     </div>
   );

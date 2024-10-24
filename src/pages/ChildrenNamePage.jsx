@@ -39,20 +39,18 @@ const ChildrenNamePage = () => {
             />
 
             {/* Reason for Nickname Input */}
-            <h2
-              className="text-xl font-bold mb-4"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-            >
-              People love me for…
-            </h2>
+            <h2 className="text-xl font-bold mb-4">People love me for…</h2>
             <input
               type="text"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
               className="input-underline mb-8 bg-transparent"
             />
 
             {/* Next Button */}
-            <NextBtn />
+            <a href="/childFav">
+              <NextBtn />
+            </a>
           </form>
         </div>
       </div>

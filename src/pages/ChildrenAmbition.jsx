@@ -38,15 +38,17 @@ const ChildrenAmbition = () => {
           onChange={(e) => setReason(e.target.value)}
           className="border-b border-yellow bg-transparent w-[95%] mx-auto mb-8 text-center outline-none"
         />
-        <div className="flex justify-end mt-8">
-          <button
-            onClick={handleSubmit}
-            className="flex items-center text-black"
-          >
-            Done
-            <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
-          </button>
-        </div>
+        <a href="/welcome">
+          <div className="flex justify-end mt-8">
+            <button
+              onClick={handleSubmit}
+              className="flex items-center text-black"
+            >
+              Done
+              <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
+            </button>
+          </div>
+        </a>
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ import ChildrenInfoPage from "./pages/ChildrenInfoPage.jsx";
 import ChildrenNamePage from "./pages/ChildrenNamePage.jsx";
 import ChildrenFavPage from "./pages/ChildrenFavPage.jsx";
 import ChildrenAmbition from "./pages/ChildrenAmbition.jsx";
+import ChildrenInfoHeader from "./pages/ChildrenInfoHeader.jsx";
 
 // Fill in with all the roots of React Pages
 // Parameters: Path (define the link), Element (the page itself)
@@ -43,6 +44,11 @@ const router = createBrowserRouter([
   {
     path: "/childInfo",
     element: <ChildrenInfoPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/childrenSection",
+    element: <ChildrenInfoHeader />,
     errorElement: <div>404 Not Found</div>,
   },
   {
