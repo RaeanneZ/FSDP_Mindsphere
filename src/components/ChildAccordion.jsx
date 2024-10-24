@@ -6,7 +6,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
-const ChildAccordion = () => {
+const ChildAccordion = ({ number }) => {
   // Track status of accordion
   const [isOpen, setIsOpen] = React.useState(true);
   // For form data
@@ -52,7 +52,7 @@ const ChildAccordion = () => {
         className="flex justify-between items-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h2 className="text-lg font-semibold">Child #1</h2>
+        <h2 className="text-lg font-semibold">Child #{number}</h2>
 
         <FontAwesomeIcon icon={isOpen ? faMinus : faPlus} />
       </div>
