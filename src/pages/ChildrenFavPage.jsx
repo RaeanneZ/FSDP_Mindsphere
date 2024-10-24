@@ -1,6 +1,7 @@
 import React from "react";
 import { childSurveyBg3 } from "../utils";
-import NextBtn from "../components/NextBtn";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const ChildrenFavPage = () => {
   const [favorites, setFavorites] = React.useState({
@@ -105,9 +106,14 @@ const ChildrenFavPage = () => {
         </div>
 
         {/* Next Button */}
-        <a href="/childAmbition">
-          <NextBtn />
-        </a>
+        <div className="flex justify-end">
+          <button type="submit" className="text-lg font-bold flex items-center">
+            <a href="/childAmbition">
+              Next
+              <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
+            </a>
+          </button>
+        </div>
       </div>
     </div>
   );

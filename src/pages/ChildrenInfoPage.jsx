@@ -1,7 +1,8 @@
 import React from "react";
 import ChildAccordion from "../components/ChildAccordion";
 import { parentSurveyBg } from "../utils";
-import NextBtn from "../components/NextBtn";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const ChildrenInfoPage = () => {
   return (
@@ -10,9 +11,7 @@ const ChildrenInfoPage = () => {
       style={{ backgroundImage: `url(${parentSurveyBg})` }}
     >
       <ChildAccordion />
-      <a href="/childrenSection">
-        <NextBtn />
-      </a>
+      <a href="/childrenSection">{/* Next Button */}</a>
     </div>
   );
 };

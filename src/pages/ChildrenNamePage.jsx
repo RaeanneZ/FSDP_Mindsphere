@@ -1,5 +1,6 @@
 import React from "react";
-import NextBtn from "../components/NextBtn";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { childSurveyBg2 } from "../utils";
 
 const ChildrenNamePage = () => {
@@ -11,6 +12,7 @@ const ChildrenNamePage = () => {
     e.preventDefault();
     console.log("Nickname:", nickname);
     console.log("Reason:", reason);
+
     // You can send the data to a server here
   };
 
@@ -48,9 +50,17 @@ const ChildrenNamePage = () => {
             />
 
             {/* Next Button */}
-            <a href="/childFav">
-              <NextBtn />
-            </a>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="text-lg font-bold flex items-center"
+              >
+                <a href="/childFav">
+                  Next
+                  <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
+                </a>
+              </button>
+            </div>
           </form>
         </div>
       </div>
