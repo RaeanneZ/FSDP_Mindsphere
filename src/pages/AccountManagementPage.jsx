@@ -4,7 +4,7 @@ import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-const ChildrenInfoPage = () => {
+const AccountManagementPage = () => {
   const [children, setChildren] = React.useState([1]);
 
   const addChild = () => {
@@ -135,4 +135,4 @@ const ChildrenInfoPage = () => {
   );
 };
 
-export default ChildrenInfoPage;
+export default AccountManagementPage;
