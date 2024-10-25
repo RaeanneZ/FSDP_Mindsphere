@@ -2,8 +2,12 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarAlt,
+  faChevronDown,
+  faChevronUp,
+  faGroupArrowsRotate,
   faMinus,
   faPlus,
+  faUpDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 const ChildAccordion = ({ number }) => {
@@ -47,14 +51,22 @@ const ChildAccordion = ({ number }) => {
   };
 
   return (
-    <div className="bg-lightBlue p-6 rounded-lg shadow-md my-4 mx-2 md:mx-10 lg:mx-40">
+    <div className="bg-lightBlue p-6 rounded-lg shadow-md my-2">
       <div
         className="flex justify-between items-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <h2 className="text-lg font-semibold">Child #{number}</h2>
+        <div>
+          <label className="mr-8">
+            <input type="radio" name="gender" className="mr-1" /> Boy
+          </label>
+          <label>
+            <input type="radio" name="gender" className="mr-1" /> Girl
+          </label>
+        </div>
 
-        <FontAwesomeIcon icon={isOpen ? faMinus : faPlus} />
+        <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
       </div>
       {isOpen && (
         <div className="grid grid-cols-1 gap-4 mt-4">
