@@ -1,5 +1,8 @@
 // MODULE IMPORTS
 const express = require('express');
+const dbConfig = require("./dbConfig");
+require('dotenv').config();
+const sql = require("mssql");
 const path = require('path');
 const chalk = require('chalk');
 
@@ -10,15 +13,22 @@ const PORT = process.env.PORT || 5000;
 
 // MIDDLEWARES CONFIG
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend/dist'))); // SERVE VITE FRONTEND
+//app.use(express.static(path.join(__dirname, '../frontend/dist'))); // SERVE VITE FRONTEND
 
-// Serve the frontend application for all other requests
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-});
+
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    try {
+        // Connect to the database
+      await sql.connect(dbConfig);
+      console.log("Database connection established successfully");
+    } catch (err) {
+      console.error("Database connection error:", err);
+      // Terminate the application with an error code (optional)
+      process.exit(1); // Exit with code 1 indicating an error
+    }
+
     console.log(chalk.green(`Backend is running at http://localhost:${PORT}`));
     console.log(chalk.blue(`Frontend is running at http://localhost:5173`)); // Add frontend log here
 });
