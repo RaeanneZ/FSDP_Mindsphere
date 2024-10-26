@@ -7,3 +7,29 @@
 * {
   font-family: League Spartan, sans-serif;
 }
+
+.dot {
+  height: 12px;
+  width: 12px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 4px;
+}
+
+.dot.active {
+  background-color: #d4af37;
+}
+
+.input-underline {
+  border: none;
+  border-bottom: 2px solid #d4af37;
+  width: 100%;
+  padding: 8px 0;
+  margin-top: 4px;
+  outline: none;
+}
+
+.input-underline::placeholder {
+  color: #bbb;
+}
