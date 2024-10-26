@@ -1,12 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useHistory
 import ChildAccordion from "../components/ChildAccordion";
 import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const AccountManagementPage = () => {
-  const [children, setChildren] = React.useState([1]);
+  const navigate = useNavigate(); // Create history object
 
+  const [children, setChildren] = React.useState([1]);
   const addChild = () => {
     setChildren([...children, children.length + 1]);
   };
@@ -31,6 +33,11 @@ const AccountManagementPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
+  };
+
+  const handleNext = () => {
+    // You can also check if formData is valid before navigating
+    navigate("/childrenSection"); // Navigate to the next page
   };
 
   return (
