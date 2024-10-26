@@ -21,8 +21,6 @@ Currently, two official plugins are available:
 
 Need to first `cd` into **both** frontend and backend folder and `npm install` in **both** the folders
 
-Then in the **frontend** folder, you have to run npm run build to make a set build for the backend to use the frontend pages
-
 To run the **backend and frontend** at the same time run this in the root folder in terminal
 
  `npm run dev`
