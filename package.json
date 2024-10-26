@@ -1,13 +1,11 @@
 {
   "name": "fsdp-mindsphere",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "start": "nodemon backend/server.js",
+    "frontend": "npm run dev --prefix frontend",
+    "log": "echo 'Frontend is running at http://localhost:5173' && echo 'Backend is running at http://localhost:5000'",
+    "dev": "concurrently \"npm run log\" \"npm run start\" \"npm run frontend\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -20,18 +18,10 @@
     "react-router-dom": "^6.27.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.11.1",
-    "@types/react": "^18.3.10",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.2",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^9.11.1",
-    "eslint-plugin-react": "^7.37.0",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.12",
-    "globals": "^15.9.0",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.14",
-    "vite": "^5.4.8"
+    "concurrently": "^9.0.1",
+    "nodemon": "^3.1.7"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
   }
 }
