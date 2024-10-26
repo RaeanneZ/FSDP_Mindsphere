@@ -11,11 +11,17 @@ const chalk = require('chalk');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// MIDDLEWARES CONFIG
-app.use(express.json());
-//app.use(express.static(path.join(__dirname, '../frontend/dist'))); // SERVE VITE FRONTEND
 
-
+app.get('/', async (req, res) => {
+    try {
+        // Connect to the database
+        await sql.connect(dbConfig);
+        res.status(200).json({ message: "Connected to the database and running fine!" });
+    } catch (err) {
+        console.error("Database connection error:", err);
+        res.status(500).json({ error: "Database connection failed" });
+    }
+});
 
 // Start the server
 app.listen(PORT, async () => {

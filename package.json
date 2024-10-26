@@ -2,13 +2,14 @@
   "name": "fsdp-mindsphere",
   "version": "1.0.0",
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "nodemon backend/server.js",
     "frontend": "npm run dev --prefix frontend",
     "log": "echo 'Frontend is running at http://localhost:5173' && echo 'Backend is running at http://localhost:5000'",
     "dev": "concurrently \"npm run log\" \"npm run start\" \"npm run frontend\""
   },
   "devDependencies": {
-    "concurrently": "^9.0.1"
+    "concurrently": "^9.0.1",
+    "nodemon": "^3.1.7"
   },
   "dependencies": {
     "dotenv": "^16.4.5"
