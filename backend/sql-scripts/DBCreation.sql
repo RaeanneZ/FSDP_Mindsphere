@@ -1,30 +1,31 @@
-CREATE database Mindsphere
+--CREATE database Mindsphere
 GO
 
-USE Mindsphere
+--USE Mindsphere
 GO
 
--- Drop tables if they exist in a specific order to prevent foreign key conflicts
-DECLARE @tableName NVARCHAR(50);
 
-DECLARE table_cursor CURSOR FOR
-SELECT name 
-FROM sysobjects 
-WHERE xtype = 'U' 
-  AND name IN ('Bookings', 'Programmes', 'Children', 'Account', 'Roles');
-
-OPEN table_cursor;
-FETCH NEXT FROM table_cursor INTO @tableName;
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    EXEC('DROP TABLE ' + @tableName);
-    FETCH NEXT FROM table_cursor INTO @tableName;
-END
-
-CLOSE table_cursor;
-DEALLOCATE table_cursor;
+if exists (select * from sysobjects where name='Bookings' and type='U')
+    drop table Bookings
 GO
+
+if exists (select * from sysobjects where name='Programmes' and type='U')
+    drop table Programmes
+GO
+
+if exists (select * from sysobjects where name='Children' and type='U')
+    drop table Children
+GO
+
+if exists (select * from sysobjects where name='Account' and type='U')
+    drop table Account
+GO
+
+if exists (select * from sysobjects where name='Roles' and type='U')
+    drop table Roles
+GO
+
+
 
 create table Roles (
 	RoleID int not null,
