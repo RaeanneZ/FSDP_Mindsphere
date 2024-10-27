@@ -19,6 +19,8 @@ Currently, two official plugins are available:
 
 # Notes
 
+Make sure you have .env file in root directory, example is pinned in tg group
+
 Need to first `cd` into **both** frontend and backend folder and `npm install` in **both** the folders
 
 To run the **backend and frontend** at the same time run this in the root folder in terminal
