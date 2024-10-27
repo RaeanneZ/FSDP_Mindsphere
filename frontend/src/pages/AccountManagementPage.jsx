@@ -30,14 +30,15 @@ const AccountManagementPage = () => {
     });
   };
 
+  const handleNext = () => {
+    // You can also check if formData is valid before navigating
+    console.log("Navigating to child section"); // Debugging log
+    navigate("/accountSetup/childSection"); // Navigate to the next page
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
-  };
-
-  const handleNext = () => {
-    // You can also check if formData is valid before navigating
-    navigate("/childrenSection"); // Navigate to the next page
   };
 
   return (
@@ -129,11 +130,13 @@ const AccountManagementPage = () => {
 
         {/* Next Button */}
         <div className="flex justify-end">
-          <button type="submit" className="text-lg font-bold flex items-center">
-            <a href="/childrenSection">
-              Next
-              <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
-            </a>
+          <button
+            type="button"
+            onClick={handleNext}
+            className="text-lg font-bold flex items-center"
+          >
+            Next
+            <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
           </button>
         </div>
       </div>

@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useHistory
 import { childSurveyBg3 } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const ChildrenFavPage = () => {
+  const navigate = useNavigate(); // Create history object
+
   const [favorites, setFavorites] = React.useState({
     food: "",
     subject: "",
@@ -18,6 +21,11 @@ const ChildrenFavPage = () => {
       ...prevState,
       [name]: value,
     }));
+  };
+
+  const handleNext = () => {
+    // You can also check if formData is valid before navigating
+    navigate("/accountSetup/childAmbition"); // Navigate to the next page
   };
 
   //   const handleSubmit = async () => {
@@ -107,11 +115,13 @@ const ChildrenFavPage = () => {
 
         {/* Next Button */}
         <div className="flex justify-end">
-          <button type="submit" className="text-lg font-bold flex items-center">
-            <a href="/childAmbition">
-              Next
-              <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
-            </a>
+          <button
+            type="button"
+            onClick={handleNext}
+            className="text-lg font-bold flex items-center"
+          >
+            Next
+            <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
           </button>
         </div>
       </div>

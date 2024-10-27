@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useHistory
 
 const SignupPage = () => {
   const { useState } = React;
+  const navigate = useNavigate(); // Create history object
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -14,6 +16,11 @@ const SignupPage = () => {
     console.log("Verification Code:", verificationCode);
     console.log("Newsletter Subscription:", newsletter);
     // Here you can add code to handle form submission, e.g., send data to a server
+  };
+
+  const handleNext = () => {
+    // You can also check if formData is valid before navigating
+    navigate("/personalisation"); // Navigate to the next page
   };
 
   return (
@@ -70,11 +77,12 @@ const SignupPage = () => {
             Receive the latest promotions and design releases.{" "}
             <span className="text-red-500">No spam, promise.</span>
           </p>
-          <a href="/personalisation">
-            <button className="w-full px-4 py-2 my-8 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow">
-              Create Account
-            </button>
-          </a>
+          <button
+            onClick={handleNext}
+            className="w-full px-4 py-2 my-8 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow"
+          >
+            Create Account
+          </button>
 
           <p className="text-center text-gray-600">
             Already have an account?{" "}

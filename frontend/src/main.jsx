@@ -42,27 +42,27 @@ const router = createBrowserRouter([
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/accountSetUp",
+    path: "/accountSetup",
     element: <AccountManagementPage />,
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/childrenSection",
+    path: "/accountSetup/childSection",
     element: <ChildrenInfoHeader />,
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/childName",
+    path: "/accountSetup/childName",
     element: <ChildrenNamePage />,
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/childFav",
+    path: "/accountSetup/childFav",
     element: <ChildrenFavPage />,
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/childAmbition",
+    path: "/accountSetup/childAmbition",
     element: <ChildrenAmbition />,
     errorElement: <div>404 Not Found</div>,
   },

@@ -1,10 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useHistory
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { childSurveyBg2 } from "../utils";
 
 const ChildrenNamePage = () => {
   const { useState } = React;
+  const navigate = useNavigate(); // Create history object
   const [nickname, setNickname] = useState("");
   const [reason, setReason] = useState("");
 
@@ -14,6 +16,11 @@ const ChildrenNamePage = () => {
     console.log("Reason:", reason);
 
     // You can send the data to a server here
+  };
+
+  const handleNext = () => {
+    // You can also check if formData is valid before navigating
+    navigate("/accountSetup/childFav"); // Navigate to the next page
   };
 
   return (
@@ -52,13 +59,12 @@ const ChildrenNamePage = () => {
             {/* Next Button */}
             <div className="flex justify-end">
               <button
-                type="submit"
+                type="button"
+                onClick={handleNext}
                 className="text-lg font-bold flex items-center"
               >
-                <a href="/childFav">
-                  Next
-                  <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
-                </a>
+                Next
+                <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
               </button>
             </div>
           </form>

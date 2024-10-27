@@ -14,7 +14,7 @@ const ChildrenInfoHeader = () => {
         <p className="text-4xl md:text-6xl font-bold text-black mb-6">
           Let&#39;s get to know <span className="text-yellow">you</span>
         </p>
-        <a href="/childName">
+        <a href="/accountSetup/childName">
           <button className="bg-yellow text-white py-3 px-6 rounded-full text-xl font-semibold">
             Let's Go
           </button>
