@@ -8,15 +8,16 @@ import LandingPage from "./pages/LandingPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import PersonalisationCoverPage from "./pages/PersonalisationCoverPage.jsx";
 import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
-
-// Import CSS
-import "../public/css/index.css";
 import LoginPage from "./pages/LoginPage.jsx";
 import ChildrenNamePage from "./pages/ChildrenNamePage.jsx";
 import ChildrenFavPage from "./pages/ChildrenFavPage.jsx";
 import ChildrenAmbition from "./pages/ChildrenAmbition.jsx";
 import ChildrenInfoHeader from "./pages/ChildrenInfoHeader.jsx";
 import AccountManagementPage from "./pages/AccountManagementPage.jsx";
+
+// Import CSS
+import "../public/css/index.css";
+import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 
 // Fill in with all the roots of React Pages
 // Parameters: Path (define the link), Element (the page itself)
@@ -44,6 +45,11 @@ const router = createBrowserRouter([
   {
     path: "/accountSetup",
     element: <AccountManagementPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/childPageContainer",
+    element: <ChildrenPageContainer />,
     errorElement: <div>404 Not Found</div>,
   },
   {

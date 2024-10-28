@@ -26,7 +26,7 @@ const AccountManagementPage = () => {
     flatpickr("#parentDob", {
       dateFormat: "Y-m-d",
       onChange: (selectedDates, dateStr) => {
-        handleInputChange({ target: { name: "dob", value: dateStr } });
+        handleChange({ target: { name: "dob", value: dateStr } });
       },
     });
   }, []);
@@ -62,11 +62,8 @@ const AccountManagementPage = () => {
     }
 
     // Store children details in session storage
-    const childDetails = children.map((_, index) => ({
-      name: `Child ${index + 1}`,
-      // Add other child properties as needed
-    }));
-    sessionStorage.setItem("childDetails", JSON.stringify(childDetails));
+    const childData = JSON.parse(sessionStorage.getItem("childData")) || [];
+    sessionStorage.setItem("childData", JSON.stringify(childData));
 
     // Send parent account details to the backend
     // try {
@@ -78,7 +75,14 @@ const AccountManagementPage = () => {
     //     body: JSON.stringify(formData),
     //   });
 
-    navigate("/accountSetup/childSection"); // Navigate to the next page
+    navigate("/childPageContainer"); // Navigate to the next page
+  };
+
+  // Function to save child data in session storage
+  const saveChildData = (index, data) => {
+    const currentData = JSON.parse(sessionStorage.getItem("childData")) || [];
+    currentData[index] = data; // Update the specific child's data
+    sessionStorage.setItem("childData", JSON.stringify(currentData)); // Save updated data
   };
 
   return (
@@ -161,7 +165,11 @@ const AccountManagementPage = () => {
 
           {/* Dynamically adding Child Accordion Form */}
           {children.map((number) => (
-            <ChildAccordion key={number} number={number} />
+            <ChildAccordion
+              key={number}
+              number={number}
+              saveChildData={saveChildData}
+            />
           ))}
 
           {/* Add another child Button */}

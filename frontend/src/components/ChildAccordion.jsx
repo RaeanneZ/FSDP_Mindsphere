@@ -1,7 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCalendarAlt,
   faChevronDown,
   faChevronUp,
   faGroupArrowsRotate,
@@ -10,7 +9,7 @@ import {
   faUpDown,
 } from "@fortawesome/free-solid-svg-icons";
 
-const ChildAccordion = ({ number }) => {
+const ChildAccordion = ({ number, saveChildData }) => {
   // Track status of accordion
   const [isOpen, setIsOpen] = React.useState(true);
   // For form data
@@ -23,31 +22,29 @@ const ChildAccordion = ({ number }) => {
 
   React.useEffect(() => {
     // Load saved data from sessionStorage
-    const savedData = JSON.parse(sessionStorage.getItem("childData"));
-    if (savedData) {
-      setFormData(savedData);
+    const savedData = JSON.parse(sessionStorage.getItem("childData")) || [];
+    // if (savedData) {
+    //   setFormData(savedData);
+    // }
+    if (savedData[number - 1]) {
+      setFormData(savedData[number - 1]);
     }
 
-    flatpickr("#dob", {
+    flatpickr(`#dob-${number}`, {
       dateFormat: "Y-m-d",
       onChange: (selectedDates, dateStr) => {
         handleInputChange({ target: { name: "dob", value: dateStr } });
       },
     });
-  }, []);
+  }, [number]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => {
-      const newState = {
-        ...prevState,
-        [name]: value,
-      };
-      // Save data to sessionStorage
-      sessionStorage.setItem("childData", JSON.stringify(newState));
-      console.log(`Auto-saving data: ${name} = ${value}`);
-      return newState;
-    });
+    const updatedData = { ...formData, [name]: value };
+    setFormData(updatedData);
+
+    // Save data to sessionStorage
+    saveChildData(number - 1, updatedData);
   };
 
   return (
@@ -81,7 +78,7 @@ const ChildAccordion = ({ number }) => {
             />
             <div className="relative">
               <input
-                id="dob"
+                id={`dob-${number}`}
                 type="text"
                 name="dob"
                 placeholder="Date Of Birth"

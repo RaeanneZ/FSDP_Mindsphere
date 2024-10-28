@@ -1,7 +1,7 @@
 import React from "react";
 import { introBg } from "../utils";
 
-const ChildrenInfoHeader = () => {
+const ChildrenInfoHeader = ({ name }) => {
   return (
     <div
       className="w-screen h-screen flex justify-center items-center bg-cover bg-center"
@@ -9,7 +9,7 @@ const ChildrenInfoHeader = () => {
     >
       <div className="text-center relative z-10">
         <p className="text-4xl md:text-6xl font-bold text-yellow mb-2">
-          Hello Name!
+          Hello {name}!
         </p>
         <p className="text-4xl md:text-6xl font-bold text-black mb-6">
           Let&#39;s get to know <span className="text-yellow">you</span>
