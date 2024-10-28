@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useHistory
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import ChildAccordion from "../components/ChildAccordion";
 import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,7 +7,7 @@ import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const AccountManagementPage = () => {
   const navigate = useNavigate(); // Create history object
-
+  const [errors, setErrors] = React.useState({}); // State for error messages
   const [children, setChildren] = React.useState([1]);
   const addChild = () => {
     setChildren([...children, children.length + 1]);
@@ -22,6 +22,15 @@ const AccountManagementPage = () => {
     address: "",
   });
 
+  React.useEffect(() => {
+    flatpickr("#parentDob", {
+      dateFormat: "Y-m-d",
+      onChange: (selectedDates, dateStr) => {
+        handleInputChange({ target: { name: "dob", value: dateStr } });
+      },
+    });
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -30,15 +39,46 @@ const AccountManagementPage = () => {
     });
   };
 
-  const handleNext = () => {
-    // You can also check if formData is valid before navigating
-    console.log("Navigating to child section"); // Debugging log
-    navigate("/accountSetup/childSection"); // Navigate to the next page
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = "Name is required.";
+    if (!formData.dob) newErrors.dob = "Date of Birth is required.";
+    if (!formData.contactNumber)
+      newErrors.contactNumber = "Contact Number is required.";
+    if (!formData.relationship)
+      newErrors.relationship = "Relationship to Child is required.";
+    if (!formData.address) newErrors.address = "Address is required.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if no errors
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
+
+    if (!validateForm()) {
+      return; // Prevent navigation if validation fails
+    }
+
+    // Store children details in session storage
+    const childDetails = children.map((_, index) => ({
+      name: `Child ${index + 1}`,
+      // Add other child properties as needed
+    }));
+    sessionStorage.setItem("childDetails", JSON.stringify(childDetails));
+
+    // Send parent account details to the backend
+    // try {
+    //   const response = await fetch("https://your-backend-api.com/api/account", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   });
+
+    navigate("/accountSetup/childSection"); // Navigate to the next page
   };
 
   return (
@@ -62,15 +102,18 @@ const AccountManagementPage = () => {
                 value={formData.name}
                 onChange={handleChange}
                 className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                required
               />
 
               <input
+                id="parentDob"
                 type="text"
                 name="dob"
                 placeholder="Date Of Birth"
                 value={formData.dob}
                 onChange={handleChange}
                 className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                required
               />
               <i className="fas fa-calendar-alt absolute right-3 top-3"></i>
 
@@ -81,6 +124,7 @@ const AccountManagementPage = () => {
                 value={formData.contactNumber}
                 onChange={handleChange}
                 className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                required
               />
 
               <select
@@ -88,6 +132,7 @@ const AccountManagementPage = () => {
                 value={formData.relationship}
                 onChange={handleChange}
                 className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                required
               >
                 <option value="">Relationship to Child</option>
                 <option value="Father">Father</option>
@@ -104,41 +149,41 @@ const AccountManagementPage = () => {
               value={formData.address}
               onChange={handleChange}
               className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+              required
             />
           </div>
-        </form>
-        {/* End of Parent Input */}
+          {/* End of Parent Input */}
 
-        <h1 className="my-4 text-xl font-bold">
-          Enter your child&#39;s particulars so that we can better understand
-          them
-        </h1>
+          <h1 className="my-4 text-xl font-bold">
+            Enter your child&#39;s particulars so that we can better understand
+            them
+          </h1>
 
-        {/* Dynamically adding Child Accordion Form */}
-        {children.map((number) => (
-          <ChildAccordion key={number} number={number} />
-        ))}
+          {/* Dynamically adding Child Accordion Form */}
+          {children.map((number) => (
+            <ChildAccordion key={number} number={number} />
+          ))}
 
-        {/* Add another child Button */}
-        <div
-          className="bg-lightBlue p-6 rounded-lg shadow-md my-4 flex items-center justify-between mb-4 cursor-pointer"
-          onClick={addChild}
-        >
-          <span>Add Another Child</span>
-          <FontAwesomeIcon icon={faPlus} />
-        </div>
-
-        {/* Next Button */}
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={handleNext}
-            className="text-lg font-bold flex items-center"
+          {/* Add another child Button */}
+          <div
+            className="bg-lightBlue p-6 rounded-lg shadow-md my-4 flex items-center justify-between mb-4 cursor-pointer"
+            onClick={addChild}
           >
-            Next
-            <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
-          </button>
-        </div>
+            <span>Add Another Child</span>
+            <FontAwesomeIcon icon={faPlus} />
+          </div>
+
+          {/* Next Button */}
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="text-lg font-bold flex items-center"
+            >
+              Next
+              <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
+            </button>
+          </div>
+        </form>
       </div>
       {/* Content Ends Here */}
     </div>
