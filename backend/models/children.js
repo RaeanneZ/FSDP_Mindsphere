@@ -1,9 +1,6 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
-const sql = require("mssql");
-const dbConfig = require("../dbConfig");
-
 class Children {
   //attributes
   constructor(
