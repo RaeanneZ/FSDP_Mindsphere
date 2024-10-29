@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import ChildrenInfoHeader from "./ChildrenInfoHeader";
 import ChildrenAmbition from "./ChildrenAmbition";
+import { introBg } from "../utils";
 
 const ParentChildrenPage = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const ParentChildrenPage = () => {
     } else if (page === "favorites") {
       setPage("name"); // Go back to intro page
     } else if (page === "ambition") {
-      setPage("ambition"); // Go back to intro page
+      setPage("favorites"); // Go back to intro page
     } else {
       if (currentChildIndex > 0) {
         setCurrentChildIndex(currentChildIndex - 1); // Move to the previous child
@@ -52,17 +53,16 @@ const ParentChildrenPage = () => {
     }
   };
 
-  const childrenName = children[currentChildIndex]?.name;
-
   return (
-    <div className="w-screen h-screen bg-cover bg-center py-20">
-      <div className="text-center mx-10 md:mx-20 lg:mx-40 xl:mx-80">
-        <h1 className="text-2xl font-bold mb-4">
-          Child {currentChildIndex + 1} Details
-        </h1>
-
+    <div
+      className="w-screen h-screen bg-cover bg-center flex justify-center items-center"
+      style={{ backgroundImage: `url(${introBg})` }}
+    >
+      <div className="w-full text-center mx-10 md:mx-20 lg:mx-40 xl:mx-80">
         {/* Determining which page to load */}
-        {page === "intro" && <ChildrenInfoHeader childName={childrenName} />}
+        {page === "intro" && (
+          <ChildrenInfoHeader childName={children[currentChildIndex]?.name} />
+        )}
         {page === "name" && <ChildrenNamePage />}
         {page === "favorites" && <ChildrenFavPage />}
         {page === "ambition" && <ChildrenAmbition />}
@@ -70,8 +70,10 @@ const ParentChildrenPage = () => {
         <div className="flex justify-between mt-4">
           <button
             onClick={handleBack}
-            className="text-lg font-bold flex items-center"
-            disabled={currentChildIndex === 0 && page === "name"} // Disable back button on the first child
+            className={`text-lg font-bold flex items-center ${
+              currentChildIndex === 0 && page === "intro" ? "disabled" : ""
+            }`}
+            disabled={currentChildIndex === 0 && page === "intro"} // Disable back button on the first child
           >
             Back
           </button>
