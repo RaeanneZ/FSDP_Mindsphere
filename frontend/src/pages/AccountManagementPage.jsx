@@ -22,13 +22,28 @@ const AccountManagementPage = () => {
     address: "",
   });
 
+  // Retrieve parent details from session storage on component mount
   React.useEffect(() => {
-    flatpickr("#parentDob", {
+    const storedData = JSON.parse(sessionStorage.getItem("parentData"));
+    if (storedData) {
+      setFormData(storedData);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const datepicker = flatpickr("#parentDob", {
       dateFormat: "Y-m-d",
       onChange: (selectedDates, dateStr) => {
-        handleChange({ target: { name: "dob", value: dateStr } });
+        setFormData((prevData) => ({
+          ...prevData,
+          dob: dateStr, // Update only the date of birth
+        }));
       },
     });
+
+    return () => {
+      datepicker.destroy(); // Cleanup flatpickr on unmount
+    };
   }, []);
 
   const handleChange = (e) => {

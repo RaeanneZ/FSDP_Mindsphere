@@ -30,13 +30,29 @@ const ChildAccordion = ({ number, saveChildData }) => {
       setFormData(savedData[number - 1]);
     }
 
-    flatpickr(`#dob-${number}`, {
+    // Change only the date format
+    const datepicker = flatpickr(`#dob-${number}`, {
       dateFormat: "Y-m-d",
       onChange: (selectedDates, dateStr) => {
-        handleInputChange({ target: { name: "dob", value: dateStr } });
+        setFormData((prevData) => ({
+          ...prevData,
+          dob: dateStr, // Update only the date of birth
+        }));
       },
     });
-  }, [number]);
+
+    return () => {
+      datepicker.destroy(); // Cleanup flatpickr on unmount
+    };
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
