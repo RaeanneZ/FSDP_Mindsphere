@@ -60,7 +60,9 @@ const ParentChildrenPage = () => {
         </h1>
 
         {/* Determining which page to load */}
-        {page === "intro" && <ChildrenInfoHeader name={children.name} />}
+        {page === "intro" && (
+          <ChildrenInfoHeader name={children[currentChildIndex].name} />
+        )}
         {page === "name" && <ChildrenNamePage />}
         {page === "favorites" && <ChildrenFavPage />}
         {page === "ambition" && <ChildrenAmbition />}
