@@ -18,6 +18,7 @@ const ChildAccordion = ({ number, saveChildData }) => {
     dob: "",
     school: "",
     skillsets: "",
+    gender: "",
   });
 
   React.useEffect(() => {
@@ -30,7 +31,7 @@ const ChildAccordion = ({ number, saveChildData }) => {
       setFormData(savedData[number - 1]);
     }
 
-    // Change only the date format
+    // Change only the date
     const datepicker = flatpickr(`#dob-${number}`, {
       dateFormat: "Y-m-d",
       onChange: (selectedDates, dateStr) => {
@@ -70,20 +71,12 @@ const ChildAccordion = ({ number, saveChildData }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <h2 className="text-lg font-semibold">Child #{number}</h2>
-        <div>
-          <label className="mr-8">
-            <input type="radio" name="gender" className="mr-1" /> Boy
-          </label>
-          <label>
-            <input type="radio" name="gender" className="mr-1" /> Girl
-          </label>
-        </div>
 
         <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
       </div>
       {isOpen && (
         <div className="grid grid-cols-1 gap-4 mt-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             <input
               type="text"
               placeholder="Name"
@@ -103,15 +96,28 @@ const ChildAccordion = ({ number, saveChildData }) => {
                 onChange={handleInputChange}
               />
             </div>
+
+            <input
+              type="text"
+              name="school"
+              placeholder="School"
+              className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+              value={formData.school}
+              onChange={handleInputChange}
+            />
+
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+              required
+            >
+              <option value="">Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
           </div>
-          <input
-            type="text"
-            name="school"
-            placeholder="School"
-            className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-            value={formData.school}
-            onChange={handleInputChange}
-          />
           <input
             type="text"
             name="skillsets"

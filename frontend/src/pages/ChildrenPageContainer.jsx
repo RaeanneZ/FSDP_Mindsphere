@@ -52,6 +52,8 @@ const ParentChildrenPage = () => {
     }
   };
 
+  const childrenName = children[currentChildIndex]?.name;
+
   return (
     <div className="w-screen h-screen bg-cover bg-center py-20">
       <div className="text-center mx-10 md:mx-20 lg:mx-40 xl:mx-80">
@@ -60,9 +62,7 @@ const ParentChildrenPage = () => {
         </h1>
 
         {/* Determining which page to load */}
-        {page === "intro" && (
-          <ChildrenInfoHeader name={children[currentChildIndex].name} />
-        )}
+        {page === "intro" && <ChildrenInfoHeader childName={childrenName} />}
         {page === "name" && <ChildrenNamePage />}
         {page === "favorites" && <ChildrenFavPage />}
         {page === "ambition" && <ChildrenAmbition />}

@@ -28,9 +28,7 @@ const AccountManagementPage = () => {
     if (storedData) {
       setFormData(storedData);
     }
-  }, []);
 
-  React.useEffect(() => {
     const datepicker = flatpickr("#parentDob", {
       dateFormat: "Y-m-d",
       onChange: (selectedDates, dateStr) => {
@@ -110,7 +108,7 @@ const AccountManagementPage = () => {
           {/* Create one container per row */}
           <div className="grid grid-cols-1 gap-4 mt-4 pb-8">
             {/* Create 2 containers in that row */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <input
                 type="text"
                 name="name"
