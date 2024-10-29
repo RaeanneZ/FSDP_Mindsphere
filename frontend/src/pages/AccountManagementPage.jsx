@@ -86,10 +86,7 @@ const AccountManagementPage = () => {
   };
 
   return (
-    <div
-      className="w-screen min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: `url(${childSurveyBg1})` }}
-    >
+    <div className="w-screen min-h-screen">
       {/* Content Starts Here */}
       <div className="py-20 mx-4 md:mx-10 lg:mx-40">
         {/* Start of Parent Input */}

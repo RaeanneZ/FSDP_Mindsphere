@@ -77,7 +77,10 @@ const ParentChildrenPage = () => {
             onClick={handleNext}
             className="text-lg font-bold flex items-center"
           >
-            {page === "name" || page === "favorites" || page === "ambition"
+            {page === "intro" ||
+            page === "name" ||
+            page === "favorites" ||
+            page === "ambition"
               ? "Next"
               : "Done"}
             <FontAwesomeIcon className="ml-2" icon={faArrowRight} />

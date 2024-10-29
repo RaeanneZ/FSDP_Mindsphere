@@ -25,11 +25,8 @@ const ChildrenNamePage = () => {
 
   return (
     <>
-      <div
-        className="w-screen h-screen bg-cover bg-center py-20"
-        style={{ backgroundImage: `url(${childSurveyBg2})` }}
-      >
-        <div className="text-center mx-10 md:mx-20 lg:mx-40 xl:mx-80">
+      <div className="w-full h-full py-20">
+        <div className="text-center md:mx-10">
           <div className="flex justify-center mb-8">
             <span className="dot active"></span>
             <span className="dot"></span>
@@ -55,18 +52,6 @@ const ChildrenNamePage = () => {
               onChange={(e) => setReason(e.target.value)}
               className="input-underline mb-8 bg-transparent"
             />
-
-            {/* Next Button */}
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={handleNext}
-                className="text-lg font-bold flex items-center"
-              >
-                Next
-                <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
-              </button>
-            </div>
           </form>
         </div>
       </div>

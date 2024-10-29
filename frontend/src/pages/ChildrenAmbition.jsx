@@ -21,11 +21,8 @@ const ChildrenAmbition = () => {
   };
 
   return (
-    <div
-      className="w-screen h-screen bg-cover bg-center py-20"
-      style={{ backgroundImage: `url(${childSurveyBg2})` }}
-    >
-      <div className="text-center mx-10 md:mx-20 lg:mx-40 xl:mx-80">
+    <div className="w-full h-full py-20">
+      <div className="text-center md:mx-10">
         <div className="flex justify-center mb-8">
           <div className="dot"></div>
           <div className="dot"></div>
@@ -45,12 +42,6 @@ const ChildrenAmbition = () => {
           onChange={(e) => setReason(e.target.value)}
           className="border-b border-yellow bg-transparent w-[95%] mx-auto mb-8 text-center outline-none"
         />
-        <div className="flex justify-end mt-8">
-          <button onClick={handleNext} className="flex items-center text-black">
-            Done
-            <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
-          </button>
-        </div>
       </div>
     </div>
   );
