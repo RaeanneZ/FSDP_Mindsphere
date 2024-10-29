@@ -39,6 +39,10 @@ if exists (select * from sysobjects where name='Children' and type='U')
     drop table Children
 GO
 
+if exists (select * from sysobjects where name='AccountVerification' and type ='U')
+	drop table AccountVerification
+go
+
 if exists (select * from sysobjects where name='Account' and type='U')
     drop table Account
 GO
@@ -62,7 +66,7 @@ CREATE TABLE Account (
 	Name varchar(50) not null,
 	Email varchar(50) not null unique,
 	ContactNo char(8) not null unique,
-	memberStatus char(10) not null,
+	memberStatus char(10) not null default 'Pending',
 	memberExpiry datetime null,
 	RoleID int not null default 2,
 	constraint PK_Account primary key (AccID),
@@ -70,6 +74,14 @@ CREATE TABLE Account (
 	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))
 )
 GO
+
+CREATE TABLE AccountVerification (
+	AccID int not null,
+	verifCode int not null,
+	constraint PK_AccountVerification primary key (AccID),
+	constraint FK_AccountVer_AccID foreign key (AccID) references Account(AccID)
+)
+go
 
 create table Children (
 	ChildID int not null,
