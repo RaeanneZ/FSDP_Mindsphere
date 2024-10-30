@@ -8,7 +8,9 @@
     "dev": "concurrently \"npm run log\" \"npm run start\" \"npm run frontend\""
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "concurrently": "^9.0.1",
