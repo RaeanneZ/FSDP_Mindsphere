@@ -33,3 +33,10 @@
 .input-underline::placeholder {
   color: #bbb;
 }
+
+.disabled {
+  color: lightgrey;
+  /* Change the text color to grey */
+  cursor: not-allowed;
+  /* Change the cursor to indicate it's not clickable */
+}
