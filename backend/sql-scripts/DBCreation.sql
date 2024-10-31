@@ -39,10 +39,6 @@ if exists (select * from sysobjects where name='Children' and type='U')
     drop table Children
 GO
 
-if exists (select * from sysobjects where name='AccountVerification' and type ='U')
-	drop table AccountVerification
-go
-
 if exists (select * from sysobjects where name='Account' and type='U')
     drop table Account
 GO
@@ -71,6 +67,7 @@ CREATE TABLE Account (
 	dateOfBirth datetime not null,
 	relationshipToChild VARCHAR(50) not null,
 	address VARCHAR(255) not null,
+	verificationCode int not null,
 	RoleID int not null default 2,
 	Salt VARCHAR(255),
 	HashedPassword VARCHAR(255),
@@ -79,14 +76,6 @@ CREATE TABLE Account (
 	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))
 )
 GO
-
-CREATE TABLE AccountVerification (
-	AccID int not null,
-	verifCode int not null,
-	constraint PK_AccountVerification primary key (AccID),
-	constraint FK_AccountVer_AccID foreign key (AccID) references Account(AccID)
-)
-go
 
 create table Children (
 	ChildID int not null,
@@ -179,18 +168,18 @@ INSERT INTO Roles (RoleID, Name) VALUES
 (2, 'User');
 
 -- Insert data into Account
-INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, dateOfBirth, relationshipToChild, address, RoleID, Salt, HashedPassword)
+INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, dateOfBirth, relationshipToChild, address, verificationCode, RoleID, Salt, HashedPassword)
 VALUES 
-    ('Alice Smith', 'alice.smith@example.com', '12345678', 'Active', '2025-12-31', '1985-05-15', 'Mother', '123 Maple Street', 1, 'sampleSalt1', 'hashedPassword1'),
-    ('Bob Johnson', 'bob.johnson@example.com', '23456789', 'Inactive', NULL, '1990-07-20', 'Father', '456 Oak Avenue', 2, 'sampleSalt2', 'hashedPassword2'),
-    ('Charlie Brown', 'charlie.brown@example.com', '34567890', 'Pending', NULL, '1988-10-05', 'Guardian', '789 Pine Road', 2, 'sampleSalt3', 'hashedPassword3'),
-    ('Diana Prince', 'diana.prince@example.com', '45678901', 'Active', '2026-01-15', '1992-03-10', 'Mother', '321 Cedar Boulevard', 2, 'sampleSalt4', 'hashedPassword4'),
-    ('Evan Wright', 'evan.wright@example.com', '56789012', 'Inactive', NULL, '1986-08-25', 'Father', '654 Birch Lane', 2, 'sampleSalt5', 'hashedPassword5'),
-    ('Fiona Green', 'fiona.green@example.com', '67890123', 'Active', '2025-11-20', '1983-04-15', 'Mother', '789 Elm Street', 2, 'sampleSalt6', 'hashedPassword6'),
-    ('George Hall', 'george.hall@example.com', '78901234', 'Pending', NULL, '1989-12-01', 'Father', '123 Spruce Street', 1, 'sampleSalt7', 'hashedPassword7'),
-    ('Hannah King', 'hannah.king@example.com', '89012345', 'Inactive', NULL, '1995-01-29', 'Mother', '456 Fir Road', 2, 'sampleSalt8', 'hashedPassword8'),
-    ('Ian Moore', 'ian.moore@example.com', '90123456', 'Active', '2026-05-01', '1993-09-12', 'Father', '789 Ash Avenue', 1, 'sampleSalt9', 'hashedPassword9'),
-    ('Julia Scott', 'julia.scott@example.com', '01234567', 'Inactive', NULL, '1987-06-17', 'Guardian', '321 Cypress Boulevard', 2, 'sampleSalt10', 'hashedPassword10');
+    ('Alice Smith', 'alice.smith@example.com', '12345678', 'Active', '2025-12-31', '1985-05-15', 'Mother', '123 Maple Street', 123456, 1, 'sampleSalt1', 'hashedPassword1'),
+    ('Bob Johnson', 'bob.johnson@example.com', '23456789', 'Inactive', NULL, '1990-07-20', 'Father', '456 Oak Avenue', 123456, 2, 'sampleSalt2', 'hashedPassword2'),
+    ('Charlie Brown', 'charlie.brown@example.com', '34567890', 'Pending', NULL, '1988-10-05', 'Guardian', '789 Pine Road',123456, 2, 'sampleSalt3', 'hashedPassword3'),
+    ('Diana Prince', 'diana.prince@example.com', '45678901', 'Active', '2026-01-15', '1992-03-10', 'Mother', '321 Cedar Boulevard',123456, 2, 'sampleSalt4', 'hashedPassword4'),
+    ('Evan Wright', 'evan.wright@example.com', '56789012', 'Inactive', NULL, '1986-08-25', 'Father', '654 Birch Lane', 123456,2, 'sampleSalt5', 'hashedPassword5'),
+    ('Fiona Green', 'fiona.green@example.com', '67890123', 'Active', '2025-11-20', '1983-04-15', 'Mother', '789 Elm Street',123456, 2, 'sampleSalt6', 'hashedPassword6'),
+    ('George Hall', 'george.hall@example.com', '78901234', 'Pending', NULL, '1989-12-01', 'Father', '123 Spruce Street',123456, 1, 'sampleSalt7', 'hashedPassword7'),
+    ('Hannah King', 'hannah.king@example.com', '89012345', 'Inactive', NULL, '1995-01-29', 'Mother', '456 Fir Road',123456, 2, 'sampleSalt8', 'hashedPassword8'),
+    ('Ian Moore', 'ian.moore@example.com', '90123456', 'Active', '2026-05-01', '1993-09-12', 'Father', '789 Ash Avenue',123456, 1, 'sampleSalt9', 'hashedPassword9'),
+    ('Julia Scott', 'julia.scott@example.com', '01234567', 'Inactive', NULL, '1987-06-17', 'Guardian', '321 Cypress Boulevard',123456, 2, 'sampleSalt10', 'hashedPassword10');
 
 -- Insert data into Children
 INSERT INTO Children (ChildID, GuardianID, Name, Gender, Dob, Needs, School, Interests) VALUES
@@ -271,3 +260,7 @@ INSERT INTO ProgrammeSchedule (SchedID, ProgID, DateStart, DateEnd, Venue, Total
 (10, 10, '2024-11-20', '2024-11-25', 'Chess Club Room', 15);
 
 
+
+select * from account
+select * from children
+select * from ProgrammeFeedback
