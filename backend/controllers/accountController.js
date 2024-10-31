@@ -37,8 +37,8 @@ const registerAccount = async (req, res) => {
     request.input("Email", Email);
     request.input("Password", hashedPassword);
     request.input("ContactNo", ContactNo);
-    request.input("Salt", sql.VarChar, salt); // Ensure this is added
-    request.input("HashedPassword", sql.VarChar, hashedPassword); // Correct field name
+    request.input("Salt", sql.VarChar, salt);
+    request.input("HashedPassword", sql.VarChar, hashedPassword);
 
     const result = await request.query(sqlQuery);
     connection.close();
@@ -53,7 +53,43 @@ const registerAccount = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  const { Email, Password } = req.body;
+  try {
+    const account = await Account.getAccountByEmail(Email);
+    if (!account) {
+      return res.status(400).json({ message: "Account not found" });
+    }
+    const connection = await sql.connect(dbConfig);
+    const sqlQuery = `SELECT * FROM Account WHERE Email = @Email`;
+    const request = connection.request();
+    request.input("Email", Email);
+    await request.query(sqlQuery);
+    connection.close();
+
+    const isMatch = await bcrypt.compare(Password, account.HashedPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const payload = {
+      AccID: account.AccID,
+      Name: account.Name,
+      RoleID: account.RoleID,
+    };
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+      expiresIn: "3600s",
+    });
+
+    return res.status(200).json({ token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
   getAllAccount,
   registerAccount,
+  login,
 };

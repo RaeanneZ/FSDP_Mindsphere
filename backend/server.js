@@ -27,6 +27,7 @@ app.get("/", async (req, res) => {
 
 app.get("/account", accountController.getAllAccount);
 app.post("/register", accountController.registerAccount);
+app.post("/login", accountController.login);
 
 // Start the server
 app.listen(PORT, async () => {
