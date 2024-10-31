@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
+import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 
 const ChildAccordion = ({ number, saveChildData }) => {
   const [isOpen, setIsOpen] = React.useState(true);
