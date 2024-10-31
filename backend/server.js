@@ -37,8 +37,12 @@ app.get("/account", accountController.getAllAccount);
 app.post("/register", accountController.registerAccount);
 app.post("/login", accountController.login);
 app.post("/schedules", progSchedController.addProgrammeSchedule);
+
 app.get("/bookings", bookingsController.getAllBookings);
+
 app.get("/payments", paymentController.getAllPayments);
+app.post("/payments", paymentController.addPayment);
+
 app.get("/programmes", programmesController.getAllProgrammes);
 
 // Start the server
