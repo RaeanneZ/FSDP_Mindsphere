@@ -68,8 +68,11 @@ const ChildAccordion = ({ number, saveChildData }) => {
                 value={formData.dob} // Bind the value to formData.dob
                 onChange={handleDateChange} // Handle date change
                 options={{
+                  altInput: true,
+                  altFormat: "F j, Y",
                   dateFormat: "Y-m-d",
                   enableTime: false,
+                  maxDate: "today",
                 }}
                 className="p-3 border border-gray-300 rounded-md w-full bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
                 placeholder="Date Of Birth"
