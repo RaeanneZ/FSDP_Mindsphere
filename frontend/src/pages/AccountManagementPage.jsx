@@ -1,5 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
+import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 import ChildAccordion from "../components/ChildAccordion";
 import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,28 +25,6 @@ const AccountManagementPage = () => {
     address: "",
   });
 
-  // Retrieve parent details from session storage on component mount
-  React.useEffect(() => {
-    const storedData = JSON.parse(sessionStorage.getItem("parentData"));
-    if (storedData) {
-      setFormData(storedData);
-    }
-
-    const datepicker = flatpickr("#parentDob", {
-      dateFormat: "Y-m-d",
-      onChange: (selectedDates, dateStr) => {
-        setFormData((prevData) => ({
-          ...prevData,
-          dob: dateStr, // Update only the date of birth
-        }));
-      },
-    });
-
-    return () => {
-      datepicker.destroy(); // Cleanup flatpickr on unmount
-    };
-  }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -64,6 +45,13 @@ const AccountManagementPage = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Returns true if no errors
+  };
+
+  const handleDateChange = (date) => {
+    const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
+    const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
+    setFormData(updatedData); // Update the state
+    saveChildData(number - 1, updatedData); // Save to session storage
   };
 
   const handleSubmit = (e) => {
@@ -119,17 +107,17 @@ const AccountManagementPage = () => {
                 required
               />
 
-              <input
-                id="parentDob"
-                type="text"
-                name="dob"
+              <Flatpickr
+                value={formData.dob} // Bind the value to formData.dob
+                onChange={handleDateChange} // Handle date change
+                options={{
+                  dateFormat: "Y-m-d",
+                  enableTime: false,
+                }}
+                className="p-3 border border-gray-300 rounded-md w-full bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
                 placeholder="Date Of Birth"
-                value={formData.dob}
-                onChange={handleChange}
-                className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
                 required
               />
-              <i className="fas fa-calendar-alt absolute right-3 top-3"></i>
 
               <input
                 type="text"
