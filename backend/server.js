@@ -38,20 +38,20 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get("/schedules", progSchedController.getAllProgSchedules)
-app.post("/schedules", progSchedController.addProgrammeSchedule)
+app.get("/api/schedules", progSchedController.getAllProgSchedules)
+app.post("/api/schedules", progSchedController.addProgrammeSchedule)
 
-app.get("/bookings", bookingsController.getAllBookings) 
-app.post("/bookings", bookingsController.addBooking)
+app.get("/api/bookings", bookingsController.getAllBookings) 
+app.post("/api/bookings", bookingsController.addBooking)
 
-app.get("/payments", paymentController.getAllPayments)
-app.post("/payments", paymentController.addPayment)
+app.get("/api/payments", paymentController.getAllPayments)
+app.post("/api/payments", paymentController.addPayment)
 
-app.get("/programmes", programmesController.getAllProgrammes)
+app.get("/api/programmes", programmesController.getAllProgrammes)
 
-app.get("/account", accountController.getAllAccount);
-app.post("/register", accountController.registerAccount);
-app.post("/login", verifyJWT, accountController.login);
+app.get("/api/account", accountController.getAllAccount);
+app.post("/api/register", accountController.registerAccount);
+app.post("/api/login", accountController.login);
 
 // Start the server
 app.listen(PORT, async () => {
