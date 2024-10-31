@@ -6,6 +6,8 @@ const sql = require("mssql");
 const path = require('path');
 const chalk = require('chalk');
 
+const progSchedController = require("./controllers/progSchedController")
+
 
 // APP SETUP
 const app = express();
@@ -22,6 +24,8 @@ app.get('/', async (req, res) => {
         res.status(500).json({ error: "Database connection failed" });
     }
 });
+
+app.get("/schedules", progSchedController.getAllProgSchedules)
 
 // Start the server
 app.listen(PORT, async () => {
