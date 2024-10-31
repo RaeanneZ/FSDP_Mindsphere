@@ -1,53 +1,45 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendarAlt,
-  faChevronDown,
-  faChevronUp,
-  faGroupArrowsRotate,
-  faMinus,
-  faPlus,
-  faUpDown,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
+import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 
-const ChildAccordion = ({ number }) => {
-  // Track status of accordion
+const ChildAccordion = ({ number, saveChildData }) => {
   const [isOpen, setIsOpen] = React.useState(true);
-  // For form data
+
   const [formData, setFormData] = React.useState({
     name: "",
     dob: "",
     school: "",
     skillsets: "",
+    gender: "",
   });
 
-  React.useEffect(() => {
-    // Load saved data from sessionStorage
-    const savedData = JSON.parse(sessionStorage.getItem("childData"));
-    if (savedData) {
-      setFormData(savedData);
-    }
+  const dobInputRef = React.useRef(null); // Ref for the date input
 
-    flatpickr("#dob", {
-      dateFormat: "Y-m-d",
-      onChange: (selectedDates, dateStr) => {
-        handleInputChange({ target: { name: "dob", value: dateStr } });
-      },
-    });
-  }, []);
+  React.useEffect(() => {
+    // Load saved data on mount
+    const savedData = JSON.parse(sessionStorage.getItem("childData")) || [];
+    if (savedData[number - 1]) {
+      setFormData(savedData[number - 1]);
+    }
+  }, [number]);
+
+  const handleDateChange = (date) => {
+    const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
+    const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
+    setFormData(updatedData); // Update the state
+    saveChildData(number - 1, updatedData); // Save to session storage
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => {
-      const newState = {
-        ...prevState,
-        [name]: value,
-      };
-      // Save data to sessionStorage
-      sessionStorage.setItem("childData", JSON.stringify(newState));
-      console.log(`Auto-saving data: ${name} = ${value}`);
-      return newState;
-    });
+    const updatedData = { ...formData, [name]: value };
+    setFormData(updatedData);
+
+    // Save data to sessionStorage
+    saveChildData(number - 1, updatedData);
   };
 
   return (
@@ -57,20 +49,11 @@ const ChildAccordion = ({ number }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <h2 className="text-lg font-semibold">Child #{number}</h2>
-        <div>
-          <label className="mr-8">
-            <input type="radio" name="gender" className="mr-1" /> Boy
-          </label>
-          <label>
-            <input type="radio" name="gender" className="mr-1" /> Girl
-          </label>
-        </div>
-
         <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
       </div>
       {isOpen && (
         <div className="grid grid-cols-1 gap-4 mt-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             <input
               type="text"
               placeholder="Name"
@@ -78,27 +61,47 @@ const ChildAccordion = ({ number }) => {
               className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
               value={formData.name}
               onChange={handleInputChange}
+              required
             />
             <div className="relative">
-              <input
-                id="dob"
-                type="text"
-                name="dob"
-                placeholder="Date Of Birth"
+              <Flatpickr
+                value={formData.dob} // Bind the value to formData.dob
+                onChange={handleDateChange} // Handle date change
+                options={{
+                  altInput: true,
+                  altFormat: "F j, Y",
+                  dateFormat: "Y-m-d",
+                  enableTime: false,
+                  maxDate: "today",
+                }}
                 className="p-3 border border-gray-300 rounded-md w-full bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-                value={formData.dob}
-                onChange={handleInputChange}
+                placeholder="Date Of Birth"
+                required
               />
             </div>
+
+            <input
+              type="text"
+              name="school"
+              placeholder="School"
+              className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+              value={formData.school}
+              onChange={handleInputChange}
+              required
+            />
+
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleInputChange}
+              className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+              required
+            >
+              <option value="">Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
           </div>
-          <input
-            type="text"
-            name="school"
-            placeholder="School"
-            className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-            value={formData.school}
-            onChange={handleInputChange}
-          />
           <input
             type="text"
             name="skillsets"
@@ -106,6 +109,7 @@ const ChildAccordion = ({ number }) => {
             className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
             value={formData.skillsets}
             onChange={handleInputChange}
+            required
           />
         </div>
       )}

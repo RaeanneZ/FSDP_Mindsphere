@@ -21,6 +21,10 @@ import ChildrenAmbition from "./pages/ChildrenAmbition.jsx";
 import ChildrenInfoHeader from "./pages/ChildrenInfoHeader.jsx";
 import AccountManagementPage from "./pages/AccountManagementPage.jsx";
 
+// Import CSS
+import "../public/css/index.css";
+import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
+
 // Fill in with all the roots of React Pages
 // Parameters: Path (define the link), Element (the page itself)
 const router = createBrowserRouter([
@@ -45,27 +49,32 @@ const router = createBrowserRouter([
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/accountSetUp",
+    path: "/accountSetup",
     element: <AccountManagementPage />,
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/childrenSection",
+    path: "/childPageContainer",
+    element: <ChildrenPageContainer />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/accountSetup/childSection",
     element: <ChildrenInfoHeader />,
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/childName",
+    path: "/accountSetup/childName",
     element: <ChildrenNamePage />,
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/childFav",
+    path: "/accountSetup/childFav",
     element: <ChildrenFavPage />,
     errorElement: <div>404 Not Found</div>,
   },
   {
-    path: "/childAmbition",
+    path: "/accountSetup/childAmbition",
     element: <ChildrenAmbition />,
     errorElement: <div>404 Not Found</div>,
   },
