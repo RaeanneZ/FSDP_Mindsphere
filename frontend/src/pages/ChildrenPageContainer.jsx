@@ -26,6 +26,7 @@ const ParentChildrenPage = () => {
   });
   const [job, setJob] = React.useState("");
   const [reasonJob, setReasonJob] = React.useState("");
+  const [errors, setErrors] = React.useState({});
 
   React.useEffect(() => {
     const childData = JSON.parse(sessionStorage.getItem("childData")) || [];
@@ -34,7 +35,35 @@ const ParentChildrenPage = () => {
     }
   }, []);
 
+  const validateInputs = () => {
+    const newErrors = {};
+    if (page === "name") {
+      if (!nickname) newErrors.nickname = "A nickname is required!";
+      if (!reasonName)
+        newErrors.reasonName = "Please tell us what people love you for!";
+    } else if (page === "favorites") {
+      if (!favorites.food) newErrors.food = "Favorite food is required!";
+      if (!favorites.subject)
+        newErrors.subject = "Favorite subject is required!";
+      if (!favorites.color) newErrors.color = "Favorite color is required!";
+      if (!favorites.hobby) newErrors.hobby = "Favorite hobby is required!";
+      if (!favorites.animal) newErrors.animal = "Favorite animal is required!";
+    } else if (page === "ambition") {
+      if (!job) newErrors.job = "Job is required!";
+      if (!reasonJob)
+        newErrors.reasonJob = "Please tell us why you want this job!";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if no errors
+  };
+
   const handleNext = () => {
+    // Validate inputs before proceeding
+    if (!validateInputs()) {
+      return; // Stop if there are errors
+    }
+
     const updatedChildren = [...children];
     const currentChild = updatedChildren[currentChildIndex] || {};
 
@@ -115,10 +144,15 @@ const ParentChildrenPage = () => {
             setNickname={setNickname}
             reasonName={reasonName}
             setReasonName={setReasonName}
+            errors={errors}
           />
         )}
         {page === "favorites" && (
-          <ChildrenFavPage favorites={favorites} setFavorites={setFavorites} />
+          <ChildrenFavPage
+            favorites={favorites}
+            setFavorites={setFavorites}
+            errors={errors}
+          />
         )}
         {page === "ambition" && (
           <ChildrenAmbition
@@ -126,6 +160,7 @@ const ParentChildrenPage = () => {
             setJob={setJob}
             reasonJob={reasonJob}
             setReasonJob={setReasonJob}
+            errors={errors}
           />
         )}
 

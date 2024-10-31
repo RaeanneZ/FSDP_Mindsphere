@@ -6,10 +6,8 @@ const ChildrenNamePage = ({
   setNickname,
   reasonName,
   setReasonName,
+  errors,
 }) => {
-  const { useState } = React;
-  const navigate = useNavigate(); // Create history object
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Nickname:", nickname);
@@ -29,10 +27,17 @@ const ChildrenNamePage = ({
           </div>
 
           {/* Nickname Input */}
-          <h1 className="text-2xl font-bold mb-4">Hi! Please call me</h1>
+          <div className="mb-4">
+            <h1 className="text-2xl font-bold">Hi! Please call me</h1>
+            {errors.nickname && (
+              <p className="text-red-500 text-sm">{errors.nickname}</p>
+            )}
+          </div>
+
           <form onSubmit={handleSubmit}>
             <input
               type="text"
+              name="nickname"
               placeholder="Nickname"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
@@ -41,9 +46,16 @@ const ChildrenNamePage = ({
             />
 
             {/* Reason for Nickname Input */}
-            <h2 className="text-xl font-bold mb-4">People love me for…</h2>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold">People love me for…</h2>
+              {errors.reasonName && (
+                <p className="text-red-500 text-sm">{errors.reasonName}</p>
+              )}
+            </div>
+
             <input
               type="text"
+              name="nicknameReason"
               value={reasonName}
               onChange={(e) => setReasonName(e.target.value)}
               className="input-underline mb-8 bg-transparent"
