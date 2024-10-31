@@ -51,7 +51,7 @@ const AccountManagementPage = () => {
     const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
     const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
     setFormData(updatedData); // Update the state
-    saveChildData(number - 1, updatedData); // Save to session storage
+    // Removed the line that tried to save child data
   };
 
   const handleSubmit = (e) => {
@@ -61,6 +61,9 @@ const AccountManagementPage = () => {
     if (!validateForm()) {
       return; // Prevent navigation if validation fails
     }
+
+    // Store parent details in session storage
+    sessionStorage.setItem("parentData", JSON.stringify(formData)); // <-- Storing parent data
 
     // Store children details in session storage
     const childData = JSON.parse(sessionStorage.getItem("childData")) || [];
