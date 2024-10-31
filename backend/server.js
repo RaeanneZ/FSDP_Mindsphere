@@ -1,7 +1,7 @@
 // MODULE IMPORTS
-const express = require('express');
+const express = require("express");
 const dbConfig = require("./dbConfig");
-require('dotenv').config();
+require("dotenv").config();
 const sql = require("mssql");
 const path = require('path');
 const chalk = require('chalk');
@@ -13,6 +13,7 @@ const corsOptions = {
 }
 
 // CONTROLLERS
+const accountController = require("./controllers/accountController");
 const progSchedController = require("./controllers/progSchedController")
 const bookingsController = require("./controllers/bookingsController")
 const paymentController = require("./controllers/paymentController")
@@ -47,26 +48,30 @@ app.post("/payments", paymentController.addPayment)
 
 app.get("/programmes", programmesController.getAllProgrammes)
 
+app.get("/account", accountController.getAllAccount);
+app.post("/register", accountController.registerAccount);
+app.post("/login", accountController.login);
+
 // Start the server
 app.listen(PORT, async () => {
-    try {
-        // Connect to the database
-      await sql.connect(dbConfig);
-      console.log("Database connection established successfully");
-    } catch (err) {
-      console.error("Database connection error:", err);
-      // Terminate the application with an error code (optional)
-      process.exit(1); // Exit with code 1 indicating an error
-    }
+  try {
+    // Connect to the database
+    await sql.connect(dbConfig);
+    console.log("Database connection established successfully");
+  } catch (err) {
+    console.error("Database connection error:", err);
+    // Terminate the application with an error code (optional)
+    process.exit(1); // Exit with code 1 indicating an error
+  }
 
-    console.log(chalk.green(`Backend is running at http://localhost:${PORT}`));
-    console.log(chalk.blue(`Frontend is running at http://localhost:5173`)); // Add frontend log here
+  console.log(chalk.green(`Backend is running at http://localhost:${PORT}`));
+  console.log(chalk.blue(`Frontend is running at http://localhost:5173`)); // Add frontend log here
 });
 
 // APP SHUTDOWN
 // Close the connection pool on SIGINT signal
 process.on("SIGINT", async () => {
-    console.log("Server is gracefully shutting down");
-  
-    process.exit(0); // Exit with code 0 indicating successful shutdown
-  });
+  console.log("Server is gracefully shutting down");
+
+  process.exit(0); // Exit with code 0 indicating successful shutdown
+});
