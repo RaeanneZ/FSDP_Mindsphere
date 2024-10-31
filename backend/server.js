@@ -6,14 +6,17 @@ const sql = require("mssql");
 const path = require('path');
 const chalk = require('chalk');
 
+// CONTROLLERS
 const progSchedController = require("./controllers/progSchedController")
-
+const bookingsController = require("./controllers/bookingsController")
+const paymentController = require("./controllers/paymentController")
+const programmesController = require("./controllers/programmesController")
 
 // APP SETUP
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
+// ROUTES
 app.get('/', async (req, res) => {
     try {
         // Connect to the database
@@ -26,6 +29,9 @@ app.get('/', async (req, res) => {
 });
 
 app.get("/schedules", progSchedController.getAllProgSchedules)
+app.get("/bookings", bookingsController.getAllBookings) 
+app.get("/payments", paymentController.getAllPayments)
+app.get("/programmes", programmesController.getAllProgrammes)
 
 // Start the server
 app.listen(PORT, async () => {
