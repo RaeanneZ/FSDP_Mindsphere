@@ -9,12 +9,13 @@ const chalk = require("chalk");
 // CORS CONFIG
 const cors = require("cors");
 const corsOptions = {
-  origin: ["http://localhost:5173"]
-}
+  origin: ["http://localhost:5173"],
+};
 
 // CONTROLLERS
 const progSchedController = require("./controllers/progSchedController");
 const accountController = require("./controllers/accountController");
+const verifyJWT = require("./middlewares/authValidate");
 const bookingsController = require("./controllers/bookingsController");
 const paymentController = require("./controllers/paymentController");
 const programmesController = require("./controllers/programmesController");
@@ -23,7 +24,7 @@ const programmesController = require("./controllers/programmesController");
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 app.get("/", async (req, res) => {
   try {
@@ -42,7 +43,7 @@ app.get("/schedules", progSchedController.getAllProgSchedules);
 
 app.get("/account", accountController.getAllAccount);
 app.post("/register", accountController.registerAccount);
-app.post("/login", accountController.login);
+app.post("/login", verifyJWT, accountController.login);
 app.post("/schedules", progSchedController.addProgrammeSchedule);
 
 app.get("/bookings", bookingsController.getAllBookings);
