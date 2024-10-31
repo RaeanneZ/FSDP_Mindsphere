@@ -31,8 +31,12 @@ app.get('/', async (req, res) => {
 
 app.get("/schedules", progSchedController.getAllProgSchedules)
 app.post("/schedules", progSchedController.addProgrammeSchedule)
+
 app.get("/bookings", bookingsController.getAllBookings) 
+
 app.get("/payments", paymentController.getAllPayments)
+app.post("/payments", paymentController.addPayment)
+
 app.get("/programmes", programmesController.getAllProgrammes)
 
 // Start the server
