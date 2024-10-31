@@ -43,6 +43,53 @@ class programmeSchedule {
             console.error("Error retrieving programme schedules: ", err)
         }
     }
+
+    static async checkIfSchedIDExists(SchedID) {
+        try {
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `SELECT COUNT(*) AS count FROM ProgrammeSchedule WHERE SchedID = @SchedID`;
+            const request = connection.request();
+            request.input("SchedID", sql.Int, SchedID);
+
+            const result = await request.query(sqlQuery);
+            connection.close();
+            return result.recordset[0].count > 0;
+        } catch (err) {
+            console.error("Error checking if SchedID exists: ", err);
+            throw err;
+        }
+    }
+    
+    
+    
+    static async addProgrammeSchedule(newSchedule) {
+        try {
+
+            const duplicateExists = await programmeSchedule.checkIfSchedIDExists(newSchedule.SchedID);
+            if (duplicateExists) {
+                throw new Error("Duplicate SchedID exists. Cannot add new schedule.");
+            }
+            
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `
+                INSERT INTO ProgrammeSchedule (SchedID, ProgID, DateStart, DateEnd, Venue, TotalSeats)
+                VALUES (@SchedID, @ProgID, @DateStart, @DateEnd, @Venue, @TotalSeats)
+            `;
+            const request = connection.request();
+            request.input("SchedID", sql.Int, newSchedule.SchedID);
+            request.input("ProgID", sql.Int, newSchedule.ProgID);
+            request.input("DateStart", sql.Date, newSchedule.DateStart);
+            request.input("DateEnd", sql.Date, newSchedule.DateEnd);
+            request.input("Venue", sql.VarChar, newSchedule.Venue);
+            request.input("TotalSeats", sql.Int, newSchedule.TotalSeats);
+
+            await request.query(sqlQuery);
+            connection.close();
+            console.log("Programme schedule added successfully.");
+        } catch (err) {
+            console.error("Error adding programme schedule: ", err);
+        }
+    }
 }
 
 module.exports = programmeSchedule

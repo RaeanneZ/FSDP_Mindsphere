@@ -15,6 +15,7 @@ const programmesController = require("./controllers/programmesController")
 // APP SETUP
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.use(express.json());
 
 // ROUTES
 app.get('/', async (req, res) => {
@@ -29,6 +30,7 @@ app.get('/', async (req, res) => {
 });
 
 app.get("/schedules", progSchedController.getAllProgSchedules)
+app.post("/schedules", progSchedController.addProgrammeSchedule)
 app.get("/bookings", bookingsController.getAllBookings) 
 app.get("/payments", paymentController.getAllPayments)
 app.get("/programmes", programmesController.getAllProgrammes)
