@@ -1,11 +1,12 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 
 const ChildAccordion = ({ number, saveChildData }) => {
-  // Track status of accordion
   const [isOpen, setIsOpen] = React.useState(true);
-  // For form data
+
   const [formData, setFormData] = React.useState({
     name: "",
     dob: "",
@@ -14,35 +15,22 @@ const ChildAccordion = ({ number, saveChildData }) => {
     gender: "",
   });
 
+  const dobInputRef = React.useRef(null); // Ref for the date input
+
   React.useEffect(() => {
-    // Load saved data from sessionStorage
+    // Load saved data on mount
     const savedData = JSON.parse(sessionStorage.getItem("childData")) || [];
     if (savedData[number - 1]) {
       setFormData(savedData[number - 1]);
     }
+  }, [number]);
 
-    // Initialize flatpickr for date of birth
-    const datepicker = flatpickr(`#dob-${number}`, {
-      dateFormat: "Y-m-d",
-      defaultDate: formData.dob || "", // Set default date if available
-      onChange: (selectedDates, dateStr) => {
-        setFormData((prevData) => ({
-          ...prevData,
-          dob: dateStr, // Update only the date of birth
-        }));
-
-        // Save data to sessionStorage immediately after date change
-        saveChildData(number - 1, { ...formData, dob: dateStr });
-      },
-    });
-
-    // Set the datepicker value to the current state value
-    datepicker.setDate(formData.dob || "", true); // Set the datepicker value
-
-    return () => {
-      datepicker.destroy(); // Cleanup flatpickr on unmount
-    };
-  }, [number, formData.dob]);
+  const handleDateChange = (date) => {
+    const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
+    const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
+    setFormData(updatedData); // Update the state
+    saveChildData(number - 1, updatedData); // Save to session storage
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,7 +48,6 @@ const ChildAccordion = ({ number, saveChildData }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <h2 className="text-lg font-semibold">Child #{number}</h2>
-
         <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
       </div>
       {isOpen && (
@@ -73,15 +60,19 @@ const ChildAccordion = ({ number, saveChildData }) => {
               className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
               value={formData.name}
               onChange={handleInputChange}
+              required
             />
             <div className="relative">
-              <input
-                id={`dob-${number}`}
-                type="text"
-                name="dob"
-                placeholder="Date Of Birth"
+              <Flatpickr
+                value={formData.dob} // Bind the value to formData.dob
+                onChange={handleDateChange} // Handle date change
+                options={{
+                  dateFormat: "Y-m-d",
+                  enableTime: false,
+                }}
                 className="p-3 border border-gray-300 rounded-md w-full bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-                value={formData.dob}
+                placeholder="Date Of Birth"
+                required
               />
             </div>
 
@@ -92,12 +83,13 @@ const ChildAccordion = ({ number, saveChildData }) => {
               className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
               value={formData.school}
               onChange={handleInputChange}
+              required
             />
 
             <select
               name="gender"
               value={formData.gender}
-              onChange={handleInputChange} // Use handleInputChange for consistency
+              onChange={handleInputChange}
               className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
               required
             >
@@ -113,6 +105,7 @@ const ChildAccordion = ({ number, saveChildData }) => {
             className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
             value={formData.skillsets}
             onChange={handleInputChange}
+            required
           />
         </div>
       )}
