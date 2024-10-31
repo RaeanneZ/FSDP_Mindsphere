@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+//need to verify if admin or normal user then re route to the appropriate page 
 
 function verifyJWT(req, res, next) {
   const token =

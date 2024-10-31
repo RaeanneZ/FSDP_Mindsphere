@@ -15,7 +15,15 @@ const getAllAccount = async (req, res) => {
 };
 
 const registerAccount = async (req, res) => {
-  const { Name, Email, Password, ContactNo } = req.body;
+  const {
+    Name,
+    Email,
+    Password,
+    ContactNo,
+    dateOfBirth,
+    relationshipToChild,
+    address,
+  } = req.body;
   try {
     const existingAccount = await Account.getAccountByEmail(Email);
     if (existingAccount) {
@@ -28,18 +36,19 @@ const registerAccount = async (req, res) => {
     const connection = await sql.connect(dbConfig);
 
     const sqlQuery = `
-    INSERT INTO Account (Name, Email, ContactNo, Salt, HashedPassword) 
-    VALUES (@Name, @Email, @ContactNo, @Salt, @HashedPassword);
+    INSERT INTO Account (Name, Email, ContactNo, dateOfBirth, relationshipToChild, address, Salt, HashedPassword) 
+    VALUES (@Name, @Email, @ContactNo, @dateOfBirth, @relationshipToChild, @address, @Salt, @HashedPassword);
     SELECT SCOPE_IDENTITY() AS AccID;`;
 
     const request = connection.request();
-    request.input("Name", Name);
-    request.input("Email", Email);
-    request.input("Password", hashedPassword);
-    request.input("ContactNo", ContactNo);
-    request.input("Salt", sql.VarChar, salt);
-    request.input("HashedPassword", sql.VarChar, hashedPassword);
-
+    request.input("Name", sql.VarChar(50), Name);
+    request.input("Email", sql.VarChar(50), Email);
+    request.input("ContactNo", sql.Char(8), ContactNo);
+    request.input("dateOfBirth", sql.DateTime, dateOfBirth);
+    request.input("relationshipToChild", sql.VarChar(50), relationshipToChild);
+    request.input("address", sql.VarChar(255), address);
+    request.input("Salt", sql.VarChar(255), salt);
+    request.input("HashedPassword", sql.VarChar(255), hashedPassword);
     const result = await request.query(sqlQuery);
     connection.close();
 

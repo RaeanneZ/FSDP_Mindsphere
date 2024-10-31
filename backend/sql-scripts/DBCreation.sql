@@ -62,13 +62,18 @@ create table Roles (
 go
 
 CREATE TABLE Account (
-	AccID int not null,
+	AccID int not null identity(1,1),
 	Name varchar(50) not null,
 	Email varchar(50) not null unique,
 	ContactNo char(8) not null unique,
-	memberStatus char(10) not null default 'Pending',
+	memberStatus char(10) not null default 'Inactive',
 	memberExpiry datetime null,
+	dateOfBirth datetime not null,
+	relationshipToChild VARCHAR(50) not null,
+	address VARCHAR(255) not null,
 	RoleID int not null default 2,
+	Salt VARCHAR(255),
+	HashedPassword VARCHAR(255),
 	constraint PK_Account primary key (AccID),
 	constraint FK_Account_RoleID foreign key (RoleID) references Roles(RoleID),
 	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))
@@ -174,17 +179,18 @@ INSERT INTO Roles (RoleID, Name) VALUES
 (2, 'User');
 
 -- Insert data into Account
-INSERT INTO Account (AccID, Name, Email, ContactNo, memberStatus, memberExpiry, RoleID) VALUES
-(1, 'John Doe', 'johndoe@example.com', '12345678', 'Active', '2025-12-31', 1),
-(2, 'Jane Smith', 'janesmith@example.com', '23456789', 'Inactive', NULL, 2),
-(3, 'Mark Evans', 'markevans@example.com', '34567890', 'Pending', NULL, 2),
-(4, 'Lucy Gray', 'lucygray@example.com', '45678901', 'Active', '2026-01-01', 2),
-(5, 'Emma White', 'emmawhite@example.com', '56789012', 'Active', '2025-11-15', 2),
-(6, 'Paul Black', 'paulblack@example.com', '67890123', 'Pending', NULL, 2),
-(7, 'Nancy Blue', 'nancyblue@example.com', '78901234', 'Active', '2025-12-15', 2),
-(8, 'Oliver Red', 'oliverred@example.com', '89012345', 'Active', '2025-10-05', 1),
-(9, 'Chris Green', 'chrisgreen@example.com', '90123456', 'Inactive', NULL, 2),
-(10, 'Sophia Brown', 'sophiabrown@example.com', '01234567', 'Active', '2026-05-20', 2);
+INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, dateOfBirth, relationshipToChild, address, RoleID, Salt, HashedPassword)
+VALUES 
+    ('Alice Smith', 'alice.smith@example.com', '12345678', 'Active', '2025-12-31', '1985-05-15', 'Mother', '123 Maple Street', 1, 'sampleSalt1', 'hashedPassword1'),
+    ('Bob Johnson', 'bob.johnson@example.com', '23456789', 'Inactive', NULL, '1990-07-20', 'Father', '456 Oak Avenue', 2, 'sampleSalt2', 'hashedPassword2'),
+    ('Charlie Brown', 'charlie.brown@example.com', '34567890', 'Pending', NULL, '1988-10-05', 'Guardian', '789 Pine Road', 2, 'sampleSalt3', 'hashedPassword3'),
+    ('Diana Prince', 'diana.prince@example.com', '45678901', 'Active', '2026-01-15', '1992-03-10', 'Mother', '321 Cedar Boulevard', 2, 'sampleSalt4', 'hashedPassword4'),
+    ('Evan Wright', 'evan.wright@example.com', '56789012', 'Inactive', NULL, '1986-08-25', 'Father', '654 Birch Lane', 2, 'sampleSalt5', 'hashedPassword5'),
+    ('Fiona Green', 'fiona.green@example.com', '67890123', 'Active', '2025-11-20', '1983-04-15', 'Mother', '789 Elm Street', 2, 'sampleSalt6', 'hashedPassword6'),
+    ('George Hall', 'george.hall@example.com', '78901234', 'Pending', NULL, '1989-12-01', 'Father', '123 Spruce Street', 1, 'sampleSalt7', 'hashedPassword7'),
+    ('Hannah King', 'hannah.king@example.com', '89012345', 'Inactive', NULL, '1995-01-29', 'Mother', '456 Fir Road', 2, 'sampleSalt8', 'hashedPassword8'),
+    ('Ian Moore', 'ian.moore@example.com', '90123456', 'Active', '2026-05-01', '1993-09-12', 'Father', '789 Ash Avenue', 1, 'sampleSalt9', 'hashedPassword9'),
+    ('Julia Scott', 'julia.scott@example.com', '01234567', 'Inactive', NULL, '1987-06-17', 'Guardian', '321 Cypress Boulevard', 2, 'sampleSalt10', 'hashedPassword10');
 
 -- Insert data into Children
 INSERT INTO Children (ChildID, GuardianID, Name, Gender, Dob, Needs, School, Interests) VALUES
@@ -263,3 +269,5 @@ INSERT INTO ProgrammeSchedule (SchedID, ProgID, DateStart, DateEnd, Venue, Total
 (8, 8, '2024-09-01', '2024-09-05', 'Math Center', 20),
 (9, 9, '2024-10-10', '2024-10-15', 'Drama Theater', 25),
 (10, 10, '2024-11-20', '2024-11-25', 'Chess Club Room', 15);
+
+

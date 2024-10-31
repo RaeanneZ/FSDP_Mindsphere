@@ -18,6 +18,7 @@ const progSchedController = require("./controllers/progSchedController")
 const bookingsController = require("./controllers/bookingsController")
 const paymentController = require("./controllers/paymentController")
 const programmesController = require("./controllers/programmesController")
+const verifyJWT = require("./middlewares/authValidate");
 
 // APP SETUP
 const app = express();
@@ -50,7 +51,7 @@ app.get("/programmes", programmesController.getAllProgrammes)
 
 app.get("/account", accountController.getAllAccount);
 app.post("/register", accountController.registerAccount);
-app.post("/login", accountController.login);
+app.post("/login", verifyJWT, accountController.login);
 
 // Start the server
 app.listen(PORT, async () => {
