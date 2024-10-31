@@ -37,6 +37,7 @@ const ChildrenNamePage = ({
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               className="input-underline mb-8 bg-transparent"
+              required
             />
 
             {/* Reason for Nickname Input */}
@@ -46,6 +47,7 @@ const ChildrenNamePage = ({
               value={reasonName}
               onChange={(e) => setReasonName(e.target.value)}
               className="input-underline mb-8 bg-transparent"
+              required
             />
           </form>
         </div>

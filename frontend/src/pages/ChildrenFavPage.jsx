@@ -58,6 +58,7 @@ const ChildrenFavPage = ({ favorites, setFavorites }) => {
               value={favorites.food}
               onChange={handleChange}
               className="border-b-2 border-yellow bg-transparent w-full focus:outline-none rounded-md"
+              required
             />
           </div>
           <div className="mb-4">
@@ -68,6 +69,7 @@ const ChildrenFavPage = ({ favorites, setFavorites }) => {
               value={favorites.subject}
               onChange={handleChange}
               className="border-b-2  border-yellow bg-transparent w-full focus:outline-none rounded-md"
+              required
             />
           </div>
           <div className="mb-4">
@@ -78,6 +80,7 @@ const ChildrenFavPage = ({ favorites, setFavorites }) => {
               value={favorites.color}
               onChange={handleChange}
               className="border-b-2  border-yellow bg-transparent w-full focus:outline-none rounded-md"
+              required
             />
           </div>
           <div className="mb-4">
@@ -88,6 +91,7 @@ const ChildrenFavPage = ({ favorites, setFavorites }) => {
               value={favorites.hobby}
               onChange={handleChange}
               className="border-b-2  border-yellow bg-transparent w-full focus:outline-none rounded-md"
+              required
             />
           </div>
           <div className="mb-4">
@@ -98,6 +102,7 @@ const ChildrenFavPage = ({ favorites, setFavorites }) => {
               value={favorites.animal}
               onChange={handleChange}
               className="border-b-2  border-yellow bg-transparent w-full focus:outline-none rounded-md"
+              required
             />
           </div>
         </div>
