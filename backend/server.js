@@ -6,6 +6,7 @@ const sql = require("mssql");
 const path = require("path");
 const chalk = require("chalk");
 const accountController = require("./controllers/accountController");
+const verifyJWT = require("./middlewares/authValidate");
 
 // APP SETUP
 const app = express();
@@ -27,7 +28,7 @@ app.get("/", async (req, res) => {
 
 app.get("/account", accountController.getAllAccount);
 app.post("/register", accountController.registerAccount);
-app.post("/login", accountController.login);
+app.post("/login", verifyJWT, accountController.login);
 
 // Start the server
 app.listen(PORT, async () => {

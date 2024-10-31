@@ -10,6 +10,9 @@ class Account {
     ContactNo,
     memberStatus,
     memberExpiry,
+    dateOfBirth,
+    relationshipToChild,
+    address,
     RoleID,
     Salt,
     HashedPassword
@@ -20,6 +23,9 @@ class Account {
     this.ContactNo = ContactNo;
     this.memberStatus = memberStatus;
     this.memberExpiry = memberExpiry;
+    this.dateOfBirth = dateOfBirth;
+    this.relationshipToChild = relationshipToChild;
+    this.address = address;
     this.RoleID = RoleID;
     this.Salt = Salt;
     this.HashedPassword = HashedPassword;
@@ -43,6 +49,9 @@ class Account {
             row.ContactNo,
             row.memberStatus,
             row.memberExpiry,
+            row.dateOfBirth,
+            row.relationshipToChild,
+            row.address,
             row.RoleID,
             row.Salt,
             row.HashedPassword
@@ -71,6 +80,9 @@ class Account {
           row.ContactNo,
           row.memberStatus,
           row.memberExpiry,
+          row.dateOfBirth,
+          row.relationshipToChild,
+          row.address,
           row.RoleID,
           row.Salt,
           row.HashedPassword
