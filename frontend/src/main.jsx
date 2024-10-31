@@ -8,6 +8,12 @@ import LandingPage from "./pages/LandingPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import PersonalisationCoverPage from "./pages/PersonalisationCoverPage.jsx";
 import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
+import ProductPage from "./pages/ProductPage.jsx";
+import ReviewPage from "./pages/ReviewPage.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
+
+// Import CSS
+import "../public/css/index.css";
 import LoginPage from "./pages/LoginPage.jsx";
 import ChildrenNamePage from "./pages/ChildrenNamePage.jsx";
 import ChildrenFavPage from "./pages/ChildrenFavPage.jsx";
@@ -75,6 +81,21 @@ const router = createBrowserRouter([
   {
     path: "/welcome",
     element: <CompleteSignupMsgPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/products",
+    element: <ProductPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/review",
+    element: <ReviewPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/payment",
+    element: <PaymentPage />,
     errorElement: <div>404 Not Found</div>,
   },
 ]);

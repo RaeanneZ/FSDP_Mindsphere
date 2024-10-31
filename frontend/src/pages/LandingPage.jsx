@@ -4,6 +4,7 @@ import ProgrammeSection from "../components/ProgrammeSection";
 import Sponsor from "../components/Sponsor";
 import ValueBanner from "../components/ValueBanner";
 import Footer from "../components/Footer";
+import ActionButtons from "../components/ActionButtons";
 
 const LandingPage = () => {
   return (
@@ -14,6 +15,7 @@ const LandingPage = () => {
       <Sponsor />
       <ValueBanner />
       <Footer />
+      <ActionButtons />
     </>
   );
 };
