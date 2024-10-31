@@ -15,6 +15,11 @@ const corsOptions = {
 // CONTROLLERS
 const progSchedController = require("./controllers/progSchedController");
 const accountController = require("./controllers/accountController");
+const progSchedController = require("./controllers/progSchedController");
+const bookingsController = require("./controllers/bookingsController");
+const paymentController = require("./controllers/paymentController");
+const programmesController = require("./controllers/programmesController");
+const ProgrammeFeedbackController = require("./controllers/programmeFeedBackController");
 const verifyJWT = require("./middlewares/authValidate");
 const bookingsController = require("./controllers/bookingsController");
 const paymentController = require("./controllers/paymentController");
@@ -26,6 +31,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors(corsOptions));
 
+// ROUTES
 app.get("/", async (req, res) => {
   try {
     // Connect to the database
@@ -41,13 +47,20 @@ app.get("/", async (req, res) => {
 
 app.get("/api/schedules", progSchedController.getAllProgSchedules);
 app.post("/api/schedules", progSchedController.addProgrammeSchedule);
+app.get("/api/schedules", progSchedController.getAllProgSchedules);
+app.post("/api/schedules", progSchedController.addProgrammeSchedule);
 
+app.get("/api/bookings", bookingsController.getAllBookings);
+app.post("/api/bookings", bookingsController.addBooking);
 app.get("/api/bookings", bookingsController.getAllBookings);
 app.post("/api/bookings", bookingsController.addBooking);
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
+app.get("/api/payments", paymentController.getAllPayments);
+app.post("/api/payments", paymentController.addPayment);
 
+app.get("/api/programmes", programmesController.getAllProgrammes);
 app.get("/api/programmes", programmesController.getAllProgrammes);
 
 app.get("/api/account", accountController.getAllAccount);
@@ -62,6 +75,8 @@ app.get("/payments", paymentController.getAllPayments);
 app.post("/payments", paymentController.addPayment);
 
 app.get("/programmes", programmesController.getAllProgrammes);
+
+app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
 
 // Start the server
 app.listen(PORT, async () => {
