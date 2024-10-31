@@ -3,27 +3,50 @@ const express = require("express");
 const dbConfig = require("./dbConfig");
 require("dotenv").config();
 const sql = require("mssql");
-const path = require("path");
-const chalk = require("chalk");
+const path = require('path');
+const chalk = require('chalk');
+
+// CORS CONFIG
+const cors = require("cors");
+const corsOptions = {
+  origin: ["http://localhost:5173"]
+}
+
+// CONTROLLERS
 const accountController = require("./controllers/accountController");
+const progSchedController = require("./controllers/progSchedController")
+const bookingsController = require("./controllers/bookingsController")
+const paymentController = require("./controllers/paymentController")
+const programmesController = require("./controllers/programmesController")
 
 // APP SETUP
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
+app.use(cors(corsOptions))
 
-app.get("/", async (req, res) => {
-  try {
-    // Connect to the database
-    await sql.connect(dbConfig);
-    res
-      .status(200)
-      .json({ message: "Connected to the database and running fine!" });
-  } catch (err) {
-    console.error("Database connection error:", err);
-    res.status(500).json({ error: "Database connection failed" });
-  }
+// ROUTES
+app.get('/', async (req, res) => {
+    try {
+        // Connect to the database
+        await sql.connect(dbConfig);
+        res.status(200).json({ message: "Connected to the database and running fine!" });
+    } catch (err) {
+        console.error("Database connection error:", err);
+        res.status(500).json({ error: "Database connection failed" });
+    }
 });
+
+app.get("/schedules", progSchedController.getAllProgSchedules)
+app.post("/schedules", progSchedController.addProgrammeSchedule)
+
+app.get("/bookings", bookingsController.getAllBookings) 
+app.post("/bookings", bookingsController.addBooking)
+
+app.get("/payments", paymentController.getAllPayments)
+app.post("/payments", paymentController.addPayment)
+
+app.get("/programmes", programmesController.getAllProgrammes)
 
 app.get("/account", accountController.getAllAccount);
 app.post("/register", accountController.registerAccount);
