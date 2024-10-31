@@ -1,14 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useHistory
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { childSurveyBg2 } from "../utils";
 
-const ChildrenNamePage = () => {
+const ChildrenNamePage = ({
+  nickname,
+  setNickname,
+  reasonName,
+  setReasonName,
+}) => {
   const { useState } = React;
   const navigate = useNavigate(); // Create history object
-  const [nickname, setNickname] = useState("");
-  const [reason, setReason] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,11 +16,6 @@ const ChildrenNamePage = () => {
     console.log("Reason:", reason);
 
     // You can send the data to a server here
-  };
-
-  const handleNext = () => {
-    // You can also check if formData is valid before navigating
-    navigate("/accountSetup/childFav"); // Navigate to the next page
   };
 
   return (
@@ -48,8 +43,8 @@ const ChildrenNamePage = () => {
             <h2 className="text-xl font-bold mb-4">People love me for…</h2>
             <input
               type="text"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              value={reasonName}
+              onChange={(e) => setReasonName(e.target.value)}
               className="input-underline mb-8 bg-transparent"
             />
           </form>

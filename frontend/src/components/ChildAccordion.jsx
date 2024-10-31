@@ -1,13 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronDown,
-  faChevronUp,
-  faGroupArrowsRotate,
-  faMinus,
-  faPlus,
-  faUpDown,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const ChildAccordion = ({ number, saveChildData }) => {
   // Track status of accordion
@@ -24,36 +17,32 @@ const ChildAccordion = ({ number, saveChildData }) => {
   React.useEffect(() => {
     // Load saved data from sessionStorage
     const savedData = JSON.parse(sessionStorage.getItem("childData")) || [];
-    // if (savedData) {
-    //   setFormData(savedData);
-    // }
     if (savedData[number - 1]) {
       setFormData(savedData[number - 1]);
     }
 
-    // Change only the date
+    // Initialize flatpickr for date of birth
     const datepicker = flatpickr(`#dob-${number}`, {
       dateFormat: "Y-m-d",
+      defaultDate: formData.dob || "", // Set default date if available
       onChange: (selectedDates, dateStr) => {
         setFormData((prevData) => ({
           ...prevData,
           dob: dateStr, // Update only the date of birth
         }));
+
+        // Save data to sessionStorage immediately after date change
+        saveChildData(number - 1, { ...formData, dob: dateStr });
       },
     });
+
+    // Set the datepicker value to the current state value
+    datepicker.setDate(formData.dob || "", true); // Set the datepicker value
 
     return () => {
       datepicker.destroy(); // Cleanup flatpickr on unmount
     };
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  }, [number, formData.dob]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -93,7 +82,6 @@ const ChildAccordion = ({ number, saveChildData }) => {
                 placeholder="Date Of Birth"
                 className="p-3 border border-gray-300 rounded-md w-full bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
                 value={formData.dob}
-                onChange={handleInputChange}
               />
             </div>
 
@@ -109,7 +97,7 @@ const ChildAccordion = ({ number, saveChildData }) => {
             <select
               name="gender"
               value={formData.gender}
-              onChange={handleChange}
+              onChange={handleInputChange} // Use handleInputChange for consistency
               className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
               required
             >

@@ -1,19 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useHistory
-import { childSurveyBg3 } from "../utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-const ChildrenFavPage = () => {
-  const navigate = useNavigate(); // Create history object
+const ChildrenFavPage = ({ favorites, setFavorites }) => {
+  //const navigate = useNavigate(); // Create history object
 
-  const [favorites, setFavorites] = React.useState({
-    food: "",
-    subject: "",
-    color: "",
-    hobby: "",
-    animal: "",
-  });
+  // const [favorites, setFavorites] = React.useState({
+  //   food: "",
+  //   subject: "",
+  //   color: "",
+  //   hobby: "",
+  //   animal: "",
+  // });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,11 +18,6 @@ const ChildrenFavPage = () => {
       ...prevState,
       [name]: value,
     }));
-  };
-
-  const handleNext = () => {
-    // You can also check if formData is valid before navigating
-    navigate("/accountSetup/childAmbition"); // Navigate to the next page
   };
 
   //   const handleSubmit = async () => {

@@ -40,11 +40,6 @@ const SignupPage = () => {
       return;
     }
 
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Verification Code:", verificationCode);
-    console.log("Newsletter Subscription:", newsletter);
-
     // Here you can add code to handle form submission, e.g., send data to a server
     navigate("/personalisation"); // Navigate to the next page
   };
