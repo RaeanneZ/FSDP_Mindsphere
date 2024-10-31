@@ -6,6 +6,12 @@ const sql = require("mssql");
 const path = require("path");
 const chalk = require("chalk");
 
+// CORS CONFIG
+const cors = require("cors");
+const corsOptions = {
+  origin: ["http://localhost:5173"]
+}
+
 // CONTROLLERS
 const progSchedController = require("./controllers/progSchedController");
 const accountController = require("./controllers/accountController");
@@ -17,6 +23,7 @@ const programmesController = require("./controllers/programmesController");
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
+app.use(cors(corsOptions))
 
 app.get("/", async (req, res) => {
   try {
