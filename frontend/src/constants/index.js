@@ -26,3 +26,11 @@ export const programmes = [
     alt: "A group of professionals standing together and smiling",
   },
 ];
+
+export const childInterestFields = [
+  "food",
+  "subject",
+  "color",
+  "hobby",
+  "animal",
+];
