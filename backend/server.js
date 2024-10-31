@@ -3,55 +3,60 @@ const express = require("express");
 const dbConfig = require("./dbConfig");
 require("dotenv").config();
 const sql = require("mssql");
-const path = require('path');
-const chalk = require('chalk');
+const path = require("path");
+const chalk = require("chalk");
 
 // CORS CONFIG
 const cors = require("cors");
 const corsOptions = {
-  origin: ["http://localhost:5173"]
-}
+  origin: ["http://localhost:5173"],
+};
 
 // CONTROLLERS
 const accountController = require("./controllers/accountController");
-const progSchedController = require("./controllers/progSchedController")
-const bookingsController = require("./controllers/bookingsController")
-const paymentController = require("./controllers/paymentController")
-const programmesController = require("./controllers/programmesController")
+const progSchedController = require("./controllers/progSchedController");
+const bookingsController = require("./controllers/bookingsController");
+const paymentController = require("./controllers/paymentController");
+const programmesController = require("./controllers/programmesController");
+const ProgrammeFeedbackController = require("./controllers/programmeFeedBackController");
 const verifyJWT = require("./middlewares/authValidate");
 
 // APP SETUP
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 // ROUTES
-app.get('/', async (req, res) => {
-    try {
-        // Connect to the database
-        await sql.connect(dbConfig);
-        res.status(200).json({ message: "Connected to the database and running fine!" });
-    } catch (err) {
-        console.error("Database connection error:", err);
-        res.status(500).json({ error: "Database connection failed" });
-    }
+app.get("/", async (req, res) => {
+  try {
+    // Connect to the database
+    await sql.connect(dbConfig);
+    res
+      .status(200)
+      .json({ message: "Connected to the database and running fine!" });
+  } catch (err) {
+    console.error("Database connection error:", err);
+    res.status(500).json({ error: "Database connection failed" });
+  }
 });
 
-app.get("/api/schedules", progSchedController.getAllProgSchedules)
-app.post("/api/schedules", progSchedController.addProgrammeSchedule)
+app.get("/api/schedules", progSchedController.getAllProgSchedules);
+app.post("/api/schedules", progSchedController.addProgrammeSchedule);
 
-app.get("/api/bookings", bookingsController.getAllBookings) 
-app.post("/api/bookings", bookingsController.addBooking)
+app.get("/api/bookings", bookingsController.getAllBookings);
+app.post("/api/bookings", bookingsController.addBooking);
 
-app.get("/api/payments", paymentController.getAllPayments)
-app.post("/api/payments", paymentController.addPayment)
+app.get("/api/payments", paymentController.getAllPayments);
+app.post("/api/payments", paymentController.addPayment);
 
-app.get("/api/programmes", programmesController.getAllProgrammes)
+app.get("/api/programmes", programmesController.getAllProgrammes);
 
 app.get("/api/account", accountController.getAllAccount);
 app.post("/api/register", accountController.registerAccount);
 app.post("/api/login", accountController.login);
+
+app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
 
 // Start the server
 app.listen(PORT, async () => {
