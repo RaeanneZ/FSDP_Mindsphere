@@ -5,6 +5,8 @@ require("dotenv").config();
 const sql = require("mssql");
 const path = require("path");
 const chalk = require("chalk");
+
+const progSchedController = require("./controllers/progSchedController");
 const accountController = require("./controllers/accountController");
 
 // APP SETUP
@@ -24,6 +26,8 @@ app.get("/", async (req, res) => {
     res.status(500).json({ error: "Database connection failed" });
   }
 });
+
+app.get("/schedules", progSchedController.getAllProgSchedules);
 
 app.get("/account", accountController.getAllAccount);
 app.post("/register", accountController.registerAccount);
