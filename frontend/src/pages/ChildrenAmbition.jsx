@@ -1,54 +1,41 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { childSurveyBg2 } from "../utils";
 
-const ChildrenAmbition = () => {
-  const { useState } = React;
-  const [job, setJob] = useState("");
-  const [reason, setReason] = useState("");
-
-  const handleSubmit = () => {
-    console.log("Job:", job);
-    console.log("Reason:", reason);
-  };
-
+const ChildrenAmbition = ({ job, setJob, reasonJob, setReasonJob, errors }) => {
   return (
-    <div
-      className="w-screen h-screen bg-cover bg-center py-20"
-      style={{ backgroundImage: `url(${childSurveyBg2})` }}
-    >
-      <div className="text-center mx-10 md:mx-20 lg:mx-40 xl:mx-80">
+    <div className="w-full h-full py-20">
+      <div className="text-center md:mx-10">
         <div className="flex justify-center mb-8">
           <div className="dot"></div>
           <div className="dot"></div>
           <div className="dot active"></div>
         </div>
-        <h1 className="text-xl font-bold mb-8">And I want to be a</h1>
+        {/* Container with the question and error message */}
+        <div className="mb-8">
+          <h1 className="text-xl font-bold">And I want to be a</h1>
+          {errors.job && <p className="text-red-500 text-sm">{errors.job}</p>}
+        </div>
         <input
           type="text"
           value={job}
           onChange={(e) => setJob(e.target.value)}
           className="border-b border-yellow bg-transparent w-[50%] mx-auto mb-8 text-center outline-none"
+          required
         />
-        <h1 className="text-xl font-bold mb-8">When I grow up because</h1>
+
+        {/* Container with the question and error message */}
+        <div className="mb-8">
+          <h1 className="text-xl font-bold">When I grow up because</h1>
+          {errors.reasonJob && (
+            <p className="text-red-500 text-sm">{errors.reasonJob}</p>
+          )}
+        </div>
         <input
           type="text"
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
+          value={reasonJob}
+          onChange={(e) => setReasonJob(e.target.value)}
           className="border-b border-yellow bg-transparent w-[95%] mx-auto mb-8 text-center outline-none"
+          required
         />
-        <a href="/welcome">
-          <div className="flex justify-end mt-8">
-            <button
-              onClick={handleSubmit}
-              className="flex items-center text-black"
-            >
-              Done
-              <FontAwesomeIcon className="ml-2" icon={faArrowRight} />
-            </button>
-          </div>
-        </a>
       </div>
     </div>
   );

@@ -1,19 +1,52 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
   const { useState } = React;
+  const navigate = useNavigate(); // Create navigate object
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
-  const [newsletter, setNewsletter] = useState(false);
+  const [newsletter, setNewsletter] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Mock data to simulate database retrieval
+  const mockDatabase = {
+    email: "user@gmail.com", // Example email
+    verificationCode: "123456", // Example verification code
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Debug statements
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("Verification Code:", verificationCode);
     console.log("Newsletter Subscription:", newsletter);
+
+    // Validate email
+    if (!isGmail(email)) {
+      setError("Please enter a valid Gmail account.");
+      return;
+    }
+
+    // Check against mock database
+    if (
+      email !== mockDatabase.email ||
+      verificationCode !== mockDatabase.verificationCode
+    ) {
+      setError("Invalid email or verification code");
+      return;
+    }
+
     // Here you can add code to handle form submission, e.g., send data to a server
+    navigate("/personalisation"); // Navigate to the next page
+  };
+
+  const isGmail = (email) => {
+    const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    return gmailPattern.test(email);
   };
 
   return (
@@ -23,6 +56,7 @@ const SignupPage = () => {
           Enter your email and password to create your brand new membership
         </h1>
         <p className="text-gray-600">Almost done! We hate paperwork, too</p>
+        {error && <p className="text-red-500">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <input
@@ -31,6 +65,7 @@ const SignupPage = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <input
               type="password"
@@ -38,6 +73,7 @@ const SignupPage = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
 
             <div className="mb-6 bg-gray-100 p-4 rounded-lg">
@@ -51,6 +87,7 @@ const SignupPage = () => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -70,11 +107,12 @@ const SignupPage = () => {
             Receive the latest promotions and design releases.{" "}
             <span className="text-red-500">No spam, promise.</span>
           </p>
-          <a href="/personalisation">
-            <button className="w-full px-4 py-2 my-8 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow">
-              Create Account
-            </button>
-          </a>
+          <button
+            type="submit"
+            className="w-full px-4 py-2 my-8 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow"
+          >
+            Create Account
+          </button>
 
           <p className="text-center text-gray-600">
             Already have an account?{" "}
