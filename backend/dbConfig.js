@@ -1,5 +1,4 @@
-require('dotenv').config();
-
+require("dotenv").config();
 
 module.exports = {
     user: process.env.DB_USER, // Replace with your SQL Server login username
@@ -8,7 +7,7 @@ module.exports = {
     database: process.env.DB_DATABASE,
     trustServerCertificate: true,
     options: {
-      port: parseInt(process.env.DB_PORT, 10), // Default SQL Server port
-      connectionTimeout: 60000, // Connection timeout in milliseconds
+        port: parseInt(process.env.DB_PORT, 10), // Default SQL Server port
+        connectionTimeout: 60000, // Connection timeout in milliseconds
     },
 };
