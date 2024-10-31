@@ -39,6 +39,7 @@ app.post("/login", accountController.login);
 app.post("/schedules", progSchedController.addProgrammeSchedule);
 
 app.get("/bookings", bookingsController.getAllBookings);
+app.post("/bookings", bookingsController.addBooking);
 
 app.get("/payments", paymentController.getAllPayments);
 app.post("/payments", paymentController.addPayment);
