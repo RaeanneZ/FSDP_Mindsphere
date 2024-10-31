@@ -17,12 +17,8 @@ const ImageCarousel = ({ images }) => {
   };
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto">
-      {" "}
-      {/* Slightly narrower than full-width */}
-      <div className="relative flex items-center justify-center w-full h-[600px] overflow-hidden rounded-lg bg-gray-200">
-        {" "}
-        {/* Tall carousel */}
+    <div className="relative w-full max-w-7xl mx-auto px-4">
+      <div className="relative flex items-center justify-center w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-lg bg-gray-200">
         {images.length > 0 ? (
           <img
             src={images[currentIndex]}
@@ -30,19 +26,21 @@ const ImageCarousel = ({ images }) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <p className="text-gray-500">No images available</p>
+          <p className="text-gray-500 text-center">No images available</p>
         )}
+
         {/* Left Arrow */}
         <button
           onClick={handlePrev}
-          className="absolute left-6 text-5xl text-white bg-gray-800 bg-opacity-60 hover:bg-opacity-80 p-4 rounded-full"
+          className="absolute left-4 sm:left-6 text-3xl sm:text-4xl md:text-5xl text-white hover:text-gray-300"
         >
           &lt;
         </button>
+
         {/* Right Arrow */}
         <button
           onClick={handleNext}
-          className="absolute right-6 text-5xl text-white bg-gray-800 bg-opacity-60 hover:bg-opacity-80 p-4 rounded-full"
+          className="absolute right-4 sm:right-6 text-3xl sm:text-4xl md:text-5xl text-white hover:text-gray-300"
         >
           &gt;
         </button>
