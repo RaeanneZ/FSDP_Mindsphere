@@ -106,8 +106,8 @@ const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
     const isHighlighted = selectedEvent && selectedEvent.id === event?.id;
     return {
       color: event
-        ? event.color === "border-yellow-500"
-          ? "border-yellow-500" // Ensure yellow border is applied for the first event
+        ? event.color === "border-yellow"
+          ? "border-yellow" // Ensure yellow border is applied for the first event
           : event.color
         : null,
       isClickable: !!event,
@@ -117,7 +117,7 @@ const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
   };
 
   return (
-    <div className="max-w-xs mx-auto mt-6">
+    <div className="max-w-xs mx-auto mt-2">
       <div className="flex gap-2 mb-4">
         <select
           value={format(value, "LLLL")}
