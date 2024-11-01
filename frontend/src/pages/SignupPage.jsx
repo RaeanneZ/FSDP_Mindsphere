@@ -53,7 +53,6 @@ const SignupPage = () => {
     const parentData = {
       email,
       password,
-      verificationCode,
       newsletter,
     };
     parentDataArray.push(parentData);
