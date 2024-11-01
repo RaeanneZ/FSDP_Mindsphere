@@ -58,6 +58,27 @@ async function sendPaymentConfirmation(TransacID) {
         throw error; // Propagate the error to handle it in the controller
     }
 }
+async function sendMembershipCode(email) {
+    try {
+        const registration = await PaymentEmailModel.getNewRegistration(email)
+        const emailData = {
+            to: email,
+            subject: "Welcome to Mindsphere - Your Verification Code",
+            text: PaymentEmailModel.formatMembershipEmail(registration),
+        };
+
+        await sendEmail(emailData); // Send the email
+
+        return {
+            success: true,
+            message: "Membership verification email sent successfully",
+        };
+    } catch (error) {
+        console.error("Error in sendMembershipCode:", error);
+        throw error; // Propagate the error to handle it in the controller
+    }
+}
+
 
 
 
@@ -93,5 +114,6 @@ async function sendMembershipCodes(req, res) {
 module.exports = {
     sendPaymentConfirmations,
     sendMembershipCodes,
-    sendPaymentConfirmation
+    sendPaymentConfirmation,
+    sendMembershipCode
 };
