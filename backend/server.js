@@ -57,6 +57,7 @@ app.post("/api/register", accountController.registerAccount);
 app.post("/api/login", accountController.login);
 
 app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
+app.post("/api/postFeedback", ProgrammeFeedbackController.postFeedback);
 
 // Start the server
 app.listen(PORT, async () => {
