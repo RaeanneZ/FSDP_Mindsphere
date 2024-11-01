@@ -121,26 +121,24 @@ create table Payment (
 	ProgID int not null,
 	Quantity int not null,
 	TotalCost money not null,
-	PaidDate datetime not null,
-	TransacStatus varchar(10),
+	PaidDate datetime null,
+	TransacStatus varchar(10) default 'Pending',
 	constraint PK_Payment primary key (TransacID),
-	constraint FK_Payment_AccID foreign key (Email) references Account(Email),
 	constraint FK_Payment_ProgID foreign key (ProgID) references Programmes(ProgID),
 	constraint CHK_TransacStatus check (TransacStatus in ('Paid','Pending'))
 )
 go
 
 create table Bookings (
-	BookingID int not null,
+	BookingID int not null IDENTITY(1,1),
 	Email varchar(50) not null,
 	ProgID int not null,
 	ChildID int,
 	Diet varchar(50),
 	BookingDate datetime,
 	BookingStatus varchar(20) not null default 'Pending',
-	TransacID int not null,
+	TransacID int null,
 	constraint PK_Bookings primary key (BookingID),
-	constraint FK_Bookings_Email foreign key (Email) references Account(Email),
 	constraint FK_Bookings_ProgID foreign key (ProgID) references Programmes(ProgID),
 	constraint FK_Bookings_ChildID foreign key (ChildID) references Children(ChildID),
 	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID),
@@ -149,7 +147,7 @@ create table Bookings (
 GO
 
 create table ProgrammeFeedback (
-	FeedbackID int not null,
+	FeedbackID int not null IDENTITY(1,1),
 	ProgID int not null,
 	AccID int not null,
 	FdbkDesc varchar(255),
@@ -161,7 +159,7 @@ go
 
 
 create table ProgrammeSchedule (
-	SchedID int not null,
+	SchedID int not null IDENTITY(1,1),
 	ProgID int not null,
 	DateStart datetime not null,
 	DateEnd datetime not null,
@@ -236,56 +234,54 @@ INSERT INTO Payment (Email, ProgID, Quantity, TotalCost, PaidDate, TransacStatus
 
 
 -- Insert data into Bookings
-INSERT INTO Bookings (BookingID, Email, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID) VALUES
-(1, 'johndoe@example.com', 1, 1, 'Vegetarian', '2024-01-15', 'Confirmed', 1),  -- Quantity 1
-(2, 'janesmith@example.com', 3, 2, 'None', '2024-02-10', 'Confirmed', 2),    -- Quantity 3
-(3, 'janesmith@example.com', 3, 3, 'None', '2024-02-10', 'Confirmed', 2),    -- Quantity 3
-(4, 'lucygray@example.com', 2, 4, 'None', '2024-03-12', 'Pending', 3),      -- Quantity 2
-(5, 'lucygray@example.com', 2, 5, 'None', '2024-03-12', 'Pending', 3),      -- Quantity 2
-(6, 'paulblack@example.com', 5, 6, 'Allergic', '2024-04-05', 'Confirmed', 4),  -- Quantity 1
-(7, 'nancyblue@example.com', 7, 7, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
-(8, 'nancyblue@example.com', 7, 8, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
-(9, 'nancyblue@example.com', 7, 9, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
-(10, 'nancyblue@example.com', 7, 10, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
-(11, 'oliverred@example.com', 6, 1, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-(12, 'oliverred@example.com', 6, 2, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-(13, 'oliverred@example.com', 6, 3, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-(14, 'oliverred@example.com', 6, 4, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-(15, 'oliverred@example.com', 6, 5, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-(16, 'johndoe@example.com', 9, 6, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
-(17, 'johndoe@example.com', 9, 7, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
-(18, 'johndoe@example.com', 9, 8, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
-(19, 'johndoe@example.com', 9, 9, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
-(20, 'emmawhite@example.com', 10, 10, 'None', '2024-10-11', 'Confirmed', 10),  -- Quantity 3
-(21, 'emmawhite@example.com', 10, 1, 'None', '2024-10-11', 'Confirmed', 10),  -- Quantity 3
-(22, 'emmawhite@example.com', 10, 2, 'None', '2024-10-11', 'Confirmed', 10);  -- Quantity 3
+INSERT INTO Bookings (Email, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID) VALUES
+('johndoe@example.com', 1, 1, 'Vegetarian', '2024-01-15', 'Confirmed', 1),  -- Quantity 1
+('janesmith@example.com', 3, 2, 'None', '2024-02-10', 'Confirmed', 2),    -- Quantity 3
+('janesmith@example.com', 3, 3, 'None', '2024-02-10', 'Confirmed', 2),    -- Quantity 3
+('lucygray@example.com', 2, 4, 'None', '2024-03-12', 'Pending', 3),      -- Quantity 2
+('lucygray@example.com', 2, 5, 'None', '2024-03-12', 'Pending', 3),      -- Quantity 2
+('paulblack@example.com', 5, 6, 'Allergic', '2024-04-05', 'Confirmed', 4),  -- Quantity 1
+('nancyblue@example.com', 7, 7, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
+('nancyblue@example.com', 7, 8, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
+('nancyblue@example.com', 7, 9, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
+('nancyblue@example.com', 7, 10, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
+('oliverred@example.com', 6, 1, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
+('oliverred@example.com', 6, 2, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
+('oliverred@example.com', 6, 3, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
+('oliverred@example.com', 6, 4, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
+('oliverred@example.com', 6, 5, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
+('johndoe@example.com', 9, 6, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
+('johndoe@example.com', 9, 7, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
+('johndoe@example.com', 9, 8, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
+('johndoe@example.com', 9, 9, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
+('emmawhite@example.com', 10, 10, 'None', '2024-10-11', 'Confirmed', 10),  -- Quantity 3
+('emmawhite@example.com', 10, 1, 'None', '2024-10-11', 'Confirmed', 10),  -- Quantity 3
+('emmawhite@example.com', 10, 2, 'None', '2024-10-11', 'Confirmed', 10);  -- Quantity 3
 
 
 
 -- Insert data into ProgrammeFeedback
-INSERT INTO ProgrammeFeedback (FeedbackID, ProgID, AccID, FdbkDesc) VALUES
-(1, 1, 1, 'Great program! My child loved it.'),
-(2, 2, 4, 'Very educational and fun.'),
-(3, 3, 2, 'Well-organized and enjoyable.'),
-(4, 5, 6, 'Good value for the price.'),
-(5, 7, 7, 'Loved the interactive activities.'),
-(6, 8, 9, 'Fun experience, will join again.'),
-(7, 4, 3, 'Good for younger kids.'),
-(8, 6, 8, 'Very engaging and informative.'),
-(9, 9, 5, 'My child improved a lot.'),
-(10, 10, 10, 'Excellent program for beginners.');
+INSERT INTO ProgrammeFeedback (ProgID, AccID, FdbkDesc) VALUES
+(1, 1, 'Great program! My child loved it.'),
+(2, 4, 'Very educational and fun.'),
+(3, 2, 'Well-organized and enjoyable.'),
+(5, 6, 'Good value for the price.'),
+(7, 7, 'Loved the interactive activities.'),
+(8, 9, 'Fun experience, will join again.'),
+(4, 3, 'Good for younger kids.'),
+(6, 8, 'Very engaging and informative.'),
+(9, 5, 'My child improved a lot.'),
+(10, 10, 'Excellent program for beginners.');
 
 -- Insert data into ProgrammeSchedule
-INSERT INTO ProgrammeSchedule (SchedID, ProgID, DateStart, DateEnd, Venue, TotalSeats) VALUES
-(1, 1, '2024-02-01', '2024-02-10', 'Community Hall A', 20),
-(2, 2, '2024-03-15', '2024-03-20', 'School Auditorium', 25),
-(3, 3, '2024-04-01', '2024-04-10', 'Sports Center', 30),
-(4, 4, '2024-05-05', '2024-05-12', 'Dance Studio B', 15),
-(5, 5, '2024-06-15', '2024-06-25', 'Music Hall 1', 20),
-(6, 6, '2024-07-10', '2024-07-15', 'Tech Lab A', 25),
-(7, 7, '2024-08-05', '2024-08-12', 'Robotics Room', 30),
-(8, 8, '2024-09-01', '2024-09-05', 'Math Center', 20),
-(9, 9, '2024-10-10', '2024-10-15', 'Drama Theater', 25),
-(10, 10, '2024-11-20', '2024-11-25', 'Chess Club Room', 15);
-
-SELECT * FROM Account
+INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VALUES
+(1, '2024-02-01', '2024-02-10', 'Community Hall A', 20),
+(2, '2024-03-15', '2024-03-20', 'School Auditorium', 25),
+(3, '2024-04-01', '2024-04-10', 'Sports Center', 30),
+(4, '2024-05-05', '2024-05-12', 'Dance Studio B', 15),
+(5, '2024-06-15', '2024-06-25', 'Music Hall 1', 20),
+(6, '2024-07-10', '2024-07-15', 'Tech Lab A', 25),
+(7, '2024-08-05', '2024-08-12', 'Robotics Room', 30),
+(8, '2024-09-01', '2024-09-05', 'Math Center', 20),
+(9, '2024-10-10', '2024-10-15', 'Drama Theater', 25),
+(10, '2024-11-20', '2024-11-25', 'Chess Club Room', 15);
