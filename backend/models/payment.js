@@ -70,20 +70,18 @@ class Payment {
             `;
             const request = connection.request();
     
-            // Declare input parameters
             request.input("Email", sql.VarChar, newPayment.Email);
             request.input("ProgID", sql.Int, newPayment.ProgID);
             request.input("Quantity", sql.Int, newPayment.Quantity);
             request.input("TotalCost", sql.Decimal, newPayment.TotalCost);
     
-            // Execute the query and get the result
             const result = await request.query(sqlQuery);
-            const transacID = result.recordset[0].TransacID;  // Get the newly generated TransacID
+            const transacID = result.recordset[0].TransacID; 
             
-            return { transacID };  // Return the new TransacID as an object
+            return { transacID }; 
         } catch (err) {
             console.error("Error adding payment: ", err);
-            throw err;  // Rethrow the error for handling in the calling function
+            throw err; 
         }
     }
     
