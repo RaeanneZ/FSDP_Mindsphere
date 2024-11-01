@@ -97,7 +97,7 @@ const ReviewPage = () => {
 
             {selectedEvent ? (
               <div
-                className="overflow-auto bg-[#f4f8fc] rounded-lg p-4 sm:mt-0 sm:self-start"
+                className="overflow-auto bg-lightBlue rounded-lg p-4 sm:mt-0 sm:self-start"
                 style={{
                   height: calendarDimensions.height,
                   width: calendarDimensions.width,
@@ -122,7 +122,7 @@ const ReviewPage = () => {
           setSpecialRequest={setSpecialRequest}
         />
         <button
-          className="bg-[#DCAF27] text-white font-semibold py-3 px-6 rounded mt-4 w-full"
+          className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-4 w-full"
           onClick={handleProceedToPayment}
         >
           Pay with PayNow

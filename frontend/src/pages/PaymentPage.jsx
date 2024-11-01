@@ -37,7 +37,7 @@ const PaymentPage = () => {
           <PayNowSection />
         </div>
 
-        <button className="bg-[#DCAF27] text-white font-semibold py-3 px-6 rounded mt-6 w-full">
+        <button className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-6 w-full">
           Payment Complete
         </button>
       </main>
