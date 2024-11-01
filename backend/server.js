@@ -21,6 +21,7 @@ const paymentController = require("./controllers/paymentController");
 const programmesController = require("./controllers/programmesController");
 const ProgrammeFeedbackController = require("./controllers/programmeFeedBackController");
 const verifyJWT = require("./middlewares/authValidate");
+const paymentEmailRoutes = require("./routes/paymentEmailRoutes");
 const bookingsController = require("./controllers/bookingsController");
 const paymentController = require("./controllers/paymentController");
 const programmesController = require("./controllers/programmesController");
@@ -78,6 +79,8 @@ app.get("/programmes", programmesController.getAllProgrammes);
 
 app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
 app.post("/api/postFeedback", ProgrammeFeedbackController.postFeedback);
+
+app.use("/api/payments", paymentEmailRoutes);
 
 // Start the server
 app.listen(PORT, async () => {
