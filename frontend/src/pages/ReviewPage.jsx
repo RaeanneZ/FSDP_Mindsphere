@@ -59,7 +59,7 @@ const ReviewPage = () => {
       courseName: programDetails.title,
       dueDate: "21 Oct 2024",
     };
-    localStorage.setItem("paymentData", JSON.stringify(paymentData));
+    sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
     navigate("/payment");
   };
 

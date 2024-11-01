@@ -33,11 +33,11 @@ const Navbar = () => {
           <a href="#" className="hover:text-gray-900">
             CSR
           </a>
-          <a href="#" className="hover:text-gray-900">
-            Programmes <FontAwesomeIcon icon={faChevronDown} />
+          <a href="/products" className="hover:text-gray-900">
+            Programmes
           </a>
           <a href="#" className="hover:text-gray-900">
-            Media <FontAwesomeIcon icon={faChevronDown} />
+            Media
           </a>
           <a href="/login">
             <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">

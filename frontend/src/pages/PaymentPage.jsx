@@ -11,7 +11,7 @@ const PaymentPage = () => {
   const [paymentData, setPaymentData] = useState(null);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("paymentData"));
+    const data = JSON.parse(sessionStorage.getItem("paymentData"));
     if (data) {
       setPaymentData(data);
     }
