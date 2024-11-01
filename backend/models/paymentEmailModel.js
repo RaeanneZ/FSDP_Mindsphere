@@ -106,6 +106,7 @@ Welcome to Mindsphere! Thank you for registering with us.
 Your Membership Verification Code: ${membershipCode}
 Please keep this code safe as you'll need it to activate your membership.
 
+Finish setting up your account here: www.mindsphere.com/register (TO BE CHANGED)
 Important Next Steps:
 1. Use this verification code to activate your account
 2. Complete your profile information
