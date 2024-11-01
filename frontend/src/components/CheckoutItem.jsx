@@ -9,20 +9,28 @@ const CheckoutItem = ({
   onDecrease,
 }) => (
   <div>
-    <div className="flex items-center justify-between text-gray-800 font-semibold mb-4 px-2 sm:px-0">
-      <div className="flex-1 text-left">Programme</div>
-      <div className="flex-1 text-center">Quantity</div>
-      <div className="flex-1 text-right">Total</div>
+    {/* Header Row */}
+    <div className="grid grid-cols-3 gap-4 border-b pb-2 mb-2">
+      <div className="flex-1 text-left flex items-center justify-center">
+        Programme
+      </div>
+      <div className="flex-1 text-center flex items-center justify-center">
+        Quantity
+      </div>
+      <div className="fflex-1 text-right flex items-center justify-center">
+        Total
+      </div>
     </div>
-    <hr className="mb-4" />
 
-    <div className="flex items-center justify-between border-b pb-4 mb-4 px-2 sm:px-0">
-      <div className="flex items-center flex-1">
+    {/* Context Row */}
+    <div className="grid grid-cols-3 gap-4 border-b pb-2 mb-4">
+      {/* Program Container */}
+      <div className="flex items-center flex-1 mb-2 md:mb-0">
         <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
         <div>
           <h3 className="font-semibold text-lg">{programName}</h3>
           <p className="text-sm text-gray-500">Intermediate</p>
-          <p className="text-sm text-yellow-600">${price}</p>
+          <p className="text-sm text-yellow">${price}</p>
         </div>
       </div>
 
@@ -36,7 +44,7 @@ const CheckoutItem = ({
         </button>
       </div>
 
-      <p className="font-semibold text-lg flex-1 text-right">
+      <p className="font-semibold text-lg flex-1 text-right justify-self flex items-center justify-center">
         ${price * quantity}
       </p>
     </div>
