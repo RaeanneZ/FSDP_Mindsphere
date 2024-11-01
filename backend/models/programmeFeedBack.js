@@ -37,6 +37,37 @@ class ProgrammeFeedback {
       }
     }
   }
+
+  static async postFeedback(programName, feedback) {
+    try {
+      const connection = await sql.connect(dbConfig);
+
+      // Step 1: Look up the Programme table to get ProgID by program name
+      const progIdQuery = `SELECT ProgID FROM Programmes WHERE Name = @programName`;
+      const progIdRequest = connection.request();
+      progIdRequest.input("programName", sql.NVarChar, programName);
+      const progIdResult = await progIdRequest.query(progIdQuery);
+
+      // Check if the program was found
+      if (progIdResult.recordset.length === 0) {
+        throw new Error("Program not found");
+      }
+      const progID = progIdResult.recordset[0].ProgID;
+
+      // Step 2: Insert feedback into ProgrammeFeedback table
+      const sqlQuery = `INSERT INTO ProgrammeFeedback (ProgID, FdbkDesc) VALUES (@ProgID, @FdbkDesc)`;
+      const request = connection.request();
+      request.input("ProgID", sql.Int, progID);
+      request.input("FdbkDesc", sql.NVarChar, feedback);
+      await request.query(sqlQuery);
+
+      // Close the connection
+      connection.close();
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
 }
 
 module.exports = ProgrammeFeedback;
