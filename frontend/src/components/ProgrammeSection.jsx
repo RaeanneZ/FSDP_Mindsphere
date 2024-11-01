@@ -1,7 +1,17 @@
 import React from "react";
+import { useState } from "react";
 import { programmes } from "../constants";
 
 const ProgrammeSection = () => {
+  const [selectedProgrammeIndex, setSelectedProgrammeIndex] = useState(null);
+
+  const handleProgrammeClick = (index) => {
+    setSelectedProgrammeIndex(index);
+  };
+
+  // Get all programmes from backend
+  // const programmes = method called from programmes
+
   return (
     <div className="container mx-auto py-12">
       <h1 className="text-3xl font-bold text-center mb-8">
@@ -11,7 +21,10 @@ const ProgrammeSection = () => {
         {programmes.map((programme, index) => (
           <div
             key={index}
-            className="bg-white rounded-lg shadow-md overflow-hidden"
+            className={`bg-white rounded-lg shadow-md overflow-hidden transition duration-300 ${
+              selectedProgrammeIndex === index ? "border-4 border-yellow" : ""
+            }`}
+            onClick={() => handleProgrammeClick(index)}
           >
             <img
               src={programme.image}
