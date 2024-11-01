@@ -19,6 +19,7 @@ const bookingsController = require("./controllers/bookingsController");
 const paymentController = require("./controllers/paymentController");
 const programmesController = require("./controllers/programmesController");
 const ProgrammeFeedbackController = require("./controllers/programmeFeedBackController");
+const childrenController = require("./controllers/childrenController");
 const verifyJWT = require("./middlewares/authValidate");
 const paymentEmailRoutes = require("./routes/paymentEmailRoutes");
 
@@ -59,6 +60,7 @@ app.post("/api/login", accountController.login);
 
 app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
 app.post("/api/postFeedback", ProgrammeFeedbackController.postFeedback);
+app.post("/api/addChild", childrenController.addChild);
 
 app.use("/api/payments", paymentEmailRoutes);
 
