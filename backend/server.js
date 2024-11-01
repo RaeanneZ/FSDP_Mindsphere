@@ -52,6 +52,8 @@ app.post("/api/bookings", bookingsController.addBooking);
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
+app.put("/api/payments/makePayment", paymentController.makePayment)
+
 
 app.get("/api/programmes", programmesController.getAllProgrammes);
 
