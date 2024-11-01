@@ -10,25 +10,25 @@ const getAllPayments = async (req, res) => {
     }
 }
 
-const addPayment = async (req, res) => {
-    try {
-        const newPayment = req.body;
+const addPayment = async (paymentData) => {
+    const request = new sql.Request();
 
-        // Check if TransacID already exists
-        const duplicateExists = await Payment.checkIfTransacIDExists(newPayment.TransacID);
+    // Declare parameters
+    request.input('TransacID', sql.VarChar, paymentData.TransacID);
+    request.input('Email', sql.VarChar, paymentData.Email);
+    request.input('ProgID', sql.Int, paymentData.ProgID);
+    request.input('Quantity', sql.Int, paymentData.Quantity);
+    request.input('TotalCost', sql.Decimal(10, 2), paymentData.TotalCost); // Adjust decimal precision as needed
 
-        if (duplicateExists) {
-            return res.status(409).json({ error: "Payment with this TransacID already exists." });
-        }
+    // Insert payment
+    const result = await request.query(`
+        INSERT INTO Payments (TransacID, Email, ProgID, Quantity, TotalCost)
+        VALUES (@TransacID, @Email, @ProgID, @Quantity, @TotalCost);
+    `);
 
-        await Payment.addPayment(newPayment);
-        res.status(201).send("Payment added successfully");
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error adding payment");
-    }
+    return result;
 };
+
 
 module.exports = {
     getAllPayments,
