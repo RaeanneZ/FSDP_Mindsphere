@@ -1,4 +1,5 @@
 const Payment = require("../models/payment");
+const paymentEmailController = require("../controllers/paymentEmailController");
 
 const getAllPayments = async (req, res) => {
     try { 
@@ -29,8 +30,33 @@ const addPayment = async (paymentData) => {
     return result;
 };
 
+const makePayment = async (req, res) => {
+    try {
+        const { TransacID } = req.body; // Destructure TransacID from request body
+        
+        if (!TransacID) {
+            return res.status(400).json({ error: "TransacID is required." });
+        }
+
+        await Payment.makePayment(TransacID); // Call the method to make payment
+
+        const receiptResult = await paymentEmailController.sendPaymentConfirmation(TransacID);
+
+
+        return res.status(200).json({
+            message: "Payment status updated to paid successfully.",
+            receiptResult,
+        });    
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error making payment.");
+    }
+};
+
+
 
 module.exports = {
     getAllPayments,
-    addPayment
+    addPayment,
+    makePayment
 }

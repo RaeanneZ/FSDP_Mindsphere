@@ -44,6 +44,29 @@ class Payment {
         }
     }
 
+    static async getTransactionById(transacID) {
+        try {
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `
+                SELECT *
+                FROM Payment
+                WHERE TransacID = @TransacID
+            `;
+
+            const request = connection.request();
+            request.input("TransacID", sql.Int, transacID);
+
+            const result = await request.query(sqlQuery);
+            connection.close();
+
+            // Assuming you want to return the first result
+            return result.recordset[0]; 
+        } catch (error) {
+            console.error("Error fetching transaction by ID:", error);
+            throw error; // Propagate error to be handled by the caller
+        }
+    }
+
     static async checkIfTransacIDExists(TransacID) {
         try {
             const connection = await sql.connect(dbConfig);
@@ -84,6 +107,27 @@ class Payment {
             throw err; 
         }
     }
+    static async makePayment(TransacID) {
+        try {
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `UPDATE Payment SET TransacStatus = 'Paid' WHERE TransacID = @TransacID`;
+            
+            const request = connection.request();
+            request.input("TransacID", sql.Int, TransacID);
+    
+            const result = await request.query(sqlQuery);
+            
+
+            console.log(`Payment with TransacID: ${TransacID} updated successfully to 'Paid'.`);
+            
+    
+            connection.close();
+        } catch (err) {
+            console.error("Error making payment: ", err);
+            throw err;
+        }
+    }
+    
     
 }
 

@@ -1,4 +1,5 @@
 const PaymentEmailModel = require("../models/paymentEmailModel");
+const Payment = require("../models/payment")
 const { sendEmail } = require("../models/email");
 
 async function sendPaymentConfirmations(req, res) {
@@ -29,6 +30,36 @@ async function sendPaymentConfirmations(req, res) {
         });
     }
 }
+
+async function sendPaymentConfirmation(TransacID) {
+    try {
+        const payment = await Payment.getTransactionById(TransacID); // Fetch the specific payment
+        const paymentData = await PaymentEmailModel.getPaidTransaction(payment.Email)
+        
+        if (!payment) {
+            throw new Error("No payment found for the provided TransacID");
+        }
+
+        console.log("boobs", paymentData)
+        const emailData = {
+            to: 'mindspheresdp@gmail.com',
+            subject: `Payment Confirmation - Transaction #${payment.TransacID}`,
+            text: PaymentEmailModel.formatPaymentEmail(paymentData),
+        };
+
+        await sendEmail(emailData); // Send the email
+
+        return {
+            success: true,
+            message: "Payment confirmation email sent successfully",
+        };
+    } catch (error) {
+        console.error("Error in sendPaymentConfirmation:", error);
+        throw error; // Propagate the error to handle it in the controller
+    }
+}
+
+
 
 async function sendMembershipCodes(req, res) {
     try {
@@ -62,4 +93,5 @@ async function sendMembershipCodes(req, res) {
 module.exports = {
     sendPaymentConfirmations,
     sendMembershipCodes,
+    sendPaymentConfirmation
 };
