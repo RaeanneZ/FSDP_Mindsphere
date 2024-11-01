@@ -75,16 +75,17 @@ class Bookings {
 
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO Bookings (BookingID, Email, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID)
-                VALUES (@BookingID, @Email, @ProgID, @ChildID, @Diet, @BookingDate, 'Pending', @TransacID)
+                INSERT INTO Bookings (Email, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID)
+                VALUES (@Email, @ProgID, @ChildID, @Diet, @BookingDate, 'Pending', @TransacID)
             `;
+    
             const request = connection.request();
-            request.input("BookingID", sql.Int, newBooking.BookingID);
-            request.input("Email", sql.VarChar, newBooking.Email);
-            request.input("ProgID", sql.Int, newBooking.ProgID);
-            request.input("ChildID", sql.Int, newBooking.ChildID);
-            request.input("Diet", sql.VarChar, newBooking.Diet);
-            request.input("BookingDate", sql.Date, newBooking.BookingDate);
+            request.input('Email', sql.VarChar, newBooking.Email);
+            request.input('ProgID', sql.Int, newBooking.ProgID);
+            request.input('ChildID', sql.Int, newBooking.ChildID);
+            request.input('Diet', sql.VarChar, newBooking.Diet);
+            request.input('BookingDate', sql.DateTime, newBooking.BookingDate);
+            request.input('TransacID', sql.Int, newBooking.TransacID); 
 
             await request.query(sqlQuery);
             connection.close();
