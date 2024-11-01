@@ -5,7 +5,7 @@ class Children {
   //attributes
   constructor(
     ChildID,
-    GuardianID,
+    GuardianEmail,
     Name,
     Gender,
     Dob,
@@ -14,7 +14,7 @@ class Children {
     Interests
   ) {
     this.ChildID = ChildID;
-    this.GuardianID = GuardianID;
+    this.GuardianEmail = GuardianEmail;
     this.Name = Name;
     this.Gender = Gender;
     this.Dob = Dob;
