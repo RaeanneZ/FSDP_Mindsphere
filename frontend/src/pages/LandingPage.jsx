@@ -25,6 +25,16 @@ const newAccount = await accountService.registerAccount(accountData);
 console.log("New Account Registered:", newAccount);
 //it ends here
 
+
+// PAYMENT SERVICE
+const { paymentService } = backendService;
+const transacID = {
+  TransacID: 5
+}
+
+const makePayment = await paymentService.makePayment(transacID);
+console.log(makePayment)
+
 // NEIL BACKEND ROUTES EXAMPLE
 /*
 

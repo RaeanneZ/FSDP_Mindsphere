@@ -17,7 +17,18 @@ const programmeService = {
     }
 };
 
-
+// Payment methods
+const paymentService = {
+    makePayment: async (TransacID) => {
+        try {
+            const response = await axios.put(`${apiUrl}/payments/makePayment`, TransacID);
+            return response.data;
+        } catch (err) {
+            console.error('Error making payment: ', err);
+            throw err;
+        }
+    }
+};
 
 
 const progScheduleService = {
@@ -98,4 +109,4 @@ const accountService = {
   },
 };
 
-export default { programmeService, progScheduleService, accountService, bookingService };
+export default { programmeService, progScheduleService, accountService, bookingService, paymentService };
