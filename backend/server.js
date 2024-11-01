@@ -21,6 +21,7 @@ const programmesController = require("./controllers/programmesController");
 const ProgrammeFeedbackController = require("./controllers/programmeFeedBackController");
 const verifyJWT = require("./middlewares/authValidate");
 const paymentEmailRoutes = require("./routes/paymentEmailRoutes");
+const PaymentEmailController = require("./controllers/paymentEmailController")
 
 // APP SETUP
 const app = express();
@@ -61,6 +62,8 @@ app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
 app.post("/api/postFeedback", ProgrammeFeedbackController.postFeedback);
 
 app.use("/api/payments", paymentEmailRoutes);
+
+PaymentEmailController.sendMembershipCodes
 
 // Start the server
 app.listen(PORT, async () => {
