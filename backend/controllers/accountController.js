@@ -25,6 +25,7 @@ const registerAccount = async (req, res) => {
     address,
   } = req.body;
   try {
+    console.log("Received data:", req.body);
     const existingAccount = await Account.getAccountByEmail(Email);
     if (existingAccount) {
       return res.status(400).json({ message: "Account already exists" });
