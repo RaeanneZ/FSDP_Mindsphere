@@ -24,6 +24,7 @@ const addBooking = async (req, res) => {
             return res.status(409).json({ error: "Booking with this BookingID already exists." });
         }
 
+        // dummy data not thought yet
         const paymentData = {
             Email: newBooking.Email,
             ProgID: newBooking.ProgID,
@@ -36,33 +37,10 @@ const addBooking = async (req, res) => {
 
         const transacID = await getLastTransacID(); 
 
-        const bookingData = {
-            BookingID: newBooking.BookingID,
-            Email: newBooking.Email,
-            ProgID: newBooking.ProgID,
-            ChildID: newBooking.ChildID,
-            Diet: newBooking.Diet,
-            BookingDate: newBooking.BookingDate,
-            BookingStatus: newBooking.BookingStatus,
-            TransacID: transacID 
-        };
+        newBooking.TransacID = transacID
 
-        const connection = await sql.connect(dbConfig);
-        const sqlQuery = `
-            INSERT INTO Bookings (BookingID, Email, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID)
-            VALUES (@BookingID, @Email, @ProgID, @ChildID, @Diet, @BookingDate, 'Pending', @TransacID)
-        `;
+        await Bookings.addBooking(newBooking);
 
-        const request = connection.request();
-        request.input('BookingID', sql.Int, bookingData.BookingID);
-        request.input('Email', sql.VarChar, bookingData.Email);
-        request.input('ProgID', sql.Int, bookingData.ProgID);
-        request.input('ChildID', sql.Int, bookingData.ChildID);
-        request.input('Diet', sql.VarChar, bookingData.Diet);
-        request.input('BookingDate', sql.DateTime, bookingData.BookingDate);
-        request.input('TransacID', sql.Int, bookingData.TransacID); 
-
-        await request.query(sqlQuery);
         
         res.status(201).send("Booking and payment added successfully");
 
