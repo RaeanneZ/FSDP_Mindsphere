@@ -24,7 +24,7 @@ const WorkshopSection = ({ pricingPlans, testimonials, onSelectPlan }) => {
                 index % 2 === 0 ? "bg-blue-100" : "bg-white"
               } flex flex-col justify-between`}
             >
-              <div>
+              <div className="h-[160px]">
                 <p className="text-3xl sm:text-4xl font-bold text-gray-800 mt-2">
                   ${plan.price}
                 </p>
