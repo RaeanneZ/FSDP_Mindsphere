@@ -4,14 +4,14 @@ const dbConfig = require("../dbConfig")
 class Payment {
     constructor(
         TransacID,
-        AccID,
+        Email,
         ProgID,
         TotalCost,
         PaidDate,
         TransacStatus
     ) {
         this.TransacID = TransacID,
-        this.AccID = AccID,
+        this.Email = Email,
         this.ProgID = ProgID,
         this.TotalCost = TotalCost,
         this.PaidDate = PaidDate,
@@ -32,7 +32,7 @@ class Payment {
                 (row) => 
                     new Payment(
                         row.TransacID,
-                        row.AccID,
+                        row.Email,
                         row.ProgID,
                         row.TotalCost,
                         row.PaidDate,
@@ -62,33 +62,31 @@ class Payment {
 
     static async addPayment(newPayment) {
         try {
-            const duplicateExists = await Payment.checkIfTransacIDExists(newPayment.TransacID);
-            if (duplicateExists) {
-                throw new Error("Duplicate TransacID exists. Cannot add new payment.");
-            }
-
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO Payment (TransacID, AccID, ProgID, TotalCost, PaidDate, TransacStatus)
-                VALUES (@TransacID, @AccID, @ProgID, @TotalCost, @PaidDate, @TransacStatus)
+                INSERT INTO Payment (Email, ProgID, Quantity, TotalCost, PaidDate, TransacStatus)
+                VALUES (@Email, @ProgID, @Quantity, @TotalCost, NULL, 'Pending');
+                SELECT SCOPE_IDENTITY() AS TransacID;
             `;
             const request = connection.request();
-            request.input("TransacID", sql.Int, newPayment.TransacID);
-            request.input("AccID", sql.Int, newPayment.AccID);
+    
+            // Declare input parameters
+            request.input("Email", sql.VarChar, newPayment.Email);
             request.input("ProgID", sql.Int, newPayment.ProgID);
+            request.input("Quantity", sql.Int, newPayment.Quantity);
             request.input("TotalCost", sql.Decimal, newPayment.TotalCost);
-            request.input("PaidDate", sql.Date, newPayment.PaidDate);
-            request.input("TransacStatus", sql.VarChar, newPayment.TransacStatus);
-
-            await request.query(sqlQuery);
-            connection.close();
-            console.log("Payment added successfully.");
+    
+            // Execute the query and get the result
+            const result = await request.query(sqlQuery);
+            const transacID = result.recordset[0].TransacID;  // Get the newly generated TransacID
+            
+            return { transacID };  // Return the new TransacID as an object
         } catch (err) {
             console.error("Error adding payment: ", err);
-            throw err;
+            throw err;  // Rethrow the error for handling in the calling function
         }
     }
-
+    
 }
 
 module.exports = Payment

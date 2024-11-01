@@ -4,7 +4,7 @@ const dbConfig = require("../dbConfig")
 class Bookings {
     constructor(
         BookingID,
-        AccID,
+        Email,
         ProgID,
         ChildID,
         Diet,
@@ -13,7 +13,7 @@ class Bookings {
         TransacID
     ){
         this.BookingID = BookingID,
-        this.AccID = AccID,
+        this.Email = Email,
         this.ProgID = ProgID,
         this.ChildID = ChildID,
         this.Diet = Diet,
@@ -36,7 +36,7 @@ class Bookings {
                 (row) =>
                     new Bookings(
                         row.BookingID,
-                        row.AccID,
+                        row.Email,
                         row.ProgID,
                         row.ChildID,
                         row.Diet,
@@ -75,18 +75,16 @@ class Bookings {
 
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO Bookings (BookingID, AccID, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID)
-                VALUES (@BookingID, @AccID, @ProgID, @ChildID, @Diet, @BookingDate, @BookingStatus, @TransacID)
+                INSERT INTO Bookings (BookingID, Email, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID)
+                VALUES (@BookingID, @Email, @ProgID, @ChildID, @Diet, @BookingDate, 'Pending', @TransacID)
             `;
             const request = connection.request();
             request.input("BookingID", sql.Int, newBooking.BookingID);
-            request.input("AccID", sql.Int, newBooking.AccID);
+            request.input("Email", sql.VarChar, newBooking.Email);
             request.input("ProgID", sql.Int, newBooking.ProgID);
             request.input("ChildID", sql.Int, newBooking.ChildID);
             request.input("Diet", sql.VarChar, newBooking.Diet);
             request.input("BookingDate", sql.Date, newBooking.BookingDate);
-            request.input("BookingStatus", sql.VarChar, newBooking.BookingStatus);
-            request.input("TransacID", sql.Int, newBooking.TransacID);
 
             await request.query(sqlQuery);
             connection.close();
