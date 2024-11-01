@@ -67,7 +67,7 @@ const ReviewPage = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-grow p-6 max-w-2xl mx-auto w-[80%]">
+      <main className="flex-grow p-6 max-w-2xl mx-auto sm:w-[80%]">
         <CheckoutProgress imageType="cart" />
 
         <CheckoutItem
@@ -95,28 +95,17 @@ const ReviewPage = () => {
               />
             </div>
 
-            {selectedEvent ? (
-              // If there is an event selected
-              <div
-                className={`overflow-auto bg-lightBlue rounded-lg p-4 sm:mt-0 sm:self-start ${
-                  selectedEvent ? "" : "hidden"
-                }`}
-                style={{
-                  height: calendarDimensions.height,
-                  width: calendarDimensions.width,
-                }}
-              >
-                <EventDetail event={selectedEvent} />
-              </div>
-            ) : (
-              <div
-                className="border-transparent sm:self-start"
-                style={{
-                  height: calendarDimensions.height,
-                  width: calendarDimensions.width,
-                }}
-              />
-            )}
+            <div
+              className={`overflow-auto bg-lightBlue rounded-lg p-4 sm:mt-0 sm:self-start ${
+                selectedEvent ? "" : "hidden"
+              }`}
+              style={{
+                height: calendarDimensions.height,
+                width: calendarDimensions.width,
+              }}
+            >
+              <EventDetail event={selectedEvent} />
+            </div>
           </div>
         </div>
 
