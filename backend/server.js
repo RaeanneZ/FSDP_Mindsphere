@@ -77,6 +77,7 @@ app.post("/payments", paymentController.addPayment);
 app.get("/programmes", programmesController.getAllProgrammes);
 
 app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
+app.post("/api/postFeedback", ProgrammeFeedbackController.postFeedback);
 
 // Start the server
 app.listen(PORT, async () => {

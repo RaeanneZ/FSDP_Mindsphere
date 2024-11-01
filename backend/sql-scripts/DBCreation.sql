@@ -67,7 +67,6 @@ CREATE TABLE Account (
 	dateOfBirth datetime not null,
 	relationshipToChild VARCHAR(50) not null,
 	address VARCHAR(255) not null,
-	verificationCode int not null,
 	RoleID int not null default 2,
 	Salt VARCHAR(255),
 	HashedPassword VARCHAR(255),
