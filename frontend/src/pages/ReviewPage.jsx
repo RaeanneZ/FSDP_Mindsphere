@@ -59,7 +59,7 @@ const ReviewPage = () => {
       courseName: programDetails.title,
       dueDate: "21 Oct 2024",
     };
-    localStorage.setItem("paymentData", JSON.stringify(paymentData));
+    sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
     navigate("/payment");
   };
 
@@ -67,7 +67,7 @@ const ReviewPage = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-grow p-6 max-w-2xl mx-auto">
+      <main className="flex-grow p-6 max-w-2xl mx-auto sm:w-[80%]">
         <CheckoutProgress imageType="cart" />
 
         <CheckoutItem
@@ -84,7 +84,7 @@ const ReviewPage = () => {
         <DietaryRequirements dietary={dietary} setDietary={setDietary} />
 
         <div className="mb-8">
-          <h4 className="font-semibold text-lg mb-4">Select Dates</h4>
+          <h4 className="font-semibold text-lg">Select Dates</h4>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8">
             <div className="relative w-full sm:w-auto" ref={calendarGridRef}>
@@ -95,25 +95,17 @@ const ReviewPage = () => {
               />
             </div>
 
-            {selectedEvent ? (
-              <div
-                className="overflow-auto bg-[#f4f8fc] rounded-lg p-4 sm:mt-0 sm:self-start"
-                style={{
-                  height: calendarDimensions.height,
-                  width: calendarDimensions.width,
-                }}
-              >
-                <EventDetail event={selectedEvent} />
-              </div>
-            ) : (
-              <div
-                className="border-transparent sm:self-start"
-                style={{
-                  height: calendarDimensions.height,
-                  width: calendarDimensions.width,
-                }}
-              />
-            )}
+            <div
+              className={`overflow-auto bg-lightBlue rounded-lg p-4 sm:mt-0 sm:self-start ${
+                selectedEvent ? "" : "hidden"
+              }`}
+              style={{
+                height: calendarDimensions.height,
+                width: calendarDimensions.width,
+              }}
+            >
+              <EventDetail event={selectedEvent} />
+            </div>
           </div>
         </div>
 
@@ -122,7 +114,7 @@ const ReviewPage = () => {
           setSpecialRequest={setSpecialRequest}
         />
         <button
-          className="bg-[#DCAF27] text-white font-semibold py-3 px-6 rounded mt-4 w-full"
+          className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-4 w-full"
           onClick={handleProceedToPayment}
         >
           Pay with PayNow

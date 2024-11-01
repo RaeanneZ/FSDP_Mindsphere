@@ -1,8 +1,14 @@
 // WorkshopSection.jsx
 import React from "react";
 import PropTypes from "prop-types";
+import ImageCarousel from "./ImageCarousel";
 
-const WorkshopSection = ({ pricingPlans, testimonials, onSelectPlan }) => {
+const WorkshopSection = ({
+  images,
+  pricingPlans,
+  testimonials,
+  onSelectPlan,
+}) => {
   return (
     <div className="flex justify-center py-16 px-4">
       <div className="w-full max-w-7xl bg-[#FFF6E0] rounded-xl p-6 sm:p-10 mx-auto">
@@ -24,7 +30,7 @@ const WorkshopSection = ({ pricingPlans, testimonials, onSelectPlan }) => {
                 index % 2 === 0 ? "bg-blue-100" : "bg-white"
               } flex flex-col justify-between`}
             >
-              <div>
+              <div className="h-[160px]">
                 <p className="text-3xl sm:text-4xl font-bold text-gray-800 mt-2">
                   ${plan.price}
                 </p>
@@ -58,9 +64,11 @@ const WorkshopSection = ({ pricingPlans, testimonials, onSelectPlan }) => {
           ))}
         </div>
 
-        <p className="text-gray-500 text-center text-sm mt-6">
+        <p className="text-gray-500 text-center text-sm my-6">
           *Only applicable for soft launch promotion
         </p>
+
+        <ImageCarousel images={images} />
 
         {/* Testimonials */}
         <div className="mt-16 px-4 py-10 bg-blue-50 rounded-lg">

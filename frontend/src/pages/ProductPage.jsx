@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import ImageCarousel from "../components/ImageCarousel";
 import WorkshopSection from "../components/WorkshopSection";
 import Footer from "../components/Footer";
+import ProgrammeSection from "../components/ProgrammeSection";
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -68,8 +69,10 @@ const ProductPage = () => {
   return (
     <>
       <Navbar />
-      <ImageCarousel images={images} />
+      <ProgrammeSection />
+      {/* <ImageCarousel images={images} /> */}
       <WorkshopSection
+        images={images}
         pricingPlans={pricingPlans}
         onSelectPlan={handleSelectPlan}
       />

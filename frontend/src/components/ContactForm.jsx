@@ -12,7 +12,8 @@ const ContactForm = ({ contactInfo, setContactInfo }) => (
         onChange={(e) =>
           setContactInfo({ ...contactInfo, name: e.target.value })
         }
-        className="w-full border rounded px-3 py-2 sm:py-3"
+        className="w-full border p-3 border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+        required
       />
       <input
         type="text"
@@ -21,7 +22,8 @@ const ContactForm = ({ contactInfo, setContactInfo }) => (
         onChange={(e) =>
           setContactInfo({ ...contactInfo, contactNo: e.target.value })
         }
-        className="w-full border rounded px-3 py-2 sm:py-3"
+        className="w-full border p-3 border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+        required
       />
       <input
         type="email"
@@ -30,7 +32,8 @@ const ContactForm = ({ contactInfo, setContactInfo }) => (
         onChange={(e) =>
           setContactInfo({ ...contactInfo, email: e.target.value })
         }
-        className="col-span-1 sm:col-span-2 border rounded px-3 py-2 sm:py-3"
+        className="col-span-1 sm:col-span-2 border w-full p-3 border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+        required
       />
     </div>
   </div>

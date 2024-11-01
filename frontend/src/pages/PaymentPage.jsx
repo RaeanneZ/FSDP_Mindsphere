@@ -11,7 +11,7 @@ const PaymentPage = () => {
   const [paymentData, setPaymentData] = useState(null);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("paymentData"));
+    const data = JSON.parse(sessionStorage.getItem("paymentData"));
     if (data) {
       setPaymentData(data);
     }
@@ -37,7 +37,7 @@ const PaymentPage = () => {
           <PayNowSection />
         </div>
 
-        <button className="bg-[#DCAF27] text-white font-semibold py-3 px-6 rounded mt-6 w-full">
+        <button className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-6 w-full">
           Payment Complete
         </button>
       </main>

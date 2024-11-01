@@ -14,8 +14,8 @@ import Cell from "./Cell";
 
 const weeks = ["S", "M", "T", "W", "T", "F", "S"];
 const colorPalette = [
-  { border: "border-[#facc15]", highlight: "#fff2cc" }, // Yellow border using hex
-  { border: "border-blue-500", highlight: "#e0f7fa" }, // Blue border
+  { border: "border-[#facc15]", highlight: "#fff2cc" }, // Yellow border for low slots
+  { border: "border-[#00A7A7]", highlight: "#E0F2F1" }, // Greenish-blue border for many slots (matching your image)
 ];
 
 let events = [
@@ -35,17 +35,18 @@ let events = [
     title: "Entrepreneur Camp",
     location: "Downtown Hall",
     time: "12pm - 4pm",
-    slots: 3,
+    slots: 6,
     month: 9, // October
     year: 2024,
   },
 ];
 
-// Assign colors to each event based on index
-events = events.map((event, index) => ({
+// Assign colors to each event based on slot availability
+events = events.map((event) => ({
   ...event,
-  color: colorPalette[index % colorPalette.length].border, // Assign alternating border colors
-  highlightColor: colorPalette[index % colorPalette.length].highlight,
+  color: event.slots < 5 ? colorPalette[0].border : colorPalette[1].border,
+  highlightColor:
+    event.slots < 5 ? colorPalette[0].highlight : colorPalette[1].highlight,
 }));
 
 const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
@@ -105,11 +106,7 @@ const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
     );
     const isHighlighted = selectedEvent && selectedEvent.id === event?.id;
     return {
-      color: event
-        ? event.color === "border-yellow-500"
-          ? "border-yellow-500" // Ensure yellow border is applied for the first event
-          : event.color
-        : null,
+      color: event ? event.color : null,
       isClickable: !!event,
       highlightColor: isHighlighted ? event?.highlightColor : null,
       isBold: isHighlighted,
@@ -117,7 +114,7 @@ const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
   };
 
   return (
-    <div className="max-w-xs mx-auto mt-6">
+    <div className="max-w-xs mx-auto mt-2">
       <div className="flex gap-2 mb-4">
         <select
           value={format(value, "LLLL")}

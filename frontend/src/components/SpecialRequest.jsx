@@ -8,7 +8,7 @@ const SpecialRequest = ({ specialRequest, setSpecialRequest }) => (
       placeholder="Write any special requests here..."
       value={specialRequest}
       onChange={(e) => setSpecialRequest(e.target.value)}
-      className="w-full border rounded px-3 py-2"
+      className="w-full border p-3 border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
       rows={4}
     />
   </div>
