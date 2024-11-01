@@ -32,26 +32,32 @@ const addPayment = async (paymentData) => {
 
 const makePayment = async (req, res) => {
     try {
-        const { TransacID } = req.body; // Destructure TransacID from request body
+        const { TransacID, email } = req.body; // Destructure TransacID and email from request body
         
         if (!TransacID) {
             return res.status(400).json({ error: "TransacID is required." });
         }
 
+        if (!email) {
+            return res.status(400).json({ error: "Email is required." });
+        }
+
         await Payment.makePayment(TransacID); // Call the method to make payment
 
         const receiptResult = await paymentEmailController.sendPaymentConfirmation(TransacID);
-
+        const verifCode = await paymentEmailController.sendMembershipCode(email); // Pass email to sendMembershipCode
 
         return res.status(200).json({
             message: "Payment status updated to paid successfully.",
             receiptResult,
+            verifCode // Include the verification code result in the response if needed
         });    
     } catch (err) {
         console.error(err);
         res.status(500).send("Error making payment.");
     }
 };
+
 
 
 

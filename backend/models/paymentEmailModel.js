@@ -49,6 +49,26 @@ class PaymentEmailModel {
     }
 }
 
+static async getNewRegistration(email) {
+  try {
+    const query = `
+    SELECT TOP 1 a.AccID, a.Email, a.Name as CustomerName
+    FROM Account a
+    LEFT JOIN AccountVerification av ON a.AccID = av.AccID
+    WHERE av.AccID IS NULL AND a.Email = @Email`;
+  
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request()
+    .input('Email', sql.VarChar, email) // Specify the input parameter
+    .query(query);
+
+    return result.recordset[0]; // Return the first record found
+    } catch (error) {
+      console.error("Error fetching paid transactions:", error);
+      throw error; // Propagate the error for handling
+    }
+}
+
 
   static async getNewRegistrations() {
     try {

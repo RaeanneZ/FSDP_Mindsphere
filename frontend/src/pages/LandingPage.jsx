@@ -30,7 +30,8 @@ import ActionButtons from "../components/ActionButtons";
 // PAYMENT SERVICE
 const { paymentService } = backendService;
 const transacID = {
-  TransacID: 5
+  TransacID: 5,
+  email: 'nancyblue@example.com'
 }
 
 const makePayment = await paymentService.makePayment(transacID);
