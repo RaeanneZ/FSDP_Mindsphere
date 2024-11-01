@@ -24,6 +24,38 @@ class Children {
   }
 
   //methods
+
+  static async addChild({
+    GuardianEmail,
+    Name,
+    Gender,
+    Dob,
+    Needs,
+    School,
+    Interests,
+  }) {
+    try {
+      const connection = await sql.connect(dbConfig);
+      const sqlQuery = `INSERT INTO Children (GuardianEmail, Name, Gender, Dob, Needs, School, Interests) OUTPUT INSERTED.* 
+      VALUES (@GuardianEmail, @Name, @Gender, @Dob, @Needs, @School, @Interests)`;
+      const request = connection.request();
+      request.input("GuardianEmail", GuardianEmail);
+      request.input("Name", Name);
+      request.input("Gender", Gender);
+      request.input("Dob", Dob);
+      request.input("Needs", Needs);
+      request.input("School", School);
+      request.input("Interests", Interests);
+
+      const result = await request.query(sqlQuery);
+      connection.close();
+      console.log("Inserted Child:", result.recordset[0]);
+
+      return result.recordset[0];
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }
 
 module.exports = Children;
