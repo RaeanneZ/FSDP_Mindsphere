@@ -72,11 +72,11 @@ class programmeSchedule {
             
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO ProgrammeSchedule (SchedID, ProgID, DateStart, DateEnd, Venue, TotalSeats)
-                VALUES (@SchedID, @ProgID, @DateStart, @DateEnd, @Venue, @TotalSeats)
+                INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats)
+                VALUES (@ProgID, @DateStart, @DateEnd, @Venue, @TotalSeats);
+                SELECT SCOPE_IDENTITY() AS SchedID;
             `;
             const request = connection.request();
-            request.input("SchedID", sql.Int, newSchedule.SchedID);
             request.input("ProgID", sql.Int, newSchedule.ProgID);
             request.input("DateStart", sql.Date, newSchedule.DateStart);
             request.input("DateEnd", sql.Date, newSchedule.DateEnd);
