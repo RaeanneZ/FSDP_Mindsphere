@@ -17,11 +17,11 @@ const addProgrammeSchedule = async (req, res) => {
     try {
         const newSchedule = req.body;
         
-        const duplicateExists = await ProgrammeSchedule.checkIfSchedIDExists(newSchedule.SchedID);
+        //const duplicateExists = await ProgrammeSchedule.checkIfSchedIDExists(newSchedule.SchedID);
         
-        if (duplicateExists) {
-            return res.status(409).json({ error: "Programme Schedule with this SchedID already exists." });
-        }
+        //if (duplicateExists) {
+          //  return res.status(409).json({ error: "Programme Schedule with this SchedID already exists." });
+        //}
         
         await ProgrammeSchedule.addProgrammeSchedule(newSchedule);
         res.status(201).send("Programme Schedule added successfully");
