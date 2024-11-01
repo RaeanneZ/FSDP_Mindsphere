@@ -62,22 +62,21 @@ const AccountManagementPage = () => {
       return; // Prevent navigation if validation fails
     }
 
-    // Store parent details in session storage
-    sessionStorage.setItem("parentData", JSON.stringify(formData)); // <-- Storing parent data
+    // Retrieve existing parent data from session storage
+    const existingParentData =
+      JSON.parse(sessionStorage.getItem("parentData")) || [];
+
+    // Append the new form data to the existing parent data
+    existingParentData.push(formData);
+
+    // Store the updated parent data in session storage
+    sessionStorage.setItem("parentData", JSON.stringify(existingParentData));
 
     // Store children details in session storage
     const childData = JSON.parse(sessionStorage.getItem("childData")) || [];
     sessionStorage.setItem("childData", JSON.stringify(childData));
 
-    // Send parent account details to the backend
-    // try {
-    //   const response = await fetch("https://your-backend-api.com/api/account", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(formData),
-    //   });
+    // Method call to send parent account details to the backend (including email and password)
 
     navigate("/childPageContainer"); // Navigate to the next page
   };

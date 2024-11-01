@@ -32,6 +32,7 @@ const SignupPage = () => {
     }
 
     // Check against mock database
+    // Replace this with backend function later
     if (
       email !== mockDatabase.email ||
       verificationCode !== mockDatabase.verificationCode
@@ -39,6 +40,26 @@ const SignupPage = () => {
       setError("Invalid email or verification code");
       return;
     }
+
+    // Retrieve existing parent data from session storage
+    const existingParentData = JSON.parse(sessionStorage.getItem("parentData"));
+
+    // Check if existingParentData is an array; if not, initialize it as an empty array
+    const parentDataArray = Array.isArray(existingParentData)
+      ? existingParentData
+      : [];
+
+    // Create and store the parentData
+    const parentData = {
+      email,
+      password,
+      verificationCode,
+      newsletter,
+    };
+    parentDataArray.push(parentData);
+
+    // Store the updated parent data in session storage
+    sessionStorage.setItem("parentData", JSON.stringify(parentDataArray));
 
     // Here you can add code to handle form submission, e.g., send data to a server
     navigate("/personalisation"); // Navigate to the next page
