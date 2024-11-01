@@ -1,4 +1,5 @@
 const sql = require("mssql");
+const dbConfig = require("../dbConfig")
 
 class PaymentEmailModel {
   static async getPaidTransactions() {
@@ -22,6 +23,32 @@ class PaymentEmailModel {
       throw error;
     }
   }
+
+  static async getPaidTransaction(email) {
+    try {
+        const query = `
+            SELECT TOP 1 p.TransacID, p.TotalCost, p.PaidDate, a.AccID, a.Email, a.Name AS CustomerName, 
+                   pr.Name AS ProgramName, pr.ProgDesc, pr.ProgType, b.BookingDate, b.Diet, 
+                   c.Name AS ChildName 
+            FROM Payment p
+            INNER JOIN Account a ON p.Email = a.Email
+            INNER JOIN Programmes pr ON p.ProgID = pr.ProgID
+            INNER JOIN Bookings b ON p.TransacID = b.TransacID
+            LEFT JOIN Children c ON b.ChildID = c.ChildID
+            WHERE p.TransacStatus = 'Paid' AND p.Email = @Email`; // Filter by email
+
+        const pool = await sql.connect(dbConfig);
+        const result = await pool.request()
+            .input('Email', sql.VarChar, email) // Specify the input parameter
+            .query(query);
+
+        return result.recordset[0]; // Return the first record found
+    } catch (error) {
+        console.error("Error fetching paid transactions:", error);
+        throw error; // Propagate the error for handling
+    }
+}
+
 
   static async getNewRegistrations() {
     try {
@@ -137,7 +164,7 @@ Dietary Requirements: ${payment.Diet || "None"}
 
 Payment Information:
 ------------------
-Amount Paid: $${payment.TotalCost.toFixed(2)}
+Amount Paid: $${payment.TotalCost}
 Payment Date: ${new Date(payment.PaidDate).toLocaleDateString()}
 
 If you have any questions about your booking or need assistance,
