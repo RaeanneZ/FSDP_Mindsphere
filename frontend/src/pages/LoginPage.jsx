@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { loginAccount } from "../utils/backendService";
 
 const LoginPage = () => {
   const navigate = useNavigate(); // Create navigate object
@@ -11,27 +12,28 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Mock API call
-    const isValidUser = await mockApiCall(email, password);
-
-    if (isValidUser) {
-      // Redirect to home page
-      navigate("/"); // Navigate to the next page
-    } else {
-      setError("Invalid email or password");
-    }
-  };
-
-  // Mock API function to simulate checking credentials
-  const mockApiCall = async (email, password) => {
-    // Here you would typically make an API call to your backend
-    // For this example, we will just simulate a successful login
-    const mockData = {
-      email: "user@example.com",
-      password: "password123",
+    // Create an object for the credentials
+    const credentials = {
+      email, // Assuming you have a state variable for email
+      password, // Assuming you have a state variable for password
     };
 
-    return email === mockData.email && password === mockData.password;
+    try {
+      // Call the loginAccount method with the credentials
+      const response = await loginAccount(credentials);
+
+      // Check if the login was successful
+      if (response && response.success) {
+        // Assuming the response has a success property
+        // Redirect to home page
+        navigate("/"); // Navigate to the next page
+      } else {
+        setError("Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("An error occurred while logging in. Please try again.");
+    }
   };
 
   return (
