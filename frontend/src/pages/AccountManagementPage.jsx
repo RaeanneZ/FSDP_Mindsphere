@@ -7,6 +7,7 @@ import ChildAccordion from "../components/ChildAccordion";
 import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { registerAccount } from "../utils/backendService";
 
 const AccountManagementPage = () => {
   const navigate = useNavigate(); // Create history object
@@ -54,7 +55,7 @@ const AccountManagementPage = () => {
     // Removed the line that tried to save child data
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
 
@@ -77,6 +78,31 @@ const AccountManagementPage = () => {
     sessionStorage.setItem("childData", JSON.stringify(childData));
 
     // Method call to send parent account details to the backend (including email and password)
+    try {
+      // Format results to expected fields
+      const accountData = {
+        Name: formData.name,
+        Email: existingParentData[0].email,
+        ContactNo: formData.contactNumber,
+        Password: existingParentData[0].password,
+        dateOfBirth: formData.dob,
+        relationshipToChild: formData.relationship,
+        address: formData.address,
+      };
+      // Method call to send parent account details to the backend
+      const response = await registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
+      console.log("Registration successful:", response);
+
+      // Navigate to the next page
+      navigate("/childPageContainer");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      // You can also set an error state to display an error message to the user
+      setErrors({
+        ...errors,
+        submit: "Registration failed. Please try again.",
+      });
+    }
 
     navigate("/childPageContainer"); // Navigate to the next page
   };
