@@ -58,6 +58,8 @@ app.put("/api/payments/makePayment", paymentController.makePayment);
 app.get("/api/programmes", programmesController.getAllProgrammes);
 
 app.get("/api/account", accountController.getAllAccount);
+app.get("/api/account/:email", accountController.getAccountByEmail);
+app.put("/api/account/:email", accountController.updateAccountByEmail);
 app.post("/api/register", accountController.registerAccount);
 app.post("/api/login", accountController.login);
 

@@ -106,13 +106,37 @@ const accountService = {
       throw err;
     }
   },
-  // Error fetching programmes: AxiosError {message: 'Network Error', name: 'AxiosError', code: 'ERR_NETWORK', config: {…}, request: XMLHttpRequest, …}
+
   loginAccount: async (credentials) => {
     try {
-      const response = await axios.post(`${apiUrl}/account/login`, credentials);
+      console.log("Credentials", credentials);
+      const response = await axios.post(`${apiUrl}/login`, credentials);
       return response.data;
     } catch (err) {
       console.error("Error logging in: ", err);
+      throw err;
+    }
+  },
+
+  getAccountByEmail: async (email) => {
+    try {
+      const response = await axios.get(`${apiUrl}/account/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error getting account by email: ", err);
+      throw err;
+    }
+  },
+
+  updateAccountByEmail: async (email, accountData) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/account/${email}`,
+        accountData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("Error updating account: ", err);
       throw err;
     }
   },
@@ -121,10 +145,26 @@ const accountService = {
   // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
 };
 
+//Children methods
+const childrenService = {
+  addChild: async (childData) => {
+    try {
+      const response = await axios.post(`${apiUrl}/addChild`, {
+        ...childData,
+      });
+      return response.data;
+    } catch (err) {
+      console.error("Error adding child: ", err);
+      throw err;
+    }
+  },
+};
+
 export default {
   programmeService,
   progScheduleService,
   accountService,
+  childrenService,
   bookingService,
   paymentService,
 };

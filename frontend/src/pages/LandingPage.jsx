@@ -6,6 +6,34 @@ import ValueBanner from "../components/ValueBanner";
 import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
 
+//get by email and update account and add child @hendrik
+const { accountService, childrenService } = backendService;
+const account = await accountService.getAccountByEmail(
+  "hendrikyong1205@gmail.com"
+);
+console.log(account);
+
+const updateAccount = await accountService.updateAccountByEmail(
+  "hendrikyong1205@gmail.com",
+  { Name: "Hendrik Yong", dateOfBirth: "1990-01-01" }
+);
+console.log(updateAccount);
+
+const childData = {
+  GuardianEmail: "hendrikyong1205@gmail.com",
+  Name: "Hendrik Yong Jr",
+  Gender: "M",
+  Dob: "2020-01-01",
+  Needs: "None",
+  School: "Example School",
+  Interests: "Toys"
+};
+
+const addChildren = await childrenService.addChild(childData);
+console.log(addChildren);
+
+//
+
 //here i did the test @hendrik
 // const { accountService } = backendService;
 // const account = await accountService.getAllAccounts();

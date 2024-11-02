@@ -14,6 +14,29 @@ const getAllAccount = async (req, res) => {
   }
 };
 
+const getAccountByEmail = async (req, res) => {
+  try {
+    const account = await Account.getAccountByEmail(req.params.email);
+    res.status(200).json(account);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const updateAccountByEmail = async (req, res) => {
+  try {
+    const account = await Account.updateAccountByEmail(
+      req.params.email,
+      req.body
+    );
+    res.status(200).json(account);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 const registerAccount = async (req, res) => {
   const {
     Name,
@@ -64,20 +87,20 @@ const registerAccount = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { Email, Password } = req.body;
+  const { email, password } = req.body;
   try {
-    const account = await Account.getAccountByEmail(Email);
+    const account = await Account.getAccountByEmail(email);
     if (!account) {
       return res.status(400).json({ message: "Account not found" });
     }
     const connection = await sql.connect(dbConfig);
     const sqlQuery = `SELECT * FROM Account WHERE Email = @Email`;
     const request = connection.request();
-    request.input("Email", Email);
+    request.input("Email", email);
     await request.query(sqlQuery);
     connection.close();
 
-    const isMatch = await bcrypt.compare(Password, account.HashedPassword);
+    const isMatch = await bcrypt.compare(password, account.HashedPassword);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
@@ -91,7 +114,7 @@ const login = async (req, res) => {
       expiresIn: "3600s",
     });
 
-    return res.status(200).json({ token });
+    return res.status(200).json({ success: true, token });
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal Server Error");
@@ -100,6 +123,8 @@ const login = async (req, res) => {
 
 module.exports = {
   getAllAccount,
+  getAccountByEmail,
+  updateAccountByEmail,
   registerAccount,
   login,
 };
