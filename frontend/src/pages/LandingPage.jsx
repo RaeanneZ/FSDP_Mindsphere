@@ -82,7 +82,7 @@ const LandingPage = () => {
       <Sponsor />
       <ValueBanner />
       <Footer />
-      <ActionButtons />
+      {/* <ActionButtons /> */}
     </>
   );
 };

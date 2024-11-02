@@ -23,9 +23,6 @@ const ProgrammeFeedbackController = require("./controllers/programmeFeedBackCont
 const childrenController = require("./controllers/childrenController");
 const paymentEmailRoutes = require("./routes/paymentEmailRoutes");
 const PaymentEmailController = require("./controllers/paymentEmailController");
-const bookingsController = require("./controllers/bookingsController");
-const paymentController = require("./controllers/paymentController");
-const programmesController = require("./controllers/programmesController");
 
 // APP SETUP
 const app = express();
