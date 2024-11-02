@@ -81,16 +81,17 @@ CREATE TABLE Account (
 GO
 
 CREATE TABLE AccountVerification (
-	AccID int not null,
+	Email varchar(50) not null,
 	verifCode int not null,
-	constraint PK_AccountVerification primary key (AccID),
-	constraint FK_AccountVer_AccID foreign key (AccID) references Account(AccID)
+	constraint PK_AccountVerification primary key (Email),
+	constraint FK_AccountVer_AccID foreign key (Email) references Account(Email)
 )
 go
 
 CREATE TABLE Newsletter (
 	Email varchar(50) not null,
-	constraint PK_Newsletter primary key (Email)
+	constraint PK_Newsletter primary key (Email),
+	constraint FK_Newsletter_Email foreign key (Email) references Account(Email)
 );
 
 create table Children (
