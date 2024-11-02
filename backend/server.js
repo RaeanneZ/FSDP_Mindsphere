@@ -32,8 +32,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(cors(corsOptions));
 
 // ROUTES
 app.get("/", async (req, res) => {
