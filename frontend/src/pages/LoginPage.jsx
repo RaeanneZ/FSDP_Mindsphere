@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import backendService from "../utils/backendService";
 
 const LoginPage = () => {
   // For Backend
@@ -17,9 +18,11 @@ const LoginPage = () => {
 
     // Create an object for the credentials
     const credentials = {
-      email, // Assuming you have a state variable for email
-      password, // Assuming you have a state variable for password
+      email,
+      password,
     };
+    console.log(email);
+    console.log(password);
 
     try {
       // Call the loginAccount method with the credentials

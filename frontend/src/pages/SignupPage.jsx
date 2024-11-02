@@ -33,13 +33,13 @@ const SignupPage = () => {
 
     // Check against mock database
     // Replace this with backend function later
-    if (
-      email !== mockDatabase.email ||
-      verificationCode !== mockDatabase.verificationCode
-    ) {
-      setError("Invalid email or verification code");
-      return;
-    }
+    // if (
+    //   email !== mockDatabase.email ||
+    //   verificationCode !== mockDatabase.verificationCode
+    // ) {
+    //   setError("Invalid email or verification code");
+    //   return;
+    // }
 
     // Retrieve existing parent data from session storage
     const existingParentData = JSON.parse(sessionStorage.getItem("parentData"));

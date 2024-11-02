@@ -7,6 +7,7 @@ import ChildAccordion from "../components/ChildAccordion";
 import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
+import backendService from "../utils/backendService";
 
 const AccountManagementPage = () => {
   // For Backend
