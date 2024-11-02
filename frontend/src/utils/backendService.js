@@ -145,10 +145,26 @@ const accountService = {
   // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
 };
 
+//Children methods
+const childrenService = {
+  addChild: async (childData) => {
+    try {
+      const response = await axios.post(`${apiUrl}/addChild`, {
+        ...childData,
+      });
+      return response.data;
+    } catch (err) {
+      console.error("Error adding child: ", err);
+      throw err;
+    }
+  },
+};
+
 export default {
   programmeService,
   progScheduleService,
   accountService,
+  childrenService,
   bookingService,
   paymentService,
 };
