@@ -6,6 +6,21 @@ import ValueBanner from "../components/ValueBanner";
 import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
 
+//get by email @hendrik
+const { accountService } = backendService;
+const account = await accountService.getAccountByEmail(
+  "hendrikyong1205@gmail.com"
+);
+console.log(account);
+
+const updateAccount = await accountService.updateAccountByEmail(
+  "hendrikyong1205@gmail.com",
+  { Name: "Hendrik Yong", dateOfBirth: "1990-01-01" }
+);
+console.log(updateAccount);
+
+//
+
 //here i did the test @hendrik
 // const { accountService } = backendService;
 // const account = await accountService.getAllAccounts();

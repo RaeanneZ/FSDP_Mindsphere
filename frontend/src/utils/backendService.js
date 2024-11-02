@@ -106,13 +106,37 @@ const accountService = {
       throw err;
     }
   },
-  // Error fetching programmes: AxiosError {message: 'Network Error', name: 'AxiosError', code: 'ERR_NETWORK', config: {…}, request: XMLHttpRequest, …}
+
   loginAccount: async (credentials) => {
     try {
-      const response = await axios.post(`${apiUrl}/account/login`, credentials);
+      console.log("Credentials", credentials);
+      const response = await axios.post(`${apiUrl}/login`, credentials);
       return response.data;
     } catch (err) {
       console.error("Error logging in: ", err);
+      throw err;
+    }
+  },
+
+  getAccountByEmail: async (email) => {
+    try {
+      const response = await axios.get(`${apiUrl}/account/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error getting account by email: ", err);
+      throw err;
+    }
+  },
+
+  updateAccountByEmail: async (email, accountData) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/account/${email}`,
+        accountData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("Error updating account: ", err);
       throw err;
     }
   },
