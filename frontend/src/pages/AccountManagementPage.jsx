@@ -7,9 +7,12 @@ import ChildAccordion from "../components/ChildAccordion";
 import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { registerAccount } from "../utils/backendService";
 
 const AccountManagementPage = () => {
+  // For Backend
+  const { accountService } = backendService;
+
+  // Frontend
   const navigate = useNavigate(); // Create history object
   const [errors, setErrors] = React.useState({}); // State for error messages
   const [children, setChildren] = React.useState([1]);
@@ -90,7 +93,7 @@ const AccountManagementPage = () => {
         address: formData.address,
       };
       // Method call to send parent account details to the backend
-      const response = await registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
+      const response = await accountService.registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
       console.log("Registration successful:", response);
 
       // Navigate to the next page

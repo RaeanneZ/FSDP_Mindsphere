@@ -1,9 +1,12 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { loginAccount } from "../utils/backendService";
 
 const LoginPage = () => {
+  // For Backend
+  const { accountService } = backendService;
+
+  // Frontend
   const navigate = useNavigate(); // Create navigate object
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +23,7 @@ const LoginPage = () => {
 
     try {
       // Call the loginAccount method with the credentials
-      const response = await loginAccount(credentials);
+      const response = await accountService.loginAccount(credentials);
 
       // Check if the login was successful
       if (response && response.success) {
