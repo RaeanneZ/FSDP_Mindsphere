@@ -140,6 +140,20 @@ const accountService = {
       throw err;
     }
   },
+
+  verifyEmailAndCode: async (email, verifCode) => {
+    try {
+      const response = await axios.post(`${apiUrl}/verification`, {
+        email: email,
+        verifCode: verifCode,
+      });
+      return response.data;
+    } catch (err) {
+      console.error("Error verifying email and code: ", err);
+      throw err;
+    }
+  },
+
   // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
   // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
   // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in

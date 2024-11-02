@@ -100,12 +100,12 @@ class Account {
 
     // Fetch the current account details
     const currentAccount = await connection
-        .request()
-        .input("Email", sql.VarChar, Email)
-        .query("SELECT * FROM Account WHERE Email = @Email");
+      .request()
+      .input("Email", sql.VarChar, Email)
+      .query("SELECT * FROM Account WHERE Email = @Email");
 
     if (currentAccount.recordset.length === 0) {
-        throw new Error("Account not found");
+      throw new Error("Account not found");
     }
 
     const account = currentAccount.recordset[0];
@@ -121,16 +121,46 @@ class Account {
     const request = connection.request();
     request.input("Email", sql.VarChar, Email);
     request.input("Name", sql.VarChar, updatedAccount.Name || account.Name);
-    request.input("address", sql.VarChar, updatedAccount.address || account.address);
-    request.input("dateOfBirth", sql.DateTime, updatedAccount.dateOfBirth || account.dateOfBirth);
-    request.input("relationshipToChild", sql.VarChar, updatedAccount.relationshipToChild || account.relationshipToChild);
+    request.input(
+      "address",
+      sql.VarChar,
+      updatedAccount.address || account.address
+    );
+    request.input(
+      "dateOfBirth",
+      sql.DateTime,
+      updatedAccount.dateOfBirth || account.dateOfBirth
+    );
+    request.input(
+      "relationshipToChild",
+      sql.VarChar,
+      updatedAccount.relationshipToChild || account.relationshipToChild
+    );
 
     await request.query(sqlQuery);
     connection.close();
 
     return this.getAccountByEmail(Email);
-}
+  }
 
+  static async verification(Email) {
+    let connection;
+    try {
+      connection = await sql.connect(dbConfig);
+      const sqlQuery = `SELECT * FROM AccountVerification WHERE Email = @Email`;
+      const request = connection.request();
+      request.input("Email", sql.VarChar(50), Email);
+      const result = await request.query(sqlQuery);
+
+      return result.recordset;
+    } catch (err) {
+      console.error("Error fetching account by email:", err);
+    } finally {
+      if (connection) {
+        connection.close();
+      }
+    }
+  }
 }
 
 module.exports = Account;

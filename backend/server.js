@@ -61,6 +61,7 @@ app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
 app.put("/api/account/:email", accountController.updateAccountByEmail);
 app.post("/api/register", accountController.registerAccount);
+app.post("/api/verification", accountController.verification);
 app.post("/api/login", accountController.login);
 
 app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
@@ -70,7 +71,7 @@ app.post("/api/addChild", childrenController.addChild);
 app.use("/api/payments", paymentEmailRoutes);
 
 app.get("/api/newsletter", newsletterController.getAllEmail);
-app.post("/api/newsletter", newsletterController.addEmailNewsletter)
+app.post("/api/newsletter", newsletterController.addEmailNewsletter);
 
 PaymentEmailController.sendMembershipCodes;
 

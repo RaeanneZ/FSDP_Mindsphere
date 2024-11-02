@@ -6,7 +6,7 @@ import ValueBanner from "../components/ValueBanner";
 import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
 
-//get by email and update account and add child @hendrik
+//get by email and update account and add child and verify @hendrik
 const { accountService, childrenService } = backendService;
 const account = await accountService.getAccountByEmail(
   "hendrikyong1205@gmail.com"
@@ -26,12 +26,25 @@ const childData = {
   Dob: "2020-01-01",
   Needs: "None",
   School: "Example School",
-  Interests: "Toys"
+  Interests: "Toys",
 };
 
 const addChildren = await childrenService.addChild(childData);
 console.log(addChildren);
 
+const verifyEmailAndCode = async () => {
+  try {
+    const response = await accountService.verifyEmailAndCode(
+      "johndoe@example.com",
+      "123456"
+    );
+    console.log(response); // Handle the successful response
+  } catch (error) {
+    console.error("Verification failed:", error); // Handle the error
+  }
+};
+
+verifyEmailAndCode();
 //
 
 //here i did the test @hendrik

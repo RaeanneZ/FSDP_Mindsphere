@@ -121,10 +121,42 @@ const login = async (req, res) => {
   }
 };
 
+const verification = async (req, res) => {
+  console.log("Request Body:", req.body);
+  const { email, verifCode } = req.body;
+  const trimmedEmail = email.trim();
+  const trimmedVerifCode = verifCode.trim();
+
+  try {
+    const connection = await sql.connect(dbConfig);
+    const sqlQuery = `SELECT * FROM AccountVerification WHERE Email = @Email AND verifCode = @verifCode`;
+    const request = connection.request();
+    request.input("Email", sql.VarChar(50), trimmedEmail);
+    request.input("verifCode", sql.VarChar(50), trimmedVerifCode);
+
+    const result = await request.query(sqlQuery);
+    connection.close();
+
+    console.log("Email:", trimmedEmail);
+    console.log("Verification Code:", trimmedVerifCode);
+    console.log("Query Result:", result.recordset);
+
+    if (result.recordset.length > 0) {
+      return res.status(200).json({ message: "Verification successful" });
+    } else {
+      return res.status(400).json({ message: "Invalid verification code" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
   getAllAccount,
   getAccountByEmail,
   updateAccountByEmail,
   registerAccount,
+  verification,
   login,
 };
