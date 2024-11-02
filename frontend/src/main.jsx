@@ -11,6 +11,7 @@ import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
 import ReviewPage from "./pages/ReviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
+import AccountDashboardPage from "./pages/AccountDashboardPage.jsx";
 
 // Import CSS
 import "../public/css/index.css";
@@ -96,6 +97,11 @@ const router = createBrowserRouter([
   {
     path: "/payment",
     element: <PaymentPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/accountmanagement",
+    element: <AccountDashboardPage />,
     errorElement: <div>404 Not Found</div>,
   },
 ]);
