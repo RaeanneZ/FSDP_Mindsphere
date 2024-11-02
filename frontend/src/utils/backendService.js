@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
 
 const apiUrl = "http://localhost:5000/api";
 
@@ -16,6 +17,15 @@ const programmeService = {
     }
   },
 
+  getAllProgrammeTiers: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/programmetiers`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retreiving all programme tiers", err);
+      throw err;
+    }
+  }
   // Backend: getProgrammeByName(progName)
 };
 
@@ -196,6 +206,7 @@ const newsletterService = {
     }
   }
 }
+
 
 export default {
   programmeService,

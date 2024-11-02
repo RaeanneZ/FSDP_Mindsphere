@@ -24,6 +24,7 @@ const childrenController = require("./controllers/childrenController");
 const paymentEmailRoutes = require("./routes/paymentEmailRoutes");
 const PaymentEmailController = require("./controllers/paymentEmailController");
 const newsletterController = require("./controllers/newsletterController");
+const programmeTiersController = require("./controllers/programmeTierController");
 
 // APP SETUP
 const app = express();
@@ -72,6 +73,8 @@ app.use("/api/payments", paymentEmailRoutes);
 
 app.get("/api/newsletter", newsletterController.getAllEmail);
 app.post("/api/newsletter", newsletterController.addEmailNewsletter);
+
+app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers)
 
 PaymentEmailController.sendMembershipCodes;
 
