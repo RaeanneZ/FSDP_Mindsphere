@@ -22,11 +22,12 @@ const programmeService = {
 // Payment methods
 const paymentService = {
   // Frontend provides email -  backend has to grab the corresponding email and TransacStatus = Pending
-  makePayment: async (TransacID) => {
+  makePayment: async (Email) => {
     try {
+      const paymentData = {email: Email}
       const response = await axios.put(
         `${apiUrl}/payments/makePayment`,
-        TransacID
+        paymentData
       );
       return response.data;
     } catch (err) {
