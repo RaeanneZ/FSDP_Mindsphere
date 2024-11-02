@@ -24,6 +24,8 @@ import CartProgress from "/images/Cartprogress.png";
 import PaymentProgress from "/images/Paymentprogress.png";
 import PaynowLogo from "/images/PayNowLogo.png";
 import PaynowQr from "/images/PayNowQR.png";
+import Download from "/images/Download.png";
+import MembershipDuration from "/images/MembershipDuration.png";
 
 // Export all folders for project use
 // Landing Banner
@@ -64,3 +66,7 @@ export const paymentprogress = PaymentProgress;
 //PayNow Section
 export const paynowlogo = PaynowLogo;
 export const paynowqr = PaynowQr;
+
+//Account Dashboard Section
+export const download = Download;
+export const membershipduration = MembershipDuration;
