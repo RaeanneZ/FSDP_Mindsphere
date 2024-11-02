@@ -5,17 +5,15 @@ class Programmes {
     constructor(
         ProgID,
         Name,
+        ProgIntro,
         ProgDesc,
         ProgType,
-        AgeRange,
-        Cost
     ) {
         this.ProgID = ProgID,
         this.Name = Name,
+        this.ProgIntro = ProgIntro,
         this.ProgDesc = ProgDesc,
-        this.ProgType = ProgType,
-        this.AgeRange = AgeRange,
-        this.Cost = Cost
+        this.ProgType = ProgType
     }
 
     //METHODS
@@ -33,10 +31,9 @@ class Programmes {
                     new Programmes(
                         row.ProgID,
                         row.Name,
+                        row.ProgIntro,
                         row.ProgDesc,
-                        row.ProgType,
-                        row.AgeRange,
-                        row.Cost
+                        row.ProgType
                     ) 
             );
         } catch (err) {

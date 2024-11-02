@@ -111,7 +111,7 @@ console.log(programmes)
 const { bookingService } = backendService;
 const newBooking = {
     Email: "balls22@gmail.com",
-    ProgID: 1,
+    TierID: 1,
     ChildID: 1,
     Diet: "Vegetarian",
     BookingDate: "2024-01-15T00:00:00.000Z"

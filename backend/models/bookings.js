@@ -5,7 +5,7 @@ class Bookings {
     constructor(
         BookingID,
         Email,
-        ProgID,
+        TierID,
         ChildID,
         Diet,
         BookingDate,
@@ -14,7 +14,7 @@ class Bookings {
     ){
         this.BookingID = BookingID,
         this.Email = Email,
-        this.ProgID = ProgID,
+        this.TierID = TierID,
         this.ChildID = ChildID,
         this.Diet = Diet,
         this.BookingDate = BookingDate,
@@ -37,7 +37,7 @@ class Bookings {
                     new Bookings(
                         row.BookingID,
                         row.Email,
-                        row.ProgID,
+                        row.TierID,
                         row.ChildID,
                         row.Diet,
                         row.BookingDate,
@@ -75,13 +75,13 @@ class Bookings {
 
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO Bookings (Email, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID)
-                VALUES (@Email, @ProgID, @ChildID, @Diet, @BookingDate, 'Pending', @TransacID)
+                INSERT INTO Bookings (Email, TierID, ChildID, Diet, BookingDate, BookingStatus, TransacID)
+                VALUES (@Email, @TierID, @ChildID, @Diet, @BookingDate, 'Pending', @TransacID)
             `;
     
             const request = connection.request();
             request.input('Email', sql.VarChar, newBooking.Email);
-            request.input('ProgID', sql.Int, newBooking.ProgID);
+            request.input('TierID', sql.Int, newBooking.TierID);
             request.input('ChildID', sql.Int, newBooking.ChildID);
             request.input('Diet', sql.VarChar, newBooking.Diet);
             request.input('BookingDate', sql.DateTime, newBooking.BookingDate);
