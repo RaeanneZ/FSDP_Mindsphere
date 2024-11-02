@@ -13,15 +13,14 @@ const corsOptions = {
 };
 
 // CONTROLLERS
+const verifyJWT = require("./middlewares/authValidate");
 const progSchedController = require("./controllers/progSchedController");
 const accountController = require("./controllers/accountController");
-const progSchedController = require("./controllers/progSchedController");
 const bookingsController = require("./controllers/bookingsController");
 const paymentController = require("./controllers/paymentController");
 const programmesController = require("./controllers/programmesController");
 const ProgrammeFeedbackController = require("./controllers/programmeFeedBackController");
 const childrenController = require("./controllers/childrenController");
-const verifyJWT = require("./middlewares/authValidate");
 const paymentEmailRoutes = require("./routes/paymentEmailRoutes");
 const PaymentEmailController = require("./controllers/paymentEmailController");
 const bookingsController = require("./controllers/bookingsController");
