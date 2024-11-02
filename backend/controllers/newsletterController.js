@@ -13,8 +13,8 @@ const getAllEmail = async (req, res) => {
 const addEmailNewsletter = async (req, res) => {
     try {
         const newEmail = req.body;
-
-        await Newsletter.addEmailNewsletter(newEmail.email)
+        console.log("ILOVEBALLS",newEmail)
+        await Newsletter.addEmailNewsletter(newEmail.Email)
         res.status(201).send("Email added successfully");
 
     } catch (err) {

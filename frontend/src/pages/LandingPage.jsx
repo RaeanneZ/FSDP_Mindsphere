@@ -7,11 +7,16 @@ import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
 
 //get by email and update account and add child @hendrik
-const { accountService, childrenService } = backendService;
+const { accountService, childrenService, newsletterService } = backendService;
 const account = await accountService.getAccountByEmail(
   "hendrikyong1205@gmail.com"
 );
 console.log(account);
+
+const newsletter = await newsletterService.getAllEmails();
+console.log(newsletter)
+
+
 
 const updateAccount = await accountService.updateAccountByEmail(
   "hendrikyong1205@gmail.com",
