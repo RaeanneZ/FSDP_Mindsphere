@@ -88,6 +88,11 @@ CREATE TABLE AccountVerification (
 )
 go
 
+CREATE TABLE Newsletter (
+	Email varchar(50) not null,
+	constraint PK_Newsletter primary key (Email)
+);
+
 create table Children (
 	ChildID int not null IDENTITY(1,1),
 	GuardianEmail varchar(50) not null,
