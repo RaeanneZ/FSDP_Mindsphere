@@ -40,7 +40,6 @@ async function sendPaymentConfirmation(TransacID) {
             throw new Error("No payment found for the provided TransacID");
         }
 
-        console.log("boobs", paymentData)
         const emailData = {
             to: 'mindspheresdp@gmail.com',
             subject: `Payment Confirmation - Transaction #${payment.TransacID}`,
@@ -61,6 +60,7 @@ async function sendPaymentConfirmation(TransacID) {
 async function sendMembershipCode(email) {
     try {
         const registration = await PaymentEmailModel.getNewRegistration(email)
+        console.log("baaalss,", registration)
         const emailData = {
             to: email,
             subject: "Welcome to Mindsphere - Your Verification Code",
