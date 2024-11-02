@@ -127,7 +127,27 @@ class Payment {
             throw err;
         }
     }
+
+    static async getUnpaidTransactionByEmail(email) {
+        try {
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `SELECT * FROM Payment WHERE TransacStatus = 'Pending' AND Email = @Email`;
+            const request = connection.request();
+            request.input("Email", sql.VarChar, email);
+            
+            const result = await request.query(sqlQuery);
+            connection.close();
     
+            if (result.recordset.length === 0) {
+                return null; // Return null if no unpaid transactions
+            }
+    
+            return result.recordset[0].TransacID;
+        } catch (err) {
+            console.error("Error fetching unpaid transactions by email:", err);
+            throw err; // Re-throw error for handling in the calling function
+        }
+    }
     
 }
 

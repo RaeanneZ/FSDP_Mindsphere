@@ -52,10 +52,10 @@ class PaymentEmailModel {
 static async getNewRegistration(email) {
   try {
     const query = `
-    SELECT TOP 1 a.AccID, a.Email, a.Name as CustomerName
+    SELECT TOP 1 a.Email, a.Name as CustomerName
     FROM Account a
-    LEFT JOIN AccountVerification av ON a.AccID = av.AccID
-    WHERE av.AccID IS NULL AND a.Email = @Email`;
+    LEFT JOIN AccountVerification av ON a.Email = av.Email
+    WHERE av.Email IS NULL AND a.Email = @Email`;
   
     const pool = await sql.connect(dbConfig);
     const result = await pool.request()
@@ -64,7 +64,7 @@ static async getNewRegistration(email) {
 
     return result.recordset[0]; // Return the first record found
     } catch (error) {
-      console.error("Error fetching paid transactions:", error);
+      console.error("Error fetching paid transactioassasns:", error);
       throw error; // Propagate the error for handling
     }
 }
@@ -96,38 +96,38 @@ static async getNewRegistration(email) {
     return parseInt(code);
   }
 
-  static async storeMembershipCode(accID, code) {
+  static async storeMembershipCode(Email, code) {
     try {
       const pool = await sql.connect();
 
       // Check if a record already exists for this account
       const checkQuery = `
-                SELECT AccID FROM AccountVerification WHERE AccID = @AccID`;
+                SELECT Email FROM AccountVerification WHERE Email = @Email`;
 
       const checkResult = await pool
         .request()
-        .input("AccID", sql.Int, accID)
+        .input("Email", sql.VarChar, Email)
         .query(checkQuery);
 
       if (checkResult.recordset.length > 0) {
         const updateQuery = `
                     UPDATE AccountVerification 
                     SET verifCode = @Code 
-                    WHERE AccID = @AccID`;
+                    WHERE Email = @Email`;
 
         await pool
           .request()
-          .input("AccID", sql.Int, accID)
+          .input("Email", sql.VarChar, Email)
           .input("Code", sql.Int, code)
           .query(updateQuery);
       } else {
         const insertQuery = `
-                    INSERT INTO AccountVerification (AccID, verifCode)
-                    VALUES (@AccID, @Code)`;
+                    INSERT INTO AccountVerification (Email, verifCode)
+                    VALUES (@Email, @Code)`;
 
         await pool
           .request()
-          .input("AccID", sql.Int, accID)
+          .input("Email", sql.VarChar, Email)
           .input("Code", sql.Int, code)
           .query(insertQuery);
       }
@@ -141,7 +141,7 @@ static async getNewRegistration(email) {
     const membershipCode = this.generateMembershipCode();
 
     // Store the code in the database
-    this.storeMembershipCode(registration.AccID, membershipCode).catch(
+    this.storeMembershipCode(registration.Email, membershipCode).catch(
       (error) => console.error("Error storing membership code:", error)
     );
 
