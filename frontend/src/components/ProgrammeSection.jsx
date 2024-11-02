@@ -1,16 +1,37 @@
 import React from "react";
-import { useState } from "react";
-import { programmes } from "../constants";
+import backendService from "../utils/backendService";
 
 const ProgrammeSection = () => {
+  const { useState, useEffect } = React;
+  const { programmeService } = backendService;
   const [selectedProgrammeIndex, setSelectedProgrammeIndex] = useState(null);
+  const [programmes, setProgrammes] = useState([]); // State to hold programmes
+  const [loading, setLoading] = useState(true); // State to handle loading
 
   const handleProgrammeClick = (index) => {
     setSelectedProgrammeIndex(index);
   };
 
   // Get all programmes from backend
-  // const programmes = method called from programmes
+  const getAllProgrammes = async () => {
+    try {
+      const response = await programmeService.getAllProgrammes(); // Adjust this line based on your actual service method
+      setProgrammes(response); // Assuming response.data contains the programmes
+    } catch (error) {
+      console.error("Error fetching programmes:", error);
+      // You might want to set an error state here to display an error message
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
+  };
+
+  useEffect(() => {
+    getAllProgrammes(); // Call the async function when the component mounts
+  }, []); // Empty dependency array means this runs once when the component mounts
+
+  if (loading) {
+    return <div>Loading...</div>; // Optional loading state
+  }
 
   return (
     <div className="container mx-auto py-12">
@@ -28,14 +49,14 @@ const ProgrammeSection = () => {
           >
             <img
               src={programme.image}
-              alt={programme.alt}
+              alt={programme.Name}
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
               <h2 className="text-lg font-bold text-gray-800">
-                {programme.title}
+                {programme.Name}
               </h2>
-              <p className="text-gray-600">{programme.description}</p>
+              <p className="text-gray-600">{programme.ProgDesc}</p>
             </div>
           </div>
         ))}
