@@ -6,9 +6,28 @@ import ImageCarousel from "../components/ImageCarousel";
 import WorkshopSection from "../components/WorkshopSection";
 import Footer from "../components/Footer";
 import ProgrammeSection from "../components/ProgrammeSection";
+import backendService from "../utils/backendService";
 
 const ProductPage = () => {
+  const { programmeService } = backendService;
+  const { useState, useEffect } = React;
   const navigate = useNavigate();
+  const [programmes, setProgrammes] = useState([]); // State to hold programmes
+
+  // Get selected programme details from backend
+  const getAllProgrammes = async () => {
+    try {
+      const response = await programmeService.getAllProgrammes(); // Adjust this line based on your actual service method
+      setProgrammes(response); // Assuming response.data contains the programmes
+    } catch (error) {
+      console.error("Error fetching programmes:", error);
+      // You might want to set an error state here to display an error message
+    }
+  };
+
+  useEffect(() => {
+    getAllProgrammes(); // Call the async function when the component mounts
+  }, []); // Empty dependency array means this runs once when the component mounts
 
   const images = [
     "https://via.placeholder.com/800x400?text=Image+1",

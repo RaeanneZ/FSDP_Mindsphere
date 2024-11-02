@@ -15,10 +15,13 @@ const programmeService = {
       throw err;
     }
   },
+
+  // Backend: getProgrammeByName(progName)
 };
 
 // Payment methods
 const paymentService = {
+  // Frontend provides email -  backend has to grab the corresponding email and TransacStatus = Pending
   makePayment: async (TransacID) => {
     try {
       const response = await axios.put(
@@ -66,6 +69,7 @@ const bookingService = {
     }
   },
 
+  // Frontend provides custName, custContact, custEmail, programmeName, childrenDetails (in Array), diet, startDate, endDate, numSeats, specialReq
   addBooking: async (newBooking) => {
     try {
       const response = await axios.post(`${apiUrl}/bookings`, newBooking);
@@ -75,6 +79,8 @@ const bookingService = {
       throw err;
     }
   },
+
+  // Backend: getBookingByEmail(email) - This is for the account profile
 };
 
 //Account Methods
@@ -89,6 +95,8 @@ const accountService = {
     }
   },
 
+  // Remove password from this, append the rest of the account info inside.
+  // In account profile page, when user edit profile this will be called again
   registerAccount: async (accountData) => {
     try {
       const response = await axios.post(`${apiUrl}/register`, accountData);
@@ -98,7 +106,7 @@ const accountService = {
       throw err;
     }
   },
-
+  // Error fetching programmes: AxiosError {message: 'Network Error', name: 'AxiosError', code: 'ERR_NETWORK', config: {…}, request: XMLHttpRequest, …}
   loginAccount: async (credentials) => {
     try {
       const response = await axios.post(`${apiUrl}/account/login`, credentials);
@@ -108,6 +116,9 @@ const accountService = {
       throw err;
     }
   },
+  // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
+  // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
+  // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
 };
 
 export default {
