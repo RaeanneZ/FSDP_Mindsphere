@@ -23,7 +23,7 @@ class Newsletter {
     
             return result.recordset.map((row) => row.Email);
         } catch (err) {
-            console.error("Error obtaining all newsletter emails:", err);
+            console.error("ModelError: Error obtaining all newsletter emails:", err);
             throw err;
         }
     }
@@ -42,7 +42,7 @@ class Newsletter {
             connection.close();
             console.log("Email added successfully")
         } catch (err) {
-            console.error("Error adding email to newsletter: ", err);
+            console.error("ModelError: Error adding email to newsletter: ", err);
             throw err;
         }
     }

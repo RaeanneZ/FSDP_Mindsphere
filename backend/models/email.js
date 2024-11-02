@@ -25,7 +25,7 @@ async function sendEmail(emailData) {
         console.log("Email sent:", result);
         return result;
     } catch (error) {
-        console.error("Error sending email:", error);
+        console.error("ModelError: Error sending email:", error);
         throw error;
     }
 }

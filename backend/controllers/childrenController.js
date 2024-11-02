@@ -20,7 +20,7 @@ const addChild = async (req, res) => {
       .json({ message: "Child added successfully", child: newChild });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Internal Server Error");
   }
 };
 

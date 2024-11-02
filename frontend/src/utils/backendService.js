@@ -11,7 +11,7 @@ const programmeService = {
       const response = await axios.get(`${apiUrl}/programmes`);
       return response.data;
     } catch (err) {
-      console.error("Error getting all programmes: ", err);
+      console.error("BackendService: Error getting all programmes: ", err);
       throw err;
     }
   },
@@ -22,15 +22,16 @@ const programmeService = {
 // Payment methods
 const paymentService = {
   // Frontend provides email -  backend has to grab the corresponding email and TransacStatus = Pending
-  makePayment: async (TransacID) => {
+  makePayment: async (Email) => {
     try {
+      const paymentData = {email: Email}
       const response = await axios.put(
         `${apiUrl}/payments/makePayment`,
-        TransacID
+        paymentData
       );
       return response.data;
     } catch (err) {
-      console.error("Error making payment: ", err);
+      console.error("BackendService: Error making payment: ", err);
       throw err;
     }
   },
@@ -42,7 +43,7 @@ const progScheduleService = {
       const response = await axios.get(`${apiUrl}/schedules`);
       return response.data;
     } catch (err) {
-      console.error("Error getting all schedules: ", err);
+      console.error("BackendService: Error getting all schedules: ", err);
       throw error;
     }
   },
@@ -52,7 +53,7 @@ const progScheduleService = {
       const response = await axios.post(`${apiUrl}/schedules`, newSchedule);
       return response.data;
     } catch (err) {
-      console.error("Error adding new schedule: ", err);
+      console.error("BackendService: Error adding new schedule: ", err);
       throw err;
     }
   },
@@ -64,7 +65,7 @@ const bookingService = {
       const response = await axios.get(`${apiUrl}/bookings`);
       return response.data;
     } catch (err) {
-      console.error("Error getting all bookings: ", err);
+      console.error("BackendService: Error getting all bookings: ", err);
       throw error;
     }
   },
@@ -75,7 +76,7 @@ const bookingService = {
       const response = await axios.post(`${apiUrl}/bookings`, newBooking);
       return response.data;
     } catch (err) {
-      console.error("Error adding new booking: ", err);
+      console.error("BackendService: Error adding new booking: ", err);
       throw err;
     }
   },
@@ -90,7 +91,7 @@ const accountService = {
       const response = await axios.get(`${apiUrl}/account`);
       return response.data;
     } catch (err) {
-      console.error("Error getting all accounts: ", err);
+      console.error("BackendService: Error getting all accounts: ", err);
       throw err;
     }
   },
@@ -102,7 +103,7 @@ const accountService = {
       const response = await axios.post(`${apiUrl}/register`, accountData);
       return response.data;
     } catch (err) {
-      console.error("Error registering account: ", err);
+      console.error("BackendService: Error registering account: ", err);
       throw err;
     }
   },
@@ -113,7 +114,7 @@ const accountService = {
       const response = await axios.post(`${apiUrl}/login`, credentials);
       return response.data;
     } catch (err) {
-      console.error("Error logging in: ", err);
+      console.error("BackendService: Error logging in: ", err);
       throw err;
     }
   },
@@ -123,7 +124,7 @@ const accountService = {
       const response = await axios.get(`${apiUrl}/account/${email}`);
       return response.data;
     } catch (err) {
-      console.error("Error getting account by email: ", err);
+      console.error("BackendService: Error getting account by email: ", err);
       throw err;
     }
   },
@@ -136,7 +137,7 @@ const accountService = {
       );
       return response.data;
     } catch (err) {
-      console.error("Error updating account: ", err);
+      console.error("BackendService: Error updating account: ", err);
       throw err;
     }
   },
@@ -168,11 +169,33 @@ const childrenService = {
       });
       return response.data;
     } catch (err) {
-      console.error("Error adding child: ", err);
+      console.error("BackendService: Error adding child: ", err);
       throw err;
     }
   },
 };
+
+const newsletterService = {
+  getAllEmails: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/newsletter`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retrieving all emails: ", err);
+      throw err
+    }
+  },
+
+  addEmailNewletter: async (email) => {
+    try {
+      const emailData = {Email: email}
+      const response = await axios.post(`${apiUrl}/newsletter`, emailData);
+      return response.data;
+    }catch (err) {
+      console.error("BackendService: Error adding email to newsletter: ", err)
+    }
+  }
+}
 
 export default {
   programmeService,
@@ -181,4 +204,5 @@ export default {
   childrenService,
   bookingService,
   paymentService,
+  newsletterService
 };

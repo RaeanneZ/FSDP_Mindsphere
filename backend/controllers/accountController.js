@@ -10,7 +10,7 @@ const getAllAccount = async (req, res) => {
     res.status(200).json(account);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Internal Server Error");
   }
 };
 
@@ -20,7 +20,7 @@ const getAccountByEmail = async (req, res) => {
     res.status(200).json(account);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Internal Server Error");
   }
 };
 
@@ -33,7 +33,7 @@ const updateAccountByEmail = async (req, res) => {
     res.status(200).json(account);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Internal Server Error");
   }
 };
 
@@ -82,7 +82,7 @@ const registerAccount = async (req, res) => {
       .json({ message: "Account successfully created", Account: newAccount });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Internal Server Error");
   }
 };
 
@@ -91,7 +91,7 @@ const login = async (req, res) => {
   try {
     const account = await Account.getAccountByEmail(email);
     if (!account) {
-      return res.status(400).json({ message: "Account not found" });
+      return res.status(400).json({ message: "ControllerError: Account not found" });
     }
     const connection = await sql.connect(dbConfig);
     const sqlQuery = `SELECT * FROM Account WHERE Email = @Email`;
@@ -117,7 +117,7 @@ const login = async (req, res) => {
     return res.status(200).json({ success: true, token });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Internal Server Error");
   }
 };
 

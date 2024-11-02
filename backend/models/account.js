@@ -58,7 +58,7 @@ class Account {
           )
       );
     } catch (err) {
-      console.error("Error fetching accounts:", err);
+      console.error("ModelError: Error fetching accounts:", err);
     }
   }
 
@@ -67,7 +67,7 @@ class Account {
       const connection = await sql.connect(dbConfig);
       const sqlQuery = `SELECT * FROM Account WHERE Email = @Email`;
       const request = connection.request();
-      request.input("Email", sql.VarChar, Email);
+      request.input("Email", sql.VarChar, Email); // Specify the SQL data type for security
       const result = await request.query(sqlQuery);
       connection.close();
 
@@ -91,7 +91,7 @@ class Account {
         return null;
       }
     } catch (err) {
-      console.error("Error fetching account by email:", err);
+      console.error("ModelError: Error fetching account by email:", err);
     }
   }
 

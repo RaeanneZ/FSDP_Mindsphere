@@ -8,7 +8,7 @@ const getAllProgSchedules = async (req, res) => {
         res.status(200).json(programmeSchedule);
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error retrieving Programme Scehedules")
+        res.status(500).send("ControllerError: Error retrieving Programme Scehedules")
     }
 }
 
@@ -28,7 +28,7 @@ const addProgrammeSchedule = async (req, res) => {
         
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error adding Programme Schedule");
+        res.status(500).send("ControllerError: Error adding Programme Schedule");
     }
 };
 

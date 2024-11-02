@@ -6,12 +6,15 @@ import ValueBanner from "../components/ValueBanner";
 import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
 
-//get by email and update account and add child and verify @hendrik
-const { accountService, childrenService } = backendService;
+//get by email and update account and add child @hendrik
+const { accountService, childrenService, newsletterService } = backendService;
+/*
 const account = await accountService.getAccountByEmail(
   "hendrikyong1205@gmail.com"
 );
 console.log(account);
+
+
 
 const updateAccount = await accountService.updateAccountByEmail(
   "hendrikyong1205@gmail.com",
@@ -66,14 +69,19 @@ verifyEmailAndCode();
 // console.log("New Account Registered:", newAccount);
 // //it ends here
 
-// // PAYMENT SERVICE
-// const { paymentService } = backendService;
-// const transacID = {
-//   TransacID: 5,
-//   email: 'nancyblue@example.com'
-// }
+// NEWSLETTER SERVICE
 
-// const makePayment = await paymentService.makePayment(transacID);
+//const newsletter = await newsletterService.getAllEmails();
+//const postnewsletter = await newsletterService.addEmailNewletter("nancyblue@example.com");
+//console.log(newsletter)
+
+
+// // PAYMENT SERVICE
+//const { paymentService } = backendService;
+
+
+//const makePayment = await paymentService.makePayment("nancyblue@example.com");
+//console.log("pamyent",makePayment)
 // console.log(makePayment)
 
 // NEIL BACKEND ROUTES EXAMPLE

@@ -40,7 +40,7 @@ class Programmes {
                     ) 
             );
         } catch (err) {
-            console.error("Error retrieving programmes: ", err)
+            console.error("ModelError: Error retrieving programmes: ", err)
         }
     }
 }

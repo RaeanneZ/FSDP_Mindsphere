@@ -46,7 +46,7 @@ class Bookings {
                     )
             );
         } catch (err) {
-            console.error("Error retrieving bookings: ", err)
+            console.error("ModelError: Error retrieving bookings: ", err)
         }
     }
 
@@ -61,7 +61,7 @@ class Bookings {
             connection.close();
             return result.recordset[0].count > 0;
         } catch (err) {
-            console.error("Error checking BookingID: ", err);
+            console.error("ModelError: Error checking BookingID: ", err);
             throw err;
         }
     }
@@ -70,7 +70,7 @@ class Bookings {
         try {
             const duplicateExists = await Bookings.checkIfBookingIDExists(newBooking.BookingID);
             if (duplicateExists) {
-                throw new Error("Duplicate BookingID exists. Cannot add new booking.");
+                throw new Error("ModelError: Duplicate BookingID exists. Cannot add new booking.");
             }
 
             const connection = await sql.connect(dbConfig);
@@ -91,7 +91,7 @@ class Bookings {
             connection.close();
             console.log("Booking added successfully.");
         } catch (err) {
-            console.error("Error adding booking: ", err);
+            console.error("ModelError: Error adding booking: ", err);
             throw err;
         }
     }
