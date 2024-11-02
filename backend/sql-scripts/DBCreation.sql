@@ -31,6 +31,10 @@ if exists (select * from sysobjects where name='Payment' and type='U')
     drop table Payment
 GO
 
+if exists (select * from sysobjects where name='ProgrammeTier' and type='U')
+    drop table ProgrammeTier
+GO
+
 if exists (select * from sysobjects where name='Programmes' and type='U')
     drop table Programmes
 GO
@@ -70,12 +74,12 @@ CREATE TABLE Account (
 	Name varchar(50) not null,
 	Email varchar(50) not null unique,
 	ContactNo char(8) not null unique,
-	memberStatus char(10) not null default 'Pending',
+	memberStatus char(10) null default 'Pending',
 	memberExpiry datetime null,
-	address varchar(255) not null,
+	address varchar(255)  null,
 	dateOfBirth datetime not null,
-	relationshipToChild varchar(255) not null,
-	RoleID int not null default 2,
+	relationshipToChild varchar(255) null,
+	RoleID int null default 2,
 	Salt varchar(255) not null,
 	HashedPassword varchar(255) not null,
 	constraint PK_Account primary key (AccID),
@@ -112,18 +116,33 @@ create table Children (
 	constraint CHK_Gender check (Gender in ('M', 'F'))
 )
 GO
-
+-- removed agerange, cost, added progintro
 create table Programmes (
 	ProgID int not null,
 	Name varchar(50) not null,
+	ProgIntro varchar(255) not null,
 	ProgDesc varchar(255) not null,
 	ProgType char(10) not null,
-	AgeRange varchar(10) not null,
-	Cost money not null,
 	constraint PK_Programmes primary key (ProgID),
 	Constraint CHK_ProgType check (ProgType in ('Light','Regular','Premium'))
 )
 GO
+
+create table ProgrammeTier(
+	TierID int not null,
+	ProgID int not null,
+	TierDesc varchar(255),
+	Lunch varchar(50) not null,
+	Level varchar(50) not null,
+	Duration varchar(50) not null,
+	ClassSize varchar(50) not null,
+	AgeRange varchar(10) not null,
+	Cost money not null,
+	constraint PK_ProgrammeTier primary key (TierID),
+	constraint FK_ProgrammeTier_ProgID foreign key (ProgID) references Programmes(ProgID),
+	constraint CHK_Level check (Level in ('Beginner','Intermediate','Advanced'))
+)
+go
 
 create table Payment (
 	TransacID int not null IDENTITY(1,1),
@@ -139,22 +158,6 @@ create table Payment (
 )
 go
 
-create table Bookings (
-	BookingID int not null IDENTITY(1,1),
-	Email varchar(50) not null,
-	ProgID int not null,
-	ChildID int,
-	Diet varchar(50),
-	BookingDate datetime,
-	BookingStatus varchar(20) not null default 'Pending',
-	TransacID int null,
-	constraint PK_Bookings primary key (BookingID),
-	constraint FK_Bookings_ProgID foreign key (ProgID) references Programmes(ProgID),
-	constraint FK_Bookings_ChildID foreign key (ChildID) references Children(ChildID),
-	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID),
-	constraint CHK_BookingStatus check (BookingStatus in ('Confirmed','Cancelled','Pending'))
-)
-GO
 
 create table ProgrammeFeedback (
 	FeedbackID int not null IDENTITY(1,1),
@@ -179,6 +182,26 @@ create table ProgrammeSchedule (
 	constraint FK_ProgSchedule_ProgID foreign key (ProgID) references Programmes(ProgID)
 )
 go
+
+-- change ProgID to TierID, added SchedID
+create table Bookings (
+	BookingID int not null IDENTITY(1,1),
+	Email varchar(50) not null,
+	TierID int not null,
+	ChildID int,
+	Diet varchar(50),
+	BookingDate datetime,
+	BookingStatus varchar(20) not null default 'Pending',
+	TransacID int null,
+	SchedID int not null
+	constraint PK_Bookings primary key (BookingID),
+	constraint FK_Bookings_TierID foreign key (TierID) references ProgrammeTier(TierID),
+	constraint FK_Bookings_ChildID foreign key (ChildID) references Children(ChildID),
+	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID),
+	constraint FK_Bookings_SchedID foreign key (SchedID) references ProgrammeSchedule(SchedID),
+	constraint CHK_BookingStatus check (BookingStatus in ('Confirmed','Cancelled','Pending'))
+)
+GO
 
 -------------------------------------------------------------------------------------------------------------
 
@@ -217,17 +240,31 @@ INSERT INTO Children (GuardianEmail, Name, Gender, Dob, Needs, School, Interests
 
 
 -- Insert data into Programmes
-INSERT INTO Programmes (ProgID, Name, ProgDesc, ProgType, AgeRange, Cost) VALUES
-(1, 'Art Class', 'Basic art class for children', 'Light', '5-10', 50.00),
-(2, 'Science Camp', 'Hands-on science experiments', 'Regular', '7-12', 100.00),
-(3, 'Sports Training', 'Weekly sports training', 'Premium', '10-15', 150.00),
-(4, 'Dance Class', 'Beginner dance classes', 'Light', '5-8', 45.00),
-(5, 'Music Workshop', 'Introduction to music', 'Regular', '6-12', 90.00),
-(6, 'Coding Camp', 'Intro to coding', 'Premium', '8-14', 200.00),
-(7, 'Robotics', 'Basics of robotics', 'Regular', '10-15', 120.00),
-(8, 'Math Club', 'Math activities and games', 'Light', '7-10', 30.00),
-(9, 'Drama Club', 'Weekly drama activities', 'Regular', '8-12', 80.00),
-(10, 'Chess Club', 'Chess training sessions', 'Light', '6-10', 40.00);
+INSERT INTO Programmes (ProgID, Name, ProgIntro, ProgDesc, ProgType) VALUES
+(1, 'Art Class', 'Basic art class for children', 'Basic art class for children', 'Light'),
+(2, 'Science Camp', 'Hands-on science experiments', 'Hands-on science experiments', 'Regular'),
+(3, 'Sports Training', 'Weekly sports training', 'Weekly sports training', 'Premium'),
+(4, 'Dance Class', 'Beginner dance classes', 'Beginner dance classes', 'Light'),
+(5, 'Music Workshop', 'Introduction to music', 'Introduction to music', 'Regular'),
+(6, 'Coding Camp', 'Intro to coding', 'Intro to coding', 'Premium'),
+(7, 'Robotics', 'Basics of robotics', 'Basics of robotics', 'Regular'),
+(8, 'Math Club', 'Math activities and games', 'Math activities and games', 'Light'),
+(9, 'Drama Club', 'Weekly drama activities', 'Weekly drama activities', 'Regular'),
+(10, 'Chess Club', 'Chess training sessions', 'Chess training sessions', 'Light');
+
+-- Insert data into ProgrammeTier
+INSERT INTO ProgrammeTier (TierID, ProgID, TierDesc, Lunch, Level, Duration, ClassSize, AgeRange, Cost) VALUES
+(1, 1, 'Introductory Art Tier', 'Included', 'Beginner', '2 hours/week', '10-15', '5-10', 60.00),
+(2, 1, 'Advanced Art Tier', 'Not Included', 'Intermediate', '3 hours/week', '8-12', '8-12', 80.00),
+(3, 2, 'Science Discovery Tier', 'Included', 'Beginner', '4 hours/week', '12-15', '7-12', 120.00),
+(4, 2, 'Science Exploration Tier', 'Not Included', 'Intermediate', '5 hours/week', '10-15', '7-12', 150.00),
+(5, 3, 'Sports Fundamentals Tier', 'Included', 'Beginner', '2 hours/week', '10-15', '10-15', 140.00),
+(6, 3, 'Elite Sports Training Tier', 'Included', 'Advanced', '4 hours/week', '8-10', '10-15', 180.00),
+(7, 4, 'Beginner Dance Tier', 'Not Included', 'Beginner', '1 hour/week', '10-12', '5-8', 50.00),
+(8, 5, 'Music Basics Tier', 'Included', 'Intermediate', '2 hours/week', '8-10', '6-12', 100.00),
+(9, 6, 'Intro to Coding Tier', 'Included', 'Beginner', '3 hours/week', '15-20', '8-14', 200.00),
+(10, 7, 'Robotics 101 Tier', 'Included', 'Intermediate', '2 hours/week', '10-15', '10-15', 120.00);
+
 
 -- Insert data into Payment
 INSERT INTO Payment (Email, ProgID, Quantity, TotalCost, PaidDate, TransacStatus) VALUES
@@ -243,30 +280,7 @@ INSERT INTO Payment (Email, ProgID, Quantity, TotalCost, PaidDate, TransacStatus
 ('emmawhite@example.com', 10, 3, 40.00, '2024-10-11', 'Paid');
 
 
--- Insert data into Bookings
-INSERT INTO Bookings (Email, ProgID, ChildID, Diet, BookingDate, BookingStatus, TransacID) VALUES
-('johndoe@example.com', 1, 1, 'Vegetarian', '2024-01-15', 'Confirmed', 1),  -- Quantity 1
-('janesmith@example.com', 3, 2, 'None', '2024-02-10', 'Confirmed', 2),    -- Quantity 3
-('janesmith@example.com', 3, 3, 'None', '2024-02-10', 'Confirmed', 2),    -- Quantity 3
-('lucygray@example.com', 2, 4, 'None', '2024-03-12', 'Pending', 3),      -- Quantity 2
-('lucygray@example.com', 2, 5, 'None', '2024-03-12', 'Pending', 3),      -- Quantity 2
-('paulblack@example.com', 5, 6, 'Allergic', '2024-04-05', 'Confirmed', 4),  -- Quantity 1
-('nancyblue@example.com', 7, 7, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
-('nancyblue@example.com', 7, 8, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
-('nancyblue@example.com', 7, 9, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
-('nancyblue@example.com', 7, 10, 'Gluten-Free', '2024-05-19', 'Cancelled', 5),  -- Quantity 4
-('oliverred@example.com', 6, 1, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-('oliverred@example.com', 6, 2, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-('oliverred@example.com', 6, 3, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-('oliverred@example.com', 6, 4, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-('oliverred@example.com', 6, 5, 'None', '2024-06-21', 'Confirmed', 6),  -- Quantity 5
-('johndoe@example.com', 9, 6, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
-('johndoe@example.com', 9, 7, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
-('johndoe@example.com', 9, 8, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
-('johndoe@example.com', 9, 9, 'Kosher', '2024-09-05', 'Confirmed', 9),    -- Quantity 4
-('emmawhite@example.com', 10, 10, 'None', '2024-10-11', 'Confirmed', 10),  -- Quantity 3
-('emmawhite@example.com', 10, 1, 'None', '2024-10-11', 'Confirmed', 10),  -- Quantity 3
-('emmawhite@example.com', 10, 2, 'None', '2024-10-11', 'Confirmed', 10);  -- Quantity 3
+
 
 
 
@@ -295,3 +309,28 @@ INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VA
 (8, '2024-09-01', '2024-09-05', 'Math Center', 20),
 (9, '2024-10-10', '2024-10-15', 'Drama Theater', 25),
 (10, '2024-11-20', '2024-11-25', 'Chess Club Room', 15);
+
+-- Insert data into Bookings
+INSERT INTO Bookings (Email, TierID, ChildID, Diet, BookingDate, BookingStatus, TransacID, SchedID) VALUES
+('johndoe@example.com', 1, 1, 'Vegetarian', '2024-01-15', 'Confirmed', 1, 1),  -- Scheduled in Community Hall A
+('janesmith@example.com', 3, 2, 'None', '2024-02-10', 'Confirmed', 2, 3),     -- Scheduled in Sports Center
+('janesmith@example.com', 3, 3, 'None', '2024-02-10', 'Confirmed', 2, 3),     -- Scheduled in Sports Center
+('lucygray@example.com', 2, 4, 'None', '2024-03-12', 'Pending', 3, 2),       -- Scheduled in School Auditorium
+('lucygray@example.com', 2, 5, 'None', '2024-03-12', 'Pending', 3, 2),       -- Scheduled in School Auditorium
+('paulblack@example.com', 5, 6, 'Allergic', '2024-04-05', 'Confirmed', 4, 5),  -- Scheduled in Music Hall 1
+('nancyblue@example.com', 7, 7, 'Gluten-Free', '2024-05-19', 'Cancelled', 5, 7),  -- Scheduled in Robotics Room
+('nancyblue@example.com', 7, 8, 'Gluten-Free', '2024-05-19', 'Cancelled', 5, 7),  -- Scheduled in Robotics Room
+('nancyblue@example.com', 7, 9, 'Gluten-Free', '2024-05-19', 'Cancelled', 5, 7),  -- Scheduled in Robotics Room
+('nancyblue@example.com', 7, 10, 'Gluten-Free', '2024-05-19', 'Cancelled', 5, 7),  -- Scheduled in Robotics Room
+('oliverred@example.com', 6, 1, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
+('oliverred@example.com', 6, 2, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
+('oliverred@example.com', 6, 3, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
+('oliverred@example.com', 6, 4, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
+('oliverred@example.com', 6, 5, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
+('johndoe@example.com', 9, 6, 'Kosher', '2024-09-05', 'Confirmed', 9, 9),    -- Scheduled in Drama Theater
+('johndoe@example.com', 9, 7, 'Kosher', '2024-09-05', 'Confirmed', 9, 9),    -- Scheduled in Drama Theater
+('johndoe@example.com', 9, 8, 'Kosher', '2024-09-05', 'Confirmed', 9, 9),    -- Scheduled in Drama Theater
+('johndoe@example.com', 9, 9, 'Kosher', '2024-09-05', 'Confirmed', 9, 9),    -- Scheduled in Drama Theater
+('emmawhite@example.com', 10, 10, 'None', '2024-10-11', 'Confirmed', 10, 10),  -- Scheduled in Chess Club Room
+('emmawhite@example.com', 10, 1, 'None', '2024-10-11', 'Confirmed', 10, 10),  -- Scheduled in Chess Club Room
+('emmawhite@example.com', 10, 2, 'None', '2024-10-11', 'Confirmed', 10, 10);  -- Scheduled in Chess Club Room
