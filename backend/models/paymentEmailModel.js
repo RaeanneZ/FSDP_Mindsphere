@@ -19,7 +19,7 @@ class PaymentEmailModel {
       const result = await pool.request().query(query);
       return result.recordset;
     } catch (error) {
-      console.error("Error getting paid transactions:", error);
+      console.error("ModelError: Error getting paid transactions:", error);
       throw error;
     }
   }
@@ -44,7 +44,7 @@ class PaymentEmailModel {
 
         return result.recordset[0]; // Return the first record found
     } catch (error) {
-        console.error("Error fetching paid transactions:", error);
+        console.error("ModelError: Error fetching paid transaction:", error);
         throw error; // Propagate the error for handling
     }
 }
@@ -64,7 +64,7 @@ static async getNewRegistration(email) {
 
     return result.recordset[0]; // Return the first record found
     } catch (error) {
-      console.error("Error fetching paid transactioassasns:", error);
+      console.error("ModelError: Error fetching new registration:", error);
       throw error; // Propagate the error for handling
     }
 }
@@ -82,7 +82,7 @@ static async getNewRegistration(email) {
       const result = await pool.request().query(query);
       return result.recordset;
     } catch (error) {
-      console.error("Error getting new registrations:", error);
+      console.error("ModelError: Error getting new registrations:", error);
       throw error;
     }
   }
@@ -132,7 +132,7 @@ static async getNewRegistration(email) {
           .query(insertQuery);
       }
     } catch (error) {
-      console.error("Error storing membership code:", error);
+      console.error("ModelError: Error storing membership code:", error);
       throw error;
     }
   }
@@ -142,7 +142,7 @@ static async getNewRegistration(email) {
 
     // Store the code in the database
     this.storeMembershipCode(registration.Email, membershipCode).catch(
-      (error) => console.error("Error storing membership code:", error)
+      (error) => console.error("ModelError: Error storing membership code:", error)
     );
 
     return `

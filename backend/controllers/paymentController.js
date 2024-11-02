@@ -7,7 +7,7 @@ const getAllPayments = async (req, res) => {
         res.status(200).json(payments);
     } catch (err){
         console.error(err);
-        res.status(500).send("Error retrieving payments")
+        res.status(500).send("ControllerError: Error retrieving payments")
     }
 }
 
@@ -59,7 +59,7 @@ const makePayment = async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error making payment.");
+        res.status(500).send("ControllerError: Error making payment.");
     }
 };
 

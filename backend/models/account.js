@@ -58,7 +58,7 @@ class Account {
           )
       );
     } catch (err) {
-      console.error("Error fetching accounts:", err);
+      console.error("ModelError: Error fetching accounts:", err);
     }
   }
 
@@ -67,7 +67,7 @@ class Account {
       const connection = await sql.connect(dbConfig);
       const sqlQuery = `SELECT * FROM Account WHERE Email = @Email`;
       const request = connection.request();
-      request.input("Email", sql.VarChar, Email);
+      request.input("Email", sql.VarChar, Email); // Specify the SQL data type for security
       const result = await request.query(sqlQuery);
       connection.close();
 
@@ -91,46 +91,9 @@ class Account {
         return null;
       }
     } catch (err) {
-      console.error("Error fetching account by email:", err);
+      console.error("ModelError: Error fetching account by email:", err);
     }
   }
-
-  static async updateAccountByEmail(Email, updatedAccount) {
-    const connection = await sql.connect(dbConfig);
-
-    // Fetch the current account details
-    const currentAccount = await connection
-        .request()
-        .input("Email", sql.VarChar, Email)
-        .query("SELECT * FROM Account WHERE Email = @Email");
-
-    if (currentAccount.recordset.length === 0) {
-        throw new Error("Account not found");
-    }
-
-    const account = currentAccount.recordset[0];
-
-    // Build the update query and parameters dynamically
-    const sqlQuery = `UPDATE Account SET 
-        Name = @Name, 
-        address = @address, 
-        dateOfBirth = @dateOfBirth, 
-        relationshipToChild = @relationshipToChild 
-    WHERE Email = @Email`;
-
-    const request = connection.request();
-    request.input("Email", sql.VarChar, Email);
-    request.input("Name", sql.VarChar, updatedAccount.Name || account.Name);
-    request.input("address", sql.VarChar, updatedAccount.address || account.address);
-    request.input("dateOfBirth", sql.DateTime, updatedAccount.dateOfBirth || account.dateOfBirth);
-    request.input("relationshipToChild", sql.VarChar, updatedAccount.relationshipToChild || account.relationshipToChild);
-
-    await request.query(sqlQuery);
-    connection.close();
-
-    return this.getAccountByEmail(Email);
-}
-
 }
 
 module.exports = Account;

@@ -6,7 +6,7 @@ const getAllProgrammes = async (req, res) => {
         res.status(200).json(programmes);
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error retreiving programmes");
+        res.status(500).send("ControllerError: Error retreiving programmes");
     }
 }
 

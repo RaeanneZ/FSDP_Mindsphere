@@ -40,7 +40,7 @@ class Payment {
                     )
             ) 
         } catch (err) {
-            console.error("Error retrieving payment: ", err)
+            console.error("ModelError: Error retrieving payment: ", err)
         }
     }
 
@@ -62,7 +62,7 @@ class Payment {
             // Assuming you want to return the first result
             return result.recordset[0]; 
         } catch (error) {
-            console.error("Error fetching transaction by ID:", error);
+            console.error("ModelError: Error fetching transaction by ID:", error);
             throw error; // Propagate error to be handled by the caller
         }
     }
@@ -78,7 +78,7 @@ class Payment {
             connection.close();
             return result.recordset[0].count > 0;
         } catch (err) {
-            console.error("Error checking TransacID: ", err);
+            console.error("ModelError: Error checking TransacID: ", err);
             throw err;
         }
     }
@@ -103,7 +103,7 @@ class Payment {
             
             return { transacID }; 
         } catch (err) {
-            console.error("Error adding payment: ", err);
+            console.error("ModelError: Error adding payment: ", err);
             throw err; 
         }
     }
@@ -123,7 +123,7 @@ class Payment {
     
             connection.close();
         } catch (err) {
-            console.error("Error making payment: ", err);
+            console.error("ModelError: Error making payment: ", err);
             throw err;
         }
     }
@@ -144,7 +144,7 @@ class Payment {
     
             return result.recordset[0].TransacID;
         } catch (err) {
-            console.error("Error fetching unpaid transactions by email:", err);
+            console.error("ModelError: Error fetching unpaid transactions by email:", err);
             throw err; // Re-throw error for handling in the calling function
         }
     }

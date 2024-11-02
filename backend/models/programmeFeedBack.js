@@ -29,7 +29,7 @@ class ProgrammeFeedback {
           )
       );
     } catch (err) {
-      console.error(err);
+      console.error("ModelError: Error retreiving all feedback",err);
       throw err; // Throw the error for handling in the calling function
     } finally {
       if (connection) {
@@ -50,7 +50,7 @@ class ProgrammeFeedback {
 
       // Check if the program was found
       if (progIdResult.recordset.length === 0) {
-        throw new Error("Program not found");
+        throw new Error("ModelError: Program not found");
       }
       const progID = progIdResult.recordset[0].ProgID;
 

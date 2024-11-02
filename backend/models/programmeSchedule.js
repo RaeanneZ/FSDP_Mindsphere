@@ -40,7 +40,7 @@ class programmeSchedule {
                 )
             );
         } catch (err){
-            console.error("Error retrieving programme schedules: ", err)
+            console.error("ModelError: Error retrieving programme schedules: ", err)
         }
     }
 
@@ -55,7 +55,7 @@ class programmeSchedule {
             connection.close();
             return result.recordset[0].count > 0;
         } catch (err) {
-            console.error("Error checking if SchedID exists: ", err);
+            console.error("ModelError: Error checking if SchedID exists: ", err);
             throw err;
         }
     }
@@ -87,7 +87,7 @@ class programmeSchedule {
             connection.close();
             console.log("Programme schedule added successfully.");
         } catch (err) {
-            console.error("Error adding programme schedule: ", err);
+            console.error("ModelError: Error adding programme schedule: ", err);
         }
     }
 }

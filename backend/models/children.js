@@ -53,7 +53,7 @@ class Children {
 
       return result.recordset[0];
     } catch (err) {
-      console.error(err);
+      console.error("ModelError: Error Inserting Children Data",err);
     }
   }
 }

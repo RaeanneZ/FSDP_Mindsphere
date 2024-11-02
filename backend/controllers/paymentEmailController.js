@@ -22,7 +22,7 @@ async function sendPaymentConfirmations(req, res) {
             message: `Successfully sent ${paidTransactions.length} payment confirmation emails`,
         });
     } catch (error) {
-        console.error("Error in sendPaymentConfirmations:", error);
+        console.error("ControllerError: Error in sendPaymentConfirmations:", error);
         return res.status(500).json({
             success: false,
             message: "Failed to send payment confirmation emails",
@@ -37,7 +37,7 @@ async function sendPaymentConfirmation(TransacID) {
         const paymentData = await PaymentEmailModel.getPaidTransaction(payment.Email)
         
         if (!payment) {
-            throw new Error("No payment found for the provided TransacID");
+            throw new Error("ControllerError: No payment found for the provided TransacID");
         }
 
         const emailData = {
@@ -53,7 +53,7 @@ async function sendPaymentConfirmation(TransacID) {
             message: "Payment confirmation email sent successfully",
         };
     } catch (error) {
-        console.error("Error in sendPaymentConfirmation:", error);
+        console.error("ControllerError: Error in sendPaymentConfirmation:", error);
         throw error; // Propagate the error to handle it in the controller
     }
 }
@@ -74,7 +74,7 @@ async function sendMembershipCode(email) {
             message: "Membership verification email sent successfully",
         };
     } catch (error) {
-        console.error("Error in sendMembershipCode:", error);
+        console.error("ControllerError: Error in sendMembershipCode:", error);
         throw error; // Propagate the error to handle it in the controller
     }
 }
@@ -102,10 +102,10 @@ async function sendMembershipCodes(req, res) {
             message: `Successfully sent ${newRegistrations.length} membership verification emails`,
         });
     } catch (error) {
-        console.error("Error in sendMembershipCodes:", error);
+        console.error("ControllerError: Error in sendMembershipCodes:", error);
         return res.status(500).json({
             success: false,
-            message: "Failed to send membership verification emails",
+            message: "ControllerError: Failed to send membership verification emails",
             error: error.message,
         });
     }

@@ -8,7 +8,7 @@ const getAllFeedback = async (req, res) => {
     res.status(200).json(feedback);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Internal Server Error");
   }
 };
 
@@ -25,7 +25,7 @@ const postFeedback = async (req, res) => {
       .query(programQuery);
 
     if (programResult.recordset.length === 0) {
-      return res.status(404).send("Program not found");
+      return res.status(404).send("ControllerError: Program not found");
     }
 
     const ProgID = programResult.recordset[0].ProgID;
@@ -42,7 +42,7 @@ const postFeedback = async (req, res) => {
     res.status(201).send("Feedback submitted successfully");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Internal Server Error");
   }
 };
 

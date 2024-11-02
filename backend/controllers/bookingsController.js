@@ -10,7 +10,7 @@ const getAllBookings = async (req, res) => {
         res.status(200).json(bookings)
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error retrieving bookings")
+        res.status(500).send("ControllerError: Error retrieving bookings")
     }
 };
 
@@ -46,7 +46,7 @@ const addBooking = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error adding booking");
+        res.status(500).send("ControllerError: Error adding booking");
     }
 };
 

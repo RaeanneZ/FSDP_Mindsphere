@@ -6,7 +6,7 @@ const getAllEmail = async (req, res) => {
         res.status(200).json(emails)
     } catch (err){
         console.error(err);
-        res.status(500).send("Error retrieving all emails subscribed to newsletter")
+        res.status(500).send("ControllerError: Error retrieving all emails subscribed to newsletter")
     }
 }
 
@@ -19,7 +19,7 @@ const addEmailNewsletter = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error adding email to newsletter");
+        res.status(500).send("ControllerError: Error adding email to newsletter");
     }
 }
 
