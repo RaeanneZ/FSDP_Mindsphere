@@ -34,7 +34,6 @@ const programmeService = {
 
 // Payment methods
 const paymentService = {
-  // Frontend provides email -  backend has to grab the corresponding email and TransacStatus = Pending
   makePayment: async (Email) => {
     try {
       const paymentData = { email: Email };
@@ -93,8 +92,6 @@ const bookingService = {
       throw err;
     }
   },
-
-  // Backend: getBookingByEmail(email) - This is for the account profile
 };
 
 //Account Methods

@@ -75,7 +75,7 @@ const Navbar = () => {
             <a href="#" className="hover:text-gray-900">
               CSR
             </a>
-            <a href="#" className="hover:text-gray-900">
+            <a href="/products" className="hover:text-gray-900">
               Programmes <FontAwesomeIcon icon={faChevronDown} />
             </a>
             <a href="#" className="hover:text-gray-900">

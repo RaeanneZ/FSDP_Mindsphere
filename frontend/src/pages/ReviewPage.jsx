@@ -10,12 +10,15 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CheckoutProgress from "../components/CheckoutProgress";
 import EventDetail from "../components/EventDetail";
+import ChildPaymentForm from "../components/ChildPaymentForm";
+import backendService from "../utils/backendService";
 
 const ReviewPage = () => {
+  const { bookingService, childrenService } = backendService;
   const navigate = useNavigate();
   const location = useLocation();
   const programDetails = location.state || {}; // Fallback to an empty object if state is undefined
-
+  console.log(programDetails);
   // Check if programDetails is valid
   const isValidProgramDetails = programDetails.title && programDetails.price;
 
@@ -32,7 +35,16 @@ const ReviewPage = () => {
   const [specialRequest, setSpecialRequest] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null); // Booking
+  const [childrenData, setChildrenData] = useState(
+    Array.from({ length: quantity }, () => ({
+      name: "",
+      dob: "",
+      school: "",
+      specialLearningNeeds: "",
+      gender: "",
+    }))
+  );
 
   const calendarGridRef = useRef(null);
   const [calendarDimensions, setCalendarDimensions] = useState({
@@ -61,7 +73,14 @@ const ReviewPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleProceedToPayment = () => {
+  const handleChildDataChange = (index, childData) => {
+    const updatedChildrenData = [...childrenData];
+    updatedChildrenData[index] = childData;
+    setChildrenData(updatedChildrenData);
+    console.log("Updated Children Data:", updatedChildrenData); // Debugging line
+  };
+
+  const handleProceedToPayment = async () => {
     // Get today's date in a formatted string
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
@@ -71,6 +90,44 @@ const ReviewPage = () => {
       courseName: programDetails.title,
       dueDate: formattedDate, // Set due date to today
     };
+
+    try {
+      // Prepare the child data for sending to the backend
+      const childrenPayload = childrenData.map((child, index) => ({
+        guardianEmail: contactInfo.email,
+        name: child.name,
+        dob: child.dob,
+        gender: child.gender,
+        needs: child.specialLearningNeeds ? child.specialLearningNeeds : "None",
+      }));
+      console.log("Children Data: ", childrenPayload);
+
+      // Send child data to backend
+      for (const child of childrenPayload) {
+        console.log("Indiv child is: ", child);
+        await childrenService.addChild(child);
+
+        const newBooking = {
+          Email: contactInfo.email,
+          Tier: programDetails.tier, // Contains the tier
+          Child: [{ name: child.name }, { dob: child.dob }],
+          Diet: dietary.vegetarian
+            ? "Vegetarian"
+            : dietary.halal
+            ? "Halal"
+            : dietary.other || "None",
+          BookingDate: "2024-01-15T00:00:00.000Z", // To be updated once the calendar logic is inside
+        };
+
+        await bookingService.addBooking(newBooking);
+      }
+      sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
+      navigate("/payment");
+    } catch (error) {
+      console.error("Error processing payment: ", error);
+      // Handle error (e.g., show error message)
+    }
+
     sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
     navigate("/payment");
   };
@@ -96,6 +153,7 @@ const ReviewPage = () => {
 
         <CheckoutItem
           programName={programDetails.title}
+          programTier={programDetails.tier}
           price={parseFloat(programDetails.price)}
           quantity={quantity}
           onIncrease={() => setQuantity(quantity + 1)}
@@ -107,7 +165,16 @@ const ReviewPage = () => {
         />
         <DietaryRequirements dietary={dietary} setDietary={setDietary} />
 
-        <div className="mb-8">
+        {/* Render ChildPaymentForm components based on quantity */}
+        {Array.from({ length: quantity }, (_, index) => (
+          <ChildPaymentForm
+            key={index}
+            number={index + 1}
+            saveChildData={handleChildDataChange} // Pass the handler to each ChildPaymentForm
+          />
+        ))}
+
+        <div className="my-20">
           <h4 className="font-semibold text-lg">Select Dates</h4>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8">
