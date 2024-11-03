@@ -59,7 +59,11 @@ const ProductPage = () => {
 
   const handleSelectPlan = (plan) => {
     navigate("/review", {
-      state: plan,
+      state: {
+        title: selectedProgramme?.Name, // Assuming selectedProgramme has a Name property
+        price: plan.Cost,
+        tier: plan.Level,
+      },
     });
   };
 
