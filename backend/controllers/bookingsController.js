@@ -17,7 +17,9 @@ const getAllBookings = async (req, res) => {
 const addBooking = async (req, res) => {
     try {
         const newBooking = req.body;
+        //need find same child by name and dob to get childID
 
+        
         // Check if BookingID already exists
         const duplicateExists = await Bookings.checkIfBookingIDExists(newBooking.BookingID);
         if (duplicateExists) {
