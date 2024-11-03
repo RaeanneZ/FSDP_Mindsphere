@@ -18,7 +18,7 @@ const ReviewPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const programDetails = location.state || {}; // Fallback to an empty object if state is undefined
-
+  console.log(programDetails);
   // Check if programDetails is valid
   const isValidProgramDetails = programDetails.title && programDetails.price;
 
@@ -35,8 +35,16 @@ const ReviewPage = () => {
   const [specialRequest, setSpecialRequest] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [childrenData, setChildrenData] = useState(Array(quantity).fill({}));
+  const [selectedEvent, setSelectedEvent] = useState(null); // Booking
+  const [childrenData, setChildrenData] = useState(
+    Array.from({ length: quantity }, () => ({
+      name: "",
+      dob: "",
+      school: "",
+      specialLearningNeeds: "",
+      gender: "",
+    }))
+  );
 
   const calendarGridRef = useRef(null);
   const [calendarDimensions, setCalendarDimensions] = useState({
@@ -69,6 +77,7 @@ const ReviewPage = () => {
     const updatedChildrenData = [...childrenData];
     updatedChildrenData[index] = childData;
     setChildrenData(updatedChildrenData);
+    console.log("Updated Children Data:", updatedChildrenData); // Debugging line
   };
 
   const handleProceedToPayment = async () => {
@@ -89,35 +98,29 @@ const ReviewPage = () => {
         name: child.name,
         dob: child.dob,
         gender: child.gender,
-        needs: child.specialLearningNeeds,
+        needs: child.specialLearningNeeds ? child.specialLearningNeeds : "None",
       }));
+      console.log("Children Data: ", childrenPayload);
 
       // Send child data to backend
       for (const child of childrenPayload) {
-        console.log(child);
+        console.log("Indiv child is: ", child);
         await childrenService.addChild(child);
+
+        const newBooking = {
+          Email: contactInfo.email,
+          Tier: programDetails.tier, // Contains the tier
+          Child: [{ name: child.name }, { dob: child.dob }],
+          Diet: dietary.vegetarian
+            ? "Vegetarian"
+            : dietary.halal
+            ? "Halal"
+            : dietary.other || "None",
+          BookingDate: "2024-01-15T00:00:00.000Z", // To be updated once the calendar logic is inside
+        };
+
+        await bookingService.addBooking(newBooking);
       }
-
-      // Prepare the booking data for sending to backend
-      const bookingPayload = {
-        contactName: contactInfo.name,
-        contactNumber: contactInfo.contactNo,
-        email: contactInfo.email,
-        diet: {
-          halal: dietary.halal,
-          vegetarian: dietary.vegetarian,
-          other: dietary.other,
-        },
-        bookingDate: "2024-02-22",
-        specialRequest,
-        quantity,
-        payment: paymentData,
-        selectedEvent,
-      };
-
-      // Send booking data to backend
-      await bookingService.addBooking(bookingPayload);
-
       sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
       navigate("/payment");
     } catch (error) {
@@ -150,6 +153,7 @@ const ReviewPage = () => {
 
         <CheckoutItem
           programName={programDetails.title}
+          programTier={programDetails.tier}
           price={parseFloat(programDetails.price)}
           quantity={quantity}
           onIncrease={() => setQuantity(quantity + 1)}
@@ -166,7 +170,7 @@ const ReviewPage = () => {
           <ChildPaymentForm
             key={index}
             number={index + 1}
-            saveChildData={() => {}}
+            saveChildData={handleChildDataChange} // Pass the handler to each ChildPaymentForm
           />
         ))}
 
