@@ -20,7 +20,7 @@ const getAccountByEmail = async (req, res) => {
     res.status(200).json(account);
   } catch (err) {
     console.error(err);
-    res.status(500).send("ControllerError: Internal Server Error");
+    res.status(500).send("ControllerError: Error getting account by email");
   }
 };
 
@@ -82,7 +82,7 @@ const registerAccount = async (req, res) => {
       .json({ message: "Account successfully created", Account: newAccount });
   } catch (err) {
     console.error(err);
-    res.status(500).send("ControllerError: Internal Server Error");
+    res.status(500).send("ControllerError: Register account error");
   }
 };
 
@@ -110,6 +110,7 @@ const login = async (req, res) => {
       Name: account.Name,
       RoleID: account.RoleID,
     };
+    
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
       expiresIn: "3600s",
     });
@@ -117,7 +118,7 @@ const login = async (req, res) => {
     return res.status(200).json({ success: true, token });
   } catch (err) {
     console.error(err);
-    res.status(500).send("ControllerError: Internal Server Error");
+    res.status(500).send("ControllerError: Login Error");
   }
 };
 
@@ -148,7 +149,7 @@ const verification = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("ControllerError: Verification error");
   }
 };
 
