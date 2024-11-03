@@ -10,6 +10,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CheckoutProgress from "../components/CheckoutProgress";
 import EventDetail from "../components/EventDetail";
+import ChildPaymentForm from "../components/ChildPaymentForm";
 
 const ReviewPage = () => {
   const navigate = useNavigate();
@@ -107,7 +108,16 @@ const ReviewPage = () => {
         />
         <DietaryRequirements dietary={dietary} setDietary={setDietary} />
 
-        <div className="mb-8">
+        {/* Render ChildPaymentForm components based on quantity */}
+        {Array.from({ length: quantity }, (_, index) => (
+          <ChildPaymentForm
+            key={index}
+            number={index + 1}
+            saveChildData={() => {}}
+          />
+        ))}
+
+        <div className="my-20">
           <h4 className="font-semibold text-lg">Select Dates</h4>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8">
