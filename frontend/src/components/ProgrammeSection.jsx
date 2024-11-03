@@ -1,7 +1,7 @@
 import React from "react";
 import backendService from "../utils/backendService";
 
-const ProgrammeSection = () => {
+const ProgrammeSection = ({ onProgrammeSelect }) => {
   const { useState, useEffect } = React;
   const { programmeService } = backendService;
   const [selectedProgrammeIndex, setSelectedProgrammeIndex] = useState(null);
@@ -10,16 +10,17 @@ const ProgrammeSection = () => {
 
   const handleProgrammeClick = (index) => {
     setSelectedProgrammeIndex(index);
+    // Pass the selected programme's ID to the parent component
+    onProgrammeSelect(programmes[index]); // Assuming each programme has a unique `id`
   };
 
   // Get all programmes from backend
   const getAllProgrammes = async () => {
     try {
-      const response = await programmeService.getAllProgrammes(); // Adjust this line based on your actual service method
-      setProgrammes(response); // Assuming response.data contains the programmes
+      const response = await programmeService.getAllProgrammes();
+      setProgrammes(response);
     } catch (error) {
       console.error("Error fetching programmes:", error);
-      // You might want to set an error state here to display an error message
     } finally {
       setLoading(false); // Set loading to false after fetching
     }
@@ -41,7 +42,7 @@ const ProgrammeSection = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {programmes.map((programme, index) => (
           <div
-            key={index}
+            key={programme.progID}
             className={`bg-white rounded-lg shadow-md overflow-hidden transition duration-300 ${
               selectedProgrammeIndex === index ? "border-4 border-yellow" : ""
             }`}

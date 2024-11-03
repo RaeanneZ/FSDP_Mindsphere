@@ -13,15 +13,37 @@ const ProductPage = () => {
   const { useState, useEffect } = React;
   const navigate = useNavigate();
   const [programmes, setProgrammes] = useState([]); // State to hold programmes
+  const [pricingPlans, setPricingPlans] = useState([]); // State to hold pricing plans
+  const [selectedProgramme, setSelectedProgramme] = useState(null); // State to hold the selected programme
 
-  // Get selected programme details from backend
+  // Get all programme details from backend
   const getAllProgrammes = async () => {
     try {
-      const response = await programmeService.getAllProgrammes(); // Adjust this line based on your actual service method
-      setProgrammes(response); // Assuming response.data contains the programmes
+      const response = await programmeService.getAllProgrammes();
+      setProgrammes(response);
+      // Set the first programme as the selected programme if available
+      if (response.length > 0) {
+        const firstProgramme = response[0];
+        setSelectedProgramme(firstProgramme);
+        getProgrammeTiers(firstProgramme); // Fetch pricing plans for the first programme
+      }
     } catch (error) {
       console.error("Error fetching programmes:", error);
-      // You might want to set an error state here to display an error message
+    }
+  };
+
+  const getProgrammeTiers = async (selectedProgramme) => {
+    console.log(selectedProgramme);
+    try {
+      const response = await programmeService.getAllProgrammeTiers();
+      // Filter tiers based on the selected programmeId
+      const filteredTiers = response.filter(
+        (tier) => tier.ProgID === selectedProgramme.ProgID
+      );
+      setPricingPlans(filteredTiers);
+      console.log(filteredTiers);
+    } catch (error) {
+      console.error("Error fetching programme tiers:", error);
     }
   };
 
@@ -29,55 +51,11 @@ const ProductPage = () => {
     getAllProgrammes(); // Call the async function when the component mounts
   }, []); // Empty dependency array means this runs once when the component mounts
 
-  const images = [
-    "https://via.placeholder.com/800x400?text=Image+1",
-    "https://via.placeholder.com/800x400?text=Image+2",
-    "https://via.placeholder.com/800x400?text=Image+3",
-  ];
-
-  const pricingPlans = [
-    {
-      title: "Beginner",
-      price: "788",
-      oldPrice: "988",
-      description: "Just getting started.",
-      features: [
-        "Class size: 15 - 20",
-        "Duration: 3.5 days",
-        "Lunch provided",
-        "Lesson materials provided",
-        "Complimentary 1 year membership with access to our resources and member rates for all programmes",
-      ],
-      buttonText: "Get started",
-    },
-    {
-      title: "Intermediate",
-      price: "988",
-      oldPrice: "1188",
-      description: "Perfect for someone who wants more.",
-      features: [
-        "Class size: 12 - 15",
-        "Duration: 3 days",
-        "Lunch provided",
-        "Lesson materials provided",
-        "Complimentary 1 year membership with access to our resources and member rates for all programmes",
-      ],
-      buttonText: "Get started",
-    },
-    {
-      title: "Advanced",
-      price: "1388",
-      description: "Experts only.",
-      features: [
-        "Class size: 10",
-        "Duration: 3 days",
-        "Lunch provided",
-        "Lesson materials provided",
-        "Complimentary 1 year membership with access to our resources and member rates for all programmes",
-      ],
-      buttonText: "Get started",
-    },
-  ];
+  // Handle programme selection
+  const handleProgrammeSelect = (selectedProgramme) => {
+    setSelectedProgramme(selectedProgramme); // Set the selected programme
+    getProgrammeTiers(selectedProgramme); // Fetch tiers for the selected programme
+  };
 
   const handleSelectPlan = (plan) => {
     navigate("/review", {
@@ -85,16 +63,27 @@ const ProductPage = () => {
     });
   };
 
+  const images = [
+    "https://via.placeholder.com/800x400?text=Image+1",
+    "https://via.placeholder.com/800x400?text=Image+2",
+    "https://via.placeholder.com/800x400?text=Image+3",
+  ];
+
   return (
     <>
       <Navbar />
-      <ProgrammeSection />
+      <ProgrammeSection onProgrammeSelect={handleProgrammeSelect} />
       {/* <ImageCarousel images={images} /> */}
-      <WorkshopSection
-        images={images}
-        pricingPlans={pricingPlans}
-        onSelectPlan={handleSelectPlan}
-      />
+      {selectedProgramme ? (
+        <WorkshopSection
+          images={images}
+          pricingPlans={pricingPlans}
+          selectedProgramme={selectedProgramme}
+          onSelectPlan={handleSelectPlan}
+        />
+      ) : (
+        <div>Loading...</div> // Or some other loading state/message
+      )}
       <Footer />
     </>
   );
