@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
+//import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
 
 const apiUrl = "http://localhost:5000/api";
 
@@ -22,10 +22,13 @@ const programmeService = {
       const response = await axios.get(`${apiUrl}/programmetiers`);
       return response.data;
     } catch (err) {
-      console.error("BackendService: Error retreiving all programme tiers", err);
+      console.error(
+        "BackendService: Error retreiving all programme tiers",
+        err
+      );
       throw err;
     }
-  }
+  },
   // Backend: getProgrammeByName(progName)
 };
 
@@ -34,7 +37,7 @@ const paymentService = {
   // Frontend provides email -  backend has to grab the corresponding email and TransacStatus = Pending
   makePayment: async (Email) => {
     try {
-      const paymentData = {email: Email}
+      const paymentData = { email: Email };
       const response = await axios.put(
         `${apiUrl}/payments/makePayment`,
         paymentData
@@ -192,21 +195,20 @@ const newsletterService = {
       return response.data;
     } catch (err) {
       console.error("BackendService: Error retrieving all emails: ", err);
-      throw err
+      throw err;
     }
   },
 
   addEmailNewletter: async (email) => {
     try {
-      const emailData = {Email: email}
+      const emailData = { Email: email };
       const response = await axios.post(`${apiUrl}/newsletter`, emailData);
       return response.data;
-    }catch (err) {
-      console.error("BackendService: Error adding email to newsletter: ", err)
+    } catch (err) {
+      console.error("BackendService: Error adding email to newsletter: ", err);
     }
-  }
-}
-
+  },
+};
 
 export default {
   programmeService,
@@ -215,5 +217,5 @@ export default {
   childrenService,
   bookingService,
   paymentService,
-  newsletterService
+  newsletterService,
 };

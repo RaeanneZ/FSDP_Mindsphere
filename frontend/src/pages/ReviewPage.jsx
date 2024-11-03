@@ -14,7 +14,10 @@ import EventDetail from "../components/EventDetail";
 const ReviewPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const programDetails = location.state;
+  const programDetails = location.state || {}; // Fallback to an empty object if state is undefined
+
+  // Check if programDetails is valid
+  const isValidProgramDetails = programDetails.title && programDetails.price;
 
   const [contactInfo, setContactInfo] = useState({
     name: "",
@@ -53,15 +56,36 @@ const ReviewPage = () => {
     return () => window.removeEventListener("resize", updateCalendarDimensions);
   }, [currentDate, selectedEvent]);
 
+  // Scroll to the top of the page when the component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleProceedToPayment = () => {
+    // Get today's date in a formatted string
+    const today = new Date();
+    const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+
     const paymentData = {
       total: quantity * parseFloat(programDetails.price),
       courseName: programDetails.title,
-      dueDate: "21 Oct 2024",
+      dueDate: formattedDate, // Set due date to today
     };
     sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
     navigate("/payment");
   };
+
+  // If program details are not valid, render an error message
+  if (!isValidProgramDetails) {
+    return (
+      <div>
+        <h2>Error: No program details found.</h2>
+        <button onClick={() => navigate("/products")}>
+          Go back to Products
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

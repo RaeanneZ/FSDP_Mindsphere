@@ -16,15 +16,17 @@ const Navbar = () => {
     <div className="relative">
       <div className="flex justify-between items-center px-10 md:px-20 py-4">
         <div className="flex items-center">
-          <img
-            src={mindsphere}
-            alt="MindSphere logo"
-            className="mx-auto my-4"
-            width={120}
-          />
+          <a href="/">
+            <img
+              src={mindsphere}
+              alt="MindSphere logo"
+              className="mx-auto my-4"
+              width={120}
+            />
+          </a>
         </div>
         <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-sm">
-          <a href="#" className="hover:text-gray-900">
+          <a href="/" className="hover:text-gray-900">
             Home
           </a>
           <a href="#" className="hover:text-gray-900">
