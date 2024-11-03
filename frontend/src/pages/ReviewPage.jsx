@@ -11,8 +11,10 @@ import Footer from "../components/Footer";
 import CheckoutProgress from "../components/CheckoutProgress";
 import EventDetail from "../components/EventDetail";
 import ChildPaymentForm from "../components/ChildPaymentForm";
+import backendService from "../utils/backendService";
 
 const ReviewPage = () => {
+  const { bookingService, childrenService } = backendService;
   const navigate = useNavigate();
   const location = useLocation();
   const programDetails = location.state || {}; // Fallback to an empty object if state is undefined
@@ -34,6 +36,7 @@ const ReviewPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [childrenData, setChildrenData] = useState(Array(quantity).fill({}));
 
   const calendarGridRef = useRef(null);
   const [calendarDimensions, setCalendarDimensions] = useState({
@@ -62,7 +65,13 @@ const ReviewPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleProceedToPayment = () => {
+  const handleChildDataChange = (index, childData) => {
+    const updatedChildrenData = [...childrenData];
+    updatedChildrenData[index] = childData;
+    setChildrenData(updatedChildrenData);
+  };
+
+  const handleProceedToPayment = async () => {
     // Get today's date in a formatted string
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
@@ -72,6 +81,50 @@ const ReviewPage = () => {
       courseName: programDetails.title,
       dueDate: formattedDate, // Set due date to today
     };
+
+    try {
+      // Prepare the child data for sending to the backend
+      const childrenPayload = childrenData.map((child, index) => ({
+        guardianEmail: contactInfo.email,
+        name: child.name,
+        dob: child.dob,
+        gender: child.gender,
+        needs: child.specialLearningNeeds,
+      }));
+
+      // Send child data to backend
+      for (const child of childrenPayload) {
+        console.log(child);
+        await childrenService.addChild(child);
+      }
+
+      // Prepare the booking data for sending to backend
+      const bookingPayload = {
+        contactName: contactInfo.name,
+        contactNumber: contactInfo.contactNo,
+        email: contactInfo.email,
+        diet: {
+          halal: dietary.halal,
+          vegetarian: dietary.vegetarian,
+          other: dietary.other,
+        },
+        bookingDate: "2024-02-22",
+        specialRequest,
+        quantity,
+        payment: paymentData,
+        selectedEvent,
+      };
+
+      // Send booking data to backend
+      await bookingService.addBooking(bookingPayload);
+
+      sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
+      navigate("/payment");
+    } catch (error) {
+      console.error("Error processing payment: ", error);
+      // Handle error (e.g., show error message)
+    }
+
     sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
     navigate("/payment");
   };
