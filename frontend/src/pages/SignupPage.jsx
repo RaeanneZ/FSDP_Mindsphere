@@ -1,7 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import backendService from "../utils/backendService";
 
 const SignupPage = () => {
+  // For Backend
+  const { accountService, newsletterService } = backendService;
+
+  // Frontend
   const { useState } = React;
   const navigate = useNavigate(); // Create navigate object
   const [email, setEmail] = useState("");
@@ -16,7 +21,7 @@ const SignupPage = () => {
     verificationCode: "123456", // Example verification code
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Debug statements
@@ -31,15 +36,29 @@ const SignupPage = () => {
       return;
     }
 
-    // Check against mock database
-    // Replace this with backend function later
-    // if (
-    //   email !== mockDatabase.email ||
-    //   verificationCode !== mockDatabase.verificationCode
-    // ) {
-    //   setError("Invalid email or verification code");
-    //   return;
-    // }
+    // Check against backend
+    try {
+      const isSuccess = await accountService.verifyEmailAndCode(
+        email,
+        verificationCode
+      );
+
+      if (!isSuccess) {
+        setError(
+          "Verification failed. Please check your email and verification code."
+        );
+        return;
+      } else {
+        // If verified, subscribe to newsletter if true and register user
+        if (newsletter === true) {
+          newsletterService.addEmailNewletter(email);
+        }
+      }
+    } catch (err) {
+      setError("An error occurred while verifying your email and code.");
+      console.error(err);
+      return;
+    }
 
     // Retrieve existing parent data from session storage
     const existingParentData = JSON.parse(sessionStorage.getItem("parentData"));
