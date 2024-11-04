@@ -63,13 +63,9 @@ const ProductPage = () => {
   };
 
   const handleSelectPlan = (plan) => {
-    navigate("/review", {
-      state: {
-        title: selectedProgramme?.Name, // Assuming selectedProgramme has a Name property
-        price: plan.Cost,
-        tier: plan.Level,
-      },
-    });
+    sessionStorage.setItem("selectedPlan", JSON.stringify(plan));
+
+    navigate("/review");
   };
 
   const images = [

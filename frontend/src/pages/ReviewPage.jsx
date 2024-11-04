@@ -16,11 +16,22 @@ import backendService from "../utils/backendService";
 const ReviewPage = () => {
   const { bookingService, childrenService } = backendService;
   const navigate = useNavigate();
-  const location = useLocation();
-  const programDetails = location.state || {}; // Fallback to an empty object if state is undefined
+
+  // Get program details from session storage
+  const storedProgrammeTier = sessionStorage.getItem("selectedPlan");
+  const storedSelectedProgramme = sessionStorage.getItem("selectedProgramme");
+  const tierDetails = storedProgrammeTier
+    ? JSON.parse(storedProgrammeTier)
+    : {};
+  const programDetails = storedSelectedProgramme
+    ? JSON.parse(storedSelectedProgramme)
+    : {};
+
+  console.log(tierDetails);
   console.log(programDetails);
+
   // Check if programDetails is valid
-  const isValidProgramDetails = programDetails.title && programDetails.price;
+  const isValidProgramDetails = programDetails.Name && tierDetails.Cost;
 
   const [contactInfo, setContactInfo] = useState({
     name: "",
@@ -127,9 +138,6 @@ const ReviewPage = () => {
       console.error("Error processing payment: ", error);
       // Handle error (e.g., show error message)
     }
-
-    sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
-    navigate("/payment");
   };
 
   // If program details are not valid, render an error message
@@ -152,9 +160,9 @@ const ReviewPage = () => {
         <CheckoutProgress imageType="cart" />
 
         <CheckoutItem
-          programName={programDetails.title}
-          programTier={programDetails.tier}
-          price={parseFloat(programDetails.price)}
+          programName={programDetails.Name}
+          programTier={tierDetails.Level}
+          price={parseFloat(tierDetails.Cost)}
           quantity={quantity}
           onIncrease={() => setQuantity(quantity + 1)}
           onDecrease={() => setQuantity(Math.max(1, quantity - 1))}

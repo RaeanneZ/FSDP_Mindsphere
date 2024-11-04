@@ -10,8 +10,16 @@ const ProgrammeSection = ({ onProgrammeSelect }) => {
 
   const handleProgrammeClick = (index) => {
     setSelectedProgrammeIndex(index);
+
+    const selectedProgramme = programmes[index];
+    // Save the selected programme to session storage
+    sessionStorage.setItem(
+      "selectedProgramme",
+      JSON.stringify(selectedProgramme)
+    );
+
     // Pass the selected programme's ID to the parent component
-    onProgrammeSelect(programmes[index]); // Assuming each programme has a unique `id`
+    onProgrammeSelect(selectedProgramme); // Assuming each programme has a unique `id`
   };
 
   // Get all programmes from backend
