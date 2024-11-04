@@ -37,28 +37,28 @@ const SignupPage = () => {
     }
 
     // Check against backend
-    try {
-      const isSuccess = await accountService.verifyEmailAndCode(
-        email,
-        verificationCode
-      );
+    // try {
+    //   const isSuccess = await accountService.verifyEmailAndCode(
+    //     email,
+    //     verificationCode
+    //   );
 
-      if (!isSuccess) {
-        setError(
-          "Verification failed. Please check your email and verification code."
-        );
-        return;
-      } else {
-        // If verified, subscribe to newsletter if true and register user
-        if (newsletter === true) {
-          newsletterService.addEmailNewletter(email);
-        }
-      }
-    } catch (err) {
-      setError("An error occurred while verifying your email and code.");
-      console.error(err);
-      return;
-    }
+    //   if (!isSuccess) {
+    //     setError(
+    //       "Verification failed. Please check your email and verification code."
+    //     );
+    //     return;
+    //   } else {
+    //     // If verified, subscribe to newsletter if true and register user
+    //     if (newsletter === true) {
+    //       newsletterService.addEmailNewletter(email);
+    //     }
+    //   }
+    // } catch (err) {
+    //   setError("An error occurred while verifying your email and code.");
+    //   console.error(err);
+    //   return;
+    // }
 
     // Retrieve existing parent data from session storage
     const existingParentData = JSON.parse(sessionStorage.getItem("parentData"));
