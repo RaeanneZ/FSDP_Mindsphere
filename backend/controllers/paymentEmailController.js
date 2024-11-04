@@ -1,39 +1,65 @@
 const PaymentEmailModel = require("../models/paymentEmailModel");
 const { sendEmail } = require("../models/email");
 
-class PaymentEmailController {
-    static async sendPaymentConfirmations(req, res) {
-        try {
-            // Get all paid transactions
-            const paidTransactions =
-                await PaymentEmailModel.getPaidTransactions();
+async function sendPaymentConfirmations(req, res) {
+    try {
+        const paidTransactions = await PaymentEmailModel.getPaidTransactions();
 
-            // Send email for each transaction
-            const emailPromises = paidTransactions.map(async (payment) => {
-                const emailData = {
-                    to: payment.Email,
-                    subject: `Payment Confirmation - Transaction #${payment.TransacID}`,
-                    text: PaymentEmailModel.formatInvoiceEmail(payment),
-                };
+        const emailPromises = paidTransactions.map(async (payment) => {
+            const emailData = {
+                to: payment.Email,
+                subject: `Payment Confirmation - Transaction #${payment.TransacID}`,
+                text: PaymentEmailModel.formatPaymentEmail(payment),
+            };
+            return sendEmail(emailData);
+        });
 
-                return sendEmail(emailData);
-            });
+        await Promise.all(emailPromises);
 
-            await Promise.all(emailPromises);
-
-            return res.status(200).json({
-                success: true,
-                message: `Successfully sent ${paidTransactions.length} payment confirmation emails`,
-            });
-        } catch (error) {
-            console.error("Error in sendPaymentConfirmations:", error);
-            return res.status(500).json({
-                success: false,
-                message: "Failed to send payment confirmation emails",
-                error: error.message,
-            });
-        }
+        return res.status(200).json({
+            success: true,
+            message: `Successfully sent ${paidTransactions.length} payment confirmation emails`,
+        });
+    } catch (error) {
+        console.error("Error in sendPaymentConfirmations:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to send payment confirmation emails",
+            error: error.message,
+        });
     }
 }
 
-module.exports = PaymentEmailController;
+async function sendMembershipCodes(req, res) {
+    try {
+        const newRegistrations = await PaymentEmailModel.getNewRegistrations();
+
+        const emailPromises = newRegistrations.map(async (registration) => {
+            const emailData = {
+                to: registration.Email,
+                subject: "Welcome to Mindsphere - Your Verification Code",
+                text: PaymentEmailModel.formatMembershipEmail(registration),
+            };
+            return sendEmail(emailData);
+        });
+
+        await Promise.all(emailPromises);
+
+        return res.status(200).json({
+            success: true,
+            message: `Successfully sent ${newRegistrations.length} membership verification emails`,
+        });
+    } catch (error) {
+        console.error("Error in sendMembershipCodes:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to send membership verification emails",
+            error: error.message,
+        });
+    }
+}
+
+module.exports = {
+    sendPaymentConfirmations,
+    sendMembershipCodes,
+};

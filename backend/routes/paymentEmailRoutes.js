@@ -6,5 +6,9 @@ router.post(
     "/send-payment-confirmations",
     PaymentEmailController.sendPaymentConfirmations
 );
+router.post(
+    "/send-membership-codes",
+    PaymentEmailController.sendMembershipCodes
+);
 
 module.exports = router;
