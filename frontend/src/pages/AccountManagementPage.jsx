@@ -4,7 +4,6 @@ import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 import ChildAccordion from "../components/ChildAccordion";
-import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import backendService from "../utils/backendService";
@@ -17,9 +16,6 @@ const AccountManagementPage = () => {
   const navigate = useNavigate(); // Create history object
   const [errors, setErrors] = React.useState({}); // State for error messages
   const [children, setChildren] = React.useState([1]);
-  const addChild = () => {
-    setChildren([...children, children.length + 1]);
-  };
 
   // This is for parent form
   const [formData, setFormData] = React.useState({
@@ -29,6 +25,10 @@ const AccountManagementPage = () => {
     relationship: "",
     address: "",
   });
+
+  const addChild = () => {
+    setChildren([...children, children.length + 1]);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -105,7 +105,7 @@ const AccountManagementPage = () => {
       // };
       // Method call to send parent account details to the backend
       //const response = await accountService.registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
-      console.log("Registration successful:", response);
+      //console.log("Registration successful:", response);
 
       // Navigate to the next page
       navigate("/childPageContainer");
