@@ -64,7 +64,7 @@ function ActionButtons() {
         onMouseLeave={handleMouseLeave}
       >
         <div className="bg-white p-0.5 rounded-full flex items-center justify-center">
-          <div className="bg-[#dcaf27] p-2 rounded-full">
+          <div className="bg-yellow p-2 rounded-full">
             <img src={newsletter} alt="Newsletter" className="w-7 h-7" />
           </div>
         </div>
@@ -76,7 +76,7 @@ function ActionButtons() {
       {/* Survey Button */}
       <a href="#" target="_blank" rel="noopener noreferrer">
         <button
-          className={`bg-[#dcaf27] border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 z-20 ${
+          className={`bg-yellow border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 z-20 ${
             hoveredButton === "survey" ? "w-48" : "w-14"
           }`}
           id="survey"
@@ -84,7 +84,7 @@ function ActionButtons() {
           onMouseLeave={handleMouseLeave}
         >
           <div className="bg-white p-0.5 rounded-full flex items-center justify-center">
-            <div className="bg-[#dcaf27] p-2 rounded-full">
+            <div className="bg-yellow p-2 rounded-full">
               <img src={survey} alt="Survey" className="w-7 h-7" />
             </div>
           </div>
@@ -106,6 +106,9 @@ function ActionButtons() {
           </div>
         </div>
       </button>
+
+      {/* Conditionally render the NewsletterPopup */}
+      {isPopupVisible && <NewsletterPopup closePopup={closePopup} />}
     </div>
   );
 }

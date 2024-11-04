@@ -1,8 +1,16 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-const NewsletterPopup = () => {
+const NewsletterPopup = ({ closePopup }) => {
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md mx-auto">
+    <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md mx-auto relative">
+      <button
+        onClick={closePopup}
+        className="absolute top-2 right-2 text-gray-500 text-xl font-bold"
+      >
+        &times;
+      </button>
       <h1 className="text-2xl font-bold mb-2">
         Subscribe to our mailing list and be updated on upcoming events and
         courses!
