@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import ActionButtons from "../components/ActionButtons";
 import LandingBanner from "../components/LandingBanner";
 import ProgrammeSection from "../components/ProgrammeSection";
 import Sponsor from "../components/Sponsor";
@@ -130,6 +131,7 @@ const LandingPage = () => {
       <ProgrammeSection />
       <Sponsor />
       <ValueBanner />
+      <ActionButtons />
       <Footer />
       {/* <ActionButtons /> */}
     </>

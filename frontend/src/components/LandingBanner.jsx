@@ -14,9 +14,11 @@ const LandingBanner = () => {
           From <br /> Seasoned Speakers
         </h1>
         <p className="mt-4 text-lg md:text-2xl">We make it longer lasting</p>
-        <button className="mt-8 px-6 py-3 bg-yellow text-black font-bold rounded-full hover:bg-yellow">
-          Learn More
-        </button>
+        <a href="/products">
+          <button className="mt-8 px-6 py-3 bg-yellow text-black font-bold rounded-full hover:bg-yellow">
+            Learn More
+          </button>
+        </a>
       </div>
     </div>
   );

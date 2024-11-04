@@ -19,7 +19,7 @@ const Footer = () => {
       <nav className="my-4">
         <ul className="flex justify-center space-x-8 text-lg">
           <li>
-            <a href="#" className="hover:text-gray-600">
+            <a href="/" className="hover:text-gray-600">
               Home
             </a>
           </li>
@@ -29,7 +29,7 @@ const Footer = () => {
             </a>
           </li>
           <li>
-            <a href="#" className="hover:text-gray-600">
+            <a href="/products" className="hover:text-gray-600">
               Programmes
             </a>
           </li>

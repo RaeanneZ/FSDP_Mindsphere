@@ -2,11 +2,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import ImageCarousel from "../components/ImageCarousel";
 import WorkshopSection from "../components/WorkshopSection";
 import Footer from "../components/Footer";
 import ProgrammeSection from "../components/ProgrammeSection";
 import backendService from "../utils/backendService";
+import ActionButtons from "../components/ActionButtons";
 
 const ProductPage = () => {
   const { programmeService } = backendService;
@@ -76,8 +76,8 @@ const ProductPage = () => {
   return (
     <>
       <Navbar />
+      <ActionButtons />
       <ProgrammeSection onProgrammeSelect={handleProgrammeSelect} />
-      {/* <ImageCarousel images={images} /> */}
       {selectedProgramme ? (
         <WorkshopSection
           images={images}
