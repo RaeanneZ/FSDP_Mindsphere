@@ -4,10 +4,10 @@ import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 import ChildAccordion from "../components/ChildAccordion";
+import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import backendService from "../utils/backendService";
-import AccountSingleton from "../singletons/AccountSingleton"; // Import the AccountSingleton
 
 const AccountManagementPage = () => {
   // For Backend
@@ -56,6 +56,7 @@ const AccountManagementPage = () => {
     const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
     const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
     setFormData(updatedData); // Update the state
+    // Removed the line that tried to save child data
   };
 
   const handleSubmit = async (e) => {
@@ -66,32 +67,47 @@ const AccountManagementPage = () => {
       return; // Prevent navigation if validation fails
     }
 
-    // Get the singleton instance
-    const account = AccountSingleton.getInstance();
-    console.log("Account singleton contains: ", account.getAllAttributes());
+    // Retrieve existing parent data from session storage
+    const existingParentData =
+      JSON.parse(sessionStorage.getItem("parentData")) || [];
 
-    // Set account data
-    account.setAttribute("Name", formData.name);
-    account.setAttribute("ContactNo", formData.contactNumber);
-    account.setAttribute("DateOfBirth", formData.dob);
-    account.setAttribute("RelationshipToChild", formData.relationship);
-    account.setAttribute("Address", formData.address);
+    // Append the new form data to the existing parent data
+    existingParentData.push(formData);
+
+    // Store the updated parent data in session storage
+    sessionStorage.setItem("parentData", JSON.stringify(existingParentData));
+
+    // Store children details in session storage
+    const childData = JSON.parse(sessionStorage.getItem("childData")) || [];
+    sessionStorage.setItem("childData", JSON.stringify(childData));
 
     // Method call to send parent account details to the backend (including email and password)
     try {
       // Format results to expected fields
-      const accountData = {
-        Email: account.getAttribute("Email"),
-        Name: account.getAttribute("Name"),
-        ContactNo: account.getAttribute("ContactNo"),
-        dateOfBirth: account.getAttribute("DateOfBirth"),
-        relationshipToChild: account.getAttribute("RelationshipToChild"),
-        address: account.getAttribute("Address"),
-      };
+      // const accountData = {
+      //   Name: formData.name,
+      //   Email: existingParentData[0].email,
+      //   ContactNo: formData.contactNumber,
+      //   Password: existingParentData[0].password,
+      //   dateOfBirth: formData.dob,
+      //   relationshipToChild: formData.relationship,
+      //   address: formData.address,
+      // };
 
+      // const accountData = {
+      //   Name: "Hendrik yongT",
+      //   Email: "hendrikyongT@example.com",
+      //   ContactNo: "99990000",
+      //   Password: "password",
+      //   dateOfBirth: "1990-01-01",
+      //   relationshipToChild: "Father",
+      //   address: "123 Example St, Sample City, SC 12345",
+      // };
       // Method call to send parent account details to the backend
-      // const response = await accountService.registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
-      //console.log("Registration successful:", response);
+      //const response = await accountService.registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
+      console.log("Registration successful:", response);
+
+      // Navigate to the next page
       navigate("/childPageContainer");
     } catch (error) {
       console.error("Registration failed:", error);
@@ -101,6 +117,15 @@ const AccountManagementPage = () => {
         submit: "Registration failed. Please try again.",
       });
     }
+
+    navigate("/childPageContainer"); // Navigate to the next page
+  };
+
+  // Function to save child data in session storage
+  const saveChildData = (index, data) => {
+    const currentData = JSON.parse(sessionStorage.getItem("childData")) || [];
+    currentData[index] = data; // Update the specific child's data
+    sessionStorage.setItem("childData", JSON.stringify(currentData)); // Save updated data
   };
 
   return (
@@ -182,7 +207,11 @@ const AccountManagementPage = () => {
 
           {/* Dynamically adding Child Accordion Form */}
           {children.map((number) => (
-            <ChildAccordion key={number} number={number} />
+            <ChildAccordion
+              key={number}
+              number={number}
+              saveChildData={saveChildData}
+            />
           ))}
 
           {/* Add another child Button */}

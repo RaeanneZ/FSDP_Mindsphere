@@ -10,32 +10,29 @@
  */
 
 const AccountSingleton = (function () {
-  // Private variable to hold the instance
-  let instance;
+  let instance; // Holds the singleton instance
 
-  // Private method to initialize the instance with an empty account data object
   function init() {
-    // Private data
-    const accountData = {};
+    const accountData = {}; // Private data
 
     return {
-      // Public method to get an attribute
+      // Get an attribute from accountData
       getAttribute: function (key) {
         return accountData[key];
       },
-      // Public method to set an attribute
-      setAttribute: function (key, value) {
-        accountData[key] = value;
+      // Set or update attributes by merging with existing ones
+      setAttributes: function (newAttributes) {
+        Object.assign(accountData, newAttributes);
       },
-      // Public method to get all attributes
+      // Get a copy of all attributes
       getAllAttributes: function () {
-        return { ...accountData }; // Return a copy of the data
+        return { ...accountData };
       },
     };
   }
 
   return {
-    // Public method to get the instance
+    // Get or create the singleton instance
     getInstance: function () {
       if (!instance) {
         instance = init();

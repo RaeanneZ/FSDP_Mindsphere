@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import backendService from "../utils/backendService";
-import AccountSingleton from "../singletons/AccountSingleton"; // Import the AccountSingleton
 
 const SignupPage = () => {
   // For Backend
@@ -31,17 +30,50 @@ const SignupPage = () => {
       return;
     }
 
-    // Get the singleton instance
-    const account = AccountSingleton.getInstance();
-
-    // Set account data
-    account.setAttribute("Email", email);
-    account.setAttribute("Password", password);
-    account.setAttribute("Newsletter", newsletter);
-
     // Check against backend
-    // await signup(email, password, verifCode);
+    // try {
+    //   const isSuccess = await accountService.verifyEmailAndCode(
+    //     email,
+    //     verificationCode
+    //   );
 
+    //   if (!isSuccess) {
+    //     setError(
+    //       "Verification failed. Please check your email and verification code."
+    //     );
+    //     return;
+    //   } else {
+    //     // If verified, subscribe to newsletter if true and register user
+    //     if (newsletter === true) {
+    //       newsletterService.addEmailNewletter(email);
+    //     }
+    //   }
+    // } catch (err) {
+    //   setError("An error occurred while verifying your email and code.");
+    //   console.error(err);
+    //   return;
+    // }
+
+    // Retrieve existing parent data from session storage
+    const existingParentData = JSON.parse(sessionStorage.getItem("parentData"));
+
+    // Check if existingParentData is an array; if not, initialize it as an empty array
+    const parentDataArray = Array.isArray(existingParentData)
+      ? existingParentData
+      : [];
+
+    // Create and store the parentData
+    const parentData = {
+      email,
+      password,
+      newsletter,
+    };
+    parentDataArray.push(parentData);
+
+    // Store the updated parent data in session storage
+    sessionStorage.setItem("parentData", JSON.stringify(parentDataArray));
+
+    // Here you can add code to handle form submission, e.g., send data to a server
     navigate("/personalisation"); // Navigate to the next page
   };
 
