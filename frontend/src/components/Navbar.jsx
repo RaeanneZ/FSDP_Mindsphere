@@ -21,11 +21,11 @@ const Navbar = () => {
               src={mindsphere}
               alt="MindSphere logo"
               className="mx-auto my-4"
-              width={120}
+              width={180}
             />
           </a>
         </div>
-        <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-sm">
+        <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-xl">
           <a href="/" className="hover:text-gray-900">
             Home
           </a>

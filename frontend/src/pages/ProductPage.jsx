@@ -1,6 +1,6 @@
 // ProductPage.jsx
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import WorkshopSection from "../components/WorkshopSection";
 import Footer from "../components/Footer";
@@ -12,20 +12,25 @@ const ProductPage = () => {
   const { programmeService } = backendService;
   const { useState, useEffect } = React;
   const navigate = useNavigate();
+  const location = useLocation(); // Get the location object
   const [programmes, setProgrammes] = useState([]); // State to hold programmes
   const [pricingPlans, setPricingPlans] = useState([]); // State to hold pricing plans
-  const [selectedProgramme, setSelectedProgramme] = useState(null); // State to hold the selected programme
+  const [selectedProgramme, setSelectedProgramme] = useState(
+    location.state?.selectedProgramme || null
+  ); // Get the selected programme from state
 
   // Get all programme details from backend
   const getAllProgrammes = async () => {
     try {
       const response = await programmeService.getAllProgrammes();
       setProgrammes(response);
-      // Set the first programme as the selected programme if available
-      if (response.length > 0) {
+      // If there's no selectedProgramme, set the first one as default
+      if (!selectedProgramme && response.length > 0) {
         const firstProgramme = response[0];
         setSelectedProgramme(firstProgramme);
         getProgrammeTiers(firstProgramme); // Fetch pricing plans for the first programme
+      } else if (selectedProgramme) {
+        getProgrammeTiers(selectedProgramme); // Fetch tiers for the selected programme
       }
     } catch (error) {
       console.error("Error fetching programmes:", error);

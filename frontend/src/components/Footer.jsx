@@ -9,7 +9,7 @@ import {
 
 const Footer = () => {
   return (
-    <div className="text-center w-full h-full">
+    <div className="text-center w-full h-full mb-10">
       <img
         src={mindsphere}
         alt="MindSphere logo"
