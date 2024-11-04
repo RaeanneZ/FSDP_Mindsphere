@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import backendService from "../utils/backendService";
+import AccountSingleton from "../singletons/AccountSingleton"; // Import the AccountSingleton
 
 const SignupPage = () => {
   // For Backend

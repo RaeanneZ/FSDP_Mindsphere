@@ -4,9 +4,21 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
+import ChildrenDataSingleton from "../singletons/ChildrenSingleton"; // Import the ChildrenDataSingleton
+import AccountSingleton from "../singletons/AccountSingleton"; // Import the AccountSingleton
 
-const ChildAccordion = ({ number, saveChildData }) => {
+const ChildAccordion = ({ number }) => {
   const [isOpen, setIsOpen] = React.useState(true);
+
+  React.useEffect(() => {
+    // Load saved data on mount
+    const childrenSingleton = ChildrenDataSingleton.getInstance();
+
+    const savedData = childrenSingleton.getAllChildren();
+    if (savedData[number - 1]) {
+      setFormData(savedData[number - 1]);
+    }
+  }, [number]);
 
   const [formData, setFormData] = React.useState({
     name: "",
@@ -16,30 +28,25 @@ const ChildAccordion = ({ number, saveChildData }) => {
     gender: "",
   });
 
-  const dobInputRef = React.useRef(null); // Ref for the date input
-
-  React.useEffect(() => {
-    // Load saved data on mount
-    const savedData = JSON.parse(sessionStorage.getItem("childData")) || [];
-    if (savedData[number - 1]) {
-      setFormData(savedData[number - 1]);
-    }
-  }, [number]);
-
   const handleDateChange = (date) => {
     const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
     const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
     setFormData(updatedData); // Update the state
-    saveChildData(number - 1, updatedData); // Save to session storage
+    saveChildData(updatedData); // Save to ChildrenDataSingleton
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const updatedData = { ...formData, [name]: value };
     setFormData(updatedData);
+    console.log("Children: ", updatedData);
+    // Save data to ChildrenDataSingleton
+    saveChildData(updatedData);
+  };
 
-    // Save data to sessionStorage
-    saveChildData(number - 1, updatedData);
+  const saveChildData = (data) => {
+    const childrenSingleton = ChildrenDataSingleton.getInstance();
+    childrenSingleton.addChild(data); // Use the addChild method to store the data
   };
 
   return (

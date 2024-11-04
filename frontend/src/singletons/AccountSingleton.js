@@ -44,3 +44,5 @@ const AccountSingleton = (function () {
     },
   };
 })();
+
+export default AccountSingleton;
