@@ -35,7 +35,7 @@ const addProgrammeSchedule = async (req, res) => {
 
 const getRemainingSlots = async (req, res) => {
     try {
-        const remainingSlots = await programmeSchedule.getRemainingSlots();
+        const remainingSlots = await programmeSchedule.getRemainingSlots(req.params.schedID);
         res.status(200).json(remainingSlots);
     } catch (err) {
         console.error(err);
