@@ -4,25 +4,38 @@ const dbConfig = require("../dbConfig")
 class Bookings {
     constructor(
         BookingID,
+        Name,
         Email,
+        ContactNo,
         TierID,
-        ChildID,
+        ProgID,
+        childrenDetails,
         Diet,
+        SchedID,
+        NumSeats,
+        SpecialReq,
+        TransacID,
         BookingDate,
-        BookingStatus,
-        TransacID
-    ){
-        this.BookingID = BookingID,
-        this.Email = Email,
-        this.TierID = TierID,
-        this.ChildID = ChildID,
-        this.Diet = Diet,
-        this.BookingDate = BookingDate,
-        this.BookingStatus = BookingStatus,
-        this.TransacID = TransacID
+        BookingStatus
+    ) {
+        this.BookingID = BookingID;
+        this.Name = Name;
+        this.Email = Email;
+        this.ContactNo = ContactNo;
+        this.TierID = TierID;
+        this.ProgID = ProgID;
+        this.childrenDetails = childrenDetails; // This should be an array of child details
+        this.Diet = Diet;
+        this.SchedID = SchedID;
+        this.NumSeats = NumSeats;
+        this.SpecialReq = SpecialReq;
+        this.TransacID = TransacID;
+        this.BookingDate = BookingDate;
+        this.BookingStatus = BookingStatus;
     }
-    
-    // METHODS
+
+    //METHODS
+
     static async getAllBookings() {
         try {
             const connection = await sql.connect(dbConfig);
@@ -30,23 +43,30 @@ class Bookings {
             const request = connection.request();
             const result = await request.query(sqlQuery);
 
-            connection.close
+            connection.close();
 
             return result.recordset.map(
                 (row) =>
                     new Bookings(
                         row.BookingID,
+                        row.Name,
                         row.Email,
+                        row.ContactNo,
                         row.TierID,
-                        row.ChildID,
+                        row.ProgID,
+                        JSON.parse(row.childrenDetails), // Parse the JSON string back to an object/array
                         row.Diet,
+                        row.SchedID,
+                        row.NumSeats,
+                        row.SpecialReq,
+                        row.TransacID,
                         row.BookingDate,
-                        row.BookingStatus,
-                        row.TransacID
+                        row.BookingStatus
                     )
             );
         } catch (err) {
-            console.error("ModelError: Error retrieving bookings: ", err)
+            console.error("ModelError: Error retrieving bookings: ", err);
+            throw err;
         }
     }
 
@@ -75,16 +95,23 @@ class Bookings {
 
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO Bookings (Email, TierID, ChildID, Diet, BookingDate, BookingStatus, TransacID)
-                VALUES (@Email, @TierID, @ChildID, @Diet, @BookingDate, 'Pending', @TransacID)
-            `;
+            INSERT INTO Bookings 
+            (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, SpecialReq, TransacID, BookingDate) 
+            VALUES 
+            (@Name, @Email, @ContactNo, @TierID, @ProgID, @ChildrenDetails, @Diet, @SchedID, @NumSeats, @SpecialReq, @TransacID, GETDATE())
+        `;
     
             const request = connection.request();
-            request.input('Email', sql.VarChar, newBooking.Email);
+            request.input('Name', sql.VarChar, newBooking.custName)
+            request.input('Email', sql.VarChar, newBooking.custEmail);
+            request.input('ContactNo', sql.Char, newBooking.custContact)
             request.input('TierID', sql.Int, newBooking.TierID);
-            request.input('ChildID', sql.Int, newBooking.ChildID);
-            request.input('Diet', sql.VarChar, newBooking.Diet);
-            request.input('BookingDate', sql.DateTime, newBooking.BookingDate);
+            request.input('ProgID', sql.Int, newBooking.ProgID);
+            request.input('ChildrenDetails', sql.Text, JSON.stringify(newBooking.childrenDetails)); // Convert array to JSON string
+            request.input('Diet', sql.VarChar, newBooking.diet);
+            request.input('SchedID', sql.Int, newBooking.schedID);
+            request.input('NumSeats', sql.Int, newBooking.numSeats);
+            request.input('SpecialReq', sql.VarChar, newBooking.specialReq);
             request.input('TransacID', sql.Int, newBooking.TransacID); 
 
             await request.query(sqlQuery);

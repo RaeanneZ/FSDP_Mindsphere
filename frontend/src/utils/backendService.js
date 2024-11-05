@@ -82,9 +82,52 @@ const bookingService = {
     }
   },
 
-  // Frontend provides custName, custContact, custEmail, programmeName, childrenDetails (in Array), diet, startDate, endDate, numSeats, specialReq
-  addBooking: async (newBooking) => {
+  addBooking: async (CustName, CustContact, CustEmail, tierID, progID, ChildrenDetails, Diet, SchedID, NumSeats, SpecialReq) => {
     try {
+      /* EXAMPLE BODY 
+      {
+        "custName": "John Doe",
+        "custEmail": "johndoe@example.com",
+        "custContact": "12345678",
+        "TierID": 1,
+        "ProgID": 2,
+        "childrenDetails": [
+            {
+                "name": "Liam Gray",
+                "dob": "2015-05-10",
+                "gender": "M",
+                "school": "Bright Future School",
+                "needs": "None"
+            },
+            {
+                "name": "Ava Smith",
+                "dob": "2015-09-25",
+                "gender": "F",
+                "school": "Green Valley School",
+                "needs": "None"
+            }
+        ],
+        "diet": "Vegetarian",
+        "schedID": 3,
+        "numSeats": 2,
+        "specialReq": "Wheelchair accessible",
+        "TransacID": null
+    } */
+    
+      const newBooking = {
+        custName: CustName,
+        custContact: CustContact,
+        custEmail: CustEmail,
+        TierID: tierID,
+        ProgID: progID,
+        childrenDetails: ChildrenDetails,
+        diet: Diet,
+        schedID: SchedID,
+        numSeats: NumSeats,
+        specialReq: SpecialReq,
+        TransacID: null,
+      }
+    
       const response = await axios.post(`${apiUrl}/bookings`, newBooking);
       return response.data;
     } catch (err) {
@@ -162,15 +205,6 @@ const accountService = {
     } catch (err) {
       console.error("Error verifying email and code: ", err);
       throw err;
-    }
-  },
-
-  retrieveAccountInfo: async (email) => {
-    try {
-      const response = await axios.get(`${apiUrl}/bookings/${email}`);
-      return response.data;
-    } catch (err) {
-      console.error("Error retrieving account info: ", err);
     }
   },
 

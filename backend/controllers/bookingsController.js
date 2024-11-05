@@ -28,7 +28,7 @@ const addBooking = async (req, res) => {
 
         // dummy data not thought yet
         const paymentData = {
-            Email: newBooking.Email,
+            Email: newBooking.custEmail,
             ProgID: newBooking.ProgID,
             Quantity: 1,
             TotalCost: 45.00 
