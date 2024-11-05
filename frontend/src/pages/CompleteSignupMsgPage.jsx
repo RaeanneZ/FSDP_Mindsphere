@@ -16,11 +16,17 @@ const CompleteSignupMsgPage = () => {
         // Check if childData is valid and an array
         if (Array.isArray(childData) && childData.length > 0) {
           for (const child of childData) {
+            const shortformGender = "M";
+
+            if (child.gender == "Female") {
+              shortformGender = "F";
+            }
+
             // Ensure child is in the correct format before sending
             const childPayload = {
               name: child.name,
               dob: child.dob,
-              gender: child.gender,
+              gender: shortformGender,
               school: child.school,
               needs: child.specialLearningNeeds,
               interests: child.interests,

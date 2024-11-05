@@ -12,6 +12,7 @@ const ChildAccordion = ({ number }) => {
     dob: "",
     school: "",
     skillsets: "",
+    specialLearningNeeds: "",
     gender: "",
   });
 
@@ -105,6 +106,16 @@ const ChildAccordion = ({ number }) => {
               <option value="Female">Female</option>
             </select>
           </div>
+
+          <input
+            type="text"
+            name="specialLearningNeeds"
+            placeholder="Any Special Learning Needs"
+            className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+            value={formData.specialLearningNeeds}
+            onChange={handleInputChange}
+          />
+
           <input
             type="text"
             name="skillsets"
