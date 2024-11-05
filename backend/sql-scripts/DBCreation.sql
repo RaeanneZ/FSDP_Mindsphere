@@ -70,13 +70,13 @@ go
 
 CREATE TABLE Account (
 	AccID int not null IDENTITY(1,1),
-	Name varchar(50) not null,
+	Name varchar(50) null,
 	Email varchar(50) not null unique,
-	ContactNo char(8) not null unique,
+	ContactNo char(8)  null unique,
 	memberStatus char(10) null default 'Pending',
 	memberExpiry datetime null,
-	address varchar(255)  null,
-	dateOfBirth datetime not null,
+	address varchar(255) null,
+	dateOfBirth datetime null,
 	relationshipToChild varchar(255) null,
 	RoleID int null default 2,
 	Salt varchar(255) not null,
