@@ -84,28 +84,18 @@ const AccountManagementPage = () => {
     // Method call to send parent account details to the backend (including email and password)
     try {
       // Format results to expected fields
-      // const accountData = {
-      //   Name: formData.name,
-      //   Email: existingParentData[0].email,
-      //   ContactNo: formData.contactNumber,
-      //   Password: existingParentData[0].password,
-      //   dateOfBirth: formData.dob,
-      //   relationshipToChild: formData.relationship,
-      //   address: formData.address,
-      // };
+      const accountData = {
+        Name: formData.name,
+        Email: existingParentData[0].email,
+        ContactNo: formData.contactNumber,
+        dateOfBirth: formData.dob,
+        relationshipToChild: formData.relationship,
+        address: formData.address,
+      };
 
-      // const accountData = {
-      //   Name: "Hendrik yongT",
-      //   Email: "hendrikyongT@example.com",
-      //   ContactNo: "99990000",
-      //   Password: "password",
-      //   dateOfBirth: "1990-01-01",
-      //   relationshipToChild: "Father",
-      //   address: "123 Example St, Sample City, SC 12345",
-      // };
       // Method call to send parent account details to the backend
-      //const response = await accountService.registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
-      //console.log("Registration successful:", response);
+      const response = await accountService.registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
+      console.log("Registration:", response);
 
       // Navigate to the next page
       navigate("/childPageContainer");
