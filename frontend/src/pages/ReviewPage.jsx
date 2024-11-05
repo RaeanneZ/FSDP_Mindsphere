@@ -46,7 +46,7 @@ const ReviewPage = () => {
   const [specialRequest, setSpecialRequest] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedEvent, setSelectedEvent] = useState(null); // Booking
+  const [selectedEvent, setSelectedEvent] = useState(null); // Selected Schedule
   const [childrenData, setChildrenData] = useState(
     Array.from({ length: quantity }, () => ({
       name: "",
@@ -75,7 +75,7 @@ const ReviewPage = () => {
 
     updateCalendarDimensions();
     window.addEventListener("resize", updateCalendarDimensions);
-
+    console.log("Selected Event: ", selectedEvent);
     return () => window.removeEventListener("resize", updateCalendarDimensions);
   }, [currentDate, selectedEvent]);
 
@@ -189,6 +189,7 @@ const ReviewPage = () => {
             <div className="relative w-full sm:w-auto" ref={calendarGridRef}>
               <Calendar
                 value={currentDate}
+                selectedProgram={programDetails}
                 onChange={setCurrentDate}
                 onSelectEvent={setSelectedEvent}
               />

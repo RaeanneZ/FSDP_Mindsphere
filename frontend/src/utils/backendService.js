@@ -69,6 +69,16 @@ const progScheduleService = {
       throw err;
     }
   },
+
+  getRemainingSlots: async (SchedID) => {
+    try {
+      const response = await axios.get(`${apiUrl}/schedules/${SchedID}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting remaining slots: ", err)
+      throw err
+    }
+  }
 };
 
 const bookingService = {

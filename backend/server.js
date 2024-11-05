@@ -48,6 +48,7 @@ app.get("/", async (req, res) => {
 
 app.get("/api/schedules", progSchedController.getAllProgSchedules);
 app.post("/api/schedules", progSchedController.addProgrammeSchedule);
+app.get("/api/schedules/:schedID", progSchedController.getRemainingSlots)
 
 app.get("/api/bookings", bookingsController.getAllBookings);
 app.post("/api/bookings", bookingsController.addBooking);
