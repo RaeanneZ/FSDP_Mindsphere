@@ -128,6 +128,12 @@ const ParentChildrenPage = () => {
     }
   };
 
+  // Function to handle skipping the current child
+  const handleSkip = () => {
+    // Navigate to the CompleteSignUpMsg page directly
+    navigate("/welcome");
+  };
+
   return (
     <div
       className="w-screen h-screen bg-cover bg-center flex justify-center items-center"
@@ -136,7 +142,10 @@ const ParentChildrenPage = () => {
       <div className="w-full text-center mx-10 md:mx-20 lg:mx-40 xl:mx-80">
         {/* Determining which page to load */}
         {page === "intro" && (
-          <ChildrenInfoHeader childName={children[currentChildIndex]?.name} />
+          <ChildrenInfoHeader
+            childName={children[currentChildIndex]?.name}
+            handleSkip={handleSkip}
+          />
         )}
         {page === "name" && (
           <ChildrenNamePage
