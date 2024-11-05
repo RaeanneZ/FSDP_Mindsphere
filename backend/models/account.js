@@ -143,6 +143,57 @@ class Account {
     return this.getAccountByEmail(Email);
   }
 
+  static async retrieveAccountInfo(Email) {
+    try {
+      const connection = await sql.connect(dbConfig);
+      const sqlQuery = `SELECT * FROM Bookings WHERE Email = @Email`;
+      const request = connection.request();
+      request.input("Email", sql.VarChar, Email);
+      const result = await request.query(sqlQuery);
+      console.log(result);
+      return result.recordset;
+    } catch (err) {
+      console.error("Error fetching account by email:", err);
+    }
+  }
+
+  static async signUp(Email, Password, verifCode) {
+    try {
+      const connection = await sql.connect(dbConfig);
+
+      // Check if the verifCode exists in the AccountVerification table
+      const verificationQuery = `
+        SELECT * FROM AccountVerification 
+        WHERE Email = @Email AND verifCode = @verifCode;
+      `;
+
+      const request = connection.request();
+      request.input("Email", sql.VarChar(50), Email);
+      request.input("verifCode", sql.VarChar(50), verifCode);
+
+      const verificationResult = await request.query(verificationQuery);
+
+      if (verificationResult.recordset.length === 0) {
+        throw new Error("Invalid verification code.");
+      }
+
+      // If verifCode exists, insert into Account table
+      const insertAccountQuery = `
+        INSERT INTO Account (Email, HashedPassword) 
+        VALUES (@Email, @Password);
+      `;
+
+      request.input("Password", sql.VarChar(255), Password);
+      await request.query(insertAccountQuery);
+
+      connection.close();
+      return { message: "Account successfully created" };
+    } catch (err) {
+      console.error(err);
+      throw new Error("Error registering account: " + err.message);
+    }
+  }
+
   static async verification(Email) {
     let connection;
     try {
@@ -161,22 +212,6 @@ class Account {
       }
     }
   }
-
-  static async retrieveAccountInfo(Email) {
-    try {
-      const connection = await sql.connect(dbConfig);
-      const sqlQuery = `SELECT * FROM Bookings WHERE Email = @Email`;
-      const request = connection.request();
-      request.input("Email", sql.VarChar, Email);
-      const result = await request.query(sqlQuery);
-      console.log(result);
-      return result.recordset;
-    } catch (err) {
-      console.error("Error fetching account by email:", err);
-    }
-  }
-
-  
 }
 
 module.exports = Account;
