@@ -18,7 +18,7 @@ const ChildAccordion = ({ number }) => {
 
   React.useEffect(() => {
     // Load saved data on mount
-    const savedData = JSON.parse(sessionStorage.getItem("childData")) || {};
+    const savedData = JSON.parse(sessionStorage.getItem("childData")) || [];
     if (savedData[number - 1]) {
       setFormData(savedData[number - 1]);
     }
@@ -41,7 +41,7 @@ const ChildAccordion = ({ number }) => {
   };
 
   const saveChildData = (data) => {
-    const savedData = JSON.parse(sessionStorage.getItem("childData")) || {};
+    const savedData = JSON.parse(sessionStorage.getItem("childData")) || [];
     savedData[number - 1] = data; // Update the corresponding child data
     sessionStorage.setItem("childData", JSON.stringify(savedData)); // Save updated data to session storage
   };

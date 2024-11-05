@@ -24,13 +24,13 @@ const CompleteSignupMsgPage = () => {
 
             // Ensure child is in the correct format before sending
             const childPayload = {
-              name: child.name,
-              dob: child.dob,
-              gender: shortformGender,
-              school: child.school,
-              needs: child.specialLearningNeeds,
-              interests: child.interests,
-              guardianEmail: parentData[0].email,
+              GuardianEmail: parentData[0].email,
+              Name: child.name,
+              Gender: shortformGender,
+              Dob: child.dob,
+              Needs: child.specialLearningNeeds,
+              Interests: child.skillsets,
+              School: child.school,
             };
             // Send each child data to the backend
             await childrenService.addChild(childPayload);

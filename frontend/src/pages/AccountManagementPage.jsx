@@ -107,8 +107,6 @@ const AccountManagementPage = () => {
         submit: "Registration failed. Please try again.",
       });
     }
-
-    navigate("/childPageContainer"); // Navigate to the next page
   };
 
   // Function to save child data in session storage
