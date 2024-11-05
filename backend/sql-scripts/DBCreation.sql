@@ -181,25 +181,27 @@ create table ProgrammeSchedule (
 )
 go
 
--- change ProgID to TierID, added SchedID
 create table Bookings (
 	BookingID int not null IDENTITY(1,1),
+	Name varchar(50) not null,
 	Email varchar(50) not null,
+	ContactNo char(8) not null,
 	TierID int not null,
-	ChildID int,
-	Diet varchar(50),
-	BookingDate datetime,
-	BookingStatus varchar(20) not null default 'Pending',
-	TransacID int null,
-	SchedID int not null
+	ProgID int not null,
+	childrenDetails text not null,
+	Diet varchar(50) not null,
+	SchedID int not null,
+	NumSeats int not null,
+	SpecialReq varchar(50) null,
+	TransacID int not null,
+	BookingDate datetime not null,
 	constraint PK_Bookings primary key (BookingID),
 	constraint FK_Bookings_TierID foreign key (TierID) references ProgrammeTier(TierID),
-	constraint FK_Bookings_ChildID foreign key (ChildID) references Children(ChildID),
-	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID),
+	constraint FK_Bookings_ProgID foreign key (ProgID) references Programmes(ProgID),
 	constraint FK_Bookings_SchedID foreign key (SchedID) references ProgrammeSchedule(SchedID),
-	constraint CHK_BookingStatus check (BookingStatus in ('Confirmed','Cancelled','Pending'))
+	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID)
 )
-GO
+go
 
 -------------------------------------------------------------------------------------------------------------
 
@@ -308,27 +310,26 @@ INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VA
 (9, '2024-10-10', '2024-10-15', 'Drama Theater', 25),
 (10, '2024-11-20', '2024-11-25', 'Chess Club Room', 15);
 
--- Insert data into Bookings
-INSERT INTO Bookings (Email, TierID, ChildID, Diet, BookingDate, BookingStatus, TransacID, SchedID) VALUES
-('johndoe@example.com', 1, 1, 'Vegetarian', '2024-01-15', 'Confirmed', 1, 1),  -- Scheduled in Community Hall A
-('janesmith@example.com', 3, 2, 'None', '2024-02-10', 'Confirmed', 2, 3),     -- Scheduled in Sports Center
-('janesmith@example.com', 3, 3, 'None', '2024-02-10', 'Confirmed', 2, 3),     -- Scheduled in Sports Center
-('lucygray@example.com', 2, 4, 'None', '2024-03-12', 'Pending', 3, 2),       -- Scheduled in School Auditorium
-('lucygray@example.com', 2, 5, 'None', '2024-03-12', 'Pending', 3, 2),       -- Scheduled in School Auditorium
-('paulblack@example.com', 5, 6, 'Allergic', '2024-04-05', 'Confirmed', 4, 5),  -- Scheduled in Music Hall 1
-('nancyblue@example.com', 7, 7, 'Gluten-Free', '2024-05-19', 'Cancelled', 5, 7),  -- Scheduled in Robotics Room
-('nancyblue@example.com', 7, 8, 'Gluten-Free', '2024-05-19', 'Cancelled', 5, 7),  -- Scheduled in Robotics Room
-('nancyblue@example.com', 7, 9, 'Gluten-Free', '2024-05-19', 'Cancelled', 5, 7),  -- Scheduled in Robotics Room
-('nancyblue@example.com', 7, 10, 'Gluten-Free', '2024-05-19', 'Cancelled', 5, 7),  -- Scheduled in Robotics Room
-('oliverred@example.com', 6, 1, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
-('oliverred@example.com', 6, 2, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
-('oliverred@example.com', 6, 3, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
-('oliverred@example.com', 6, 4, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
-('oliverred@example.com', 6, 5, 'None', '2024-06-21', 'Confirmed', 6, 6),  -- Scheduled in Tech Lab A
-('johndoe@example.com', 9, 6, 'Kosher', '2024-09-05', 'Confirmed', 9, 9),    -- Scheduled in Drama Theater
-('johndoe@example.com', 9, 7, 'Kosher', '2024-09-05', 'Confirmed', 9, 9),    -- Scheduled in Drama Theater
-('johndoe@example.com', 9, 8, 'Kosher', '2024-09-05', 'Confirmed', 9, 9),    -- Scheduled in Drama Theater
-('johndoe@example.com', 9, 9, 'Kosher', '2024-09-05', 'Confirmed', 9, 9),    -- Scheduled in Drama Theater
-('emmawhite@example.com', 10, 10, 'None', '2024-10-11', 'Confirmed', 10, 10),  -- Scheduled in Chess Club Room
-('emmawhite@example.com', 10, 1, 'None', '2024-10-11', 'Confirmed', 10, 10),  -- Scheduled in Chess Club Room
-('emmawhite@example.com', 10, 2, 'None', '2024-10-11', 'Confirmed', 10, 10);  -- Scheduled in Chess Club Room
+-- Insert data into Bookings with updated structure, including BookingDate
+INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, SpecialReq, TransacID, BookingDate) VALUES
+('Lucy Gray', 'lucygray@example.com', '34567890', 2, 2, 
+ '[{"name": "Liam Gray", "dob": "2015-05-10", "gender": "M", "school": "Bright Future School", "needs": "None"}, 
+   {"name": "Lucas Gray", "dob": "2017-10-01", "gender": "M", "school": "Bright Future School", "needs": "Speech Therapy"}]', 
+ 'None', 2, 2, 'Wheelchair access', 3, '2024-03-12'),
+
+('Paul Black', 'paulblack@example.com', '45678901', 5, 5, 
+ '[{"name": "Mia Black", "dob": "2014-03-22", "gender": "F", "school": "Sunshine Academy", "needs": "Allergies"}, 
+   {"name": "Amelia Black", "dob": "2013-08-15", "gender": "F", "school": "Sunshine Academy", "needs": "Dietary Restrictions"}]', 
+ 'Allergic', 5, 2, NULL, 4, '2024-04-05'),
+
+('Jane Smith', 'janesmith@example.com', '23456789', 3, 2, 
+ '[{"name": "Ava Smith", "dob": "2015-09-25", "gender": "F", "school": "Green Valley School", "needs": "None"}]', 
+ 'None', 3, 1, NULL, 2, '2024-02-10'),
+
+('Emma White', 'emmawhite@example.com', '67890123', 10, 10, 
+ '[{"name": "James White", "dob": "2014-01-15", "gender": "M", "school": "Lakewood School", "needs": "Autism"}]', 
+ 'None', 10, 1, NULL, 10, '2024-10-11'),
+
+('Nancy Blue', 'nancyblue@example.com', '56789012', 7, 7, 
+ '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
+ 'Gluten-Free', 7, 1, 'Quiet room needed', 5, '2024-05-19');
