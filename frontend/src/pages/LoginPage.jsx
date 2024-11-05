@@ -1,6 +1,7 @@
-import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+// LoginPage.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import backendService from "../utils/backendService";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -14,6 +15,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const { login } = useAuth(); // Access the login function from context
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -40,6 +42,22 @@ const LoginPage = () => {
       console.error("Login error:", error);
       setError("An error occurred while logging in. Please try again.");
     }
+    const isValidUser = await mockApiCall(email, password);
+
+    if (isValidUser) {
+      login(); // Set loggedIn to true in the context
+      navigate("/"); // Redirect to home page
+    } else {
+      setError("Invalid email or password");
+    }
+  };
+
+  const mockApiCall = async (email, password) => {
+    const mockData = {
+      email: "user@example.com",
+      password: "password123",
+    };
+    return email === mockData.email && password === mockData.password;
   };
 
   return (
