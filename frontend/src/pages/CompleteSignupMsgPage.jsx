@@ -16,7 +16,7 @@ const CompleteSignupMsgPage = () => {
         // Check if childData is valid and an array
         if (Array.isArray(childData) && childData.length > 0) {
           for (const child of childData) {
-            const shortformGender = "M";
+            let shortformGender = "M";
 
             if (child.gender == "Female") {
               shortformGender = "F";
