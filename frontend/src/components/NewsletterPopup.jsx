@@ -1,12 +1,33 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClose,
-  faCross,
-  faPaperPlane,
-} from "@fortawesome/free-solid-svg-icons";
+import { faClose, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import backendService from "../utils/backendService";
 
 const NewsletterPopup = ({ closePopup }) => {
+  const [email, setEmail] = React.useState("");
+  const { newsletterService } = backendService;
+
+  const registerEmail = async () => {
+    // Validate email
+    if (!isGmail(email)) {
+      setError("Please enter a valid Gmail account.");
+      return;
+    }
+
+    console.log(email);
+
+    try {
+      await newsletterService.addEmailNewletter(email);
+      console.log("Email successfully added");
+    } catch (err) {
+      console.log("There is an error with adding the email! Error is: ", err);
+    }
+  };
+
+  const isGmail = (email) => {
+    const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    return gmailPattern.test(email);
+  };
   return (
     <div className="bg-lightBlue p-8 rounded-lg shadow-lg text-center max-w-md mx-auto relative">
       <button
@@ -24,9 +45,14 @@ const NewsletterPopup = ({ closePopup }) => {
         <input
           type="email"
           placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
         />
-        <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+        <button
+          onClick={registerEmail}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+        >
           <FontAwesomeIcon icon={faPaperPlane} />
         </button>
       </div>
