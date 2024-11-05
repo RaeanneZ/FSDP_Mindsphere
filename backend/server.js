@@ -60,6 +60,7 @@ app.get("/api/programmes", programmesController.getAllProgrammes);
 
 app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
+app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
 app.put("/api/account/:email", accountController.updateAccountByEmail);
 app.post("/api/register", accountController.registerAccount);
 app.post("/api/verification", accountController.verification);

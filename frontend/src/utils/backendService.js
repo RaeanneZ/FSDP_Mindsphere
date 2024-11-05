@@ -165,6 +165,15 @@ const accountService = {
     }
   },
 
+  retrieveAccountInfo: async (email) => {
+    try {
+      const response = await axios.get(`${apiUrl}/bookings/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error retrieving account info: ", err);
+    }
+  },
+
   // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
   // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
   // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in

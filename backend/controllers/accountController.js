@@ -38,15 +38,8 @@ const updateAccountByEmail = async (req, res) => {
 };
 
 const registerAccount = async (req, res) => {
-  const {
-    Name,
-    Email,
-    Password,
-    ContactNo,
-    dateOfBirth,
-    relationshipToChild,
-    address,
-  } = req.body;
+  const { Name, Email, ContactNo, dateOfBirth, relationshipToChild, address } =
+    req.body;
   try {
     console.log("Received data:", req.body);
     const existingAccount = await Account.getAccountByEmail(Email);
@@ -91,7 +84,9 @@ const login = async (req, res) => {
   try {
     const account = await Account.getAccountByEmail(email);
     if (!account) {
-      return res.status(400).json({ message: "ControllerError: Account not found" });
+      return res
+        .status(400)
+        .json({ message: "ControllerError: Account not found" });
     }
     const connection = await sql.connect(dbConfig);
     const sqlQuery = `SELECT * FROM Account WHERE Email = @Email`;
@@ -110,7 +105,7 @@ const login = async (req, res) => {
       Name: account.Name,
       RoleID: account.RoleID,
     };
-    
+
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
       expiresIn: "3600s",
     });
@@ -153,6 +148,16 @@ const verification = async (req, res) => {
   }
 };
 
+const retrieveAccountInfo = async (req, res) => {
+  try {
+    const account = await Account.retrieveAccountInfo(req.params.email);
+    return res.status(200).json(account);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("ControllerError: Retrieve Account Email Error");
+  }
+};
+
 module.exports = {
   getAllAccount,
   getAccountByEmail,
@@ -160,4 +165,5 @@ module.exports = {
   registerAccount,
   verification,
   login,
+  retrieveAccountInfo,
 };
