@@ -1,5 +1,6 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
+const bcrypt = require("bcrypt");
 
 class Account {
   //attributes
@@ -169,7 +170,7 @@ class Account {
 
       const request = connection.request();
       request.input("Email", sql.VarChar(50), Email);
-      request.input("verifCode", sql.VarChar(50), verifCode);
+      request.input("verifCode", sql.Int, verifCode);
 
       const verificationResult = await request.query(verificationQuery);
 
@@ -178,12 +179,18 @@ class Account {
       }
 
       // If verifCode exists, insert into Account table
+
+      // Hash the password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(Password, salt);
+
       const insertAccountQuery = `
-        INSERT INTO Account (Email, HashedPassword) 
-        VALUES (@Email, @Password);
+        INSERT INTO Account (Email, Salt, HashedPassword) 
+        VALUES (@Email, @salt ,@hashedPassword);
       `;
 
-      request.input("Password", sql.VarChar(255), Password);
+      request.input("salt", sql.VarChar(255), salt);
+      request.input("hashedPassword", sql.VarChar(255), hashedPassword);
       await request.query(insertAccountQuery);
 
       connection.close();

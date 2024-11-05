@@ -135,36 +135,48 @@ const retrieveAccountInfo = async (req, res) => {
 
 const signUp = async (req, res) => {
   console.log("Request Body:", req.body);
-  const { email, password, verifCode } = req.body;
+  const { email, password, verifCode: rawVerifCode } = req.body; // Rename to avoid reassigning
   const trimmedEmail = email.trim();
   const trimmedPassword = password.trim(); // Trim password for consistency
-  const trimmedVerifCode = verifCode.trim();
+  const verifCode = parseInt(rawVerifCode, 10); // Use a new variable
+
+  console.log("Verification Code:", verifCode);
+  console.log("Type of Verification Code:", typeof verifCode);
+
+  // Log the converted verifCode
+  console.log("Converted verification code:", verifCode);
 
   try {
+    // Validate the verification code
+    if (isNaN(verifCode) || verifCode < 0) {
+      return res
+        .status(400)
+        .json({ message: "Invalid verification code format" });
+    }
+
+    console.log("Final Verification Code being sent:", verifCode);
+
+    // Check verification code
     const verificationResult = await Account.verification(
       trimmedEmail,
-      trimmedVerifCode
+      verifCode
     );
 
     if (verificationResult.length === 0) {
       return res.status(400).json({ message: "Invalid verification code" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-
-    // Hash the password with the generated salt
-    const hashedPassword = await bcrypt.hash(trimmedPassword, salt);
-
-    // Attempt to register the account using the model
+    // Sign up the account
     const accountResult = await Account.signUp(
       trimmedEmail,
-      hashedPassword, // Use the hashed password
-      trimmedVerifCode
+      password,
+      verifCode
     );
 
     return res.status(201).json(accountResult); // Respond with account creation success
   } catch (err) {
     console.error(err);
+    // Check for specific error messages
     if (err.message.includes("Invalid verification code")) {
       return res.status(400).json({ message: "Invalid verification code" });
     }

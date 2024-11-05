@@ -11,7 +11,7 @@ import backendService from "../utils/backendService";
 
 const { accountService } = backendService;
 const account = await accountService.signUp(
-  "johndoe@example.com",
+  "test@example.com",
   "hendrik",
   "123456"
 );

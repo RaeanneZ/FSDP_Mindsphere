@@ -91,7 +91,6 @@ CREATE TABLE AccountVerification (
 	Email varchar(50) not null,
 	verifCode int not null,
 	constraint PK_AccountVerification primary key (Email),
-	constraint FK_AccountVer_AccID foreign key (Email) references Account(Email)
 )
 go
 
@@ -333,3 +332,6 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
 ('Nancy Blue', 'nancyblue@example.com', '56789012', 7, 7, 
  '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
  'Gluten-Free', 7, 1, 'Quiet room needed', 5, '2024-05-19');
+
+
+
