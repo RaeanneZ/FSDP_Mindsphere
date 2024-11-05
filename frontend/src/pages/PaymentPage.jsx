@@ -1,21 +1,39 @@
 // PaymentPage.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CheckoutProgress from "../components/CheckoutProgress";
 import PaymentSummary from "../components/PaymentSummary";
 import PaymentDueDate from "../components/PaymentDueDate";
 import PayNowSection from "../components/PaynowSection";
+import backendService from "../utils/backendService";
 
 const PaymentPage = () => {
+  const { paymentService } = backendService;
   const [paymentData, setPaymentData] = useState(null);
+  const navigate = useNavigate();
 
+  const storedBookingDetails = sessionStorage.getItem("bookingDetails");
+  const booking = storedBookingDetails ? JSON.parse(storedBookingDetails) : {};
+
+  console.log(booking.contactInfo.email);
   useEffect(() => {
     const data = JSON.parse(sessionStorage.getItem("paymentData"));
     if (data) {
       setPaymentData(data);
     }
   }, []);
+
+  const approvePayment = async () => {
+    if (booking.contactInfo.email) {
+      await paymentService.makePayment(booking.contactInfo.email);
+    } else {
+      console.error("Contact info is not available for payment.");
+    }
+
+    navigate("/");
+  };
 
   if (!paymentData) {
     return <p>Loading...</p>;
@@ -37,7 +55,10 @@ const PaymentPage = () => {
           <PayNowSection />
         </div>
 
-        <button className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-6 w-full">
+        <button
+          onClick={approvePayment}
+          className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-6 w-full"
+        >
           Payment Complete
         </button>
       </main>

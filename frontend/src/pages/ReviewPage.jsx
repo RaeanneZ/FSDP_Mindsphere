@@ -20,19 +20,23 @@ const ReviewPage = () => {
   // Get program details from session storage
   const storedProgrammeTier = sessionStorage.getItem("selectedPlan");
   const storedSelectedProgramme = sessionStorage.getItem("selectedProgramme");
+  const storedSelectedSchedule = sessionStorage.getItem("selectedSchedule");
   const tierDetails = storedProgrammeTier
     ? JSON.parse(storedProgrammeTier)
     : {};
   const programDetails = storedSelectedProgramme
     ? JSON.parse(storedSelectedProgramme)
     : {};
-
+  const scheduleDetails = storedSelectedSchedule
+    ? JSON.parse(storedSelectedSchedule)
+    : {};
   console.log(tierDetails);
   console.log(programDetails);
 
   // Check if programDetails is valid
   const isValidProgramDetails = programDetails.Name && tierDetails.Cost;
 
+  // State for contact info and other details
   const [contactInfo, setContactInfo] = useState({
     name: "",
     contactNo: "",
@@ -62,6 +66,21 @@ const ReviewPage = () => {
     height: "auto",
     width: "auto",
   });
+
+  // Load booking details from session storage on component mount
+  useEffect(() => {
+    const savedBookingDetails = JSON.parse(
+      sessionStorage.getItem("bookingDetails")
+    );
+    if (savedBookingDetails) {
+      setContactInfo(savedBookingDetails.contactInfo);
+      setDietary(savedBookingDetails.dietary);
+      setSpecialRequest(savedBookingDetails.specialRequest);
+      setQuantity(savedBookingDetails.quantity);
+      setChildrenData(savedBookingDetails.childrenData);
+      setCurrentDate(new Date(savedBookingDetails.currentDate));
+    }
+  }, []);
 
   useEffect(() => {
     const updateCalendarDimensions = () => {
@@ -97,7 +116,7 @@ const ReviewPage = () => {
     const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
 
     const paymentData = {
-      total: quantity * parseFloat(programDetails.price),
+      total: quantity * parseFloat(tierDetails.Cost),
       courseName: programDetails.title,
       dueDate: formattedDate, // Set due date to today
     };
@@ -111,29 +130,48 @@ const ReviewPage = () => {
         gender: child.gender,
         needs: child.specialLearningNeeds ? child.specialLearningNeeds : "None",
       }));
-      console.log("Children Data: ", childrenPayload);
+      console.log(contactInfo.email);
+      // console.log("Children Data: ", childrenData);
 
-      // Send child data to backend
-      for (const child of childrenPayload) {
-        console.log("Indiv child is: ", child);
-        await childrenService.addChild(child);
+      // // Send child data to backend
+      // for (const child of childrenPayload) {
+      // //   console.log("Indiv child is: ", child);
+      // //   await childrenService.addChild(child);
+      // }
 
-        const newBooking = {
-          Email: contactInfo.email,
-          Tier: programDetails.tier, // Contains the tier
-          Child: [{ name: child.name }, { dob: child.dob }],
-          Diet: dietary.vegetarian
-            ? "Vegetarian"
-            : dietary.halal
-            ? "Halal"
-            : dietary.other || "None",
-          BookingDate: "2024-01-15T00:00:00.000Z", // To be updated once the calendar logic is inside
-        };
+      await bookingService.addBooking(
+        contactInfo.name,
+        contactInfo.contactNo,
+        contactInfo.email,
+        tierDetails.TierID,
+        tierDetails.ProgID,
+        childrenData,
+        dietary.vegetarian
+          ? "Vegetarian"
+          : dietary.halal
+          ? "Halal"
+          : dietary.other || "None",
+        scheduleDetails.SchedID,
+        quantity,
+        specialRequest
+      );
 
-        await bookingService.addBooking(newBooking);
-      }
+      // Save booking details in session storage
+      sessionStorage.setItem(
+        "bookingDetails",
+        JSON.stringify({
+          contactInfo,
+          dietary,
+          specialRequest,
+          quantity,
+          childrenData,
+          currentDate: currentDate.toISOString(),
+        })
+      );
+
+      // Save Payment Data
       sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
-      navigate("/payment");
+      navigate("/payment", { state: { contactInfo } });
     } catch (error) {
       console.error("Error processing payment: ", error);
       // Handle error (e.g., show error message)

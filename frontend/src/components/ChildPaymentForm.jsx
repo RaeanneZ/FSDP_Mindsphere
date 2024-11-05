@@ -12,7 +12,7 @@ const ChildPaymentForm = ({ number, saveChildData }) => {
     name: "",
     dob: "",
     school: "",
-    specialLearningNeeds: "",
+    needs: "",
     gender: "",
   });
 
@@ -104,10 +104,10 @@ const ChildPaymentForm = ({ number, saveChildData }) => {
           </div>
           <input
             type="text"
-            name="specialLearningNeeds"
+            name="needs"
             placeholder="Special Learning Needs"
             className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-            value={formData.specialLearningNeeds}
+            value={formData.needs}
             onChange={handleInputChange}
             required
           />
