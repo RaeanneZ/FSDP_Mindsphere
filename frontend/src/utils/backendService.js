@@ -259,9 +259,7 @@ const accountService = {
 const childrenService = {
     addChild: async (childData) => {
         try {
-            const response = await axios.post(`${apiUrl}/addChild`, {
-                ...childData,
-            });
+            const response = await axios.post(`${apiUrl}/addChild`, childData);
             return response.data;
         } catch (err) {
             console.error("BackendService: Error adding child: ", err);
