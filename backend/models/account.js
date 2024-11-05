@@ -161,6 +161,22 @@ class Account {
       }
     }
   }
+
+  static async retrieveAccountInfo(Email) {
+    try {
+      const connection = await sql.connect(dbConfig);
+      const sqlQuery = `SELECT * FROM Bookings WHERE Email = @Email`;
+      const request = connection.request();
+      request.input("Email", sql.VarChar, Email);
+      const result = await request.query(sqlQuery);
+      console.log(result);
+      return result.recordset;
+    } catch (err) {
+      console.error("Error fetching account by email:", err);
+    }
+  }
+
+  
 }
 
 module.exports = Account;
