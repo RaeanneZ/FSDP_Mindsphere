@@ -1,5 +1,5 @@
 const PaymentEmailModel = require("../models/paymentEmailModel");
-const Payment = require("../models/payment")
+const Payment = require("../models/payment");
 const { sendEmail } = require("../models/email");
 
 async function sendPaymentConfirmations(req, res) {
@@ -22,7 +22,10 @@ async function sendPaymentConfirmations(req, res) {
             message: `Successfully sent ${paidTransactions.length} payment confirmation emails`,
         });
     } catch (error) {
-        console.error("ControllerError: Error in sendPaymentConfirmations:", error);
+        console.error(
+            "ControllerError: Error in sendPaymentConfirmations:",
+            error
+        );
         return res.status(500).json({
             success: false,
             message: "Failed to send payment confirmation emails",
@@ -34,14 +37,18 @@ async function sendPaymentConfirmations(req, res) {
 async function sendPaymentConfirmation(TransacID) {
     try {
         const payment = await Payment.getTransactionById(TransacID); // Fetch the specific payment
-        const paymentData = await PaymentEmailModel.getPaidTransaction(payment.Email)
-        
+        const paymentData = await PaymentEmailModel.getPaidTransaction(
+            payment.Email
+        );
+
         if (!payment) {
-            throw new Error("ControllerError: No payment found for the provided TransacID");
+            throw new Error(
+                "ControllerError: No payment found for the provided TransacID"
+            );
         }
 
         const emailData = {
-            to: 'mindspheresdp@gmail.com',
+            to: "mindspheresdp@gmail.com",
             subject: `Payment Confirmation - Transaction #${payment.TransacID}`,
             text: PaymentEmailModel.formatPaymentEmail(paymentData),
         };
@@ -53,14 +60,17 @@ async function sendPaymentConfirmation(TransacID) {
             message: "Payment confirmation email sent successfully",
         };
     } catch (error) {
-        console.error("ControllerError: Error in sendPaymentConfirmation:", error);
+        console.error(
+            "ControllerError: Error in sendPaymentConfirmation:",
+            error
+        );
         throw error; // Propagate the error to handle it in the controller
     }
 }
 async function sendMembershipCode(email) {
     try {
-        const registration = await PaymentEmailModel.getNewRegistration(email)
-        console.log("baaalss,", registration)
+        const registration = await PaymentEmailModel.getNewRegistration(email);
+        console.log("baaalss,", registration);
         const emailData = {
             to: email,
             subject: "Welcome to Mindsphere - Your Verification Code",
@@ -78,9 +88,6 @@ async function sendMembershipCode(email) {
         throw error; // Propagate the error to handle it in the controller
     }
 }
-
-
-
 
 async function sendMembershipCodes(req, res) {
     try {
@@ -105,7 +112,8 @@ async function sendMembershipCodes(req, res) {
         console.error("ControllerError: Error in sendMembershipCodes:", error);
         return res.status(500).json({
             success: false,
-            message: "ControllerError: Failed to send membership verification emails",
+            message:
+                "ControllerError: Failed to send membership verification emails",
             error: error.message,
         });
     }
@@ -115,5 +123,5 @@ module.exports = {
     sendPaymentConfirmations,
     sendMembershipCodes,
     sendPaymentConfirmation,
-    sendMembershipCode
+    sendMembershipCode,
 };

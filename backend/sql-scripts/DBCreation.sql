@@ -107,7 +107,7 @@ create table Children (
 	Dob datetime not null,
 	Needs varchar(50) not null,
 	School varchar(50) not null,
-	Interests text not null,
+	Interests text null,
 	constraint PK_Children primary key (ChildID),
 	constraint FK_Children_GuardianEmail foreign key (GuardianEmail) references Account(Email),
 	constraint CHK_Gender check (Gender in ('M', 'F'))
