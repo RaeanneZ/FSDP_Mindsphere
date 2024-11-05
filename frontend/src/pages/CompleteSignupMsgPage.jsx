@@ -30,9 +30,8 @@ const CompleteSignupMsgPage = () => {
               school: child.school,
               needs: child.specialLearningNeeds,
               interests: child.interests,
-              guardianEmail: parentData.email,
+              guardianEmail: parentData[0].email,
             };
-
             // Send each child data to the backend
             await childrenService.addChild(childPayload);
           }

@@ -110,10 +110,11 @@ const ChildAccordion = ({ number }) => {
           <input
             type="text"
             name="specialLearningNeeds"
-            placeholder="Any Special Learning Needs"
+            placeholder="Any Special Learning Needs (Enter None if invalid)"
             className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
             value={formData.specialLearningNeeds}
             onChange={handleInputChange}
+            required
           />
 
           <input
