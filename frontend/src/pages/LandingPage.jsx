@@ -8,6 +8,7 @@ import Sponsor from "../components/Sponsor";
 import ValueBanner from "../components/ValueBanner";
 import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
+import CorporateProgramsSection from "../components/CorporateProgramsSection";
 
 const { accountService } = backendService;
 const account = await accountService.signUp(
@@ -31,6 +32,7 @@ const LandingPage = () => {
       <Navbar />
       <LandingBanner />
       <ProgrammeSection onProgrammeSelect={handleProgrammeSelect} />
+      <CorporateProgramsSection />
       <Sponsor />
       <ValueBanner />
       <ActionButtons />
