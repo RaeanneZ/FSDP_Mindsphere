@@ -1,16 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { mindsphere } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
   faTimes,
-  faChevronDown,
   faUser,
+  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../contexts/AuthContext"; // Import the custom hook
+import { useNavigate } from "react-router-dom"; // Import useNavigate if using react-router
 
 const Navbar = () => {
-  const { useState } = React;
   const [menuOpen, setMenuOpen] = useState(false);
+  const { loggedIn, logout } = useAuth(); // Access the loggedIn state and logout function from context
+  const navigate = useNavigate(); // Initialize navigate for navigation
+
+  const handleLogout = () => {
+    logout(); // Logs out the user by updating context state
+  };
+
+  const handleProfileClick = () => {
+    if (loggedIn) {
+      navigate("/accountmanagement"); // Navigate to account management if logged in
+    }
+  };
 
   return (
     <div className="relative">
@@ -24,7 +37,7 @@ const Navbar = () => {
           />
         </div>
         <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-sm">
-          <a href="#" className="hover:text-gray-900">
+          <a href="/" className="hover:text-gray-900">
             Home
           </a>
           <a href="#" className="hover:text-gray-900">
@@ -39,12 +52,31 @@ const Navbar = () => {
           <a href="#" className="hover:text-gray-900">
             Media
           </a>
-          <a href="/login">
-            <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
-              <FontAwesomeIcon icon={faUser} className="pr-2" />
-              Login
-            </button>
-          </a>
+
+          {loggedIn ? (
+            <div className="flex items-center space-x-4">
+              <img
+                src="https://via.placeholder.com/40"
+                alt="Profile"
+                className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
+                onClick={handleProfileClick} // Add onClick to navigate on profile click
+              />
+              <button
+                onClick={handleLogout}
+                className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600 flex items-center"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="pr-2" />
+                Logout
+              </button>
+            </div>
+          ) : (
+            <a href="/login">
+              <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
+                <FontAwesomeIcon icon={faUser} className="pr-2" />
+                Login
+              </button>
+            </a>
+          )}
         </div>
         <div className="lg:hidden">
           <button
@@ -55,6 +87,8 @@ const Navbar = () => {
           </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
       {menuOpen && (
         <div className="absolute top-0 right-0 z-50 w-64 h-screen bg-white shadow-lg p-4 lg:hidden">
           <button
@@ -73,18 +107,37 @@ const Navbar = () => {
             <a href="#" className="hover:text-gray-900">
               CSR
             </a>
-            <a href="#" className="hover:text-gray-900">
-              Programmes <FontAwesomeIcon icon={faChevronDown} />
+            <a href="/products" className="hover:text-gray-900">
+              Programmes
             </a>
             <a href="#" className="hover:text-gray-900">
-              Media <FontAwesomeIcon icon={faChevronDown} />
+              Media
             </a>
-            <a href="/login">
-              <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
-                <FontAwesomeIcon icon={faUser} className="pr-2" />
-                Login
-              </button>
-            </a>
+
+            {loggedIn ? (
+              <div className="flex items-center space-x-2">
+                <img
+                  src="https://via.placeholder.com/40"
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full border border-gray-300 cursor-pointer"
+                  onClick={handleProfileClick} // Add onClick to navigate on profile click
+                />
+                <button
+                  onClick={handleLogout}
+                  className="bg-yellow text-white w-24 px-4 py-2 rounded-full hover:bg-yellow-600 flex items-center justify-center"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="pr-2" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <a href="/login">
+                <button className="bg-yellow text-white w-24 px-4 py-2 rounded-full hover:bg-yellow-600 flex items-center justify-center">
+                  <FontAwesomeIcon icon={faUser} className="pr-2" />
+                  Login
+                </button>
+              </a>
+            )}
           </nav>
         </div>
       )}
