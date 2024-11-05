@@ -110,7 +110,7 @@ const accountService = {
   // In account profile page, when user edit profile this will be called again
   registerAccount: async (accountData) => {
     try {
-      const response = await axios.post(`${apiUrl}/register`, accountData);
+      const response = await axios.put(`${apiUrl}/register`, accountData);
       return response.data;
     } catch (err) {
       console.error("BackendService: Error registering account: ", err);
