@@ -13,7 +13,9 @@ USE Mindsphere;
 GO
 
 -------------------------------------------------------------------------------------------------------------
-
+if exists (select * from sysobjects where name='Bookings' and type='U')
+    drop table Bookings
+GO
 
 if exists (select * from sysobjects where name='ProgrammeSchedule' and type='U')
     drop table ProgrammeSchedule
@@ -23,9 +25,6 @@ if exists (select * from sysobjects where name='ProgrammeFeedback' and type='U')
     drop table ProgrammeFeedback
 GO
 
-if exists (select * from sysobjects where name='Bookings' and type='U')
-    drop table Bookings
-GO
 
 if exists (select * from sysobjects where name='Payment' and type='U')
     drop table Payment
@@ -99,7 +98,6 @@ go
 CREATE TABLE Newsletter (
 	Email varchar(50) not null,
 	constraint PK_Newsletter primary key (Email),
-	constraint FK_Newsletter_Email foreign key (Email) references Account(Email)
 );
 
 create table Children (
