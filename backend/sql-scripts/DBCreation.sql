@@ -297,18 +297,19 @@ INSERT INTO ProgrammeFeedback (ProgID, AccID, FdbkDesc) VALUES
 (9, 5, 'My child improved a lot.'),
 (10, 10, 'Excellent program for beginners.');
 
--- Insert data into ProgrammeSchedule
+-- Insert data into ProgrammeSchedule with specific start and end times
 INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VALUES
-(1, '2024-02-01', '2024-02-10', 'Community Hall A', 20),
-(2, '2024-03-15', '2024-03-20', 'School Auditorium', 25),
-(3, '2024-04-01', '2024-04-10', 'Sports Center', 30),
-(4, '2024-05-05', '2024-05-12', 'Dance Studio B', 15),
-(5, '2024-06-15', '2024-06-25', 'Music Hall 1', 20),
-(6, '2024-07-10', '2024-07-15', 'Tech Lab A', 25),
-(7, '2024-08-05', '2024-08-12', 'Robotics Room', 30),
-(8, '2024-09-01', '2024-09-05', 'Math Center', 20),
-(9, '2024-10-10', '2024-10-15', 'Drama Theater', 25),
-(10, '2024-11-20', '2024-11-25', 'Chess Club Room', 15);
+(1, '2024-02-01 09:00:00', '2024-02-10 17:00:00', 'Community Hall A', 20),
+(2, '2024-03-15 10:00:00', '2024-03-20 16:00:00', 'School Auditorium', 25),
+(3, '2024-04-01 08:30:00', '2024-04-10 18:00:00', 'Sports Center', 30),
+(4, '2024-05-05 09:00:00', '2024-05-12 15:00:00', 'Dance Studio B', 15),
+(5, '2024-06-15 10:00:00', '2024-06-25 17:30:00', 'Music Hall 1', 20),
+(6, '2024-07-10 11:00:00', '2024-07-15 14:00:00', 'Tech Lab A', 25),
+(7, '2024-08-05 09:30:00', '2024-08-12 16:30:00', 'Robotics Room', 30),
+(8, '2024-09-01 10:00:00', '2024-09-05 15:30:00', 'Math Center', 20),
+(9, '2024-10-10 13:00:00', '2024-10-15 19:00:00', 'Drama Theater', 25),
+(10, '2024-11-20 09:00:00', '2024-11-25 17:00:00', 'Chess Club Room', 15);
+
 
 -- Insert data into Bookings with updated structure, including BookingDate
 INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, SpecialReq, TransacID, BookingDate) VALUES
