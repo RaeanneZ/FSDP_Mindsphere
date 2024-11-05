@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   format,
   add,
@@ -9,7 +9,9 @@ import {
   setDate,
   setMonth,
   setYear,
+  eachDayOfInterval,
 } from "date-fns";
+import backendService from "../utils/backendService";
 import Cell from "./Cell";
 
 const weeks = ["S", "M", "T", "W", "T", "F", "S"];
@@ -18,39 +20,15 @@ const colorPalette = [
   { border: "border-[#00A7A7]", highlight: "#E0F2F1" }, // Greenish-blue border for many slots (matching your image)
 ];
 
-let events = [
-  {
-    id: 1,
-    dates: [7, 8, 9],
-    title: "Workshop at Bukit Timah",
-    location: "Bukit Timah Function Room 1",
-    time: "10am - 2pm",
-    slots: 4,
-    month: 9, // October
-    year: 2024,
-  },
-  {
-    id: 2,
-    dates: [23, 24, 25],
-    title: "Entrepreneur Camp",
-    location: "Downtown Hall",
-    time: "12pm - 4pm",
-    slots: 6,
-    month: 9, // October
-    year: 2024,
-  },
-];
-
-// Assign colors to each event based on slot availability
-events = events.map((event) => ({
-  ...event,
-  color: event.slots < 5 ? colorPalette[0].border : colorPalette[1].border,
-  highlightColor:
-    event.slots < 5 ? colorPalette[0].highlight : colorPalette[1].highlight,
-}));
-
-const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
+const Calendar = ({
+  value = new Date(),
+  selectedProgram,
+  onChange,
+  onSelectEvent,
+}) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [scheduleArray, setScheduleArray] = useState([]); // State to hold schedules
+  const { progScheduleService } = backendService;
 
   const startDate = startOfMonth(value);
   const endDate = endOfMonth(value);
@@ -58,6 +36,51 @@ const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
 
   const prefixDays = startDate.getDay();
   const suffixDays = 6 - endDate.getDay();
+
+  // Function to generate an array of dates between two dates
+  const generateDatesArray = (start, end) => {
+    return eachDayOfInterval({ start, end }).map((date) => date.getDate());
+  };
+
+  // Get the programme schedule based on the programme selected
+  const getProgrammeSchedule = async (selectedProgramme) => {
+    console.log(selectedProgramme);
+    try {
+      const response = await progScheduleService.getAllProgSchedules();
+      // Filter schedules based on the selected programmeId
+      const filteredSchedules = response.filter(
+        (schedule) => schedule.ProgID === selectedProgramme.ProgID
+      );
+      setScheduleArray(filteredSchedules);
+      console.log(filteredSchedules);
+    } catch (error) {
+      console.error("Error fetching programme schedule:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedProgram) {
+      getProgrammeSchedule(selectedProgram);
+    }
+  }, [selectedProgram]);
+
+  // Assign colors to each event based on slot availability
+  const events = scheduleArray.map((event) => {
+    const startDate = new Date(event.DateStart);
+    const endDate = new Date(event.DateEnd);
+    const dates = generateDatesArray(startDate, endDate); // Generate dates array
+
+    return {
+      ...event,
+      dates, // Add the dates array to the event
+      color:
+        event.TotalSeats < 5 ? colorPalette[0].border : colorPalette[1].border,
+      highlightColor:
+        event.TotalSeats < 5
+          ? colorPalette[0].highlight
+          : colorPalette[1].highlight,
+    };
+  });
 
   const handleMonthChange = (e) => {
     const newMonth = e.target.value;
@@ -81,16 +104,22 @@ const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
     const clickedEvent = events.find(
       (event) =>
         event.dates.includes(date) &&
-        event.month === value.getMonth() &&
-        event.year === value.getFullYear()
+        new Date(event.DateStart).getMonth() === value.getMonth() &&
+        new Date(event.DateStart).getFullYear() === value.getFullYear()
     );
 
     if (clickedEvent && selectedEvent && selectedEvent.id === clickedEvent.id) {
       setSelectedEvent(null);
       onSelectEvent(null);
+      sessionStorage.removeItem("selectedSchedule"); // Clear session storage if deselected
     } else {
       setSelectedEvent(clickedEvent || null);
       onSelectEvent(clickedEvent || null);
+    }
+
+    // Save the selected event to session storage
+    if (clickedEvent) {
+      sessionStorage.setItem("selectedSchedule", JSON.stringify(clickedEvent));
     }
 
     const newDate = setDate(value, date);
@@ -100,9 +129,10 @@ const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
   const getEventInfo = (date) => {
     const event = events.find(
       (event) =>
+        event.dates && // Check if event.dates is defined
         event.dates.includes(date) &&
-        event.month === value.getMonth() &&
-        event.year === value.getFullYear()
+        new Date(event.DateStart).getMonth() === value.getMonth() &&
+        new Date(event.DateStart).getFullYear() === value.getFullYear()
     );
     const isHighlighted = selectedEvent && selectedEvent.id === event?.id;
     return {
@@ -110,6 +140,7 @@ const Calendar = ({ value = new Date(), onChange, onSelectEvent }) => {
       isClickable: !!event,
       highlightColor: isHighlighted ? event?.highlightColor : null,
       isBold: isHighlighted,
+      event, // Add event for future use
     };
   };
 
