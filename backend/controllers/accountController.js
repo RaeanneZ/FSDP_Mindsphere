@@ -44,35 +44,41 @@ const registerAccount = async (req, res) => {
     console.log("Received data:", req.body);
     const existingAccount = await Account.getAccountByEmail(Email);
     if (existingAccount) {
-      return res.status(400).json({ message: "Account already exists" });
+      const connection = await sql.connect(dbConfig);
+
+      const sqlQuery = `
+      UPDATE Account 
+      SET 
+        Name = @Name, 
+        ContactNo = @ContactNo, 
+        dateOfBirth = @dateOfBirth, 
+        relationshipToChild = @relationshipToChild, 
+        address = @address,
+         memberExpiry = DATEADD(year, 1, GETDATE())
+      WHERE Email = @Email;
+      SELECT * FROM Account WHERE Email = @Email;  
+  `;
+
+      const request = connection.request();
+      request.input("Name", sql.VarChar(50), Name);
+      request.input("Email", sql.VarChar(50), Email);
+      request.input("ContactNo", sql.Char(8), ContactNo);
+      request.input("dateOfBirth", sql.DateTime, dateOfBirth);
+      request.input(
+        "relationshipToChild",
+        sql.VarChar(50),
+        relationshipToChild
+      );
+      request.input("address", sql.VarChar(255), address);
+      const result = await request.query(sqlQuery);
+      connection.close();
+
+      const newAccount = { id: result.recordset[0].AccID, Name };
+      return res.status(200).json({
+        message: "Account successfully registered",
+        Account: newAccount,
+      });
     }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(Password, salt);
-
-    const connection = await sql.connect(dbConfig);
-
-    const sqlQuery = `
-    INSERT INTO Account (Name, Email, ContactNo, dateOfBirth, relationshipToChild, address, Salt, HashedPassword) 
-    VALUES (@Name, @Email, @ContactNo, @dateOfBirth, @relationshipToChild, @address, @Salt, @HashedPassword);
-    SELECT SCOPE_IDENTITY() AS AccID;`;
-
-    const request = connection.request();
-    request.input("Name", sql.VarChar(50), Name);
-    request.input("Email", sql.VarChar(50), Email);
-    request.input("ContactNo", sql.Char(8), ContactNo);
-    request.input("dateOfBirth", sql.DateTime, dateOfBirth);
-    request.input("relationshipToChild", sql.VarChar(50), relationshipToChild);
-    request.input("address", sql.VarChar(255), address);
-    request.input("Salt", sql.VarChar(255), salt);
-    request.input("HashedPassword", sql.VarChar(255), hashedPassword);
-    const result = await request.query(sqlQuery);
-    connection.close();
-
-    const newAccount = { id: result.recordset[0].AccID, Name };
-    return res
-      .status(200)
-      .json({ message: "Account successfully created", Account: newAccount });
   } catch (err) {
     console.error(err);
     res.status(500).send("ControllerError: Register account error");
