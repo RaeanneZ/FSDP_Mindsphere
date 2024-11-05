@@ -90,6 +90,39 @@ class programmeSchedule {
             console.error("ModelError: Error adding programme schedule: ", err);
         }
     }
+
+    static async getRemainingSlots(SchedID) {
+        try {const connection = await sql.connect(dbConfig);
+            const sqlQuery = `
+                SELECT 
+                    ps.TotalSeats - ISNULL(SUM(b.NumSeats), 0) AS RemainingSeats
+                FROM 
+                    ProgrammeSchedule ps
+                LEFT JOIN 
+                    Bookings b ON ps.SchedID = b.SchedID
+                WHERE 
+                    ps.SchedID = @SchedID
+                GROUP BY 
+                    ps.TotalSeats;
+            `;
+            
+            const request = connection.request();
+            request.input('SchedID', sql.Int, SchedID);
+            const result = await request.query(sqlQuery);
+            
+            connection.close();
+            
+            if (result.recordset.length > 0) {
+                return result.recordset[0].RemainingSeats;
+            } else {
+                return null;
+            }
+
+            
+        } catch (err){
+            console.error("ModelError: Error retrieving programme schedules: ", err)
+        }
+    }
 }
 
 module.exports = programmeSchedule
