@@ -12,6 +12,7 @@ import ProductPage from "./pages/ProductPage.jsx";
 import ReviewPage from "./pages/ReviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import AccountDashboardPage from "./pages/AccountDashboardPage.jsx";
+import SurveyPage from "./pages/SurveyPage.jsx";
 
 // Import CSS
 import "../public/css/index.css";
@@ -102,6 +103,11 @@ const router = createBrowserRouter([
   {
     path: "/accountmanagement",
     element: <AccountDashboardPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/survey",
+    element: <SurveyPage />,
     errorElement: <div>404 Not Found</div>,
   },
 ]);
