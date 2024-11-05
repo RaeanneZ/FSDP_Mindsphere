@@ -30,29 +30,30 @@ const SignupPage = () => {
       return;
     }
 
-    // Check against backend
-    // try {
-    //   const isSuccess = await accountService.verifyEmailAndCode(
-    //     email,
-    //     verificationCode
-    //   );
+    try {
+      // Send sign up to backend
+      const response = await accountService.signUp(
+        email,
+        password,
+        verificationCode
+      );
 
-    //   if (!isSuccess) {
-    //     setError(
-    //       "Verification failed. Please check your email and verification code."
-    //     );
-    //     return;
-    //   } else {
-    //     // If verified, subscribe to newsletter if true and register user
-    //     if (newsletter === true) {
-    //       newsletterService.addEmailNewletter(email);
-    //     }
-    //   }
-    // } catch (err) {
-    //   setError("An error occurred while verifying your email and code.");
-    //   console.error(err);
-    //   return;
-    // }
+      if (response !== "Account successfully created") {
+        setError(
+          "Verification failed. Please check your email and verification code."
+        );
+      } else {
+        // Add email if newsletter = true
+        if (newsletter) {
+          await newsletter.addEmailNewletter(email);
+          return;
+        }
+      }
+    } catch (err) {
+      setError("An error occurred while verifying your email and code.");
+      console.error(err);
+      return;
+    }
 
     // Retrieve existing parent data from session storage
     const existingParentData = JSON.parse(sessionStorage.getItem("parentData"));

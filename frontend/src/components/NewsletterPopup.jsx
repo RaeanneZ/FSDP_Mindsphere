@@ -19,6 +19,7 @@ const NewsletterPopup = ({ closePopup }) => {
     try {
       await newsletterService.addEmailNewletter(email);
       console.log("Email successfully added");
+      closePopup();
     } catch (err) {
       console.log("There is an error with adding the email! Error is: ", err);
     }
