@@ -152,25 +152,25 @@ const accountService = {
     }
   },
 
-  verifyEmailAndCode: async (email, verifCode) => {
-    try {
-      const response = await axios.post(`${apiUrl}/verification`, {
-        email: email,
-        verifCode: verifCode,
-      });
-      return response.data;
-    } catch (err) {
-      console.error("Error verifying email and code: ", err);
-      throw err;
-    }
-  },
-
   retrieveAccountInfo: async (email) => {
     try {
       const response = await axios.get(`${apiUrl}/bookings/${email}`);
       return response.data;
     } catch (err) {
       console.error("Error retrieving account info: ", err);
+    }
+  },
+
+  signUp: async (email, password, verifCode) => {
+    try {
+      const response = await axios.post(`${apiUrl}/signUp`, {
+        email,
+        password,
+        verifCode,
+      });
+      return response.data;
+    } catch (err) {
+      console.error("Error signing up: ", err);
     }
   },
 

@@ -9,6 +9,14 @@ import ValueBanner from "../components/ValueBanner";
 import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
 
+const { accountService } = backendService;
+const account = await accountService.signUp(
+  "johndoe@example.com",
+  "hendrik",
+  "123456"
+);
+console.log(account);
+
 const LandingPage = () => {
   const navigate = useNavigate();
 
