@@ -4,17 +4,18 @@ import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 import ChildAccordion from "../components/ChildAccordion";
-import { childSurveyBg1, parentSurveyBg } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
+import backendService from "../utils/backendService";
 
 const AccountManagementPage = () => {
+  // For Backend
+  const { accountService } = backendService;
+
+  // Frontend
   const navigate = useNavigate(); // Create history object
   const [errors, setErrors] = React.useState({}); // State for error messages
   const [children, setChildren] = React.useState([1]);
-  const addChild = () => {
-    setChildren([...children, children.length + 1]);
-  };
 
   // This is for parent form
   const [formData, setFormData] = React.useState({
@@ -24,6 +25,10 @@ const AccountManagementPage = () => {
     relationship: "",
     address: "",
   });
+
+  const addChild = () => {
+    setChildren([...children, children.length + 1]);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,9 +41,29 @@ const AccountManagementPage = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = "Name is required.";
-    if (!formData.dob) newErrors.dob = "Date of Birth is required.";
-    if (!formData.contactNumber)
+
+    // Check for date of birth
+    if (!formData.dob) {
+      newErrors.dob = "Date of Birth is required.";
+    } else {
+      const dobDate = new Date(formData.dob);
+      const today = new Date();
+      // Check if dob is later than today
+      if (dobDate > today) {
+        newErrors.dob = "Date of Birth cannot be in the future.";
+      }
+    }
+
+    // Check for contact number
+    if (!formData.contactNumber) {
       newErrors.contactNumber = "Contact Number is required.";
+    } else {
+      const contactNumberRegex = /^(8|9)\d{7}$/; // Regex to check for 8 or 9 followed by 7 digits
+      if (!contactNumberRegex.test(formData.contactNumber)) {
+        newErrors.contactNumber =
+          "Contact Number must be 8 digits long and start with 8 or 9.";
+      }
+    }
     if (!formData.relationship)
       newErrors.relationship = "Relationship to Child is required.";
     if (!formData.address) newErrors.address = "Address is required.";
@@ -54,7 +79,7 @@ const AccountManagementPage = () => {
     // Removed the line that tried to save child data
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
 
@@ -62,24 +87,46 @@ const AccountManagementPage = () => {
       return; // Prevent navigation if validation fails
     }
 
-    // Store parent details in session storage
-    sessionStorage.setItem("parentData", JSON.stringify(formData)); // <-- Storing parent data
+    // Retrieve existing parent data from session storage
+    const existingParentData =
+      JSON.parse(sessionStorage.getItem("parentData")) || [];
+
+    // Append the new form data to the existing parent data
+    existingParentData.push(formData);
+
+    // Store the updated parent data in session storage
+    sessionStorage.setItem("parentData", JSON.stringify(existingParentData));
 
     // Store children details in session storage
     const childData = JSON.parse(sessionStorage.getItem("childData")) || [];
     sessionStorage.setItem("childData", JSON.stringify(childData));
 
-    // Send parent account details to the backend
-    // try {
-    //   const response = await fetch("https://your-backend-api.com/api/account", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(formData),
-    //   });
+    // Method call to send parent account details to the backend (including email and password)
+    try {
+      // Format results to expected fields
+      const accountData = {
+        Name: formData.name,
+        Email: existingParentData[0].email,
+        ContactNo: formData.contactNumber,
+        dateOfBirth: formData.dob,
+        relationshipToChild: formData.relationship,
+        address: formData.address,
+      };
 
-    navigate("/childPageContainer"); // Navigate to the next page
+      // Method call to send parent account details to the backend
+      const response = await accountService.registerAccount(accountData); // Pass the formatted accountData to the registerAccount method
+      console.log("Registration:", response);
+
+      // Navigate to the next page
+      navigate("/childPageContainer");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      // You can also set an error state to display an error message to the user
+      setErrors({
+        ...errors,
+        submit: "Registration failed. Please try again.",
+      });
+    }
   };
 
   // Function to save child data in session storage

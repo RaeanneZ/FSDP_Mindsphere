@@ -3,6 +3,7 @@ import React from "react";
 
 const CheckoutItem = ({
   programName,
+  programTier,
   price,
   quantity,
   onIncrease,
@@ -29,7 +30,7 @@ const CheckoutItem = ({
         <div className="w-16 h-16 bg-gray-300 rounded mr-4"></div>
         <div>
           <h3 className="font-semibold text-lg">{programName}</h3>
-          <p className="text-sm text-gray-500">Intermediate</p>
+          <p className="text-sm text-gray-500">{programTier}</p>
           <p className="text-sm text-yellow">${price}</p>
         </div>
       </div>

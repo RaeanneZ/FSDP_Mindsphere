@@ -1,7 +1,54 @@
 import React from "react";
 import { introBg } from "../utils";
+import backendService from "../utils/backendService"; // Import backend service
 
 const CompleteSignupMsgPage = () => {
+  const { childrenService } = backendService;
+  const { useEffect } = React;
+  useEffect(() => {
+    const addChildrenToBackend = async () => {
+      try {
+        // Retrieve child and parent data from session storage
+        const childData = JSON.parse(sessionStorage.getItem("childData"));
+        const parentData =
+          JSON.parse(sessionStorage.getItem("parentData")) || [];
+
+        // Check if childData is valid and an array
+        if (Array.isArray(childData) && childData.length > 0) {
+          for (const child of childData) {
+            let shortformGender = "M";
+
+            if (child.gender == "Female") {
+              shortformGender = "F";
+            }
+
+            // Ensure child is in the correct format before sending
+            const childPayload = {
+              GuardianEmail: parentData[0].email,
+              Name: child.name,
+              Gender: shortformGender,
+              Dob: child.dob,
+              Needs: child.specialLearningNeeds,
+              Interests: child.skillsets,
+              School: child.school,
+            };
+            // Send each child data to the backend
+            await childrenService.addChild(childPayload);
+          }
+          console.log(
+            "All child data has been successfully added to the backend."
+          );
+        } else {
+          console.warn("No valid child data found in session storage.");
+        }
+      } catch (err) {
+        console.error("Error adding child data to backend: ", err);
+      }
+    };
+
+    addChildrenToBackend(); // Call the function to add children to the backend
+  }, [childrenService]); // Add childrenService as a dependency
+
   return (
     <div
       className="w-screen h-screen flex justify-center items-center bg-cover bg-center"

@@ -6,6 +6,7 @@ import ImageCarousel from "./ImageCarousel";
 const WorkshopSection = ({
   images,
   pricingPlans,
+  selectedProgramme,
   testimonials,
   onSelectPlan,
 }) => {
@@ -14,11 +15,10 @@ const WorkshopSection = ({
       <div className="w-full max-w-7xl bg-[#FFF6E0] rounded-xl p-6 sm:p-10 mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
-            Public Speaking Workshops
+            {selectedProgramme.Name}
           </h2>
           <p className="text-base sm:text-lg text-gray-700 mt-4">
-            We identify with what makes a speaker influential and his presence
-            compelling.
+            {selectedProgramme.ProgDesc}
           </p>
         </div>
 
@@ -30,35 +30,49 @@ const WorkshopSection = ({
                 index % 2 === 0 ? "bg-blue-100" : "bg-white"
               } flex flex-col justify-between`}
             >
-              <div className="h-[160px]">
-                <p className="text-3xl sm:text-4xl font-bold text-gray-800 mt-2">
-                  ${plan.price}
+              <div className="mb-6">
+                <p className="text-lg sm:text-4xl font-bold text-gray-800 mt-2">
+                  ${plan.Cost}
                 </p>
                 {plan.oldPrice && (
                   <p className="text-base sm:text-lg text-gray-500 line-through mt-1">
                     Was ${plan.oldPrice}
                   </p>
                 )}
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mt-2">
-                  {plan.title}
-                </h3>
-                <p className="text-sm sm:text-base text-gray-700 mt-2">
-                  {plan.description}
+                <p className="text-md sm:text-xl font-semibold text-gray-800 mt-2">
+                  {plan.TierDesc}
                 </p>
               </div>
               <button
                 onClick={() => onSelectPlan(plan)}
                 className="mt-4 px-4 sm:px-6 py-2 sm:py-3 bg-gray-800 text-white rounded-full hover:bg-gray-900 text-base sm:text-lg font-semibold"
               >
-                {plan.buttonText}
+                Get Started
               </button>
               <ul className="text-sm sm:text-base text-gray-700 text-left mt-6 space-y-2">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center">
+                <li className="flex items-center">
+                  <span className="w-4 h-4 text-green-500 mr-2">✓</span>
+                  Class Size: {plan.ClassSize}
+                </li>
+                <li className="flex items-center">
+                  <span className="w-4 h-4 text-green-500 mr-2">✓</span>
+                  Duration: {plan.Duration}
+                </li>
+                <li className="flex items-center">
+                  <span className="w-4 h-4 text-green-500 mr-2">✓</span>
+                  Lunch {plan.Lunch}
+                </li>
+                <li className="flex items-center">
+                  <span className="w-4 h-4 text-green-500 mr-2">✓</span>
+                  Lesson Materials Provided
+                </li>
+                {selectedProgramme.ProgType.includes("Light") && (
+                  <li className="flex items-center">
                     <span className="w-4 h-4 text-green-500 mr-2">✓</span>
-                    {feature}
+                    Complimentary 1 year membership with access to our resources
+                    and member rates for all programmes
                   </li>
-                ))}
+                )}
               </ul>
             </div>
           ))}

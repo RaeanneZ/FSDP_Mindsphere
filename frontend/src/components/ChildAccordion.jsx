@@ -5,18 +5,16 @@ import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 
-const ChildAccordion = ({ number, saveChildData }) => {
+const ChildAccordion = ({ number }) => {
   const [isOpen, setIsOpen] = React.useState(true);
-
   const [formData, setFormData] = React.useState({
     name: "",
     dob: "",
     school: "",
     skillsets: "",
+    specialLearningNeeds: "",
     gender: "",
   });
-
-  const dobInputRef = React.useRef(null); // Ref for the date input
 
   React.useEffect(() => {
     // Load saved data on mount
@@ -30,16 +28,22 @@ const ChildAccordion = ({ number, saveChildData }) => {
     const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
     const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
     setFormData(updatedData); // Update the state
-    saveChildData(number - 1, updatedData); // Save to session storage
+    saveChildData(updatedData); // Save to session storage
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const updatedData = { ...formData, [name]: value };
     setFormData(updatedData);
+    console.log("Children: ", updatedData);
+    // Save data to session storage
+    saveChildData(updatedData);
+  };
 
-    // Save data to sessionStorage
-    saveChildData(number - 1, updatedData);
+  const saveChildData = (data) => {
+    const savedData = JSON.parse(sessionStorage.getItem("childData")) || [];
+    savedData[number - 1] = data; // Update the corresponding child data
+    sessionStorage.setItem("childData", JSON.stringify(savedData)); // Save updated data to session storage
   };
 
   return (
@@ -102,6 +106,17 @@ const ChildAccordion = ({ number, saveChildData }) => {
               <option value="Female">Female</option>
             </select>
           </div>
+
+          <input
+            type="text"
+            name="specialLearningNeeds"
+            placeholder="Any Special Learning Needs (Enter None if invalid)"
+            className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+            value={formData.specialLearningNeeds}
+            onChange={handleInputChange}
+            required
+          />
+
           <input
             type="text"
             name="skillsets"

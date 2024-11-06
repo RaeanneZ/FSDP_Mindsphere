@@ -1,7 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import backendService from "../utils/backendService";
 
 const SignupPage = () => {
+  // For Backend
+  const { accountService, newsletterService } = backendService;
+
+  // Frontend
   const { useState } = React;
   const navigate = useNavigate(); // Create navigate object
   const [email, setEmail] = useState("");
@@ -10,13 +15,7 @@ const SignupPage = () => {
   const [newsletter, setNewsletter] = useState(true);
   const [error, setError] = useState(null);
 
-  // Mock data to simulate database retrieval
-  const mockDatabase = {
-    email: "user@gmail.com", // Example email
-    verificationCode: "123456", // Example verification code
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Debug statements
@@ -31,17 +30,44 @@ const SignupPage = () => {
       return;
     }
 
-    // Check against mock database
-    if (
-      email !== mockDatabase.email ||
-      verificationCode !== mockDatabase.verificationCode
-    ) {
-      setError("Invalid email or verification code");
-      return;
-    }
+    // Retrieve existing parent data from session storage
+    const existingParentData = JSON.parse(sessionStorage.getItem("parentData"));
 
-    // Here you can add code to handle form submission, e.g., send data to a server
-    navigate("/personalisation"); // Navigate to the next page
+    // Check if existingParentData is an array; if not, initialize it as an empty array
+    const parentDataArray = Array.isArray(existingParentData)
+      ? existingParentData
+      : [];
+
+    // Create and store the parentData
+    const parentData = {
+      email,
+      password,
+      newsletter,
+    };
+    parentDataArray.push(parentData);
+
+    // Store the updated parent data in session storage
+    sessionStorage.setItem("parentData", JSON.stringify(parentDataArray));
+
+    const response = await accountService.signUp(
+      email,
+      password,
+      verificationCode
+    );
+
+    if (!response.success) {
+      setError(
+        "Verification failed. Please check your email and verification code."
+      );
+      return;
+    } else {
+      // Add email if newsletter = true
+      if (newsletter) {
+        await newsletterService.addEmailNewletter(email);
+      }
+      // Navigate to the next page
+      navigate("/personalisation"); // Navigate to the next page
+    }
   };
 
   const isGmail = (email) => {
