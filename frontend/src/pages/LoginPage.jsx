@@ -32,7 +32,7 @@ const LoginPage = () => {
 
       // Check if the login was successful
       if (response && response.success) {
-        // Assuming the response has a success property
+        login(); // Set loggedIn to true in the context
         // Redirect to home page
         navigate("/"); // Navigate to the next page
       } else {
@@ -42,22 +42,6 @@ const LoginPage = () => {
       console.error("Login error:", error);
       setError("An error occurred while logging in. Please try again.");
     }
-    const isValidUser = await mockApiCall(email, password);
-
-    if (isValidUser) {
-      login(); // Set loggedIn to true in the context
-      navigate("/"); // Redirect to home page
-    } else {
-      setError("Invalid email or password");
-    }
-  };
-
-  const mockApiCall = async (email, password) => {
-    const mockData = {
-      email: "user@example.com",
-      password: "password123",
-    };
-    return email === mockData.email && password === mockData.password;
   };
 
   return (
