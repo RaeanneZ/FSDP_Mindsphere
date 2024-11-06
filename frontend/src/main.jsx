@@ -1,7 +1,10 @@
-// Import libraries
+// main.jsx
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+// Import AuthProvider for global authentication state
+import { AuthProvider } from "./contexts/AuthContext.jsx";
 
 // Import all the pages
 import LandingPage from "./pages/LandingPage.jsx";
@@ -12,27 +15,23 @@ import ProductPage from "./pages/ProductPage.jsx";
 import ReviewPage from "./pages/ReviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import AccountDashboardPage from "./pages/AccountDashboardPage.jsx";
-
-// Import CSS
-import "../public/css/index.css";
+import SurveyPage from "./pages/SurveyPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import ChildrenNamePage from "./pages/ChildrenNamePage.jsx";
 import ChildrenFavPage from "./pages/ChildrenFavPage.jsx";
 import ChildrenAmbition from "./pages/ChildrenAmbition.jsx";
 import ChildrenInfoHeader from "./pages/ChildrenInfoHeader.jsx";
 import AccountManagementPage from "./pages/AccountManagementPage.jsx";
+import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 
 // Import CSS
 import "../public/css/index.css";
-import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 
-// Fill in with all the roots of React Pages
-// Parameters: Path (define the link), Element (the page itself)
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPage />,
-    errorElement: <div>404 Not Found</div>, // Change it to a error page component
+    errorElement: <div>404 Not Found</div>,
   },
   {
     path: "/login",
@@ -104,10 +103,19 @@ const router = createBrowserRouter([
     element: <AccountDashboardPage />,
     errorElement: <div>404 Not Found</div>,
   },
+  {
+    path: "/survey",
+    element: <SurveyPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
 ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      {" "}
+      {/* Wrap RouterProvider with AuthProvider */}
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 );

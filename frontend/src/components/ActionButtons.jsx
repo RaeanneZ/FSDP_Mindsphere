@@ -67,7 +67,7 @@ function ActionButtons() {
       </a>
 
       {/* Survey Button */}
-      <a href="#" target="_blank" rel="noopener noreferrer">
+      <a href="/survey" target="_blank" rel="noopener noreferrer">
         <button
           className={`bg-[#dcaf27] border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 z-20 ${
             hoveredButton === "survey" ? "w-48" : "w-14"

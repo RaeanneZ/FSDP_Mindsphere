@@ -1,36 +1,32 @@
-import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+// LoginPage.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const LoginPage = () => {
-  const navigate = useNavigate(); // Create navigate object
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const { login } = useAuth(); // Access the login function from context
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    // Mock API call
     const isValidUser = await mockApiCall(email, password);
 
     if (isValidUser) {
-      // Redirect to home page
-      navigate("/"); // Navigate to the next page
+      login(); // Set loggedIn to true in the context
+      navigate("/"); // Redirect to home page
     } else {
       setError("Invalid email or password");
     }
   };
 
-  // Mock API function to simulate checking credentials
   const mockApiCall = async (email, password) => {
-    // Here you would typically make an API call to your backend
-    // For this example, we will just simulate a successful login
     const mockData = {
       email: "user@example.com",
       password: "password123",
     };
-
     return email === mockData.email && password === mockData.password;
   };
 
