@@ -82,31 +82,6 @@ const Navbar = () => {
               </button>
             </a>
           )}
-
-          {loggedIn ? (
-            <div className="flex items-center space-x-4">
-              <img
-                src="https://via.placeholder.com/40"
-                alt="Profile"
-                className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
-                onClick={handleProfileClick} // Add onClick to navigate on profile click
-              />
-              <button
-                onClick={handleLogout}
-                className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600 flex items-center"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} className="pr-2" />
-                Logout
-              </button>
-            </div>
-          ) : (
-            <a href="/login">
-              <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
-                <FontAwesomeIcon icon={faUser} className="pr-2" />
-                Login
-              </button>
-            </a>
-          )}
         </div>
         <div className="lg:hidden">
           <button
