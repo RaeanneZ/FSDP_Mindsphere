@@ -54,7 +54,6 @@ const SignupPage = () => {
       password,
       verificationCode
     );
-    console.log("The response is: ", response.success);
 
     if (!response.success) {
       setError(

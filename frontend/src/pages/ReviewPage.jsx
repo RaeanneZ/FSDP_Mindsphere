@@ -111,6 +111,20 @@ const ReviewPage = () => {
   };
 
   const handleProceedToPayment = async () => {
+    // Validation for contact number
+    const contactNumberRegex = /^(8|9)\d{7}$/; // Regex to check for 8 or 9 followed by 7 digits
+    if (!contactNumberRegex.test(contactInfo.contactNo)) {
+      alert("Contact Number must be 8 digits long and start with 8 or 9.");
+      return; // Exit the function if validation fails
+    }
+
+    // Validation for email
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/; // Regex to check for Gmail address
+    if (!emailRegex.test(contactInfo.email)) {
+      alert("Email must be a valid Gmail address.");
+      return; // Exit the function if validation fails
+    }
+
     // Get today's date in a formatted string
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
@@ -131,13 +145,6 @@ const ReviewPage = () => {
         needs: child.specialLearningNeeds ? child.specialLearningNeeds : "None",
       }));
       console.log(contactInfo.email);
-      // console.log("Children Data: ", childrenData);
-
-      // // Send child data to backend
-      // for (const child of childrenPayload) {
-      // //   console.log("Indiv child is: ", child);
-      // //   await childrenService.addChild(child);
-      // }
 
       await bookingService.addBooking(
         contactInfo.name,

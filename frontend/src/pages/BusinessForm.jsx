@@ -1,4 +1,7 @@
 import React from "react";
+import Flatpickr from "react-flatpickr"; // Import Flatpickr
+import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
+import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 import { prof } from "../utils";
 
 const BusinessForm = () => {
@@ -222,13 +225,23 @@ const BusinessForm = () => {
               </div>
               <h2 className="text-xl font-bold mb-4">Callback Request</h2>
               <div className="mb-4">
-                <input
+                <Flatpickr
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder="When is the best time to call you?"
-                  type="text"
                   name="callbackTime"
                   value={formData.callbackTime}
-                  onChange={handleChange}
+                  onChange={(date) => {
+                    setFormData({
+                      ...formData,
+                      callbackTime: date[0], // Get the first date from the array
+                    });
+                  }}
+                  options={{
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    time_24hr: true,
+                    placeholder: "Select a time",
+                  }}
                   required
                 />
                 {errors.callbackTime && (

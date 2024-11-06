@@ -23,15 +23,12 @@ const LoginPage = () => {
       email,
       password,
     };
-    console.log(email);
-    console.log(password);
 
     try {
       // Call the loginAccount method with the credentials
       const response = await accountService.loginAccount(credentials);
 
       // Check if the login was successful
-      console.log("The response is: ", response);
       if (response && response.success) {
         // Assuming the response has a success property
         // Redirect to home page

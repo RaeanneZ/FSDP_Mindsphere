@@ -16,9 +16,11 @@ const CorporateProgramsSection = () => {
           team!
         </p>
 
-        <button className="bg-yellow text-white text-xl px-4 py-2 rounded-full hover:bg-yellow-600">
-          Contact Us Now
-        </button>
+        <a href="/businessEnquiry">
+          <button className="bg-yellow text-white text-xl px-4 py-2 rounded-full hover:bg-yellow-600">
+            Contact Us Now
+          </button>
+        </a>
       </div>
     </div>
   );

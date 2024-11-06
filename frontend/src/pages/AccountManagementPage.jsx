@@ -41,9 +41,29 @@ const AccountManagementPage = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = "Name is required.";
-    if (!formData.dob) newErrors.dob = "Date of Birth is required.";
-    if (!formData.contactNumber)
+
+    // Check for date of birth
+    if (!formData.dob) {
+      newErrors.dob = "Date of Birth is required.";
+    } else {
+      const dobDate = new Date(formData.dob);
+      const today = new Date();
+      // Check if dob is later than today
+      if (dobDate > today) {
+        newErrors.dob = "Date of Birth cannot be in the future.";
+      }
+    }
+
+    // Check for contact number
+    if (!formData.contactNumber) {
       newErrors.contactNumber = "Contact Number is required.";
+    } else {
+      const contactNumberRegex = /^(8|9)\d{7}$/; // Regex to check for 8 or 9 followed by 7 digits
+      if (!contactNumberRegex.test(formData.contactNumber)) {
+        newErrors.contactNumber =
+          "Contact Number must be 8 digits long and start with 8 or 9.";
+      }
+    }
     if (!formData.relationship)
       newErrors.relationship = "Relationship to Child is required.";
     if (!formData.address) newErrors.address = "Address is required.";
