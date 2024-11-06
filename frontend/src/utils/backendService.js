@@ -36,7 +36,7 @@ const programmeService = {
 const paymentService = {
   makePayment: async (Email, Name) => {
     try {
-      const paymentData = { email: Email , name: Name};
+      const paymentData = { email: Email, name: Name };
       const response = await axios.put(
         `${apiUrl}/payments/makePayment`,
         paymentData
@@ -188,8 +188,11 @@ const accountService = {
       const response = await axios.post(`${apiUrl}/login`, credentials);
       return response.data;
     } catch (err) {
-      console.error("BackendService: Error logging in: ", err);
-      throw err;
+      return {
+        success: false,
+        message: "Login failed",
+        error: err.response.data,
+      };
     }
   },
 
@@ -234,7 +237,11 @@ const accountService = {
       });
       return response.data;
     } catch (err) {
-      console.error("Error signing up: ", err);
+      return {
+        success: false,
+        message: "Sign-up failed",
+        error: err.response.data,
+      };
     }
   },
 
