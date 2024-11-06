@@ -6,10 +6,7 @@ import {
   faTimes,
   faUser,
   faSignOutAlt,
-  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { useAuth } from "../contexts/AuthContext"; // Import the custom hook
-import { useNavigate } from "react-router-dom"; // Import useNavigate if using react-router
 import { useAuth } from "../contexts/AuthContext"; // Import the custom hook
 import { useNavigate } from "react-router-dom"; // Import useNavigate if using react-router
 

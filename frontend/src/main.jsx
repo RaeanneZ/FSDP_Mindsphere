@@ -23,11 +23,10 @@ import ChildrenAmbition from "./pages/ChildrenAmbition.jsx";
 import ChildrenInfoHeader from "./pages/ChildrenInfoHeader.jsx";
 import AccountManagementPage from "./pages/AccountManagementPage.jsx";
 import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
+import BusinessForm from "./pages/BusinessForm.jsx";
 
 // Import CSS
 import "../public/css/index.css";
-import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
-import BusinessForm from "./pages/BusinessForm.jsx";
 
 const router = createBrowserRouter([
   {
