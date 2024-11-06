@@ -25,9 +25,13 @@ const PaymentPage = () => {
     }
   }, []);
 
+  console.log("Booking email to send: ", booking.contactInfo.email);
   const approvePayment = async () => {
     if (booking.contactInfo.email) {
-      await paymentService.makePayment(booking.contactInfo.email);
+      await paymentService.makePayment(
+        booking.contactInfo.email,
+        booking.contactInfo.name
+      );
     } else {
       console.error("Contact info is not available for payment.");
     }
