@@ -48,7 +48,7 @@ async function sendPaymentConfirmation(TransacID) {
         }
 
         const emailData = {
-            to: "mindspheresdp@gmail.com",
+            to: payment.Email,
             subject: `Payment Confirmation - Transaction #${payment.TransacID}`,
             text: PaymentEmailModel.formatPaymentEmail(paymentData),
         };
