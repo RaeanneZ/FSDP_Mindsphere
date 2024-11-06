@@ -30,32 +30,6 @@ const SignupPage = () => {
       return;
     }
 
-    try {
-      // Send sign up to backend
-      const response = await accountService.signUp(
-        email,
-        password,
-        verificationCode
-      );
-      console.log("The response is: ", response);
-
-      if (response !== "Account successfully created") {
-        setError(
-          "Verification failed. Please check your email and verification code."
-        );
-      } else {
-        // Add email if newsletter = true
-        if (newsletter) {
-          await newsletter.addEmailNewletter(email);
-          return;
-        }
-      }
-    } catch (err) {
-      setError("An error occurred while verifying your email and code.");
-      console.error(err);
-      return;
-    }
-
     // Retrieve existing parent data from session storage
     const existingParentData = JSON.parse(sessionStorage.getItem("parentData"));
 
@@ -75,8 +49,26 @@ const SignupPage = () => {
     // Store the updated parent data in session storage
     sessionStorage.setItem("parentData", JSON.stringify(parentDataArray));
 
-    // Here you can add code to handle form submission, e.g., send data to a server
-    navigate("/personalisation"); // Navigate to the next page
+    const response = await accountService.signUp(
+      email,
+      password,
+      verificationCode
+    );
+    console.log("The response is: ", response.success);
+
+    if (!response.success) {
+      setError(
+        "Verification failed. Please check your email and verification code."
+      );
+      return;
+    } else {
+      // Add email if newsletter = true
+      if (newsletter) {
+        await newsletterService.addEmailNewletter(email);
+      }
+      // Navigate to the next page
+      navigate("/personalisation"); // Navigate to the next page
+    }
   };
 
   const isGmail = (email) => {

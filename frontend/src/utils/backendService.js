@@ -235,7 +235,10 @@ const accountService = {
         password,
         verifCode,
       });
-      return response.data;
+      //return response.data;
+      return {
+        success: true,
+      };
     } catch (err) {
       return {
         success: false,
