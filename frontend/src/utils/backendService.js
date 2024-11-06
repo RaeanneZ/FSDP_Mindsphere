@@ -34,9 +34,9 @@ const programmeService = {
 
 // Payment methods
 const paymentService = {
-  makePayment: async (Email) => {
+  makePayment: async (Email, Name) => {
     try {
-      const paymentData = { email: Email };
+      const paymentData = { email: Email , name: Name};
       const response = await axios.put(
         `${apiUrl}/payments/makePayment`,
         paymentData

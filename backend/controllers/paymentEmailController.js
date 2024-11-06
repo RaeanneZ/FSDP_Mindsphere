@@ -67,9 +67,9 @@ async function sendPaymentConfirmation(TransacID) {
         throw error; // Propagate the error to handle it in the controller
     }
 }
-async function sendMembershipCode(email) {
+async function sendMembershipCode(email, name) {
     try {
-        const registration = await PaymentEmailModel.getNewRegistration(email);
+        const registration = { Email: email, Name: name}
         console.log("baaalss,", registration);
         const emailData = {
             to: email,
