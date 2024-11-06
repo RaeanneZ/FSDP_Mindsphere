@@ -32,7 +32,7 @@ const addPayment = async (paymentData) => {
 
 const makePayment = async (req, res) => {
   try {
-    const { email } = req.body; // Destructure TransacID and email from request body
+    const { email, name } = req.body; // Destructure TransacID and email from request body
 
     // get transactions that are unpaid
     const TransacID = await Payment.getUnpaidTransactionByEmail(email);
@@ -48,7 +48,7 @@ const makePayment = async (req, res) => {
       console.log("Email at PaymentController: ", email);
       const receiptResult =
         await paymentEmailController.sendPaymentConfirmation(TransacID);
-      const verifCode = await paymentEmailController.sendMembershipCode(email); // Pass email to sendMembershipCode
+      const verifCode = await paymentEmailController.sendMembershipCode(email, name); // Pass email to sendMembershipCode
 
       return res.status(200).json({
         message: `Payment status updated to paid successfully.`,
