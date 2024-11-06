@@ -10,13 +10,13 @@ import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
 import CorporateProgramsSection from "../components/CorporateProgramsSection";
 
-const { accountService } = backendService;
-const account = await accountService.signUp(
-  "test@example.com",
-  "hendrik",
-  "123456"
-);
-console.log(account);
+// const { accountService } = backendService;
+// const account = await accountService.signUp(
+//   "test@example.com",
+//   "hendrik",
+//   "123456"
+// );
+// console.log(account);
 
 const LandingPage = () => {
   const navigate = useNavigate();

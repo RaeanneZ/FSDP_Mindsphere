@@ -25,7 +25,7 @@ const Navbar = () => {
             />
           </a>
         </div>
-        <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-xl">
+        <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-lg">
           <a href="/" className="hover:text-gray-900">
             Home
           </a>
@@ -37,6 +37,9 @@ const Navbar = () => {
           </a>
           <a href="/products" className="hover:text-gray-900">
             Programmes
+          </a>
+          <a href="/businessEnquiry" className="hover:text-gray-900">
+            Business Enquiry
           </a>
           <a href="#" className="hover:text-gray-900">
             Media
@@ -63,9 +66,9 @@ const Navbar = () => {
             onClick={() => setMenuOpen(false)}
             className="text-gray-700 focus:outline-none mb-4 flex justify-end w-full"
           >
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon className="text-xl" icon={faTimes} />
           </button>
-          <nav className="flex flex-col space-y-4 text-gray-700 text-sm">
+          <nav className="flex flex-col space-y-4 text-gray-700 text-lg">
             <a href="#" className="hover:text-gray-900">
               Home
             </a>
@@ -76,10 +79,13 @@ const Navbar = () => {
               CSR
             </a>
             <a href="/products" className="hover:text-gray-900">
-              Programmes <FontAwesomeIcon icon={faChevronDown} />
+              Programmes
+            </a>
+            <a href="/businessEnquiry" className="hover:text-gray-900">
+              Business Enquiry
             </a>
             <a href="#" className="hover:text-gray-900">
-              Media <FontAwesomeIcon icon={faChevronDown} />
+              Media
             </a>
             <a href="/login">
               <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">

@@ -24,6 +24,7 @@ import AccountManagementPage from "./pages/AccountManagementPage.jsx";
 // Import CSS
 import "../public/css/index.css";
 import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
+import BusinessForm from "./pages/BusinessForm.jsx";
 
 // Fill in with all the roots of React Pages
 // Parameters: Path (define the link), Element (the page itself)
@@ -86,6 +87,11 @@ const router = createBrowserRouter([
   {
     path: "/products",
     element: <ProductPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/businessEnquiry",
+    element: <BusinessForm />,
     errorElement: <div>404 Not Found</div>,
   },
   {

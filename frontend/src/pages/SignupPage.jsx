@@ -37,6 +37,7 @@ const SignupPage = () => {
         password,
         verificationCode
       );
+      console.log("The response is: ", response);
 
       if (response !== "Account successfully created") {
         setError(
