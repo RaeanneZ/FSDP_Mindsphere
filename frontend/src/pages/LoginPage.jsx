@@ -33,8 +33,8 @@ const LoginPage = () => {
       // Check if the login was successful
       if (response && response.success) {
         login(); // Set loggedIn to true in the context
-        // Redirect to home page
-        navigate("/"); // Navigate to the next page
+        navigate("/"); // Redirect to home page
+        sessionStorage.setItem("AccountEmail", email);
       } else {
         setError("Invalid email or password");
       }

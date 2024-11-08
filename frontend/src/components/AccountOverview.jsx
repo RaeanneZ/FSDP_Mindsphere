@@ -31,8 +31,9 @@ const MembershipDurationIndicator = ({ monthsRemaining, totalMonths }) => {
   );
 };
 
-const AccountOverview = () => {
-  const [userName, setUserName] = useState("John Doe");
+const AccountOverview = (accountdata) => {
+  console.log(accountdata);
+  const [userName, setUserName] = useState(accountdata.name);
   const [registeredPrograms, setRegisteredPrograms] = useState([]);
   const [membershipDuration, setMembershipDuration] = useState(7); // Example: 7 months remaining
   const [totalDuration] = useState(12); // Example: total duration is 12 months
@@ -40,13 +41,16 @@ const AccountOverview = () => {
 
   useEffect(() => {
     // Fetch data here, set dummy data for now
-    setUserName("John Doe");
+    setUserName(accountdata.name);
     setRegisteredPrograms([
       { name: "Public Speaking - Junior", date: "5 Dec - 7 Dec" },
       { name: "How to cope with PSLE Seminar", date: "10 Dec" },
     ]);
     setCertificates([{ title: "PSLE Chinese Oral Bootcamp" }]);
   }, []);
+
+  console.log("Username = ", userName);
+  console.log("Username = ", accountdata.name);
 
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white">

@@ -8,8 +8,10 @@ import ChildAccordion from "../components/ChildAccordion";
 import AccountOverview from "../components/AccountOverview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import backendService from "../utils/backendService";
 
 const AccountDashboardPage = () => {
+  const { accountService } = backendService;
   const [formData, setFormData] = useState({
     name: "",
     dob: "",
@@ -19,28 +21,78 @@ const AccountDashboardPage = () => {
   });
   const [children, setChildren] = useState([1]);
   const [errors, setErrors] = useState({});
+  const [originalData, setOriginalData] = useState({});
+  const [isUpdated, setIsUpdated] = useState(false);
+
+  const email = "user@example.com"; // Replace with the actual email of the logged-in user
 
   useEffect(() => {
+    const email = sessionStorage.getItem("AccountEmail");
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://your-backend-api.com/api/account"
-        );
-        const data = await response.json();
-        setFormData(data);
+        const accountData = await accountService.getAccountByEmail(email);
+        console.log(accountData);
+
+        setFormData({
+          name: accountData.Name,
+          dob: accountData.dateOfBirth,
+          contactNumber: accountData.ContactNo,
+          relationship: accountData.relationshipToChild,
+          address: accountData.address,
+        });
+
+        setOriginalData({
+          name: accountData.Name,
+          dob: accountData.dateOfBirth,
+          contactNumber: accountData.ContactNo,
+          relationship: accountData.relationshipToChild,
+          address: accountData.address,
+        }); // Store original data for comparison
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching account data:", error);
+      }
+
+      try {
+        const accountBookingInfo = await accountService.retrieveAccountInfo(
+          email
+        );
+        console.log(accountBookingInfo);
+        // Handle accountInfo as necessary (not shown in original code)
+      } catch (error) {
+        console.error("Error fetching account info:", error);
       }
     };
     fetchData();
-  }, []);
+  }, [email]);
 
   const handleChange = (e) => {
+    // Defensive checks
+    if (!e || !e.target) {
+      console.error("Event or target is undefined");
+      return;
+    }
+
     const { name, value } = e.target;
+
+    // Debugging: Log the event and the name and value
+    console.log("Event:", e);
+    console.log("Name:", name);
+    console.log("Value:", value);
+
+    // Check if name is defined
+    if (!name) {
+      console.error("Name is undefined");
+      return; // Exit if name is undefined
+    }
+
     setFormData({
       ...formData,
       [name]: value,
     });
+    setIsUpdated(
+      JSON.stringify({ ...formData, [name]: value }) !==
+        JSON.stringify(originalData)
+    );
   };
 
   const handleDateChange = (date) => {
@@ -48,6 +100,12 @@ const AccountDashboardPage = () => {
       ...formData,
       dob: date[0] ? date[0].toISOString().split("T")[0] : "",
     });
+    setIsUpdated(
+      JSON.stringify({
+        ...formData,
+        dob: date[0] ? date[0].toISOString().split("T")[0] : "",
+      }) !== JSON.stringify(originalData)
+    );
   };
 
   const validateForm = () => {
@@ -68,15 +126,14 @@ const AccountDashboardPage = () => {
     if (!validateForm()) return;
 
     try {
-      const response = await fetch("https://your-backend-api.com/api/account", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
+      const response = await accountService.updateAccountByEmail(
+        email,
+        formData
+      );
+      if (response) {
         console.log("Account updated successfully");
+        setOriginalData(formData); // Update original data to the newly updated data
+        setIsUpdated(false); // Reset the updated state
       } else {
         console.error("Error updating account");
       }
@@ -100,7 +157,7 @@ const AccountDashboardPage = () => {
       <Navbar />
       <div className="w-screen min-h-screen">
         {/* Account Overview Section */}
-        <AccountOverview />
+        <AccountOverview accountdata={formData} />
 
         {/* Account Update Section */}
         <div className="py-20 mx-auto max-w-2xl">
@@ -189,6 +246,7 @@ const AccountDashboardPage = () => {
               <button
                 type="submit"
                 className="text-lg font-bold flex items-center"
+                disabled={!isUpdated}
               >
                 Update
               </button>
