@@ -7,11 +7,13 @@ import CheckoutProgress from "../components/CheckoutProgress";
 import PaymentSummary from "../components/PaymentSummary";
 import PaymentDueDate from "../components/PaymentDueDate";
 import PayNowSection from "../components/PaynowSection";
+import LoadingPopup from "../components/LoadingPopup";
 import backendService from "../utils/backendService";
 
 const PaymentPage = () => {
   const { paymentService } = backendService;
   const [paymentData, setPaymentData] = useState(null);
+  const [loading, setLoading] = useState(false); // State for loading
   const navigate = useNavigate();
 
   const storedBookingDetails = sessionStorage.getItem("bookingDetails");
@@ -28,15 +30,21 @@ const PaymentPage = () => {
   console.log("Booking email to send: ", booking.contactInfo.email);
   const approvePayment = async () => {
     if (booking.contactInfo.email) {
-      await paymentService.makePayment(
-        booking.contactInfo.email,
-        booking.contactInfo.name
-      );
+      setLoading(true); // Show loading popup
+      try {
+        await paymentService.makePayment(
+          booking.contactInfo.email,
+          booking.contactInfo.name
+        );
+      } catch (error) {
+        console.error("Payment failed", error);
+      } finally {
+        setLoading(false); // Hide loading popup
+      }
+      navigate("/");
     } else {
       console.error("Contact info is not available for payment.");
     }
-
-    navigate("/");
   };
 
   if (!paymentData) {
@@ -46,6 +54,7 @@ const PaymentPage = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
+      {loading && <LoadingPopup />} {/* Show loading popup when loading */}
       <main className="flex-grow p-4 sm:p-6 mx-auto w-full max-w-lg lg:max-w-[800px]">
         <CheckoutProgress imageType="payment" />
 

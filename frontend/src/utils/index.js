@@ -27,6 +27,7 @@ import PaynowQr from "/images/PayNowQR.png";
 import Download from "/images/Download.png";
 import MembershipDuration from "/images/MembershipDuration.png";
 import MembershipIcon from "/images/membershipIcon.png";
+import LoadingAnimation from "/assets/LoadingAnimation.json";
 
 // Export all folders for project use
 // Landing Banner
@@ -40,6 +41,9 @@ export const whatsapp = WhatsApp;
 export const newsletter = Newsletter;
 export const survey = Survey;
 export const uparrow = UpArrow;
+
+// Loading Animation
+export const loadAni = LoadingAnimation;
 
 // Sign Up Process
 export const introBg = QuestionnaireHeaderBackground;
