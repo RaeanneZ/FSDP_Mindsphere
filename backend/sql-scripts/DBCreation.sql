@@ -62,7 +62,7 @@ GO
 
 
 create table Roles (
-	RoleID int not null,
+	RoleID int not null,	
 	Name varchar(50) default 'User',
 	constraint PK_Roles primary key (RoleID),
 )
@@ -240,29 +240,19 @@ INSERT INTO Children (GuardianEmail, Name, Gender, Dob, Needs, School, Interests
 
 -- Insert data into Programmes
 INSERT INTO Programmes (ProgID, Name, ProgIntro, ProgDesc, ProgType) VALUES
-(1, 'Art Class', 'Basic art class for children', 'Basic art class for children', 'Light'),
-(2, 'Science Camp', 'Hands-on science experiments', 'Hands-on science experiments', 'Regular'),
-(3, 'Sports Training', 'Weekly sports training', 'Weekly sports training', 'Premium'),
-(4, 'Dance Class', 'Beginner dance classes', 'Beginner dance classes', 'Light'),
-(5, 'Music Workshop', 'Introduction to music', 'Introduction to music', 'Regular'),
-(6, 'Coding Camp', 'Intro to coding', 'Intro to coding', 'Premium'),
-(7, 'Robotics', 'Basics of robotics', 'Basics of robotics', 'Regular'),
-(8, 'Math Club', 'Math activities and games', 'Math activities and games', 'Light'),
-(9, 'Drama Club', 'Weekly drama activities', 'Weekly drama activities', 'Regular'),
-(10, 'Chess Club', 'Chess training sessions', 'Chess training sessions', 'Light');
+(1, 'Public Speaking Workshops', 'Basic public speaking', 'Beginner Public Speaking Workshops', 'Light'),
+(2, 'PSLE Power Up Camp', 'PSLE learning enhancement', 'Help PSLE takers learn efficiently and effectively', 'Regular'),
+(3, 'Future Entrepreneurs Labs', 'Learn about entrepreneurship', 'Study how to be an entrepreneur', 'Premium'),
+(4, 'Professionals', 'Foster a culture of continuous learning and development', 'Learn what it takes to be a professional', 'Premium');
 
 -- Insert data into ProgrammeTier
 INSERT INTO ProgrammeTier (TierID, ProgID, TierDesc, Lunch, Level, Duration, ClassSize, AgeRange, Cost) VALUES
-(1, 1, 'Introductory Art Tier', 'Included', 'Beginner', '2 hours/week', '10-15', '5-10', 60.00),
-(2, 1, 'Advanced Art Tier', 'Not Included', 'Intermediate', '3 hours/week', '8-12', '8-12', 80.00),
-(3, 2, 'Science Discovery Tier', 'Included', 'Beginner', '4 hours/week', '12-15', '7-12', 120.00),
-(4, 2, 'Science Exploration Tier', 'Not Included', 'Intermediate', '5 hours/week', '10-15', '7-12', 150.00),
-(5, 3, 'Sports Fundamentals Tier', 'Included', 'Beginner', '2 hours/week', '10-15', '10-15', 140.00),
-(6, 3, 'Elite Sports Training Tier', 'Included', 'Advanced', '4 hours/week', '8-10', '10-15', 180.00),
-(7, 4, 'Beginner Dance Tier', 'Not Included', 'Beginner', '1 hour/week', '10-12', '5-8', 50.00),
-(8, 5, 'Music Basics Tier', 'Included', 'Intermediate', '2 hours/week', '8-10', '6-12', 100.00),
-(9, 6, 'Intro to Coding Tier', 'Included', 'Beginner', '3 hours/week', '15-20', '8-14', 200.00),
-(10, 7, 'Robotics 101 Tier', 'Included', 'Intermediate', '2 hours/week', '10-15', '10-15', 120.00);
+(1, 1, 'Beginner Public Speaking Workshops', 'Included', 'Beginner', '3.5 days', '15-20', '5-10', 988.00),
+(2, 1, 'Intermediate Public Speaking Workshops', 'Included', 'Intermediate', '3 days', '12-15', '8-12', 1188.00),
+(3, 1, 'Advanced Public Speaking Workshops', 'Included', 'Advanced', '3 days', '10-15', '7-12', 1388.00),
+(4, 2, 'PSLE Power Up Camp', 'Included', 'Beginner', '2 days', '15-20', '7-12', 428.00),
+(5, 3, 'Future Entrepreneurs Labs', 'Included', 'Beginner', '2 days', '10-15', '10-15', 1000.00),
+(6, 4, 'Professionals', 'Included', 'Advanced', '8 days', '15-20', '18-25', 1180.00);
 
 
 -- Insert data into Payment
@@ -270,17 +260,13 @@ INSERT INTO Payment (Email, ProgID, Quantity, TotalCost, PaidDate, TransacStatus
 ('johndoe@example.com', 1, 1, 50.00, '2024-01-15', 'Paid'),
 ('janesmith@example.com', 3, 3, 150.00, '2024-02-10', 'Paid'),
 ('paulblack@example.com', 2, 2, 100.00, '2024-03-12', 'Pending'),
-('lucygray@example.com', 5, 1, 90.00, '2024-04-05', 'Paid'),
-('nancyblue@example.com', 7, 4, 120.00, '2024-05-19', 'Pending'),
-('emmawhite@example.com', 6, 5, 200.00, '2024-06-21', 'Paid'),
-('johndoe@example.com', 4, 1, 45.00, '2024-07-07', 'Paid'),
-('oliverred@example.com', 8, 2, 30.00, '2024-08-13', 'Pending'),
-('johndoe@example.com', 9, 4, 80.00, '2024-09-05', 'Paid'),
-('emmawhite@example.com', 10, 3, 40.00, '2024-10-11', 'Paid');
-
-
-
-
+('lucygray@example.com', 3, 1, 90.00, '2024-04-05', 'Paid'),
+('nancyblue@example.com', 4, 4, 120.00, '2024-05-19', 'Pending'),
+('emmawhite@example.com', 4, 5, 200.00, '2024-06-21', 'Paid'),
+('johndoe@example.com', 2, 1, 45.00, '2024-07-07', 'Paid'),
+('oliverred@example.com', 1, 2, 30.00, '2024-08-13', 'Pending'),
+('johndoe@example.com', 3, 4, 80.00, '2024-09-05', 'Paid'),
+('emmawhite@example.com', 4, 3, 40.00, '2024-10-11', 'Paid');
 
 
 -- Insert data into ProgrammeFeedback
@@ -288,51 +274,42 @@ INSERT INTO ProgrammeFeedback (ProgID, AccID, FdbkDesc) VALUES
 (1, 1, 'Great program! My child loved it.'),
 (2, 4, 'Very educational and fun.'),
 (3, 2, 'Well-organized and enjoyable.'),
-(5, 6, 'Good value for the price.'),
-(7, 7, 'Loved the interactive activities.'),
-(8, 9, 'Fun experience, will join again.'),
-(4, 3, 'Good for younger kids.'),
-(6, 8, 'Very engaging and informative.'),
-(9, 5, 'My child improved a lot.'),
-(10, 10, 'Excellent program for beginners.');
+(4, 6, 'Good value for the price.'),
+(1, 7, 'Loved the interactive activities.'),
+(4, 9, 'Fun experience, will join again.'),
+(2, 3, 'Good for younger kids.'),
+(3, 8, 'Very engaging and informative.'),
+(2, 5, 'My child improved a lot.'),
+(1, 10, 'Excellent program for beginners.');
 
 -- Insert data into ProgrammeSchedule with specific start and end times
 INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VALUES
 (1, '2024-02-01 09:00:00', '2024-02-10 17:00:00', 'Community Hall A', 20),
-(2, '2024-03-15 10:00:00', '2024-03-20 16:00:00', 'School Auditorium', 25),
-(3, '2024-04-01 08:30:00', '2024-04-10 18:00:00', 'Sports Center', 30),
-(4, '2024-05-05 09:00:00', '2024-05-12 15:00:00', 'Dance Studio B', 15),
-(5, '2024-06-15 10:00:00', '2024-06-25 17:30:00', 'Music Hall 1', 20),
-(6, '2024-07-10 11:00:00', '2024-07-15 14:00:00', 'Tech Lab A', 25),
-(7, '2024-08-05 09:30:00', '2024-08-12 16:30:00', 'Robotics Room', 30),
-(8, '2024-09-01 10:00:00', '2024-09-05 15:30:00', 'Math Center', 20),
-(9, '2024-10-10 13:00:00', '2024-10-15 19:00:00', 'Drama Theater', 25),
-(10, '2024-11-20 09:00:00', '2024-11-25 17:00:00', 'Chess Club Room', 15);
+(2, '2024-03-15 10:00:00', '2024-03-20 16:00:00', 'School Auditorium', 20),
+(3, '2024-04-01 08:30:00', '2024-04-10 18:00:00', 'Activity Centre', 15),
+(4, '2024-05-05 09:00:00', '2024-05-12 15:00:00', 'Office Room 3', 20);
 
 
 -- Insert data into Bookings with updated structure, including BookingDate
-INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, SpecialReq, TransacID, BookingDate) VALUES
-('Lucy Gray', 'lucygray@example.com', '34567890', 2, 2, 
+INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, TransacID, SpecialReq, BookingDate) VALUES
+('Lucy Gray', 'lucygray@example.com', '34567890', 2, 1, 
  '[{"name": "Liam Gray", "dob": "2015-05-10", "gender": "M", "school": "Bright Future School", "needs": "None"}, 
    {"name": "Lucas Gray", "dob": "2017-10-01", "gender": "M", "school": "Bright Future School", "needs": "Speech Therapy"}]', 
- 'None', 2, 2, 'Wheelchair access', 3, '2024-03-12'),
+ 'None', 2, 2, 3, 'Wheelchair access', '2024-03-12'),
 
-('Paul Black', 'paulblack@example.com', '45678901', 5, 5, 
+('Paul Black', 'paulblack@example.com', '45678901', 5, 3, 
  '[{"name": "Mia Black", "dob": "2014-03-22", "gender": "F", "school": "Sunshine Academy", "needs": "Allergies"}, 
    {"name": "Amelia Black", "dob": "2013-08-15", "gender": "F", "school": "Sunshine Academy", "needs": "Dietary Restrictions"}]', 
- 'Allergic', 5, 2, NULL, 4, '2024-04-05'),
+ 'Allergic', 3, 2, 4, NULL, '2024-04-05'),
 
-('Jane Smith', 'janesmith@example.com', '23456789', 3, 2, 
+('Jane Smith', 'janesmith@example.com', '23456789', 3, 1, 
  '[{"name": "Ava Smith", "dob": "2015-09-25", "gender": "F", "school": "Green Valley School", "needs": "None"}]', 
- 'None', 3, 1, NULL, 2, '2024-02-10'),
+ 'None', 1, 1, 2, NULL, '2024-02-10'),
 
-('Emma White', 'emmawhite@example.com', '67890123', 10, 10, 
+('Emma White', 'emmawhite@example.com', '67890123', 6, 4, 
  '[{"name": "James White", "dob": "2014-01-15", "gender": "M", "school": "Lakewood School", "needs": "Autism"}]', 
- 'None', 10, 1, NULL, 10, '2024-10-11'),
+ 'None', 4, 1, 6, NULL, '2024-10-11'),
 
-('Nancy Blue', 'nancyblue@example.com', '56789012', 7, 7, 
+('Nancy Blue', 'nancyblue@example.com', '56789012', 4, 2, 
  '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
- 'Gluten-Free', 7, 1, 'Quiet room needed', 5, '2024-05-19');
-
-
-
+ 'Gluten-Free', 2, 1, 5, 'Quiet room needed', '2024-05-19');

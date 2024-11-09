@@ -69,7 +69,7 @@ async function sendPaymentConfirmation(TransacID) {
 }
 async function sendMembershipCode(email, name) {
     try {
-        const registration = { Email: email, Name: name}
+        const registration = { Email: email, Name: name };
         console.log("baaalss,", registration);
         const emailData = {
             to: email,
