@@ -31,32 +31,39 @@ const MembershipDurationIndicator = ({ monthsRemaining, totalMonths }) => {
   );
 };
 
-const AccountOverview = (accountdata) => {
-  console.log(accountdata);
-  const [userName, setUserName] = useState(accountdata.name);
-  const [registeredPrograms, setRegisteredPrograms] = useState([]);
-  const [membershipDuration, setMembershipDuration] = useState(7); // Example: 7 months remaining
-  const [totalDuration] = useState(12); // Example: total duration is 12 months
+const AccountOverview = ({ accountdata, bookingdata }) => {
+  const [userName, setUserName] = useState(accountdata.Name);
+  const [registeredPrograms, setRegisteredPrograms] = useState({});
+  const [membershipDuration, setMembershipDuration] = useState(0); // Remaining months
+  const [totalDuration] = useState(12); // Total duration is 12 months
   const [certificates, setCertificates] = useState([]);
 
   useEffect(() => {
-    // Fetch data here, set dummy data for now
-    setUserName(accountdata.name);
-    setRegisteredPrograms([
-      { name: "Public Speaking - Junior", date: "5 Dec - 7 Dec" },
-      { name: "How to cope with PSLE Seminar", date: "10 Dec" },
-    ]);
+    setRegisteredPrograms(bookingdata);
     setCertificates([{ title: "PSLE Chinese Oral Bootcamp" }]);
-  }, []);
 
-  console.log("Username = ", userName);
-  console.log("Username = ", accountdata.name);
+    // Calculate remaining membership duration
+    const calculateMembershipDuration = () => {
+      const expiryDate = new Date(accountdata.memberExpiry);
+      const today = new Date();
+
+      // Calculate the difference in months
+      const monthsRemaining =
+        (expiryDate.getFullYear() - today.getFullYear()) * 12 +
+        (expiryDate.getMonth() - today.getMonth());
+
+      // Ensure that monthsRemaining is not negative
+      setMembershipDuration(Math.max(monthsRemaining, 0));
+    };
+
+    calculateMembershipDuration();
+  }, [accountdata, bookingdata]);
 
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white">
       {/* Welcome Message */}
       <h1 className="text-2xl font-bold mb-4">
-        Welcome back, <span className="font-normal">{userName}</span>
+        Welcome back, <span className="text-yellow">{userName}</span>
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
@@ -68,13 +75,13 @@ const AccountOverview = (accountdata) => {
             for
           </p>
           <ul className="space-y-2">
-            {registeredPrograms.map((program, index) => (
+            {Object.values(registeredPrograms).map((program, index) => (
               <li
                 key={index}
                 className="flex justify-between border-t border-gray-300 pt-2"
               >
-                <span>{program.name}</span>
-                <span>{program.date}</span>
+                <span>{program.ProgID}</span>
+                <span>{program.TrasacID}</span>
               </li>
             ))}
           </ul>

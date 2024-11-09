@@ -11,6 +11,8 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import backendService from "../utils/backendService";
 
 const AccountDashboardPage = () => {
+  const [accountData, setAccountData] = useState({});
+  const [regCoursesData, setRegCoursesData] = useState({});
   const { accountService } = backendService;
   const [formData, setFormData] = useState({
     name: "",
@@ -30,24 +32,33 @@ const AccountDashboardPage = () => {
     const email = sessionStorage.getItem("AccountEmail");
     const fetchData = async () => {
       try {
-        const accountData = await accountService.getAccountByEmail(email);
-        console.log(accountData);
+        // Start of gettting all Account information
+        const fetchedAccountData = await accountService.getAccountByEmail(
+          email
+        );
+        setAccountData(fetchedAccountData);
 
         setFormData({
-          name: accountData.Name,
-          dob: accountData.dateOfBirth,
-          contactNumber: accountData.ContactNo,
-          relationship: accountData.relationshipToChild,
-          address: accountData.address,
+          name: fetchedAccountData.Name,
+          dob: fetchedAccountData.dateOfBirth,
+          contactNumber: fetchedAccountData.ContactNo,
+          relationship: fetchedAccountData.relationshipToChild,
+          address: fetchedAccountData.address,
         });
 
         setOriginalData({
-          name: accountData.Name,
-          dob: accountData.dateOfBirth,
-          contactNumber: accountData.ContactNo,
-          relationship: accountData.relationshipToChild,
-          address: accountData.address,
+          name: fetchedAccountData.Name,
+          dob: fetchedAccountData.dateOfBirth,
+          contactNumber: fetchedAccountData.ContactNo,
+          relationship: fetchedAccountData.relationshipToChild,
+          address: fetchedAccountData.address,
         }); // Store original data for comparison
+
+        // Start of gettting all Booking information
+        const fetchedBookingData = await accountService.retrieveAccountInfo(
+          email
+        );
+        setRegCoursesData(fetchedBookingData); // Set the fetched account data to state
       } catch (error) {
         console.error("Error fetching account data:", error);
       }
@@ -59,7 +70,7 @@ const AccountDashboardPage = () => {
         console.log(accountBookingInfo);
         // Handle accountInfo as necessary (not shown in original code)
       } catch (error) {
-        console.error("Error fetching account info:", error);
+        console.error("Error fetching booked courses info:", error);
       }
     };
     fetchData();
@@ -157,7 +168,10 @@ const AccountDashboardPage = () => {
       <Navbar />
       <div className="w-screen min-h-screen">
         {/* Account Overview Section */}
-        <AccountOverview accountdata={formData} />
+        <AccountOverview
+          accountdata={accountData}
+          bookingdata={regCoursesData}
+        />
 
         {/* Account Update Section */}
         <div className="py-20 mx-auto max-w-2xl">
