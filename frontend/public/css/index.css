@@ -40,16 +40,3 @@
   cursor: not-allowed;
   /* Change the cursor to indicate it's not clickable */
 }
-
-.mobile-menu {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
-}
-
-.mobile-menu.open {
-  max-height: 500px;
-  /* Adjust based on your menu items */
-  opacity: 1;
-}

@@ -131,7 +131,8 @@ const ReviewPage = () => {
 
     const paymentData = {
       total: quantity * parseFloat(tierDetails.Cost),
-      courseName: programDetails.title,
+      courseName: programDetails.Name,
+      selectedPlanID: tierDetails.TierID,
       dueDate: formattedDate, // Set due date to today
     };
 
