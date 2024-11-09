@@ -36,15 +36,32 @@ const PaymentPage = () => {
           booking.contactInfo.email,
           booking.contactInfo.name
         );
+        // Navigate to SurveyPage with success message
+        navigate("/survey", {
+          state: {
+            title: "We can't wait to see you there!",
+            message:
+              "Meanwhile, please provide us your feedback. It will help us to improve.",
+          },
+        });
       } catch (error) {
         console.error("Payment failed", error);
       } finally {
         setLoading(false); // Hide loading popup
       }
-      navigate("/");
     } else {
       console.error("Contact info is not available for payment.");
     }
+  };
+
+  const cancelPayment = () => {
+    // Delete the booking object
+    navigate("/survey", {
+      state: {
+        title: "We are sad to see you go!",
+        message: "Please provide us your feedback so that we can improve!",
+      },
+    });
   };
 
   if (!paymentData) {
@@ -68,12 +85,21 @@ const PaymentPage = () => {
           <PayNowSection />
         </div>
 
-        <button
-          onClick={approvePayment}
-          className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-6 w-full"
-        >
-          Payment Complete
-        </button>
+        {/* Button Container for Side by Side Layout */}
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={cancelPayment}
+            className="bg-gray-400 text-white font-semibold py-3 px-6 rounded w-full mr-2"
+          >
+            Cancel Payment
+          </button>
+          <button
+            onClick={approvePayment}
+            className="bg-yellow text-white font-semibold py-3 px-6 rounded w-full ml-2"
+          >
+            Payment Complete
+          </button>
+        </div>
       </main>
       <Footer />
     </div>

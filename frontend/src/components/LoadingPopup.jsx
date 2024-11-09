@@ -14,6 +14,7 @@ const LoadingPopup = () => {
           />
         </div>
         <h2 className="text-lg font-semibold">Processing Payment...</h2>
+        <p>Please check your inbox for the payment receipt</p>
       </div>
     </div>
   );
