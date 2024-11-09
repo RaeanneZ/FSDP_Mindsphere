@@ -64,7 +64,7 @@ GO
 create table Roles (
 	RoleID int not null,
 	Name varchar(50) default 'User',
-	constraint PK_Roles primary key (RoleID),
+	constraint PK_Roles primary key (RoleID)
 )
 go
 
@@ -194,11 +194,13 @@ create table Bookings (
 	SpecialReq varchar(50) null,
 	TransacID int not null,
 	BookingDate datetime not null,
+	ChildID int not null,
 	constraint PK_Bookings primary key (BookingID),
 	constraint FK_Bookings_TierID foreign key (TierID) references ProgrammeTier(TierID),
 	constraint FK_Bookings_ProgID foreign key (ProgID) references Programmes(ProgID),
 	constraint FK_Bookings_SchedID foreign key (SchedID) references ProgrammeSchedule(SchedID),
-	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID)
+	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID),
+	constraint FK_Bookings_ChildID foreign key (ChildID) references Children(ChildID)
 )
 go
 
@@ -278,11 +280,6 @@ INSERT INTO Payment (Email, ProgID, Quantity, TotalCost, PaidDate, TransacStatus
 ('johndoe@example.com', 9, 4, 80.00, '2024-09-05', 'Paid'),
 ('emmawhite@example.com', 10, 3, 40.00, '2024-10-11', 'Paid');
 
-
-
-
-
-
 -- Insert data into ProgrammeFeedback
 INSERT INTO ProgrammeFeedback (ProgID, AccID, FdbkDesc) VALUES
 (1, 1, 'Great program! My child loved it.'),
@@ -311,28 +308,28 @@ INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VA
 
 
 -- Insert data into Bookings with updated structure, including BookingDate
-INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, SpecialReq, TransacID, BookingDate) VALUES
+INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, SpecialReq, TransacID, BookingDate, ChildID) VALUES
 ('Lucy Gray', 'lucygray@example.com', '34567890', 2, 2, 
  '[{"name": "Liam Gray", "dob": "2015-05-10", "gender": "M", "school": "Bright Future School", "needs": "None"}, 
    {"name": "Lucas Gray", "dob": "2017-10-01", "gender": "M", "school": "Bright Future School", "needs": "Speech Therapy"}]', 
- 'None', 2, 2, 'Wheelchair access', 3, '2024-03-12'),
+ 'None', 2, 2, 'Wheelchair access', 3, '2024-03-12',1),
 
 ('Paul Black', 'paulblack@example.com', '45678901', 5, 5, 
  '[{"name": "Mia Black", "dob": "2014-03-22", "gender": "F", "school": "Sunshine Academy", "needs": "Allergies"}, 
    {"name": "Amelia Black", "dob": "2013-08-15", "gender": "F", "school": "Sunshine Academy", "needs": "Dietary Restrictions"}]', 
- 'Allergic', 5, 2, NULL, 4, '2024-04-05'),
+ 'Allergic', 5, 2, NULL, 4, '2024-04-05',2),
 
 ('Jane Smith', 'janesmith@example.com', '23456789', 3, 2, 
  '[{"name": "Ava Smith", "dob": "2015-09-25", "gender": "F", "school": "Green Valley School", "needs": "None"}]', 
- 'None', 3, 1, NULL, 2, '2024-02-10'),
+ 'None', 3, 1, NULL, 2, '2024-02-10',3),
 
 ('Emma White', 'emmawhite@example.com', '67890123', 10, 10, 
  '[{"name": "James White", "dob": "2014-01-15", "gender": "M", "school": "Lakewood School", "needs": "Autism"}]', 
- 'None', 10, 1, NULL, 10, '2024-10-11'),
+ 'None', 10, 1, NULL, 10, '2024-10-11',4),
 
 ('Nancy Blue', 'nancyblue@example.com', '56789012', 7, 7, 
  '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
- 'Gluten-Free', 7, 1, 'Quiet room needed', 5, '2024-05-19');
+ 'Gluten-Free', 7, 1, 'Quiet room needed', 5, '2024-05-19',5);
 
 
 
