@@ -3,6 +3,8 @@ import Flatpickr from "react-flatpickr"; // Import Flatpickr
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 import { prof } from "../utils";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const BusinessForm = () => {
   const { useState } = React;
@@ -66,7 +68,8 @@ const BusinessForm = () => {
 
   return (
     <>
-      <div className="w-screen bg-white rounded-lg shadow-lg">
+      <Navbar />
+      <div className="w-screen rounded-lg">
         <div className="lg:mx-40 flex items-center justify-center mb-8">
           <img
             alt="Group of professionals smiling and standing together"
@@ -248,7 +251,7 @@ const BusinessForm = () => {
                   <p className="text-red-500 text-xs">{errors.callbackTime}</p>
                 )}
               </div>
-              <div className="flex justify-center mt-10">
+              <div className="flex justify-center mt-5">
                 <button
                   className="w-full px-4 py-2 my-8 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow"
                   type="submit"
@@ -260,6 +263,7 @@ const BusinessForm = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };
