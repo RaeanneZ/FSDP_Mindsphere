@@ -11,6 +11,7 @@ import Footer from "../components/Footer";
 import CheckoutProgress from "../components/CheckoutProgress";
 import EventDetail from "../components/EventDetail";
 import ChildPaymentForm from "../components/ChildPaymentForm";
+import { imageArray } from "../constants";
 import backendService from "../utils/backendService";
 
 const ReviewPage = () => {
@@ -198,6 +199,11 @@ const ReviewPage = () => {
     );
   }
 
+  // Find the image that matches the programDetails.ProgID
+  const matchedImage = imageArray.find(
+    (imageObj) => imageObj.id === programDetails.ProgID
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -205,14 +211,20 @@ const ReviewPage = () => {
       <main className="flex-grow p-6 max-w-2xl mx-auto sm:w-[80%]">
         <CheckoutProgress imageType="cart" />
 
-        <CheckoutItem
-          programName={programDetails.Name}
-          programTier={tierDetails.Level}
-          price={parseFloat(tierDetails.Cost)}
-          quantity={quantity}
-          onIncrease={() => setQuantity(quantity + 1)}
-          onDecrease={() => setQuantity(Math.max(1, quantity - 1))}
-        />
+        {/* Loop through imageArray and render CheckoutItem for each image */}
+        {matchedImage && (
+          <CheckoutItem
+            programName={programDetails.Name}
+            programTier={tierDetails.Level}
+            price={parseFloat(tierDetails.Cost)}
+            quantity={quantity}
+            image={matchedImage.image} // Pass the image to CheckoutItem
+            alt={matchedImage.alt} // Pass the alt text to CheckoutItem
+            onIncrease={() => setQuantity(quantity + 1)}
+            onDecrease={() => setQuantity(Math.max(1, quantity - 1))}
+          />
+        )}
+
         <ContactForm
           contactInfo={contactInfo}
           setContactInfo={setContactInfo}
