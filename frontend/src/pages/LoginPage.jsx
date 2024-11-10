@@ -47,7 +47,7 @@ const LoginPage = () => {
   return (
     <>
       <Navbar />
-      <div className="w-screen h-screen flex justify-center items-center">
+      <div className="w-screen flex justify-center items-center">
         <div className="w-full max-w-2xl p-8 space-y-6 bg-white">
           <h1 className="text-2xl font-bold text-black">Membership Login</h1>
           <p className="text-gray-600">Your journey is just one click away</p>
