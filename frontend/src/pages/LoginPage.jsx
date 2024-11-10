@@ -75,6 +75,13 @@ const LoginPage = () => {
             >
               Login
             </button>
+
+            <p className="text-center text-gray-600">
+              New to Mindsphere?{" "}
+              <a href="/signup" className="text-blue-500">
+                Sign Up Here
+              </a>
+            </p>
           </form>
         </div>
       </div>
