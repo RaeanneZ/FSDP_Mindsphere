@@ -61,9 +61,9 @@ const AccountOverview = ({ accountdata, bookingdata }) => {
   }, [accountdata, bookingdata]);
 
   return (
-    <div className="max-w-5xl mx-auto p-8 bg-white">
+    <div className="max-w-5xl mx-auto py-20 bg-white">
       {/* Welcome Message */}
-      <h1 className="text-2xl font-bold mb-4">
+      <h1 className="text-3xl font-bold mb-10">
         Welcome back, <span className="text-yellow">{userName}</span>
       </h1>
 

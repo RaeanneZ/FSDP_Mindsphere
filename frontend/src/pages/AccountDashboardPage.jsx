@@ -174,98 +174,103 @@ const AccountDashboardPage = () => {
         />
 
         {/* Account Update Section */}
-        <div className="py-20 mx-auto max-w-2xl">
-          {" "}
-          {/* Centered and width restricted */}
-          <h2 className="text-lg font-bold mb-4">
-            Update Membership Account Details
-          </h2>
-          <form onSubmit={handleSubmit} className="border-2 border-transparent">
-            <div className="grid grid-cols-1 gap-4 mt-4 pb-8">
-              <div className="grid md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-                  required
-                />
-                <Flatpickr
-                  value={formData.dob}
-                  onChange={handleDateChange}
-                  options={{
-                    altInput: true,
-                    altFormat: "F j, Y",
-                    dateFormat: "Y-m-d",
-                    maxDate: "today",
-                  }}
-                  className="p-3 border border-gray-300 rounded-md w-full bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-                  placeholder="Date Of Birth"
-                />
-                <input
-                  type="text"
-                  name="contactNumber"
-                  placeholder="Contact Number"
-                  value={formData.contactNumber}
-                  onChange={handleChange}
-                  className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-                  required
-                />
-                <select
-                  name="relationship"
-                  value={formData.relationship}
-                  onChange={handleChange}
-                  className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-                  required
-                >
-                  <option value="">Relationship to Child</option>
-                  <option value="Father">Father</option>
-                  <option value="Mother">Mother</option>
-                  <option value="Guardian">Guardian</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <input
-                type="text"
-                name="address"
-                placeholder="Address"
-                value={formData.address}
-                onChange={handleChange}
-                className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-                required
-              />
-            </div>
-
-            <h1 className="my-4 text-xl font-bold">
-              Enter your child&#39;s / ward&#39;s particulars so that we can
-              better understand them
-            </h1>
-            {children.map((number) => (
-              <ChildAccordion
-                key={number}
-                number={number}
-                saveChildData={saveChildData}
-              />
-            ))}
-            <div
-              className="bg-lightBlue p-6 rounded-lg shadow-md my-4 flex items-center justify-between mb-4 cursor-pointer"
-              onClick={addChild}
+        <div className="bg-[#FFF6E0]">
+          <div className="bg-[#FFF6E0] py-10 mx-auto max-w-2xl flex flex-col items-center">
+            {" "}
+            {/* Centered and width restricted */}
+            <h2 className="text-2xl font-bold mb-5">
+              Membership Account Details
+            </h2>
+            <form
+              onSubmit={handleSubmit}
+              className="border-2 border-transparent"
             >
-              <span>Add Another Child</span>
-              <FontAwesomeIcon icon={faPlus} />
-            </div>
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="text-lg font-bold flex items-center"
-                disabled={!isUpdated}
+              <div className="grid grid-cols-1 gap-4 mt-4 pb-8">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                    required
+                  />
+                  <Flatpickr
+                    value={formData.dob}
+                    onChange={handleDateChange}
+                    options={{
+                      altInput: true,
+                      altFormat: "F j, Y",
+                      dateFormat: "Y-m-d",
+                      maxDate: "today",
+                    }}
+                    className="p-3 border border-gray-300 rounded-md w-full bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                    placeholder="Date Of Birth"
+                  />
+                  <input
+                    type="text"
+                    name="contactNumber"
+                    placeholder="Contact Number"
+                    value={formData.contactNumber}
+                    onChange={handleChange}
+                    className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                    required
+                  />
+                  <select
+                    name="relationship"
+                    value={formData.relationship}
+                    onChange={handleChange}
+                    className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                    required
+                  >
+                    <option value="">Relationship to Child</option>
+                    <option value="Father">Father</option>
+                    <option value="Mother">Mother</option>
+                    <option value="Guardian">Guardian</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="Address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                  required
+                />
+              </div>
+
+              <h1 className="my-4 text-lg font-bold">
+                Enter your child&#39;s / ward&#39;s particulars so that we can
+                better understand them
+              </h1>
+              {children.map((number) => (
+                <ChildAccordion
+                  key={number}
+                  number={number}
+                  saveChildData={saveChildData}
+                />
+              ))}
+              <div
+                className="bg-lightBlue p-6 rounded-lg shadow-md my-4 flex items-center justify-between mb-4 cursor-pointer"
+                onClick={addChild}
               >
-                Update
-              </button>
-            </div>
-          </form>
+                <span>Add Another Child</span>
+                <FontAwesomeIcon icon={faPlus} />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-4 w-full"
+                  disabled={!isUpdated}
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
       <Footer />
