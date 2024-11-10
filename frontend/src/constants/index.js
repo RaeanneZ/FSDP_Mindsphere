@@ -1,27 +1,23 @@
 import { prof, pubSpeaking, psle, entrepreneurship } from "../utils";
 
-export const programmes = [
+export const imageArray = [
   {
-    title: "Public Speaking Workshops",
-    description: "Impactful speaking skills start here.",
+    id: 1,
     image: pubSpeaking,
     alt: "A child holding a microphone and speaking on stage",
   },
   {
-    title: "PSLE Power Up Camp",
-    description: "An achiever's exam staple.",
+    id: 2,
     image: psle,
     alt: "An empty classroom with desks and chairs",
   },
   {
-    title: "Future Entrepreneurs Labs",
-    description: "Defining mindsets during the formative years.",
+    id: 3,
     image: entrepreneurship,
     alt: "A young woman holding clothes on hangers",
   },
   {
-    title: "Professionals",
-    description: "Inspiring your career trajectory.",
+    id: 4,
     image: prof,
     alt: "A group of professionals standing together and smiling",
   },
