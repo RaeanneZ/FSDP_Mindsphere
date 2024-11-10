@@ -32,13 +32,14 @@ const MembershipDurationIndicator = ({ monthsRemaining, totalMonths }) => {
 };
 
 const AccountOverview = ({ accountdata, bookingdata }) => {
-  const [userName, setUserName] = useState(accountdata.Name);
+  const [userName, setUserName] = useState();
   const [registeredPrograms, setRegisteredPrograms] = useState({});
   const [membershipDuration, setMembershipDuration] = useState(0); // Remaining months
   const [totalDuration] = useState(12); // Total duration is 12 months
   const [certificates, setCertificates] = useState([]);
 
   useEffect(() => {
+    setUserName(accountdata.Name);
     setRegisteredPrograms(bookingdata);
     setCertificates([{ title: "PSLE Chinese Oral Bootcamp" }]);
 
