@@ -156,6 +156,23 @@ const bookingService = {
       throw err;
     }
   },
+
+  deleteBooking: async (Email, BookingDate, TierID) => {
+    try {
+      const response = await axios.delete(`${apiUrl}/bookings`, {
+        Email: Email,
+        BookingDate: BookingDate,
+        TierID: TierID,
+      });
+      return response.data;
+    } catch (err) {
+      return {
+        success: false,
+        message: "delete booking failed",
+        error: err.response.data,
+      };
+    }
+  },
 };
 
 //Account Methods

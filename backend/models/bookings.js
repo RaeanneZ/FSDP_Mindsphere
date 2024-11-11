@@ -134,6 +134,29 @@ class Bookings {
       throw err;
     }
   }
+
+  static async deleteBooking(Email, BookingDate, TierID) {
+    try {
+      const connection = await sql.connect(dbConfig);
+      const sqlQuery = `
+      DELETE FROM Bookings
+      WHERE Email = @Email
+      AND BookingDate = @BookingDate
+      AND TierID = @TierID;
+`;
+
+      const request = connection.request();
+      request.input("Email", sql.VarChar, Email);
+      request.input("BookingDate", sql.Date, BookingDate);
+      request.input("TierID", sql.Int, TierID);
+
+      const result = await request.query(sqlQuery);
+      return result.rowsAffected[0] > 0; // Returns true if a row was deletedda
+    } catch (err) {
+      console.error("ModelError: Error deleting booking: ", err);
+      throw err;
+    }
+  }
 }
 
 module.exports = Bookings;

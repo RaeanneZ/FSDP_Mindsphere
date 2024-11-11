@@ -52,6 +52,7 @@ app.get("/api/schedules/:schedID", progSchedController.getRemainingSlots);
 
 app.get("/api/bookings", bookingsController.getAllBookings);
 app.post("/api/bookings", bookingsController.addBooking);
+app.delete('/api/bookings', bookingsController.deleteBooking);
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
