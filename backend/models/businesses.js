@@ -95,7 +95,7 @@ class Business {
             console.log(`PDF generated at ${filePath}`);
             return filePath;
         } catch (err) {
-            console.error("Error generating PDF:", err);
+            console.error("ModelError: Error generating PDF:", err);
         }
     }
     

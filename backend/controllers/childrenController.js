@@ -23,7 +23,7 @@ const addChild = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).send("ControllerError: Internal Server Error");
+        res.status(500).send("ControllerError: Error adding child");
     }
 };
 
@@ -121,7 +121,7 @@ const updateChild = async (req, res) => {
             });
         } else {
             res.status(500).json({
-                error: "Internal Server Error",
+                error: "ControllerError: Internal Server Error",
                 message: err.message,
             });
         }
