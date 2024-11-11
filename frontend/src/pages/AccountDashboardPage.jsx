@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Flatpickr from "react-flatpickr";
@@ -11,6 +12,8 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import backendService from "../utils/backendService";
 
 const AccountDashboardPage = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState();
   const [accountData, setAccountData] = useState({});
   const [regCoursesData, setRegCoursesData] = useState({});
   const { accountService } = backendService;
@@ -26,12 +29,24 @@ const AccountDashboardPage = () => {
   const [originalData, setOriginalData] = useState({});
   const [isUpdated, setIsUpdated] = useState(false);
 
-  const email = "user@example.com"; // Replace with the actual email of the logged-in user
+  // Effect to retrieve the email from session storage
+  useEffect(() => {
+    const storedEmail = sessionStorage.getItem("AccountEmail");
+
+    if (storedEmail === null) {
+      navigate("/login"); // Redirect to login page
+    } else {
+      setEmail(storedEmail);
+      console.log("The stored email is: ", storedEmail);
+    }
+  }, []);
 
   useEffect(() => {
-    const email = sessionStorage.getItem("AccountEmail");
+    if (!email) return; // Exit if email is not set
+
     const fetchData = async () => {
       try {
+        console.log("The email is ", email);
         // Start of gettting all Account information
         const fetchedAccountData = await accountService.getAccountByEmail(
           email
@@ -74,7 +89,7 @@ const AccountDashboardPage = () => {
       }
     };
     fetchData();
-  }, [email]);
+  }, [email]); // This effect runs only when email changes
 
   const handleChange = (e) => {
     // Defensive checks
@@ -137,12 +152,23 @@ const AccountDashboardPage = () => {
     if (!validateForm()) return;
 
     try {
+      console.log("Email: ", email);
+      console.log("Form Data: ", formData);
+
+      const updatedFormattedData = {
+        ContactNo: formData.contactNumber,
+        Name: formData.name,
+        adddress: formData.address,
+        dateOfBirth: formData.dob,
+        relationshipToChild: formData.relationship,
+      };
       const response = await accountService.updateAccountByEmail(
         email,
-        formData
+        updatedFormattedData
       );
+
       if (response) {
-        console.log("Account updated successfully");
+        console.log("Account updated successfully. Response is ", response);
         setOriginalData(formData); // Update original data to the newly updated data
         setIsUpdated(false); // Reset the updated state
       } else {
@@ -166,7 +192,7 @@ const AccountDashboardPage = () => {
   return (
     <>
       <Navbar />
-      <div className="w-screen min-h-screen">
+      <div className="px-2 w-screen min-h-screen">
         {/* Account Overview Section */}
         <AccountOverview
           accountdata={accountData}
