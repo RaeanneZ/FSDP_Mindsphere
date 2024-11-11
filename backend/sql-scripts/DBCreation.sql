@@ -38,6 +38,10 @@ if exists (select * from sysobjects where name='Programmes' and type='U')
     drop table Programmes
 GO
 
+if exists (select * from sysobjects where name='Businesses' and type='U')
+    drop table Businesses
+GO
+
 if exists (select * from sysobjects where name='Children' and type='U')
     drop table Children
 GO
@@ -113,6 +117,21 @@ create table Children (
 	constraint CHK_Gender check (Gender in ('M', 'F'))
 )
 GO
+
+create table Businesses (
+	BusinessID int not null identity(1,1),
+	Name varchar(50) not null,
+	ContactNo char(8) not null,
+	Email varchar(50) not null,
+	exNumOfDays int not null,
+	groupSize int not null,
+	orgName varchar(50) not null,
+	helpText varchar(255) not null,
+	constraint PK_Business primary key (BusinessID)
+)
+go
+
+
 -- removed agerange, cost, added progintro
 create table Programmes (
 	ProgID int not null,
@@ -236,6 +255,18 @@ INSERT INTO Children (GuardianEmail, Name, Gender, Dob, Needs, School, Interests
 ('nancyblue@example.com', 'Ella Blue', 'F', '2013-11-10', 'Visual Impairment', 'Hillcrest School', 'Art, Music'),
 ('oliverred@example.com', 'Lily Red', 'F', '2016-07-18', 'Hearing Impairment', 'Sunrise Academy', 'Sports, Robotics'),
 ('sophiabrown@example.com', 'Benjamin Brown', 'M', '2015-04-30', 'Asthma', 'Maplewood School', 'Reading, Drama');
+
+INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText) VALUES
+('Tech Innovations Ltd', '12345678', 'info@techinnovations.com', 7, 15, 'Innovate Group', 'Providing cutting-edge tech solutions for small businesses.'),
+('Green Earth Inc', '23456789', 'contact@greenearth.com', 3, 20, 'Eco Solutions', 'Dedicated to eco-friendly products and sustainability initiatives.'),
+('HealthPlus Clinic', '34567890', 'support@healthplus.com', 5, 10, 'Health Network', 'Focused on providing high-quality healthcare services.'),
+('Urban Eats', '45678901', 'info@urbaneats.com', 2, 30, 'Foodies United', 'Offering fresh and diverse food options in urban areas.'),
+('Digital Media Solutions', '56789012', 'contact@dmsolutions.com', 10, 12, 'Media Group', 'Specializing in digital marketing and media solutions for businesses.'),
+('Elite Fitness Center', '67890123', 'info@elitefitness.com', 14, 25, 'Wellness Partners', 'Aiming to promote health and wellness through fitness training.'),
+('Adventure Outdoors', '78901234', 'info@adventureoutdoors.com', 7, 50, 'Outdoors Corp', 'Organizing outdoor activities and adventures for groups.'),
+('Creative Minds Studio', '89012345', 'contact@creativeminds.com', 4, 8, 'Design Hub', 'Creative agency focused on graphic design and branding.'),
+('FinTech Solutions', '90123456', 'info@fintechsolutions.com', 6, 18, 'Finance Experts', 'Offering financial technology solutions for modern businesses.'),
+('EduLearn Academy', '01234567', 'support@edulearn.com', 3, 40, 'Education Group', 'Committed to providing quality education and training programs.');
 
 
 -- Insert data into Programmes
