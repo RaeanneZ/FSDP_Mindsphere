@@ -18,6 +18,14 @@ import CorporateProgramsSection from "../components/CorporateProgramsSection";
 // );
 // console.log(account);
 
+const { bookingService } = backendService;
+const booking = await bookingService.deleteBooking(
+  "emmawhite@example.com",
+  "2024-10-11",
+  6
+);
+console.log(booking);
+
 const LandingPage = () => {
   const navigate = useNavigate();
 

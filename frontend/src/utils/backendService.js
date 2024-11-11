@@ -156,6 +156,21 @@ const bookingService = {
       throw err;
     }
   },
+
+  deleteBooking: async (Email, BookingDate, TierID) => {
+    try {
+      const response = await axios.delete(`${apiUrl}/bookings`, {
+        data: { Email, BookingDate, TierID },
+      });
+      return response.data;
+    } catch (err) {
+      return {
+        success: false,
+        message: "delete booking failed",
+        error: err.response?.data,
+      };
+    }
+  },
 };
 
 //Account Methods
@@ -323,7 +338,10 @@ const formService = {
         callbackRequest: callbackRequest,
       };
 
-      const response = await axios.post(`${apiUrl}/business/addBusiness`, newBusiness);
+      const response = await axios.post(
+        `${apiUrl}/business/addBusiness`,
+        newBusiness
+      );
 
       return response.data;
     } catch (err) {
@@ -336,7 +354,6 @@ const formService = {
     }
   },
 };
-
 
 export default {
   programmeService,
