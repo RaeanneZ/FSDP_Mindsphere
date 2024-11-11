@@ -27,7 +27,7 @@ WHERE p.TransacStatus = 'Paid'`;
         }
     }
 
-    static async getPaidTransaction(email) {
+    static async getPaidTransaction(email, transacID) {
         try {
             const query = `
                 SELECT 
@@ -41,38 +41,52 @@ WHERE p.TransacStatus = 'Paid'`;
                     pr.ProgType, 
                     p.TransacID, 
                     p.TotalCost,
-                    p.PaidDate,
+                    COALESCE(p.PaidDate, GETDATE()) as PaidDate,  -- Use current date if PaidDate is null
                     b.childrenDetails
                 FROM 
                     Bookings b
                 INNER JOIN 
                     Programmes pr ON b.ProgID = pr.ProgID
                 INNER JOIN
-                    Payment p ON b.TransacID = p.TransacID  -- Join on TransacID
+                    Payment p ON b.TransacID = p.TransacID
                 WHERE 
-                    b.Email = @Email`;
+                    b.Email = @Email 
+                    AND p.TransacID = @TransacID`;
 
             const pool = await sql.connect(dbConfig);
             const result = await pool
                 .request()
                 .input("Email", sql.VarChar, email)
+                .input("TransacID", sql.Int, transacID)
                 .query(query);
 
-            const record = result.recordset[0];
-            if (record) {
-                // Parse the childrenDetails JSON in JavaScript
-                const childrenDetails = JSON.parse(record.childrenDetails);
-                record.ChildName =
-                    childrenDetails.length > 0
-                        ? childrenDetails[0].name
-                        : "N/A";
-            }
-            return record; // Return the modified record
+            return result.recordset[0];
         } catch (error) {
             console.error(
                 "ModelError: Error fetching paid transaction:",
                 error
             );
+            throw error;
+        }
+    }
+
+    // Method to update PaidDate when payment is made
+    static async updatePaidDate(transacID) {
+        try {
+            const query = `
+                UPDATE Payment 
+                SET PaidDate = GETDATE()
+                WHERE TransacID = @TransacID 
+                AND TransacStatus = 'Paid' 
+                AND PaidDate IS NULL`;
+
+            const pool = await sql.connect(dbConfig);
+            await pool
+                .request()
+                .input("TransacID", sql.Int, transacID)
+                .query(query);
+        } catch (error) {
+            console.error("ModelError: Error updating PaidDate:", error);
             throw error;
         }
     }
@@ -203,6 +217,11 @@ Mindsphere Team`;
     }
 
     static formatPaymentEmail(payment) {
+        // Parse the childrenDetails JSON string into an array of children
+        const children = JSON.parse(payment.childrenDetails);
+        // Extract just the names
+        const childrenNames = children.map((child) => child.name);
+
         return `
     Dear ${payment.CustomerName},
     
@@ -214,7 +233,7 @@ Mindsphere Team`;
     Program: ${payment.ProgramName}
     Description: ${payment.ProgDesc}
     Program Type: ${payment.ProgType}
-    Child Name: ${payment.ChildName || "N/A"}
+    Children: ${childrenNames.join(", ")}
     Booking Date: ${new Date(payment.BookingDate).toLocaleDateString()}
     Dietary Requirements: ${payment.Diet || "None"}
     

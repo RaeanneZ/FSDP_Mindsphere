@@ -36,16 +36,20 @@ async function sendPaymentConfirmations(req, res) {
 
 async function sendPaymentConfirmation(TransacID) {
     try {
-        const payment = await Payment.getTransactionById(TransacID); // Fetch the specific payment
-        const paymentData = await PaymentEmailModel.getPaidTransaction(
-            payment.Email
-        );
+        // Fetch payment data
+        const payment = await Payment.getTransactionById(TransacID);
 
         if (!payment) {
-            throw new Error(
-                "ControllerError: No payment found for the provided TransacID"
-            );
+            throw new Error("No payment found for the provided TransacID");
         }
+
+        // Update PaidDate if it's null
+        await PaymentEmailModel.updatePaidDate(TransacID);
+
+        const paymentData = await PaymentEmailModel.getPaidTransaction(
+            payment.Email,
+            TransacID
+        );
 
         const emailData = {
             to: payment.Email,
@@ -53,7 +57,7 @@ async function sendPaymentConfirmation(TransacID) {
             text: PaymentEmailModel.formatPaymentEmail(paymentData),
         };
 
-        await sendEmail(emailData); // Send the email
+        await sendEmail(emailData);
 
         return {
             success: true,
@@ -64,9 +68,10 @@ async function sendPaymentConfirmation(TransacID) {
             "ControllerError: Error in sendPaymentConfirmation:",
             error
         );
-        throw error; // Propagate the error to handle it in the controller
+        throw error;
     }
 }
+
 async function sendMembershipCode(email, name) {
     try {
         const registration = { Email: email, Name: name };
