@@ -66,7 +66,7 @@ class Business {
     static async generatePDF(business) {
         try {
             const doc = new PDFDocument({ margin: 50 });
-            const filePath = `./backend/Businesses/Business_${business.orgName.replace(/\s+/g, "_")}.pdf`;
+            const filePath = `./backend/pdf/Businesses/Business_${business.orgName.replace(/\s+/g, "_")}.pdf`;
             doc.pipe(fs.createWriteStream(filePath));
 
             const logoPath = path.join(__dirname, "../assets/mindsphere_logo.png");
