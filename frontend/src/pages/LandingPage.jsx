@@ -19,12 +19,11 @@ import CorporateProgramsSection from "../components/CorporateProgramsSection";
 // console.log(account);
 
 const { bookingService } = backendService;
-const booking = await bookingService.deleteBooking({
-  Email: "emmawhite@example.com",
-  BookingDate: "2024-10-11",
-  TierID: 6,
-});
-console.log(booking.Email, booking.BookingDate, booking.TierID);
+const booking = await bookingService.deleteBooking(
+  "emmawhite@example.com",
+  "2024-10-11",
+  6
+);
 console.log(booking);
 
 const LandingPage = () => {

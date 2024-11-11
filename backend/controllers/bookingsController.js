@@ -72,6 +72,8 @@ const deleteBooking = async (req, res) => {
       });
     }
 
+    console.log("request", req.body);
+
     // Call the deleteBooking method from the model/service
     const isDeleted = await Bookings.deleteBooking(Email, BookingDate, TierID);
 
