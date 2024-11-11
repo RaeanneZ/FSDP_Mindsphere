@@ -1,13 +1,7 @@
 const Business = require("../models/businesses");
 
 const addBusiness = async (req, res) => {
-    const { Name,
-        ContactNo,
-        Email,
-        exNumOfDays,
-        groupSize,
-        orgName,
-        helpText } = req.body;
+    const { Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText } = req.body;
 
     try {
         const newBusiness = await Business.addBusiness({
@@ -19,14 +13,19 @@ const addBusiness = async (req, res) => {
             orgName,
             helpText,
         });
+
+        const pdfPath = await Business.generatePDF(newBusiness);
+
         res.status(201).json({
             message: "Business added successfully",
             Business: newBusiness,
+            pdfPath: pdfPath
         });
     } catch (err) {
         console.error(err);
         res.status(500).send("ControllerError: Error adding business");
     }
-}
+};
+
 
 module.exports = { addBusiness };

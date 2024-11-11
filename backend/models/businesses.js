@@ -1,6 +1,9 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+
 class Business {
     constructor(
         Name,
@@ -53,11 +56,32 @@ class Business {
         }
     }
 
-    // static async generatePDF({
-    //     Business
-    // }) {
+    static async generatePDF(business) {
+        try {
+            const doc = new PDFDocument();
+            const filePath = `./backend/Businesses/Enquiry_${business.Name.replace(/\s+/g, "_")}.pdf`;
+            doc.pipe(fs.createWriteStream(filePath));
 
-    // }
+            doc.fontSize(18).text("Business Details", { align: "center" });
+            doc.moveDown();
+
+            doc.fontSize(12)
+                .text(`Name: ${business.Name}`)
+                .text(`Contact Number: ${business.ContactNo}`)
+                .text(`Email: ${business.Email}`)
+                .text(`Expected Number of Days: ${business.exNumOfDays}`)
+                .text(`Group Size: ${business.groupSize}`)
+                .text(`Organization Name: ${business.orgName}`)
+                .text(`Help Text: ${business.helpText}`);
+
+            doc.end();
+
+            console.log(`PDF generated at ${filePath}`);
+            return filePath;
+        } catch (err) {
+            console.error("Error generating PDF:", err);
+        }
+    }
     
 }
 
