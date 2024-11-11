@@ -26,6 +26,7 @@ const PaymentEmailController = require("./controllers/paymentEmailController");
 const newsletterController = require("./controllers/newsletterController");
 const programmeTiersController = require("./controllers/programmeTierController");
 const businessController = require("./controllers/businessController");
+const surveyFormController = require("./controllers/surveyFormController");
 
 // APP SETUP
 const app = express();
@@ -50,6 +51,8 @@ app.get("/", async (req, res) => {
 app.get("/api/schedules", progSchedController.getAllProgSchedules);
 app.post("/api/schedules", progSchedController.addProgrammeSchedule);
 app.get("/api/schedules/:schedID", progSchedController.getRemainingSlots);
+
+app.post("/api/survey/newSurvey", surveyFormController.addSurvey);
 
 app.get("/api/bookings", bookingsController.getAllBookings);
 app.post("/api/bookings", bookingsController.addBooking);
