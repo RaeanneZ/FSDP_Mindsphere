@@ -126,7 +126,8 @@ create table Businesses (
 	exNumOfDays int not null,
 	groupSize int not null,
 	orgName varchar(50) not null,
-	helpText varchar(255) not null,
+	helpText varchar(1000),
+	callbackRequest datetime not null,
 	constraint PK_Business primary key (BusinessID)
 )
 go
@@ -256,24 +257,33 @@ INSERT INTO Children (GuardianEmail, Name, Gender, Dob, Needs, School, Interests
 ('oliverred@example.com', 'Lily Red', 'F', '2016-07-18', 'Hearing Impairment', 'Sunrise Academy', 'Sports, Robotics'),
 ('sophiabrown@example.com', 'Benjamin Brown', 'M', '2015-04-30', 'Asthma', 'Maplewood School', 'Reading, Drama');
 
-INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText) VALUES
-('Tech Innovations Ltd', '12345678', 'info@techinnovations.com', 7, 15, 'Innovate Group', 'Providing cutting-edge tech solutions for small businesses.'),
-('Green Earth Inc', '23456789', 'contact@greenearth.com', 3, 20, 'Eco Solutions', 'Dedicated to eco-friendly products and sustainability initiatives.'),
-('HealthPlus Clinic', '34567890', 'support@healthplus.com', 5, 10, 'Health Network', 'Focused on providing high-quality healthcare services.'),
-('Urban Eats', '45678901', 'info@urbaneats.com', 2, 30, 'Foodies United', 'Offering fresh and diverse food options in urban areas.'),
-('Digital Media Solutions', '56789012', 'contact@dmsolutions.com', 10, 12, 'Media Group', 'Specializing in digital marketing and media solutions for businesses.'),
-('Elite Fitness Center', '67890123', 'info@elitefitness.com', 14, 25, 'Wellness Partners', 'Aiming to promote health and wellness through fitness training.'),
-('Adventure Outdoors', '78901234', 'info@adventureoutdoors.com', 7, 50, 'Outdoors Corp', 'Organizing outdoor activities and adventures for groups.'),
-('Creative Minds Studio', '89012345', 'contact@creativeminds.com', 4, 8, 'Design Hub', 'Creative agency focused on graphic design and branding.'),
-('FinTech Solutions', '90123456', 'info@fintechsolutions.com', 6, 18, 'Finance Experts', 'Offering financial technology solutions for modern businesses.'),
-('EduLearn Academy', '01234567', 'support@edulearn.com', 3, 40, 'Education Group', 'Committed to providing quality education and training programs.');
+INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest)
+VALUES 
+('John Doe', '12345678', 'johndoe@company.com', 3, 20, 'Tech Innovations Ltd.', 
+'My employees here at Tech Innovations Ltd. need team bonding exercises to improve collaboration and communication skills. We are looking for interactive workshops that will help our team build trust, enhance problem-solving skills, and work more effectively together in a fast-paced tech environment. These sessions should also focus on improving leadership qualities within the team, encouraging creative thinking and better decision-making.',
+'2024-11-15 10:30:00'),
 
+('Jane Smith', '87654321', 'janesmith@company.com', 5, 50, 'Creative Solutions Inc.', 
+'At Creative Solutions Inc., our team is looking for creative workshops to stimulate innovation and foster collaboration. We need interactive sessions where employees can work together to solve real-world problems. We are also interested in leadership development and workshops that teach employees how to think outside the box, encouraging new ideas and creative solutions. It''s important to us that these workshops are fun and engaging, yet challenge our team to think critically.',
+'2024-11-16 09:00:00'),
+
+('Emily Johnson', '11223344', 'emilyj@company.com', 2, 15, 'FutureTech Corp.', 
+'At FutureTech Corp., we are in need of technical workshops to help our employees keep up with the latest developments in AI, data analytics, and software development. Our team is looking for hands-on learning experiences that will give them practical skills they can apply to real projects. Additionally, we need workshops that can foster better communication between our technical and non-technical teams, ensuring they are aligned and can collaborate effectively on projects.',
+'2024-11-18 14:00:00'),
+
+('Michael Brown', '55667788', 'michaelb@company.com', 4, 30, 'Health Solutions Co.', 
+'Our team at Health Solutions Co. is looking for workshops focused on stress management and improving mental health awareness. We need help in teaching our employees how to manage work-related stress and maintain a healthy work-life balance. Additionally, we would love to have team-building activities that strengthen relationships between departments and encourage a positive, supportive work environment. These sessions should be interactive and practical, with tips that employees can use in their day-to-day work life.',
+'2024-11-19 11:45:00'),
+
+('Sophia Lee', '99887766', 'sophial@company.com', 3, 25, 'Retail Enterprises Ltd.', 
+'My team at Retail Enterprises Ltd. is seeking workshops that focus on improving customer service skills and handling difficult situations. We want to provide our employees with the tools they need to enhance customer interactions, resolve conflicts, and manage customer expectations more effectively. Additionally, we are interested in team-building activities that help strengthen our sales and customer support teams, promoting better communication and collaboration across the board.',
+'2024-11-20 13:00:00');
 
 -- Insert data into Programmes
 INSERT INTO Programmes (ProgID, Name, ProgIntro, ProgDesc, ProgType) VALUES
 (1, 'Public Speaking Workshops', 'Basic public speaking', 'Beginner Public Speaking Workshops', 'Light'),
 (2, 'PSLE Power Up Camp', 'PSLE learning enhancement', 'Help PSLE takers learn efficiently and effectively', 'Regular'),
-(3, 'Future Entrepreneurs Labs', 'Learn about entrepreneurship', 'Study how to be an entrepreneur', 'Premium'),
+(3, 'Future Entrepreneurs Labs', 'Learn about entrepreneurship', 'Study how to be an entrepreneur', 'Premium');
 
 -- Insert data into ProgrammeTier
 INSERT INTO ProgrammeTier (TierID, ProgID, TierDesc, Lunch, Level, Duration, ClassSize, AgeRange, Cost) VALUES
@@ -281,8 +291,7 @@ INSERT INTO ProgrammeTier (TierID, ProgID, TierDesc, Lunch, Level, Duration, Cla
 (2, 1, 'Intermediate Public Speaking Workshops', 'Included', 'Intermediate', '3 days', '12-15', '8-12', 1188.00),
 (3, 1, 'Advanced Public Speaking Workshops', 'Included', 'Advanced', '3 days', '10-15', '7-12', 1388.00),
 (4, 2, 'PSLE Power Up Camp', 'Included', 'Beginner', '2 days', '15-20', '7-12', 428.00),
-(5, 3, 'Future Entrepreneurs Labs', 'Included', 'Beginner', '2 days', '10-15', '10-15', 1000.00),
-(6, 4, 'Professionals', 'Included', 'Advanced', '8 days', '15-20', '18-25', 1180.00);
+(5, 3, 'Future Entrepreneurs Labs', 'Included', 'Beginner', '2 days', '10-15', '10-15', 1000.00);
 
 
 -- Insert data into Payment
@@ -291,12 +300,12 @@ INSERT INTO Payment (Email, ProgID, Quantity, TotalCost, PaidDate, TransacStatus
 ('janesmith@example.com', 3, 3, 150.00, '2024-02-10', 'Paid'),
 ('paulblack@example.com', 2, 2, 100.00, '2024-03-12', 'Pending'),
 ('lucygray@example.com', 3, 1, 90.00, '2024-04-05', 'Paid'),
-('nancyblue@example.com', 4, 4, 120.00, '2024-05-19', 'Pending'),
-('emmawhite@example.com', 4, 5, 200.00, '2024-06-21', 'Paid'),
+('nancyblue@example.com', 3, 4, 120.00, '2024-05-19', 'Pending'),
+('emmawhite@example.com', 1, 5, 200.00, '2024-06-21', 'Paid'),
 ('johndoe@example.com', 2, 1, 45.00, '2024-07-07', 'Paid'),
 ('oliverred@example.com', 1, 2, 30.00, '2024-08-13', 'Pending'),
 ('johndoe@example.com', 3, 4, 80.00, '2024-09-05', 'Paid'),
-('emmawhite@example.com', 4, 3, 40.00, '2024-10-11', 'Paid');
+('emmawhite@example.com', 2, 3, 40.00, '2024-10-11', 'Paid');
 
 
 -- Insert data into ProgrammeFeedback
@@ -304,9 +313,9 @@ INSERT INTO ProgrammeFeedback (ProgID, AccID, FdbkDesc) VALUES
 (1, 1, 'Great program! My child loved it.'),
 (2, 4, 'Very educational and fun.'),
 (3, 2, 'Well-organized and enjoyable.'),
-(4, 6, 'Good value for the price.'),
+(3, 6, 'Good value for the price.'),
 (1, 7, 'Loved the interactive activities.'),
-(4, 9, 'Fun experience, will join again.'),
+(2, 9, 'Fun experience, will join again.'),
 (2, 3, 'Good for younger kids.'),
 (3, 8, 'Very engaging and informative.'),
 (2, 5, 'My child improved a lot.'),
@@ -316,9 +325,7 @@ INSERT INTO ProgrammeFeedback (ProgID, AccID, FdbkDesc) VALUES
 INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VALUES
 (1, '2024-02-01 09:00:00', '2024-02-10 17:00:00', 'Community Hall A', 20),
 (2, '2024-03-15 10:00:00', '2024-03-20 16:00:00', 'School Auditorium', 20),
-(3, '2024-04-01 08:30:00', '2024-04-10 18:00:00', 'Activity Centre', 15),
-(4, '2024-05-05 09:00:00', '2024-05-12 15:00:00', 'Office Room 3', 20);
-
+(3, '2024-04-01 08:30:00', '2024-04-10 18:00:00', 'Activity Centre', 15);
 
 -- Insert data into Bookings with updated structure, including BookingDate
 INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, TransacID, SpecialReq, BookingDate) VALUES
@@ -336,9 +343,9 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
  '[{"name": "Ava Smith", "dob": "2015-09-25", "gender": "F", "school": "Green Valley School", "needs": "None"}]', 
  'None', 1, 1, 2, NULL, '2024-02-10'),
 
-('Emma White', 'emmawhite@example.com', '67890123', 6, 4, 
+('Emma White', 'emmawhite@example.com', '67890123', 4, 2, 
  '[{"name": "James White", "dob": "2014-01-15", "gender": "M", "school": "Lakewood School", "needs": "Autism"}]', 
- 'None', 4, 1, 6, NULL, '2024-10-11'),
+ 'None', 3, 1, 6, NULL, '2024-10-11'),
 
 ('Nancy Blue', 'nancyblue@example.com', '56789012', 4, 2, 
  '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
