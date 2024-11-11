@@ -61,4 +61,4 @@ class Business {
     
 }
 
-module.exports = Children;
+module.exports = Business;

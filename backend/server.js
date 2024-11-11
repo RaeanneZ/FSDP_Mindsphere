@@ -25,6 +25,7 @@ const paymentEmailRoutes = require("./routes/paymentEmailRoutes");
 const PaymentEmailController = require("./controllers/paymentEmailController");
 const newsletterController = require("./controllers/newsletterController");
 const programmeTiersController = require("./controllers/programmeTierController");
+const businessController = require("./controllers/businessController");
 
 // APP SETUP
 const app = express();
@@ -52,6 +53,8 @@ app.get("/api/schedules/:schedID", progSchedController.getRemainingSlots);
 
 app.get("/api/bookings", bookingsController.getAllBookings);
 app.post("/api/bookings", bookingsController.addBooking);
+
+app.post("/api/business/addBusiness", businessController.addBusiness)
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
