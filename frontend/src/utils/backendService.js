@@ -353,6 +353,27 @@ const formService = {
       };
     }
   },
+
+  addSurvey: async (email, howHear, expRating, feedbackText) => {
+    try {
+      const newSurvey = {
+        email: email,
+        howHear: howHear,
+        expRating: expRating,
+        feedbackText: feedbackText,
+      };
+
+      const response = await axios.post(`${apiUrl}/survey`, newSurvey);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new survey: ", err);
+      return {
+        success: false,
+        message: "Adding survey failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
 };
 
 export default {
@@ -363,4 +384,5 @@ export default {
   bookingService,
   paymentService,
   newsletterService,
+  formService
 };
