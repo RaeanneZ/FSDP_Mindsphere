@@ -274,7 +274,6 @@ INSERT INTO Programmes (ProgID, Name, ProgIntro, ProgDesc, ProgType) VALUES
 (1, 'Public Speaking Workshops', 'Basic public speaking', 'Beginner Public Speaking Workshops', 'Light'),
 (2, 'PSLE Power Up Camp', 'PSLE learning enhancement', 'Help PSLE takers learn efficiently and effectively', 'Regular'),
 (3, 'Future Entrepreneurs Labs', 'Learn about entrepreneurship', 'Study how to be an entrepreneur', 'Premium'),
-(4, 'Professionals', 'Foster a culture of continuous learning and development', 'Learn what it takes to be a professional', 'Premium');
 
 -- Insert data into ProgrammeTier
 INSERT INTO ProgrammeTier (TierID, ProgID, TierDesc, Lunch, Level, Duration, ClassSize, AgeRange, Cost) VALUES
