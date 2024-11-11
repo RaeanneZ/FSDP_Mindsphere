@@ -3,6 +3,7 @@ const dbConfig = require("../dbConfig");
 
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
+const path = require("path");
 
 class Business {
     constructor(
@@ -58,21 +59,36 @@ class Business {
 
     static async generatePDF(business) {
         try {
-            const doc = new PDFDocument();
-            const filePath = `./backend/Businesses/Enquiry_${business.Name.replace(/\s+/g, "_")}.pdf`;
+            const doc = new PDFDocument({ margin: 50 });
+            const filePath = `./backend/Businesses/Business_${business.Name.replace(/\s+/g, "_")}.pdf`;
             doc.pipe(fs.createWriteStream(filePath));
 
-            doc.fontSize(18).text("Business Details", { align: "center" });
-            doc.moveDown();
+            const logoPath = path.join(__dirname, "../assets/mindsphere_logo.png");
+            doc.image(logoPath, { width: 100, align: "center" })
+                .moveDown(1);
 
-            doc.fontSize(12)
-                .text(`Name: ${business.Name}`)
-                .text(`Contact Number: ${business.ContactNo}`)
-                .text(`Email: ${business.Email}`)
-                .text(`Expected Number of Days: ${business.exNumOfDays}`)
-                .text(`Group Size: ${business.groupSize}`)
-                .text(`Organization Name: ${business.orgName}`)
-                .text(`Help Text: ${business.helpText}`);
+            doc.fontSize(20).font("Helvetica-Bold").text("Business Details", {
+                align: "center",
+                underline: true,
+            });
+            doc.moveDown(1);
+
+            doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+            doc.moveDown(1.5);
+
+            function addField(label, value) {
+                doc.fontSize(12).font("Helvetica-Bold").text(label + ":", { align: "left" });
+                doc.fontSize(12).font("Helvetica").text(value, { align: "left" });
+                doc.moveDown(1);
+            }
+
+            addField("Business Name", business.Name);
+            addField("Contact Number", business.ContactNo);
+            addField("Email", business.Email);
+            addField("Expected Number of Days", business.exNumOfDays);
+            addField("Group Size", business.groupSize);
+            addField("Organization Name", business.orgName);
+            addField("Help Text", business.helpText);
 
             doc.end();
 
