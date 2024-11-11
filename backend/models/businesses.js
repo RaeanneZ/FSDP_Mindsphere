@@ -14,14 +14,16 @@ class Business {
         groupSize,
         orgName,
         helpText,
+        callbackRequest,
     ) {
-        this.Name = Name,
-        this.ContactNo = ContactNo,
-        this.Email = Email,
-        this.exNumOfDays = exNumOfDays,
-        this.groupSize = groupSize,
-        this.orgName = orgName,
-        this.helpText = helpText
+        this.Name = Name;
+        this.ContactNo = ContactNo;
+        this.Email = Email;
+        this.exNumOfDays = exNumOfDays;
+        this.groupSize = groupSize;
+        this.orgName = orgName;
+        this.helpText = helpText;
+        this.callbackRequest = callbackRequest;
     }
 
     static async addBusiness({
@@ -32,11 +34,14 @@ class Business {
         groupSize,
         orgName,
         helpText,
+        callbackRequest,
     }) {
         try {
             const connection = await sql.connect(dbConfig);
-            const sqlQuery = `INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText) OUTPUT INSERTED.* 
-            VALUES (@Name, @ContactNo, @Email, @exNumOfDays, @groupSize, @orgName, @helpText)`;
+            const sqlQuery = `INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest) 
+                              OUTPUT INSERTED.* 
+                              VALUES (@Name, @ContactNo, @Email, @exNumOfDays, @groupSize, @orgName, @helpText, @callbackRequest)`; // Include callbackRequest in SQL query
+
             const request = connection.request();
             
             request.input("Name", Name);
@@ -46,7 +51,8 @@ class Business {
             request.input("groupSize", groupSize);
             request.input("orgName", orgName);
             request.input("helpText", helpText);
-    
+            request.input("callbackRequest", callbackRequest);
+
             const result = await request.query(sqlQuery);
             connection.close();
             console.log("Inserted Business:", result.recordset[0]);
@@ -60,7 +66,7 @@ class Business {
     static async generatePDF(business) {
         try {
             const doc = new PDFDocument({ margin: 50 });
-            const filePath = `./backend/Businesses/Business_${business.Name.replace(/\s+/g, "_")}.pdf`;
+            const filePath = `./backend/Businesses/Business_${business.orgName.replace(/\s+/g, "_")}.pdf`;
             doc.pipe(fs.createWriteStream(filePath));
 
             const logoPath = path.join(__dirname, "../assets/mindsphere_logo.png");
@@ -89,6 +95,7 @@ class Business {
             addField("Group Size", business.groupSize);
             addField("Organization Name", business.orgName);
             addField("Help Text", business.helpText);
+            addField("Callback Request Time", business.callbackRequest ? business.callbackRequest : "N/A");
 
             doc.end();
 
