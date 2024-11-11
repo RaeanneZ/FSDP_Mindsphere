@@ -317,6 +317,44 @@ const newsletterService = {
   },
 };
 
+const formService = {
+  addBusiness: async (
+    Name,
+    ContactNo,
+    Email,
+    exNumOfDays,
+    groupSize,
+    orgName,
+    helpText,
+    callbackRequest
+  ) => {
+    try {
+      const newBusiness = {
+        Name: Name,
+        ContactNo: ContactNo,
+        Email: Email,
+        exNumOfDays: exNumOfDays,
+        groupSize: groupSize,
+        orgName: orgName,
+        helpText: helpText,
+        callbackRequest: callbackRequest,
+      };
+
+      const response = await axios.post(`${apiUrl}/business/addBusiness`, newBusiness);
+
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new business: ", err);
+      return {
+        success: false,
+        message: "Adding business failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
+};
+
+
 export default {
   programmeService,
   progScheduleService,
