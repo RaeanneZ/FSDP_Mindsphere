@@ -38,6 +38,10 @@ if exists (select * from sysobjects where name='Programmes' and type='U')
     drop table Programmes
 GO
 
+if exists (select * from sysobjects where name='surveyForm' and type='U')
+    drop table surveyForm
+GO
+
 if exists (select * from sysobjects where name='Businesses' and type='U')
     drop table Businesses
 GO
@@ -131,6 +135,17 @@ create table Businesses (
 	constraint PK_Business primary key (BusinessID)
 )
 go
+
+create table surveyForm (
+	surveyID int not null identity(1,1),
+	email varchar(50) not null,
+	howHear varchar(50) not null,
+	expRating int not null,
+	feedbackText varchar(1000) not null,
+	constraint PK_SurveyForm primary key (surveyID)
+)
+GO
+
 
 
 -- removed agerange, cost, added progintro
