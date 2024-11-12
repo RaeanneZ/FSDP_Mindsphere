@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ImageCarousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -34,7 +38,7 @@ const ImageCarousel = ({ images }) => {
           onClick={handlePrev}
           className="absolute left-4 sm:left-6 text-3xl sm:text-4xl md:text-5xl text-white hover:text-gray-300"
         >
-          &lt;
+          <FontAwesomeIcon icon={faChevronLeft} />
         </button>
 
         {/* Right Arrow */}
@@ -42,19 +46,11 @@ const ImageCarousel = ({ images }) => {
           onClick={handleNext}
           className="absolute right-4 sm:right-6 text-3xl sm:text-4xl md:text-5xl text-white hover:text-gray-300"
         >
-          &gt;
+          <FontAwesomeIcon icon={faChevronRight} />
         </button>
       </div>
     </div>
   );
-};
-
-ImageCarousel.propTypes = {
-  images: PropTypes.arrayOf(PropTypes.string),
-};
-
-ImageCarousel.defaultProps = {
-  images: [],
 };
 
 export default ImageCarousel;

@@ -7,10 +7,11 @@ import Footer from "../components/Footer";
 import ProgrammeSection from "../components/ProgrammeSection";
 import backendService from "../utils/backendService";
 import ActionButtons from "../components/ActionButtons";
+import { carouselImages } from "../constants";
 
 const ProductPage = () => {
   const { programmeService } = backendService;
-  const { useState, useEffect } = React;
+  const { useState, useEffect, useRef } = React;
   const navigate = useNavigate();
   const location = useLocation(); // Get the location object
   const [programmes, setProgrammes] = useState([]); // State to hold programmes
@@ -18,6 +19,9 @@ const ProductPage = () => {
   const [selectedProgramme, setSelectedProgramme] = useState(
     location.state?.selectedProgramme || null
   ); // Get the selected programme from state
+
+  // Create a ref for the WorkshopSection
+  const workshopSectionRef = useRef(null);
 
   // Get all programme details from backend
   const getAllProgrammes = async () => {
@@ -52,9 +56,14 @@ const ProductPage = () => {
     }
   };
 
+  // Scroll to WorkshopSection when the component mounts
   useEffect(() => {
     getAllProgrammes(); // Call the async function when the component mounts
-  }, []); // Empty dependency array means this runs once when the component mounts
+
+    if (workshopSectionRef.current) {
+      workshopSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [selectedProgramme]);
 
   // Handle programme selection
   const handleProgrammeSelect = (selectedProgramme) => {
@@ -68,24 +77,20 @@ const ProductPage = () => {
     navigate("/review");
   };
 
-  const images = [
-    "https://via.placeholder.com/800x400?text=Image+1",
-    "https://via.placeholder.com/800x400?text=Image+2",
-    "https://via.placeholder.com/800x400?text=Image+3",
-  ];
-
   return (
     <>
       <Navbar />
       <ActionButtons />
       <ProgrammeSection onProgrammeSelect={handleProgrammeSelect} />
       {selectedProgramme ? (
-        <WorkshopSection
-          images={images}
-          pricingPlans={pricingPlans}
-          selectedProgramme={selectedProgramme}
-          onSelectPlan={handleSelectPlan}
-        />
+        <div ref={workshopSectionRef}>
+          <WorkshopSection
+            images={carouselImages}
+            pricingPlans={pricingPlans}
+            selectedProgramme={selectedProgramme}
+            onSelectPlan={handleSelectPlan}
+          />
+        </div>
       ) : (
         <div>Loading...</div> // Or some other loading state/message
       )}

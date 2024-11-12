@@ -24,8 +24,21 @@ import CartProgress from "/images/Cartprogress.png";
 import PaymentProgress from "/images/Paymentprogress.png";
 import PaynowLogo from "/images/PayNowLogo.png";
 import PaynowQr from "/images/PayNowQR.png";
+import Download from "/images/Download.png";
+import MembershipDuration from "/images/MembershipDuration.png";
+import MembershipIcon from "/images/membershipIcon.png";
+import LoadingAnimation from "/assets/LoadingAnimation.json";
+import FormSubmission from "/assets/FormSubmission.json";
+import ProfilePicture from "/images/ProfilePicture.png";
+import box from "/images/box.jpg";
+import ChildTeacher from "/images/ChildTeacher.jpg";
+import CorporateWorkshop from "/images/CorporateWorkshop.jpg";
+import Video from "/images/Video.png";
 
 // Export all folders for project use
+// Navbar
+export const profile = ProfilePicture;
+
 // Landing Banner
 export const iea = IEA_Logo;
 export const fundigo = fundigo_Logo;
@@ -37,6 +50,10 @@ export const whatsapp = WhatsApp;
 export const newsletter = Newsletter;
 export const survey = Survey;
 export const uparrow = UpArrow;
+
+// Loading Animation
+export const loadAni = LoadingAnimation;
+export const formAni = FormSubmission;
 
 // Sign Up Process
 export const introBg = QuestionnaireHeaderBackground;
@@ -52,15 +69,26 @@ export const entrepreneurship = entrepreneurshipCamp;
 export const pubSpeaking = publicSpeaking;
 export const prof = professional;
 
-//Event Details
+// Event Details
 export const location = Location;
 export const slots = Slots;
 export const time = Time;
 
-//Cart/Payment Progress Bar
+// Cart/Payment Progress Bar
 export const cartprogress = CartProgress;
 export const paymentprogress = PaymentProgress;
 
-//PayNow Section
+// PayNow Section
 export const paynowlogo = PaynowLogo;
 export const paynowqr = PaynowQr;
+
+// Account Dashboard Section
+export const download = Download;
+export const membershipduration = MembershipDuration;
+export const membershipIcon = MembershipIcon;
+
+// Product Carousel Images
+export const promotionBoxImage = box;
+export const mentorPic = ChildTeacher;
+export const corporateLivePic = CorporateWorkshop;
+export const demoVid = Video;
