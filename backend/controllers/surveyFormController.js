@@ -1,4 +1,8 @@
-const surveyForm = require("../models/surveyForm")
+const surveyForm = require("../models/surveyForm");
+const uploadFileToDrive = require("../middlewares/uploadFileToDrive");
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+
 
 const addSurvey = async (req, res) => {
     const { email, howHear, expRating, feedbackText } = req.body;
@@ -30,11 +34,30 @@ const addSurvey = async (req, res) => {
 
         const pdfPath = await surveyForm.generatePDF(newSurvey);
 
+        const options = { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: false 
+        };
+        
+        const dateStr = new Date().toLocaleString('en-GB', options)  
+            .replace(/\//g, '-')                                     
+            .replace(', ', ')-(');                                   
+        
+        const fileName = `Survey_${newSurvey.email}_(${dateStr}).pdf`;
+
+        const FOLDER_ID = process.env.GOOGLE_SURVEYS_FOLDER_ID;
+        const uploadedFileId = await uploadFileToDrive(pdfPath, fileName, FOLDER_ID);
+
 
         res.status(201).json({
             message: "Survey added successfully",
             Survey: newSurvey,
-            pdfPath: pdfPath
+            pdfPath: pdfPath,
+            fileId: uploadedFileId,
         });
     } catch (err) {
         console.error("ControllerError: Error adding survey", err);
