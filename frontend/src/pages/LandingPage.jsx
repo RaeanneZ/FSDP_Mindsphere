@@ -26,10 +26,14 @@ import CorporateProgramsSection from "../components/CorporateProgramsSection";
 // );
 // console.log(booking);
 
-const { childrenService } = backendService;
-const email = "lucygray@example.com";
-const children = await childrenService.getChildByEmail(email);
-console.log(children);
+// const { childrenService } = backendService;
+// const email = "lucygray@example.com";
+// const children = await childrenService.getChildByEmail(email);
+// console.log(children);
+
+const { programmeFeedBackService } = backendService;
+const feedbackByID = await programmeFeedBackService.getFeedbackByID(1);
+console.log(feedbackByID);
 
 const LandingPage = () => {
   const navigate = useNavigate();

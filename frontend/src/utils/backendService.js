@@ -389,6 +389,18 @@ const formService = {
   },
 };
 
+const programmeFeedBackService = {
+  getFeedbackByID: async (progID) => {
+    try {
+      const response = await axios.get(`${apiUrl}/progID/${progID}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting feedback by ID: ", err);
+      throw err;
+    }
+  },
+};
+
 export default {
   programmeService,
   progScheduleService,
@@ -398,4 +410,5 @@ export default {
   paymentService,
   newsletterService,
   formService,
+  programmeFeedBackService,
 };

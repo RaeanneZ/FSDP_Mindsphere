@@ -90,6 +90,7 @@ app.get("/api/newsletter", newsletterController.getAllEmail);
 app.post("/api/newsletter", newsletterController.addEmailNewsletter);
 
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
+app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
 
 PaymentEmailController.sendMembershipCodes;
 
