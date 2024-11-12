@@ -12,7 +12,7 @@ FROM Payment p
 INNER JOIN Account a ON p.Email = a.Email
 INNER JOIN Programmes pr ON p.ProgID = pr.ProgID
 INNER JOIN Bookings b ON p.TransacID = b.TransacID
-LEFT JOIN Children c ON c.GuardianEmail = a.Email -- Adjusted join condition
+LEFT JOIN Children c ON c.GuardianEmail = a.Email
 WHERE p.TransacStatus = 'Paid'`;
 
             const pool = await sql.connect();
@@ -27,31 +27,67 @@ WHERE p.TransacStatus = 'Paid'`;
         }
     }
 
-    static async getPaidTransaction(email) {
+    static async getPaidTransaction(email, transacID) {
         try {
-            const query = `SELECT p.TransacID, p.TotalCost, p.PaidDate, a.AccID, a.Email, a.Name as CustomerName, 
-       pr.Name as ProgramName, pr.ProgDesc, pr.ProgType, b.BookingDate, b.Diet, 
-       c.Name as ChildName 
-          FROM Payment p
-          INNER JOIN Account a ON p.Email = a.Email
-          INNER JOIN Programmes pr ON p.ProgID = pr.ProgID
-          INNER JOIN Bookings b ON p.TransacID = b.TransacID
-          LEFT JOIN Children c ON c.GuardianEmail = a.Email -- Adjusted join condition
-          WHERE p.TransacStatus = 'Paid'`; // Filter by email
+            const query = `
+                SELECT 
+                    b.BookingID, 
+                    b.BookingDate, 
+                    b.Diet, 
+                    b.Email, 
+                    b.Name as CustomerName, 
+                    pr.Name as ProgramName, 
+                    pr.ProgDesc, 
+                    pr.ProgType, 
+                    p.TransacID, 
+                    p.TotalCost,
+                    COALESCE(p.PaidDate, GETDATE()) as PaidDate,  -- Use current date if PaidDate is null
+                    b.childrenDetails
+                FROM 
+                    Bookings b
+                INNER JOIN 
+                    Programmes pr ON b.ProgID = pr.ProgID
+                INNER JOIN
+                    Payment p ON b.TransacID = p.TransacID
+                WHERE 
+                    b.Email = @Email 
+                    AND p.TransacID = @TransacID`;
 
             const pool = await sql.connect(dbConfig);
             const result = await pool
                 .request()
-                .input("Email", sql.VarChar, email) // Specify the input parameter
+                .input("Email", sql.VarChar, email)
+                .input("TransacID", sql.Int, transacID)
                 .query(query);
 
-            return result.recordset[0]; // Return the first record found
+            return result.recordset[0];
         } catch (error) {
             console.error(
                 "ModelError: Error fetching paid transaction:",
                 error
             );
-            throw error; // Propagate the error for handling
+            throw error;
+        }
+    }
+
+    // Method to update PaidDate when payment is made
+    static async updatePaidDate(transacID) {
+        try {
+            const query = `
+                UPDATE Payment 
+                SET PaidDate = GETDATE()
+                WHERE TransacID = @TransacID 
+                AND TransacStatus = 'Paid' 
+                AND PaidDate IS NULL`;
+
+            const pool = await sql.connect(dbConfig);
+            await pool
+                .request()
+                .input("TransacID", sql.Int, transacID)
+                .query(query);
+        } catch (error) {
+            console.error("ModelError: Error updating PaidDate:", error);
+            throw error;
         }
     }
 
@@ -162,8 +198,6 @@ WHERE p.TransacStatus = 'Paid'`;
         );
 
         return `
-Dear ${registration.CustomerName},
-
 Welcome to Mindsphere! Thank you for registering with us.
 
 Your Membership Verification Code: ${membershipCode}
@@ -183,31 +217,36 @@ Mindsphere Team`;
     }
 
     static formatPaymentEmail(payment) {
+        // Parse the childrenDetails JSON string into an array of children
+        const children = JSON.parse(payment.childrenDetails);
+        // Extract just the names
+        const childrenNames = children.map((child) => child.name);
+
         return `
-Dear ${payment.CustomerName},
-
-Thank you for your payment! Your transaction has been successfully processed.
-
-Transaction Details:
--------------------
-Transaction ID: ${payment.TransacID}
-Program: ${payment.ProgramName}
-Description: ${payment.ProgDesc}
-Program Type: ${payment.ProgType}
-Child Name: ${payment.ChildName || "N/A"}
-Booking Date: ${new Date(payment.BookingDate).toLocaleDateString()}
-Dietary Requirements: ${payment.Diet || "None"}
-
-Payment Information:
-------------------
-Amount Paid: $${payment.TotalCost}
-Payment Date: ${new Date(payment.PaidDate).toLocaleDateString()}
-
-If you have any questions about your booking or need assistance,
-please don't hesitate to contact us.
-
-Best regards,
-Mindsphere Team`;
+    Dear ${payment.CustomerName},
+    
+    Thank you for your payment! Your transaction has been successfully processed.
+    
+    Transaction Details:
+    -------------------
+    Transaction ID: ${payment.TransacID}
+    Program: ${payment.ProgramName}
+    Description: ${payment.ProgDesc}
+    Program Type: ${payment.ProgType}
+    Children: ${childrenNames.join(", ")}
+    Booking Date: ${new Date(payment.BookingDate).toLocaleDateString()}
+    Dietary Requirements: ${payment.Diet || "None"}
+    
+    Payment Information:
+    ------------------
+    Amount Paid: $${payment.TotalCost}
+    Payment Date: ${new Date(payment.PaidDate).toLocaleDateString()}
+    
+    If you have any questions about your booking or need assistance,
+    please don't hesitate to contact us.
+    
+    Best regards,
+    Mindsphere Team`;
     }
 }
 

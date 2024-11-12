@@ -66,6 +66,19 @@ app.put("/api/payments/makePayment", paymentController.makePayment);
 
 app.get("/api/programmes", programmesController.getAllProgrammes);
 
+app.get("/api/programmes/registered/:email", async (req, res) => {
+    try {
+        const email = req.params.email;
+        const Programmes = require("./models/programmes");
+        const programmes = await Programmes.getRegisteredProgrammesByAccount(
+            email
+        );
+        res.json(programmes);
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);

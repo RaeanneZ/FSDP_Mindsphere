@@ -5,41 +5,43 @@ const dbConfig = require("../dbConfig");
 const sql = require("mssql");
 
 const getAllBookings = async (req, res) => {
-  try {
-    const bookings = await Bookings.getAllBookings();
-    res.status(200).json(bookings);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("ControllerError: Error retrieving bookings");
-  }
+    try {
+        const bookings = await Bookings.getAllBookings();
+        res.status(200).json(bookings);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("ControllerError: Error retrieving bookings");
+    }
 };
 
 const addBooking = async (req, res) => {
-  try {
-    const newBooking = req.body;
-    //need find same child by name and dob to get childID
+    try {
+        const newBooking = req.body;
+        //need find same child by name and dob to get childID
 
-    // Check if BookingID already exists
-    const duplicateExists = await Bookings.checkIfBookingIDExists(
-      newBooking.BookingID
-    );
-    if (duplicateExists) {
-      return res
-        .status(409)
-        .json({ error: "Booking with this BookingID already exists." });
-    }
+        // Check if BookingID already exists
+        const duplicateExists = await Bookings.checkIfBookingIDExists(
+            newBooking.BookingID
+        );
+        if (duplicateExists) {
+            return res
+                .status(409)
+                .json({ error: "Booking with this BookingID already exists." });
+        }
 
-    // dummy data not thought yet
-    const paymentData = {
-      Email: newBooking.custEmail,
-      ProgID: newBooking.ProgID,
-      Quantity: 1,
-      TotalCost: 45.0,
-    };
+        // dummy data not thought yet
+        const paymentData = {
+            Email: newBooking.custEmail,
+            ProgID: newBooking.ProgID,
+            Quantity: newBooking.quantity,
+            TotalCost: newBooking.totalCost,
+        };
 
-    await Payment.addPayment(paymentData);
+        await Payment.addPayment(paymentData);
 
-    const transacID = await getLastTransacID();
+        const transacID = await getLastTransacID();
+
+        newBooking.TransacID = transacID;
 
     newBooking.TransacID = transacID;
 
