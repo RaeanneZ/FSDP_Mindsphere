@@ -45,7 +45,9 @@ class PaymentEmailModel {
                     COALESCE(p.PaidDate, GETDATE()) as PaidDate,  -- Use current date if PaidDate is null
                     b.childrenDetails,
                     b.NumSeats,  -- Include NumSeats for child seat count
-                    ps.Venue     -- Include Venue from ProgrammeSchedule
+                    ps.Venue,     -- Include Venue from ProgrammeSchedule
+					ps.DateStart,
+					ps.DateEnd
                 FROM 
                     Bookings b
                 INNER JOIN 
@@ -55,7 +57,7 @@ class PaymentEmailModel {
                 INNER JOIN
                     ProgrammeSchedule ps ON b.SchedID = ps.SchedID  -- Join to get Venue
                 WHERE 
-                    b.Email = @Email 
+                    b.Email = @Email
                     AND p.TransacID = @TransacID`;
 
             const pool = await sql.connect(dbConfig);
@@ -250,6 +252,8 @@ Mindsphere Team`;
         Description: ${payment.ProgDesc}
         Program Type: ${payment.ProgType}
         Venue: ${payment.Venue}
+        Start Date: ${new Date(payment.DateStart).toLocaleDateString()}
+        End Date: ${new Date(payment.DateEnd).toLocaleDateString()}
         Booking Date: ${new Date(payment.BookingDate).toLocaleDateString()}
         Children (${payment.NumSeats}): ${childrenNames.join(", ")}
         Dietary Requirements: ${payment.Diet || "None"}
