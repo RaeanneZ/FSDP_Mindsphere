@@ -10,6 +10,7 @@ import AccountOverview from "../components/AccountOverview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import backendService from "../utils/backendService";
+import ConfirmationPopUp from "../components/ConfirmationPopup";
 
 const AccountDashboardPage = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const AccountDashboardPage = () => {
   const [errors, setErrors] = useState({});
   const [originalData, setOriginalData] = useState({});
   const [isUpdated, setIsUpdated] = useState(false);
-  const [successMessageVisible, setSuccessMessageVisible] = useState(false); // State for success message
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   // Effect to retrieve the email from session storage
   useEffect(() => {
@@ -213,7 +214,7 @@ const AccountDashboardPage = () => {
           const updatedFormattedChildrenData = {
             GuardianEmail: email,
             Name: child.name,
-            Gender: child.gender,
+            Gender: child.gender === "Female" ? "F" : "M",
             Dob: child.dob,
             Needs: child.specialLearningNeeds,
             School: child.school,
@@ -233,14 +234,11 @@ const AccountDashboardPage = () => {
         })
       );
 
-      if (childResponses.every((res) => res) && response) {
+      if (response) {
         console.log("Account updated successfully. Response is ", response);
         setOriginalData(formData); // Update original data to the newly updated data
         setIsUpdated(false); // Reset the updated state
-        setSuccessMessageVisible(true); // Show success message
-        setTimeout(() => {
-          setSuccessMessageVisible(false); // Hide after 3 seconds
-        }, 3000);
+        setIsModalOpen(true); // Show the modal
       } else {
         console.error("Error updating account");
       }
@@ -269,16 +267,13 @@ const AccountDashboardPage = () => {
           bookingdata={regCoursesData}
         />
 
-        {/* Success Message Popup */}
-        {successMessageVisible && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-5 rounded shadow-md text-center">
-              <h2 className="text-lg font-semibold">
-                Your Account has been updated successfully!
-              </h2>
-            </div>
-          </div>
-        )}
+        {/* Modal for Success Message */}
+        <ConfirmationPopUp
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)} // Close the modal
+          message="Account successfully updated!"
+          instruction=""
+        />
 
         {/* Account Update Section */}
         <div className="bg-lightYellow">

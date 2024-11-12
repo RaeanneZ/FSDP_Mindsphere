@@ -285,10 +285,16 @@ const childrenService = {
       const response = await axios.put(`${apiUrl}/updateChild`, {
         ...childData,
       });
-      return response.data;
+      return {
+        success: true,
+      };
     } catch (err) {
       console.error("BackendService: Error updating child: ", err);
-      throw err;
+      return {
+        success: false,
+        message: "Sign-up failed",
+        error: err.response.data,
+      };
     }
   },
 
