@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import ProgrammeSection from "../components/ProgrammeSection";
 import backendService from "../utils/backendService";
 import ActionButtons from "../components/ActionButtons";
+import WatsonChat from "../components/WatsonChat";
 import { carouselImages } from "../constants";
 
 const ProductPage = () => {
@@ -79,6 +80,7 @@ const ProductPage = () => {
 
   return (
     <>
+      <WatsonChat />
       <Navbar />
       <ActionButtons />
       <ProgrammeSection onProgrammeSelect={handleProgrammeSelect} />
