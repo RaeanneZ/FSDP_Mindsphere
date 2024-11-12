@@ -291,6 +291,19 @@ const childrenService = {
       throw err;
     }
   },
+
+  getChildByEmail: async (email) => {
+    try {
+      email;
+      const response = await axios.get(
+        `${apiUrl}/getChildByEmail/${encodeURIComponent(email)}`
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting child by email: ", err);
+      throw err;
+    }
+  },
 };
 
 const newsletterService = {
@@ -384,5 +397,5 @@ export default {
   bookingService,
   paymentService,
   newsletterService,
-  formService
+  formService,
 };
