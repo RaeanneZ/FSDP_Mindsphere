@@ -131,6 +131,36 @@ class programmeSchedule {
       console.error("ModelError: Error retrieving upcoming bookings: ", err);
     }
   }
+
+  static async getScheduleByID(SchedID) {
+    try {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `SELECT * FROM ProgrammeSchedule WHERE SchedID = @SchedID`;
+        const request = connection.request();
+        request.input('SchedID', sql.Int, SchedID);
+        const result = await request.query(sqlQuery);
+
+        connection.close();
+
+        if (result.recordset.length === 0) {
+            throw new Error(`No schedule found for SchedID: ${SchedID}`);
+        }
+
+        const row = result.recordset[0];
+        return {
+            SchedID: row.SchedID,
+            ProgID: row.ProgID,
+            DateStart: row.DateStart,
+            DateEnd: row.DateEnd,
+            Venue: row.Venue,
+            TotalSeats: row.TotalSeats,
+        };
+    } catch (err) {
+        console.error("ModelError: Error retrieving schedule by ID: ", err);
+        throw err;
+    }
+}
+
 }
 
 module.exports = programmeSchedule;
