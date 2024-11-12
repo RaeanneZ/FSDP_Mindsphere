@@ -232,11 +232,25 @@ Mindsphere Team`;
         // Parse the childrenDetails JSON string into an array of children
         const children = JSON.parse(payment.childrenDetails);
         // List children names
-        const childrenNames = children.map((child) => child.name);
-
+        const childrenNames = children.map((child) => child.name).join(", ");
+        
+        // Format start and end dates for the calendar link
+        const startDate = new Date(payment.DateStart).toISOString().replace(/-|:|\.\d+/g, '');
+        const endDate = new Date(payment.DateEnd).toISOString().replace(/-|:|\.\d+/g, '');
+    
+        // Additional details for the calendar event
+        const calendarDescription = `
+        Program Description: ${payment.ProgDesc}
+        Children: ${childrenNames}
+        Dietary Requirements: ${payment.Diet || "None"}
+        `.trim();
+    
+        // Create a Google Calendar link
+        const googleCalendarLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(payment.ProgramName)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(calendarDescription)}&location=${encodeURIComponent(payment.Venue)}&sf=true&output=xml`;
+    
         return `
         Dear ${payment.CustomerName},
-        
+    
         Thank you for your payment! Your transaction has been successfully processed.
         --------------------------------------------------------------------------------
         Transaction Details:
@@ -244,7 +258,6 @@ Mindsphere Team`;
         Transaction ID: ${payment.TransacID}
         Amount Paid: $${payment.TotalCost}
         Payment Date: ${new Date(payment.PaidDate).toLocaleDateString()}
-
     
         Booking Details:
         ------------------------
@@ -255,8 +268,12 @@ Mindsphere Team`;
         Start Date: ${new Date(payment.DateStart).toLocaleDateString()}
         End Date: ${new Date(payment.DateEnd).toLocaleDateString()}
         Booking Date: ${new Date(payment.BookingDate).toLocaleDateString()}
-        Children (${payment.NumSeats}): ${childrenNames.join(", ")}
+        Children (${payment.NumSeats}): ${childrenNames}
         Dietary Requirements: ${payment.Diet || "None"}
+        
+        Add to Google Calendar:
+        ------------------------
+        "${googleCalendarLink}"
         
         If you have any questions about your booking or need assistance,
         please don't hesitate to contact us.
@@ -264,6 +281,8 @@ Mindsphere Team`;
         Best regards,
         Mindsphere Team`;
     }
+    
+    
 }
 
 module.exports = PaymentEmailModel;
