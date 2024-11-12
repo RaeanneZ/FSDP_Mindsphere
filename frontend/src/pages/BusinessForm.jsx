@@ -5,6 +5,7 @@ import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 import { prof } from "../utils";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ConfirmationPopup from "../components/ConfirmationPopup";
 
 const BusinessForm = () => {
   const { useState } = React;
@@ -21,6 +22,7 @@ const BusinessForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,10 +62,14 @@ const BusinessForm = () => {
     e.preventDefault();
     if (validate()) {
       console.log(formData);
-      alert("Form submitted successfully!");
+      setIsModalOpen(true); // Open the modal on successful submission
     } else {
       alert("Please fill all the required fields.");
     }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
   };
 
   return (
@@ -188,9 +194,9 @@ const BusinessForm = () => {
                     required
                   >
                     <option value="">Group Size</option>
-                    <option value="Small">Small</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Large">Large</option>
+                    <option value="10 - 20">10 - 30</option>
+                    <option value="30 - 50">30 - 50</option>
+                    <option value="Above 50">Above 50</option>
                   </select>
                   {errors.groupSize && (
                     <p className="text-red-500 text-xs">{errors.groupSize}</p>
@@ -260,6 +266,14 @@ const BusinessForm = () => {
                 </button>
               </div>
             </form>
+
+            {/* Modal for successful submission */}
+            <ConfirmationPopup
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              message="Thank you for your interest!"
+              instruction="We will contact you soon"
+            />
           </div>
         </div>
       </div>

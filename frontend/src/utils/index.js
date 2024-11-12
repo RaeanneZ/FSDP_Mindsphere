@@ -28,6 +28,7 @@ import Download from "/images/Download.png";
 import MembershipDuration from "/images/MembershipDuration.png";
 import MembershipIcon from "/images/membershipIcon.png";
 import LoadingAnimation from "/assets/LoadingAnimation.json";
+import FormSubmission from "/assets/FormSubmission.json";
 import ProfilePicture from "/images/ProfilePicture.png";
 import box from "/images/box.jpg";
 import ChildTeacher from "/images/ChildTeacher.jpg";
@@ -52,6 +53,7 @@ export const uparrow = UpArrow;
 
 // Loading Animation
 export const loadAni = LoadingAnimation;
+export const formAni = FormSubmission;
 
 // Sign Up Process
 export const introBg = QuestionnaireHeaderBackground;
