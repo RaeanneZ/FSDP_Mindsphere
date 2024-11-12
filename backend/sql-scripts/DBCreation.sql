@@ -313,7 +313,7 @@ INSERT INTO ProgrammeTier (TierID, ProgID, TierDesc, Lunch, Level, Duration, Cla
 INSERT INTO Payment (Email, ProgID, Quantity, TotalCost, PaidDate, TransacStatus) VALUES
 ('johndoe@example.com', 1, 1, 50.00, '2024-01-15', 'Paid'),
 ('janesmith@example.com', 3, 3, 150.00, '2024-02-10', 'Paid'),
-('paulblack@example.com', 2, 2, 100.00, '2024-03-12', 'Pending'),
+('iamjovantan@gmail.com', 2, 2, 100.00, '2024-03-12', 'Pending'),
 ('lucygray@example.com', 3, 1, 90.00, '2024-04-05', 'Paid'),
 ('nancyblue@example.com', 3, 4, 120.00, '2024-05-19', 'Pending'),
 ('emmawhite@example.com', 1, 5, 200.00, '2024-06-21', 'Paid'),
@@ -348,7 +348,7 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
    {"name": "Lucas Gray", "dob": "2017-10-01", "gender": "M", "school": "Bright Future School", "needs": "Speech Therapy"}]', 
  'None', 2, 2, 3, 'Wheelchair access', '2024-03-12'),
 
-('Paul Black', 'paulblack@example.com', '45678901', 5, 3, 
+('Paul Black', 'iamjovantan@gmail.com', '45678901', 5, 3, 
  '[{"name": "Mia Black", "dob": "2014-03-22", "gender": "F", "school": "Sunshine Academy", "needs": "Allergies"}, 
    {"name": "Amelia Black", "dob": "2013-08-15", "gender": "F", "school": "Sunshine Academy", "needs": "Dietary Restrictions"}]', 
  'Allergic', 3, 2, 4, NULL, '2024-04-05'),
