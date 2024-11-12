@@ -43,24 +43,65 @@ const addBooking = async (req, res) => {
 
         newBooking.TransacID = transacID;
 
-        await Bookings.addBooking(newBooking);
+    newBooking.TransacID = transacID;
 
-        res.status(201).send("Booking and payment added successfully");
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("ControllerError: Error adding booking");
-    }
+    await Bookings.addBooking(newBooking);
+
+    res.status(201).send("Booking and payment added successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("ControllerError: Error adding booking");
+  }
 };
 
 const getLastTransacID = async () => {
-    const connection = await sql.connect(dbConfig);
-    const sqlQuery =
-        "SELECT TOP 1 TransacID FROM Payment ORDER BY TransacID DESC";
-    const result = await connection.request().query(sqlQuery);
-    return result.recordset[0].TransacID;
+  const connection = await sql.connect(dbConfig);
+  const sqlQuery =
+    "SELECT TOP 1 TransacID FROM Payment ORDER BY TransacID DESC";
+  const result = await connection.request().query(sqlQuery);
+  return result.recordset[0].TransacID;
+};
+
+const deleteBooking = async (req, res) => {
+  try {
+    const { Email, BookingDate, TierID } = req.body; // Ensure it's read from req.body
+
+    // Validate incoming data
+    if (!Email || !BookingDate || !TierID) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields: email, date, or tierID.",
+      });
+    }
+
+    console.log("request", req.body);
+
+    // Call the deleteBooking method from the model/service
+    const isDeleted = await Bookings.deleteBooking(Email, BookingDate, TierID);
+
+    if (isDeleted) {
+      return res.status(200).json({
+        success: true,
+        message: "Booking deleted successfully.",
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found.",
+      });
+    }
+  } catch (error) {
+    console.error(error); // Log error details
+    return res.status(500).json({
+      success: false,
+      message: "ControllerError: Error deleting booking", // Clear error message for deleting, not adding
+      error: error.message, // Return the actual error message
+    });
+  }
 };
 
 module.exports = {
-    getAllBookings,
-    addBooking,
+  getAllBookings,
+  addBooking,
+  deleteBooking,
 };

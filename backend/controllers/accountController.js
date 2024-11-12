@@ -143,7 +143,6 @@ const signUp = async (req, res) => {
     console.log("Request Body:", req.body);
     const { email, password, verifCode: rawVerifCode } = req.body; // Rename to avoid reassigning
     const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim(); // Trim password for consistency
     const verifCode = parseInt(rawVerifCode, 10); // Use a new variable
 
     console.log("Verification Code:", verifCode);

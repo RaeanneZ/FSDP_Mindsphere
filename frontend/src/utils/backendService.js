@@ -160,13 +160,28 @@ const bookingService = {
                 totalCost: TotalCost,
             };
 
-            const response = await axios.post(`${apiUrl}/bookings`, newBooking);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error adding new booking: ", err);
-            throw err;
-        }
-    },
+      const response = await axios.post(`${apiUrl}/bookings`, newBooking);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new booking: ", err);
+      throw err;
+    }
+  },
+
+  deleteBooking: async (Email, BookingDate, TierID) => {
+    try {
+      const response = await axios.delete(`${apiUrl}/bookings`, {
+        data: { Email, BookingDate, TierID },
+      });
+      return response.data;
+    } catch (err) {
+      return {
+        success: false,
+        message: "delete booking failed",
+        error: err.response?.data,
+      };
+    }
+  },
 };
 
 //Account Methods
@@ -279,17 +294,30 @@ const childrenService = {
         }
     },
 
-    updateChild: async (childData) => {
-        try {
-            const response = await axios.put(`${apiUrl}/updateChild`, {
-                ...childData,
-            });
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error updating child: ", err);
-            throw err;
-        }
-    },
+  updateChild: async (childData) => {
+    try {
+      const response = await axios.put(`${apiUrl}/updateChild`, {
+        ...childData,
+      });
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error updating child: ", err);
+      throw err;
+    }
+  },
+
+  getChildByEmail: async (email) => {
+    try {
+      email;
+      const response = await axios.get(
+        `${apiUrl}/getChildByEmail/${encodeURIComponent(email)}`
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting child by email: ", err);
+      throw err;
+    }
+  },
 };
 
 const newsletterService = {
@@ -320,12 +348,88 @@ const newsletterService = {
     },
 };
 
+const formService = {
+  addBusiness: async (
+    Name,
+    ContactNo,
+    Email,
+    exNumOfDays,
+    groupSize,
+    orgName,
+    helpText,
+    callbackRequest
+  ) => {
+    try {
+      const newBusiness = {
+        Name: Name,
+        ContactNo: ContactNo,
+        Email: Email,
+        exNumOfDays: exNumOfDays,
+        groupSize: groupSize,
+        orgName: orgName,
+        helpText: helpText,
+        callbackRequest: callbackRequest,
+      };
+
+      const response = await axios.post(
+        `${apiUrl}/business/addBusiness`,
+        newBusiness
+      );
+
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new business: ", err);
+      return {
+        success: false,
+        message: "Adding business failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
+
+  addSurvey: async (email, howHear, expRating, feedbackText) => {
+    try {
+      const newSurvey = {
+        email: email,
+        howHear: howHear,
+        expRating: expRating,
+        feedbackText: feedbackText,
+      };
+
+      const response = await axios.post(`${apiUrl}/survey`, newSurvey);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new survey: ", err);
+      return {
+        success: false,
+        message: "Adding survey failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
+};
+
+const programmeFeedBackService = {
+  getFeedbackByID: async (progID) => {
+    try {
+      const response = await axios.get(`${apiUrl}/progID/${progID}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting feedback by ID: ", err);
+      throw err;
+    }
+  },
+};
+
 export default {
-    programmeService,
-    progScheduleService,
-    accountService,
-    childrenService,
-    bookingService,
-    paymentService,
-    newsletterService,
+
+  programmeService,
+  progScheduleService,
+  accountService,
+  childrenService,
+  bookingService,
+  paymentService,
+  newsletterService,
+  formService,
+  programmeFeedBackService,
 };
