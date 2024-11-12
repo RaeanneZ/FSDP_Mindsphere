@@ -28,6 +28,11 @@ import Download from "/images/Download.png";
 import MembershipDuration from "/images/MembershipDuration.png";
 import MembershipIcon from "/images/membershipIcon.png";
 import LoadingAnimation from "/assets/LoadingAnimation.json";
+import ValuesWheel from "/images/ValuesWheel.png";
+import Founders from "/images/Founders.jpg";
+import GerylLim from "/images/GerylLim.png";
+import LisaSeow from "/images/LisaSeow.jpg";
+import SharonChong from "/images/SharonChong.jpg";
 
 // Export all folders for project use
 // Landing Banner
@@ -76,3 +81,10 @@ export const paynowqr = PaynowQr;
 export const download = Download;
 export const membershipduration = MembershipDuration;
 export const membershipIcon = MembershipIcon;
+
+//About Page
+export const valueswheel = ValuesWheel;
+export const founders = Founders;
+export const geryllim = GerylLim;
+export const lisaseow = LisaSeow;
+export const sharonchong = SharonChong;
