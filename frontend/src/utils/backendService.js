@@ -291,6 +291,19 @@ const childrenService = {
       throw err;
     }
   },
+
+  getChildByEmail: async (email) => {
+    try {
+      email;
+      const response = await axios.get(
+        `${apiUrl}/getChildByEmail/${encodeURIComponent(email)}`
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting child by email: ", err);
+      throw err;
+    }
+  },
 };
 
 const newsletterService = {
@@ -376,6 +389,18 @@ const formService = {
   },
 };
 
+const programmeFeedBackService = {
+  getFeedbackByID: async (progID) => {
+    try {
+      const response = await axios.get(`${apiUrl}/progID/${progID}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting feedback by ID: ", err);
+      throw err;
+    }
+  },
+};
+
 export default {
   programmeService,
   progScheduleService,
@@ -384,5 +409,6 @@ export default {
   bookingService,
   paymentService,
   newsletterService,
-  formService
+  formService,
+  programmeFeedBackService,
 };

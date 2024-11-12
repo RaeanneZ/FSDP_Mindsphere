@@ -18,13 +18,22 @@ import CorporateProgramsSection from "../components/CorporateProgramsSection";
 // );
 // console.log(account);
 
-const { bookingService } = backendService;
-const booking = await bookingService.deleteBooking(
-  "emmawhite@example.com",
-  "2024-10-11",
-  6
-);
-console.log(booking);
+// const { bookingService } = backendService;
+// const booking = await bookingService.deleteBooking(
+//   "emmawhite@example.com",
+//   "2024-10-11",
+//   6
+// );
+// console.log(booking);
+
+// const { childrenService } = backendService;
+// const email = "lucygray@example.com";
+// const children = await childrenService.getChildByEmail(email);
+// console.log(children);
+
+const { programmeFeedBackService } = backendService;
+const feedbackByID = await programmeFeedBackService.getFeedbackByID(1);
+console.log(feedbackByID);
 
 const LandingPage = () => {
   const navigate = useNavigate();

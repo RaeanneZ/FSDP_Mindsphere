@@ -153,6 +153,20 @@ class Children {
             throw err;
         }
     }
+
+    static async getChildByEmail(GuardianEmail) {
+        try {
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `SELECT * FROM Children WHERE GuardianEmail = @GuardianEmail`;
+            const request = connection.request();
+            request.input("GuardianEmail", sql.VarChar(50), GuardianEmail);
+            const result = await request.query(sqlQuery);
+            console.log(result);
+            return result.recordset;
+        } catch (err) {
+            console.error("Error fetching child by email:", err);
+        }
+    }
 }
 
 module.exports = Children;

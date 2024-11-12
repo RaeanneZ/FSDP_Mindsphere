@@ -46,7 +46,46 @@ const postFeedback = async (req, res) => {
   }
 };
 
+const getFeedbackByID = async (req, res) => {
+  try {
+    const ProgID = req.params.ProgID;
+
+    // Validate ProgID
+    if (!ProgID) {
+      return res.status(400).json({
+        success: false,
+        message: "ProgID is required",
+      });
+    }
+
+    // Call the model function to retrieve feedback
+    const feedback = await ProgrammeFeedback.getFeedbackByID(ProgID);
+
+    if (feedback.length > 0) {
+      // Send the feedback if found
+      res.status(200).json({
+        success: true,
+        data: feedback,
+      });
+    } else {
+      // If no feedback is found for the given ProgID
+      res.status(404).json({
+        success: false,
+        message: "No feedback found for the given ProgID",
+      });
+    }
+  } catch (error) {
+    console.error("ControllerError: Error getting feedback by ID", error);
+    res.status(500).json({
+      success: false,
+      message: "ControllerError: Error getting feedback by ID",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllFeedback,
   postFeedback,
+  getFeedbackByID,
 };

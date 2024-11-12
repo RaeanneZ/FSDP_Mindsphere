@@ -29,7 +29,7 @@ class ProgrammeFeedback {
           )
       );
     } catch (err) {
-      console.error("ModelError: Error retreiving all feedback",err);
+      console.error("ModelError: Error retreiving all feedback", err);
       throw err; // Throw the error for handling in the calling function
     } finally {
       if (connection) {
@@ -63,6 +63,24 @@ class ProgrammeFeedback {
 
       // Close the connection
       connection.close();
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async getFeedbackByID(progID) {
+    try {
+      const connection = await sql.connect(dbConfig);
+      const sqlQuery = `SELECT PF.FdbkDesc, A.Name AS AccName
+                        FROM ProgrammeFeedback PF
+                        JOIN Account A ON PF.AccID = A.AccID
+                        WHERE PF.ProgID = @progID;`;
+      const request = connection.request();
+      request.input("progID", sql.Int, progID);
+      const result = await request.query(sqlQuery);
+      connection.close();
+      return result.recordset;
     } catch (err) {
       console.error(err);
       throw err;
