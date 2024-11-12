@@ -1,4 +1,13 @@
-import { prof, pubSpeaking, psle, entrepreneurship } from "../utils";
+import {
+  prof,
+  pubSpeaking,
+  psle,
+  entrepreneurship,
+  demoVid,
+  mentorPic,
+  corporateLivePic,
+  promotionBoxImage,
+} from "../utils";
 
 export const imageArray = [
   {
@@ -22,6 +31,8 @@ export const imageArray = [
     alt: "A group of professionals standing together and smiling",
   },
 ];
+
+export const carouselImages = [demoVid, mentorPic, corporateLivePic];
 
 export const childInterestFields = [
   "food",

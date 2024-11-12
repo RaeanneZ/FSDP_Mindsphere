@@ -8,6 +8,7 @@ import ProgrammeSection from "../components/ProgrammeSection";
 import backendService from "../utils/backendService";
 import ActionButtons from "../components/ActionButtons";
 import WatsonChat from "../components/WatsonChat";
+import { carouselImages } from "../constants";
 
 const ProductPage = () => {
   const { programmeService } = backendService;
@@ -77,12 +78,6 @@ const ProductPage = () => {
     navigate("/review");
   };
 
-  const images = [
-    "https://via.placeholder.com/800x400?text=Image+1",
-    "https://via.placeholder.com/800x400?text=Image+2",
-    "https://via.placeholder.com/800x400?text=Image+3",
-  ];
-
   return (
     <>
       <WatsonChat />
@@ -92,7 +87,7 @@ const ProductPage = () => {
       {selectedProgramme ? (
         <div ref={workshopSectionRef}>
           <WorkshopSection
-            images={images}
+            images={carouselImages}
             pricingPlans={pricingPlans}
             selectedProgramme={selectedProgramme}
             onSelectPlan={handleSelectPlan}

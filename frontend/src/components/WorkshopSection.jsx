@@ -12,7 +12,7 @@ const WorkshopSection = ({
 }) => {
   return (
     <div className="flex justify-center py-16 px-4">
-      <div className="w-full max-w-7xl bg-[#FFF6E0] rounded-xl p-6 sm:p-10 mx-auto">
+      <div className="w-full max-w-7xl bg-lightYellow rounded-xl p-6 sm:p-10 mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
             {selectedProgramme.Name}
@@ -121,16 +121,6 @@ const WorkshopSection = ({
 };
 
 WorkshopSection.propTypes = {
-  pricingPlans: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      price: PropTypes.string.isRequired,
-      oldPrice: PropTypes.string,
-      description: PropTypes.string.isRequired,
-      features: PropTypes.arrayOf(PropTypes.string).isRequired,
-      buttonText: PropTypes.string.isRequired,
-    })
-  ),
   testimonials: PropTypes.arrayOf(
     PropTypes.shape({
       feedback: PropTypes.string.isRequired,
@@ -143,16 +133,6 @@ WorkshopSection.propTypes = {
 };
 
 WorkshopSection.defaultProps = {
-  pricingPlans: [
-    {
-      title: "Sample Plan",
-      price: "0",
-      oldPrice: "100",
-      description: "This is a sample plan for demonstration purposes.",
-      features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
-      buttonText: "Get started",
-    },
-  ],
   testimonials: [
     {
       feedback:

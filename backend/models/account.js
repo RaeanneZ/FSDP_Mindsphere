@@ -116,6 +116,7 @@ class Account {
         Name = @Name, 
         address = @address, 
         dateOfBirth = @dateOfBirth, 
+        ContactNo = @ContactNo,
         relationshipToChild = @relationshipToChild 
     WHERE Email = @Email`;
 
@@ -131,6 +132,11 @@ class Account {
       "dateOfBirth",
       sql.DateTime,
       updatedAccount.dateOfBirth || account.dateOfBirth
+    );
+    request.input(
+      "ContactNo",
+      sql.Char,
+      updatedAccount.ContactNo || account.ContactNo
     );
     request.input(
       "relationshipToChild",

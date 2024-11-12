@@ -25,6 +25,7 @@ import AccountManagementPage from "./pages/AccountManagementPage.jsx";
 import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
+import ErrorPage from "./pages/errorPage.jsx";
 
 // Import CSS
 import "../public/css/index.css";
@@ -33,87 +34,87 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/login",
     element: <LoginPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/signup",
     element: <SignupPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/personalisation",
     element: <PersonalisationCoverPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/accountSetup",
     element: <AccountManagementPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/childPageContainer",
     element: <ChildrenPageContainer />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/accountSetup/childSection",
     element: <ChildrenInfoHeader />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/accountSetup/childName",
     element: <ChildrenNamePage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/accountSetup/childFav",
     element: <ChildrenFavPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/accountSetup/childAmbition",
     element: <ChildrenAmbition />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/welcome",
     element: <CompleteSignupMsgPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/products",
     element: <ProductPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/businessEnquiry",
     element: <BusinessForm />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/review",
     element: <ReviewPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/payment",
     element: <PaymentPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/accountmanagement",
     element: <AccountDashboardPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/survey",
     element: <SurveyPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/about",

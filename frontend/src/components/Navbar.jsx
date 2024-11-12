@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { mindsphere } from "../utils";
+import { mindsphere, profile } from "../utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
@@ -61,9 +61,9 @@ const Navbar = () => {
           {loggedIn ? (
             <div className="flex items-center space-x-4">
               <img
-                src="https://via.placeholder.com/40"
+                src={profile}
                 alt="Profile"
-                className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
+                className="w-10 h-10 rounded-full cursor-pointer"
                 onClick={handleProfileClick} // Add onClick to navigate on profile click
               />
               <button
