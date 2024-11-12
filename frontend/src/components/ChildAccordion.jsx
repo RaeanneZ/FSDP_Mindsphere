@@ -25,10 +25,17 @@ const ChildAccordion = ({ number }) => {
   }, [number]);
 
   const handleDateChange = (date) => {
-    const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
-    const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
-    setFormData(updatedData); // Update the state
-    saveChildData(updatedData); // Save to session storage
+    if (date[0]) {
+      // Adjust for local timezone
+      const localDate = new Date(
+        date[0].getTime() - date[0].getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .split("T")[0];
+      const updatedData = { ...formData, dob: localDate }; // Update only the dob field
+      setFormData(updatedData); // Update the state
+      saveChildData(updatedData); // Save to session storage
+    }
   };
 
   const handleInputChange = (e) => {

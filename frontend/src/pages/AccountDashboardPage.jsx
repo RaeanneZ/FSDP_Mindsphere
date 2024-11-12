@@ -123,14 +123,21 @@ const AccountDashboardPage = () => {
   };
 
   const handleDateChange = (date) => {
+    const localDate = date[0]
+      ? new Date(date[0].getTime() - date[0].getTimezoneOffset() * 60000)
+          .toISOString()
+          .split("T")[0]
+      : "";
+
     setFormData({
       ...formData,
-      dob: date[0] ? date[0].toISOString().split("T")[0] : "",
+      dob: localDate,
     });
+
     setIsUpdated(
       JSON.stringify({
         ...formData,
-        dob: date[0] ? date[0].toISOString().split("T")[0] : "",
+        dob: localDate,
       }) !== JSON.stringify(originalData)
     );
   };
