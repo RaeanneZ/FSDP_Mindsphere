@@ -48,6 +48,7 @@ const AccountDashboardPage = () => {
     const fetchData = async () => {
       try {
         console.log("The email is ", email);
+
         // Start of gettting all Account information
         const fetchedAccountData = await accountService.getAccountByEmail(
           email
@@ -75,6 +76,7 @@ const AccountDashboardPage = () => {
           email
         );
         setRegCoursesData(fetchedBookingData); // Set the fetched account data to state
+        console.log(regCoursesData);
       } catch (error) {
         console.error("Error fetching account data:", error);
       }

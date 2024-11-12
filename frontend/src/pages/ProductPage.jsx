@@ -10,12 +10,13 @@ import ActionButtons from "../components/ActionButtons";
 import { carouselImages } from "../constants";
 
 const ProductPage = () => {
-  const { programmeService } = backendService;
+  const { programmeService, programmeFeedBackService } = backendService;
   const { useState, useEffect, useRef } = React;
   const navigate = useNavigate();
   const location = useLocation(); // Get the location object
   const [programmes, setProgrammes] = useState([]); // State to hold programmes
   const [pricingPlans, setPricingPlans] = useState([]); // State to hold pricing plans
+  const [testimonials, setTestimonials] = useState([]); // State to hold testimonials
   const [selectedProgramme, setSelectedProgramme] = useState(
     location.state?.selectedProgramme || null
   ); // Get the selected programme from state
@@ -56,9 +57,23 @@ const ProductPage = () => {
     }
   };
 
+  const getProgrammeTestimonials = async (selectedProgramme) => {
+    try {
+      const response = await programmeFeedBackService.getFeedbackByID(
+        selectedProgramme.ProgID
+      );
+      setTestimonials(response.data);
+      console.log(testimonials);
+    } catch (err) {
+      console.log("There is an error: ", err);
+    }
+  };
+
   // Scroll to WorkshopSection when the component mounts
   useEffect(() => {
-    getAllProgrammes(); // Call the async function when the component mounts
+    // Call the async function when the component mounts
+    getAllProgrammes();
+    getProgrammeTestimonials(selectedProgramme);
 
     if (workshopSectionRef.current) {
       workshopSectionRef.current.scrollIntoView({ behavior: "smooth" });
@@ -69,6 +84,7 @@ const ProductPage = () => {
   const handleProgrammeSelect = (selectedProgramme) => {
     setSelectedProgramme(selectedProgramme); // Set the selected programme
     getProgrammeTiers(selectedProgramme); // Fetch tiers for the selected programme
+    getProgrammeTestimonials(selectedProgramme); // Fetch the testimonials for the selected programme
   };
 
   const handleSelectPlan = (plan) => {
@@ -88,6 +104,7 @@ const ProductPage = () => {
             images={carouselImages}
             pricingPlans={pricingPlans}
             selectedProgramme={selectedProgramme}
+            testimonials={testimonials}
             onSelectPlan={handleSelectPlan}
           />
         </div>
