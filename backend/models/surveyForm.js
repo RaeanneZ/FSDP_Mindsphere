@@ -51,7 +51,18 @@ class surveyForm {
     static async generatePDF(survey) {
         try {
             const doc = new PDFDocument({ margin: 50 });
-            const filePath = `./backend/pdf/Surveys/Survey_${survey.email.replace(/\s+/g, "_")}.pdf`;
+
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            const dateStr = `${day}-${month}-${year}-(${hours}-${minutes})`;
+            
+            const filePath = `./backend/pdf/Surveys/Survey_${survey.email.replace(/\s+/g, "_")}_(${dateStr}).pdf`;
+            
             doc.pipe(fs.createWriteStream(filePath));
     
             const logoPath = path.join(__dirname, "../assets/mindsphere_logo.png");
