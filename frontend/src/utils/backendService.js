@@ -382,7 +382,10 @@ const formService = {
         feedbackText: feedbackText,
       };
 
-      const response = await axios.post(`${apiUrl}/survey`, newSurvey);
+      const response = await axios.post(
+        `${apiUrl}/survey/newSurvey`,
+        newSurvey
+      );
       return response.data;
     } catch (err) {
       console.error("BackendService: Error adding new survey: ", err);
