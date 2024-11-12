@@ -121,16 +121,6 @@ const WorkshopSection = ({
 };
 
 WorkshopSection.propTypes = {
-  pricingPlans: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      price: PropTypes.string.isRequired,
-      oldPrice: PropTypes.string,
-      description: PropTypes.string.isRequired,
-      features: PropTypes.arrayOf(PropTypes.string).isRequired,
-      buttonText: PropTypes.string.isRequired,
-    })
-  ),
   testimonials: PropTypes.arrayOf(
     PropTypes.shape({
       feedback: PropTypes.string.isRequired,
@@ -143,16 +133,6 @@ WorkshopSection.propTypes = {
 };
 
 WorkshopSection.defaultProps = {
-  pricingPlans: [
-    {
-      title: "Sample Plan",
-      price: "0",
-      oldPrice: "100",
-      description: "This is a sample plan for demonstration purposes.",
-      features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
-      buttonText: "Get started",
-    },
-  ],
   testimonials: [
     {
       feedback:
