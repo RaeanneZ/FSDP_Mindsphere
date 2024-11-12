@@ -1,4 +1,8 @@
 const Business = require("../models/businesses");
+const uploadFileToDrive = require("../middlewares/uploadFileToDrive");
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+
 
 const addBusiness = async (req, res) => {
     const { Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest } = req.body;
@@ -50,10 +54,31 @@ const addBusiness = async (req, res) => {
 
         const pdfPath = await Business.generatePDF(newBusiness);
 
+        const options = { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: false 
+        };
+        
+        const dateStr = new Date().toLocaleString('en-GB', options)  
+            .replace(/\//g, '-')                                     
+            .replace(', ', ')-(');                                   
+        
+        const fileName = `Business_${newBusiness.orgName}_(${dateStr}).pdf`;
+
+        const FOLDER_ID = process.env.GOOGLE_BUSINESS_FOLDER_ID;
+        const uploadedFileId = await uploadFileToDrive(pdfPath, fileName, FOLDER_ID);
+
+
+
         res.status(201).json({
             message: "Business added successfully",
             Business: newBusiness,
-            pdfPath: pdfPath
+            pdfPath: pdfPath,
+            fileId: uploadedFileId,
         });
     } catch (err) {
         console.error(err);
