@@ -210,6 +210,8 @@ class PaymentEmailModel {
         );
 
         return `
+Dear, ${registration.Name}
+
 Welcome to Mindsphere! Thank you for registering with us.
 
 Your Membership Verification Code: ${membershipCode}
