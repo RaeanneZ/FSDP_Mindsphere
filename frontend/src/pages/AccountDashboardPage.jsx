@@ -16,7 +16,7 @@ const AccountDashboardPage = () => {
   const [email, setEmail] = useState();
   const [accountData, setAccountData] = useState({});
   const [regCoursesData, setRegCoursesData] = useState({});
-  const { accountService } = backendService;
+  const { accountService, childrenService } = backendService;
   const [formData, setFormData] = useState({
     name: "",
     dob: "",
@@ -24,7 +24,8 @@ const AccountDashboardPage = () => {
     relationship: "",
     address: "",
   });
-  const [children, setChildren] = useState([1]);
+  const [children, setChildren] = useState([]);
+  const [originalChildrenData, setOriginalChildrenData] = useState({});
   const [errors, setErrors] = useState({});
   const [originalData, setOriginalData] = useState({});
   const [isUpdated, setIsUpdated] = useState(false);
@@ -77,6 +78,30 @@ const AccountDashboardPage = () => {
         );
         setRegCoursesData(fetchedBookingData); // Set the fetched account data to state
         console.log(regCoursesData);
+
+        // Fetch children data
+        const fetchedChildrenData = await childrenService.getChildByEmail(
+          email
+        );
+        setChildren(fetchedChildrenData); // Set the fetched children data to state
+
+        // Create an array to hold original children data
+        const originalChildrenArray = fetchedChildrenData.map((child) => ({
+          dob: child.Dob,
+          gender: child.Gender === "F" ? "Female" : "Male",
+          name: child.Name,
+          school: child.School,
+          skillsets: child.Interests,
+          specialLearningNeeds: child.Needs,
+        }));
+
+        // Store the original children data in session storage
+        sessionStorage.setItem(
+          "childData",
+          JSON.stringify(originalChildrenArray)
+        );
+        setOriginalChildrenData(originalChildrenArray); // Set the state for original children data
+        console.log(originalChildrenArray);
       } catch (error) {
         console.error("Error fetching account data:", error);
       }
@@ -297,11 +322,12 @@ const AccountDashboardPage = () => {
                 Enter your child&#39;s / ward&#39;s particulars so that we can
                 better understand them
               </h1>
-              {children.map((number) => (
+              {children.map((child, index) => (
                 <ChildAccordion
-                  key={number}
-                  number={number}
+                  key={index}
+                  number={index + 1} // or any other identifier you want to use
                   saveChildData={saveChildData}
+                  childData={child} // Pass the child data to the ChildAccordion
                 />
               ))}
               <div
