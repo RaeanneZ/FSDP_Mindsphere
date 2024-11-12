@@ -216,8 +216,8 @@ const AccountDashboardPage = () => {
         )}
 
         {/* Account Update Section */}
-        <div className="bg-[#FFF6E0]">
-          <div className="bg-[#FFF6E0] py-10 mx-auto max-w-2xl flex flex-col items-center">
+        <div className="bg-lightYellow">
+          <div className="bg-lightYellow py-10 mx-auto max-w-2xl flex flex-col items-center">
             {" "}
             {/* Centered and width restricted */}
             <h2 className="text-2xl font-bold mb-5">

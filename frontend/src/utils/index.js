@@ -28,8 +28,12 @@ import Download from "/images/Download.png";
 import MembershipDuration from "/images/MembershipDuration.png";
 import MembershipIcon from "/images/membershipIcon.png";
 import LoadingAnimation from "/assets/LoadingAnimation.json";
+import ProfilePicture from "/images/ProfilePicture.png";
 
 // Export all folders for project use
+// Navbar
+export const profile = ProfilePicture;
+
 // Landing Banner
 export const iea = IEA_Logo;
 export const fundigo = fundigo_Logo;

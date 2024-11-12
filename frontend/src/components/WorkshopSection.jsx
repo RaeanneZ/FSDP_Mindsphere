@@ -12,7 +12,7 @@ const WorkshopSection = ({
 }) => {
   return (
     <div className="flex justify-center py-16 px-4">
-      <div className="w-full max-w-7xl bg-[#FFF6E0] rounded-xl p-6 sm:p-10 mx-auto">
+      <div className="w-full max-w-7xl bg-lightYellow rounded-xl p-6 sm:p-10 mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
             {selectedProgramme.Name}
