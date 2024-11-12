@@ -94,10 +94,23 @@ const sendBookingReminders = async () => {
   }
 };
 
+const getScheduleByID = async (req, res) => {
+  try {
+    const schedule = await programmeSchedule.getScheduleByID(req.params.schedID);
+    res.status(200).json(schedule);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .send("ControllerError: Error retrieving schedule by ID");
+  }
+};
+
 module.exports = {
   getAllProgSchedules,
   addProgrammeSchedule,
   getRemainingSlots,
   getUpcomingBookings,
   sendBookingReminders,
+  getScheduleByID,
 };
