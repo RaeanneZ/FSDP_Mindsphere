@@ -24,6 +24,7 @@ import ChildrenInfoHeader from "./pages/ChildrenInfoHeader.jsx";
 import AccountManagementPage from "./pages/AccountManagementPage.jsx";
 import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 import BusinessForm from "./pages/BusinessForm.jsx";
+import AboutPage from "./pages/AboutPage.jsx";
 
 // Import CSS
 import "../public/css/index.css";
@@ -112,6 +113,11 @@ const router = createBrowserRouter([
   {
     path: "/survey",
     element: <SurveyPage />,
+    errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/about",
+    element: <AboutPage />,
     errorElement: <div>404 Not Found</div>,
   },
 ]);
