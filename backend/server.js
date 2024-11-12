@@ -67,17 +67,15 @@ app.put("/api/payments/makePayment", paymentController.makePayment);
 app.get("/api/programmes", programmesController.getAllProgrammes);
 
 app.get("/api/programmes/registered/:email", async (req, res) => {
-    try {
-        const email = req.params.email;
-        const Programmes = require("./models/programmes");
-        const programmes = await Programmes.getRegisteredProgrammesByAccount(
-            email
-        );
-        res.json(programmes);
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
+  try {
+    const email = req.params.email;
+    const Programmes = require("./models/programmes");
+    const programmes = await Programmes.getRegisteredProgrammesByAccount(email);
+    res.json(programmes);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
@@ -104,6 +102,7 @@ app.post("/api/newsletter", newsletterController.addEmailNewsletter);
 
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
 app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
+app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
 
 PaymentEmailController.sendMembershipCodes;
 
