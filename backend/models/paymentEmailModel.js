@@ -6,14 +6,15 @@ class PaymentEmailModel {
         try {
             const query = `
                 SELECT p.TransacID, p.TotalCost, p.PaidDate, a.AccID, a.Email, a.Name as CustomerName, 
-       pr.Name as ProgramName, pr.ProgDesc, pr.ProgType, b.BookingDate, b.Diet, 
-       c.Name as ChildName 
-FROM Payment p
-INNER JOIN Account a ON p.Email = a.Email
-INNER JOIN Programmes pr ON p.ProgID = pr.ProgID
-INNER JOIN Bookings b ON p.TransacID = b.TransacID
-LEFT JOIN Children c ON c.GuardianEmail = a.Email
-WHERE p.TransacStatus = 'Paid'`;
+                       pr.Name as ProgramName, pr.ProgDesc, pr.ProgType, b.BookingDate, b.Diet, 
+                       c.Name as ChildName, b.NumSeats, ps.Venue  -- Add NumSeats and Venue
+                FROM Payment p
+                INNER JOIN Account a ON p.Email = a.Email
+                INNER JOIN Programmes pr ON p.ProgID = pr.ProgID
+                INNER JOIN Bookings b ON p.TransacID = b.TransacID
+                LEFT JOIN Children c ON c.GuardianEmail = a.Email
+                INNER JOIN ProgrammeSchedule ps ON b.SchedID = ps.SchedID  -- Join to get Venue
+                WHERE p.TransacStatus = 'Paid'`;
 
             const pool = await sql.connect();
             const result = await pool.request().query(query);
@@ -42,13 +43,17 @@ WHERE p.TransacStatus = 'Paid'`;
                     p.TransacID, 
                     p.TotalCost,
                     COALESCE(p.PaidDate, GETDATE()) as PaidDate,  -- Use current date if PaidDate is null
-                    b.childrenDetails
+                    b.childrenDetails,
+                    b.NumSeats,  -- Include NumSeats for child seat count
+                    ps.Venue     -- Include Venue from ProgrammeSchedule
                 FROM 
                     Bookings b
                 INNER JOIN 
                     Programmes pr ON b.ProgID = pr.ProgID
                 INNER JOIN
                     Payment p ON b.TransacID = p.TransacID
+                INNER JOIN
+                    ProgrammeSchedule ps ON b.SchedID = ps.SchedID  -- Join to get Venue
                 WHERE 
                     b.Email = @Email 
                     AND p.TransacID = @TransacID`;
@@ -136,12 +141,17 @@ WHERE p.TransacStatus = 'Paid'`;
     }
 
     static generateMembershipCode() {
+        // Generate first digit (1-9)
+        const firstDigit = Math.floor(Math.random() * 9) + 1;
+
+        // Generate remaining 5 digits (0-9)
         const digits = "0123456789";
-        let code = "";
-        for (let i = 0; i < 6; i++) {
-            code += digits[Math.floor(Math.random() * digits.length)];
+        let remainingCode = "";
+        for (let i = 0; i < 5; i++) {
+            remainingCode += digits[Math.floor(Math.random() * digits.length)];
         }
-        return parseInt(code);
+
+        return firstDigit + remainingCode;
     }
 
     static async storeMembershipCode(Email, code) {
@@ -219,34 +229,36 @@ Mindsphere Team`;
     static formatPaymentEmail(payment) {
         // Parse the childrenDetails JSON string into an array of children
         const children = JSON.parse(payment.childrenDetails);
-        // Extract just the names
+        // List children names
         const childrenNames = children.map((child) => child.name);
 
         return `
-    Dear ${payment.CustomerName},
+        Dear ${payment.CustomerName},
+        
+        Thank you for your payment! Your transaction has been successfully processed.
+        --------------------------------------------------------------------------------
+        Transaction Details:
+        ------------------------
+        Transaction ID: ${payment.TransacID}
+        Amount Paid: $${payment.TotalCost}
+        Payment Date: ${new Date(payment.PaidDate).toLocaleDateString()}
+
     
-    Thank you for your payment! Your transaction has been successfully processed.
-    
-    Transaction Details:
-    -------------------
-    Transaction ID: ${payment.TransacID}
-    Program: ${payment.ProgramName}
-    Description: ${payment.ProgDesc}
-    Program Type: ${payment.ProgType}
-    Children: ${childrenNames.join(", ")}
-    Booking Date: ${new Date(payment.BookingDate).toLocaleDateString()}
-    Dietary Requirements: ${payment.Diet || "None"}
-    
-    Payment Information:
-    ------------------
-    Amount Paid: $${payment.TotalCost}
-    Payment Date: ${new Date(payment.PaidDate).toLocaleDateString()}
-    
-    If you have any questions about your booking or need assistance,
-    please don't hesitate to contact us.
-    
-    Best regards,
-    Mindsphere Team`;
+        Booking Details:
+        ------------------------
+        Program: ${payment.ProgramName}
+        Description: ${payment.ProgDesc}
+        Program Type: ${payment.ProgType}
+        Venue: ${payment.Venue}
+        Booking Date: ${new Date(payment.BookingDate).toLocaleDateString()}
+        Children (${payment.NumSeats}): ${childrenNames.join(", ")}
+        Dietary Requirements: ${payment.Diet || "None"}
+        
+        If you have any questions about your booking or need assistance,
+        please don't hesitate to contact us.
+        
+        Best regards,
+        Mindsphere Team`;
     }
 }
 
