@@ -6,9 +6,11 @@ import { prof } from "../utils";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ConfirmationPopup from "../components/ConfirmationPopup";
+import backendService from "../utils/backendService";
 
 const BusinessForm = () => {
   const { useState } = React;
+  const { formService } = backendService;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -58,11 +60,37 @@ const BusinessForm = () => {
     return Object.values(tempErrors).every((x) => x === "");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log(formData);
-      setIsModalOpen(true); // Open the modal on successful submission
+      // Convert callbackTime to ISO string for submission
+      const callbackTimeISO = formData.callbackTime
+        ? formData.callbackTime.toISOString()
+        : null;
+
+      console.log(formData.name);
+      console.log(formData.contactNumber);
+      console.log(formData.businessEmail);
+      console.log(formData.expectedDays);
+      console.log(formData.groupSize);
+      console.log(formData.organisationName);
+      console.log(formData.helpMessage);
+      console.log("Callback time: ", callbackTimeISO);
+
+      const response = await formService.addBusiness(
+        formData.name,
+        formData.contactNumber,
+        formData.businessEmail,
+        parseInt(formData.expectedDays),
+        parseInt(formData.groupSize),
+        formData.organisationName,
+        formData.helpMessage,
+        callbackTimeISO
+      );
+
+      if (response.success != false) {
+        setIsModalOpen(true); // Open the modal on successful submission
+      }
     } else {
       alert("Please fill all the required fields.");
     }
@@ -121,6 +149,15 @@ const BusinessForm = () => {
           </div>
           <div className="bg-gray-100 w-full md:w-[70%] p-5 lg:p-20 rounded-lg shadow-md">
             <h2 className="text-xl font-bold mb-4">Enquiry Form</h2>
+
+            {/* Modal for Success Message */}
+            <ConfirmationPopup
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)} // Close the modal
+              message="Thank you for your interest!"
+              instruction="We look forward to discussing with you on your next big event"
+            />
+
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -186,18 +223,15 @@ const BusinessForm = () => {
                   )}
                 </div>
                 <div>
-                  <select
+                  <input
                     className="p-2 border border-gray-300 rounded w-full"
+                    placeholder="Number of Attendees"
+                    type="text"
                     name="groupSize"
                     value={formData.groupSize}
                     onChange={handleChange}
                     required
-                  >
-                    <option value="">Group Size</option>
-                    <option value="10 - 20">10 - 30</option>
-                    <option value="30 - 50">30 - 50</option>
-                    <option value="Above 50">Above 50</option>
-                  </select>
+                  />
                   {errors.groupSize && (
                     <p className="text-red-500 text-xs">{errors.groupSize}</p>
                   )}
@@ -240,9 +274,10 @@ const BusinessForm = () => {
                   name="callbackTime"
                   value={formData.callbackTime}
                   onChange={(date) => {
+                    // Store the Date object directly in the state
                     setFormData({
                       ...formData,
-                      callbackTime: date[0], // Get the first date from the array
+                      callbackTime: date[0] || null, // Store the Date object or null if no date is selected
                     });
                   }}
                   options={{
