@@ -367,7 +367,6 @@ const AccountDashboardPage = () => {
                 <button
                   type="submit"
                   className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-4 w-full"
-                  disabled={!isUpdated}
                 >
                   Update
                 </button>
