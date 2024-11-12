@@ -25,7 +25,7 @@ const AccountDashboardPage = () => {
     address: "",
   });
   const [children, setChildren] = useState([]);
-  const [originalChildrenData, setOriginalChildrenData] = useState({});
+  const [originalChildrenData, setOriginalChildrenData] = useState([]);
   const [errors, setErrors] = useState({});
   const [originalData, setOriginalData] = useState({});
   const [isUpdated, setIsUpdated] = useState(false);
@@ -83,7 +83,7 @@ const AccountDashboardPage = () => {
         const fetchedChildrenData = await childrenService.getChildByEmail(
           email
         );
-        setChildren(fetchedChildrenData); // Set the fetched children data to state
+        //setChildren(fetchedChildrenData); // Set the fetched children data to state
 
         // Create an array to hold original children data
         const originalChildrenArray = fetchedChildrenData.map((child) => ({
@@ -127,11 +127,6 @@ const AccountDashboardPage = () => {
     }
 
     const { name, value } = e.target;
-
-    // Debugging: Log the event and the name and value
-    console.log("Event:", e);
-    console.log("Name:", name);
-    console.log("Value:", value);
 
     // Check if name is defined
     if (!name) {
@@ -190,6 +185,7 @@ const AccountDashboardPage = () => {
       console.log("Email: ", email);
       console.log("Form Data: ", formData);
 
+      // Update Account
       const updatedFormattedData = {
         ContactNo: formData.contactNumber,
         Name: formData.name,
@@ -202,7 +198,42 @@ const AccountDashboardPage = () => {
         updatedFormattedData
       );
 
-      if (response) {
+      // Update Children
+      // Get updated list from session storage
+      const storedChildrenData = sessionStorage.getItem("childData");
+      const parsedChildrenData = JSON.parse(storedChildrenData) || [];
+
+      const updateChildForm = async (updatedFormattedChildrenData) => {
+        await childrenService.updateChild(updatedFormattedChildrenData);
+      };
+
+      // Iterate over parsed children data
+      const childResponses = await Promise.all(
+        parsedChildrenData.map(async (child) => {
+          const updatedFormattedChildrenData = {
+            GuardianEmail: email,
+            Name: child.name,
+            Gender: child.gender,
+            Dob: child.dob,
+            Needs: child.specialLearningNeeds,
+            School: child.school,
+            Interests: child.skillsets,
+          };
+
+          console.log("Guardian Email is: ", email);
+          console.log("Children: ", child);
+          console.log("Name is: ", updatedFormattedChildrenData.Name);
+          console.log("Gender is: ", updatedFormattedChildrenData.Gender);
+          console.log("DOB is: ", updatedFormattedChildrenData.Dob);
+          console.log("Needs is: ", updatedFormattedChildrenData.Needs);
+          console.log("School is: ", updatedFormattedChildrenData.School);
+          console.log("Interest is: ", updatedFormattedChildrenData.Interests);
+
+          return updateChildForm(updatedFormattedChildrenData);
+        })
+      );
+
+      if (childResponses.every((res) => res) && response) {
         console.log("Account updated successfully. Response is ", response);
         setOriginalData(formData); // Update original data to the newly updated data
         setIsUpdated(false); // Reset the updated state
@@ -322,7 +353,7 @@ const AccountDashboardPage = () => {
                 Enter your child&#39;s / ward&#39;s particulars so that we can
                 better understand them
               </h1>
-              {children.map((child, index) => (
+              {originalChildrenData.map((child, index) => (
                 <ChildAccordion
                   key={index}
                   number={index + 1} // or any other identifier you want to use
