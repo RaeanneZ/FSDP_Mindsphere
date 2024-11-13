@@ -23,7 +23,7 @@ const CompleteSignupMsgPage = () => {
             }
 
             // Ensure child is in the correct format before sending
-            const childPayload = {
+            let childPayload = {
               GuardianEmail: parentData[0].email,
               Name: child.name,
               Gender: shortformGender,
