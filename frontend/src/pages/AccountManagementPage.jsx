@@ -73,10 +73,14 @@ const AccountManagementPage = () => {
   };
 
   const handleDateChange = (date) => {
-    const dateStr = date[0] ? date[0].toISOString().split("T")[0] : ""; // Format the date
-    const updatedData = { ...formData, dob: dateStr }; // Update only the dob field
+    const localDateStr = date[0]
+      ? new Date(date[0].getTime() - date[0].getTimezoneOffset() * 60000)
+          .toISOString()
+          .split("T")[0]
+      : ""; // Format the date with timezone adjustment
+
+    const updatedData = { ...formData, dob: localDateStr }; // Update only the dob field
     setFormData(updatedData); // Update the state
-    // Removed the line that tried to save child data
   };
 
   const handleSubmit = async (e) => {

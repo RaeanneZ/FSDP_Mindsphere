@@ -1,6 +1,7 @@
-import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+// LoginPage.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import backendService from "../utils/backendService";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -14,6 +15,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const { login } = useAuth(); // Access the login function from context
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,9 +32,9 @@ const LoginPage = () => {
 
       // Check if the login was successful
       if (response && response.success) {
-        // Assuming the response has a success property
-        // Redirect to home page
-        navigate("/"); // Navigate to the next page
+        login(); // Set loggedIn to true in the context
+        navigate("/"); // Redirect to home page
+        sessionStorage.setItem("AccountEmail", email);
       } else {
         setError("Invalid email or password");
       }
@@ -45,7 +47,7 @@ const LoginPage = () => {
   return (
     <>
       <Navbar />
-      <div className="w-screen h-screen flex justify-center items-center">
+      <div className="w-screen flex justify-center items-center">
         <div className="w-full max-w-2xl p-8 space-y-6 bg-white">
           <h1 className="text-2xl font-bold text-black">Membership Login</h1>
           <p className="text-gray-600">Your journey is just one click away</p>
@@ -73,6 +75,13 @@ const LoginPage = () => {
             >
               Login
             </button>
+
+            <p className="text-center text-gray-600">
+              New to Mindsphere?{" "}
+              <a href="/signup" className="text-blue-500">
+                Sign Up Here
+              </a>
+            </p>
           </form>
         </div>
       </div>

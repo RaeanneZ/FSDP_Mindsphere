@@ -3,6 +3,9 @@ import Flatpickr from "react-flatpickr"; // Import Flatpickr
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
 import { prof } from "../utils";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ConfirmationPopup from "../components/ConfirmationPopup";
 
 const BusinessForm = () => {
   const { useState } = React;
@@ -19,6 +22,7 @@ const BusinessForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,15 +62,20 @@ const BusinessForm = () => {
     e.preventDefault();
     if (validate()) {
       console.log(formData);
-      alert("Form submitted successfully!");
+      setIsModalOpen(true); // Open the modal on successful submission
     } else {
       alert("Please fill all the required fields.");
     }
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
+  };
+
   return (
     <>
-      <div className="w-screen bg-white rounded-lg shadow-lg">
+      <Navbar />
+      <div className="w-screen rounded-lg">
         <div className="lg:mx-40 flex items-center justify-center mb-8">
           <img
             alt="Group of professionals smiling and standing together"
@@ -185,9 +194,9 @@ const BusinessForm = () => {
                     required
                   >
                     <option value="">Group Size</option>
-                    <option value="Small">Small</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Large">Large</option>
+                    <option value="10 - 20">10 - 30</option>
+                    <option value="30 - 50">30 - 50</option>
+                    <option value="Above 50">Above 50</option>
                   </select>
                   {errors.groupSize && (
                     <p className="text-red-500 text-xs">{errors.groupSize}</p>
@@ -248,7 +257,7 @@ const BusinessForm = () => {
                   <p className="text-red-500 text-xs">{errors.callbackTime}</p>
                 )}
               </div>
-              <div className="flex justify-center mt-10">
+              <div className="flex justify-center mt-5">
                 <button
                   className="w-full px-4 py-2 my-8 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow"
                   type="submit"
@@ -257,9 +266,18 @@ const BusinessForm = () => {
                 </button>
               </div>
             </form>
+
+            {/* Modal for successful submission */}
+            <ConfirmationPopup
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              message="Thank you for your interest!"
+              instruction="We will contact you soon"
+            />
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

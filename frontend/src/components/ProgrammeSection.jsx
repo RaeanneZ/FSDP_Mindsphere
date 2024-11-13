@@ -1,5 +1,6 @@
 import React from "react";
 import backendService from "../utils/backendService";
+import { imageArray } from "../constants";
 
 const ProgrammeSection = ({ onProgrammeSelect }) => {
   const { useState, useEffect } = React;
@@ -48,27 +49,38 @@ const ProgrammeSection = ({ onProgrammeSelect }) => {
         Our Signature Programmes
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {programmes.map((programme, index) => (
-          <div
-            key={programme.progID}
-            className={`bg-white rounded-lg shadow-md overflow-hidden transition duration-300 ${
-              selectedProgrammeIndex === index ? "border-4 border-yellow" : ""
-            }`}
-            onClick={() => handleProgrammeClick(index)}
-          >
-            <img
-              src={programme.image}
-              alt={programme.Name}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-              <h2 className="text-lg font-bold text-gray-800">
-                {programme.Name}
-              </h2>
-              <p className="text-gray-600">{programme.ProgDesc}</p>
+        {programmes.map((programme, index) => {
+          const matchedImage = imageArray.find(
+            (image) => image.id === programme.ProgID
+          );
+          return (
+            <div
+              key={programme.progID}
+              className={`bg-white rounded-lg shadow-md overflow-hidden transition duration-300 ${
+                selectedProgrammeIndex === index ? "border-4 border-yellow" : ""
+              }`}
+              onClick={() => handleProgrammeClick(index)}
+            >
+              {matchedImage ? ( // Check if matchedImage exists
+                <img
+                  src={matchedImage.image}
+                  alt={matchedImage.alt}
+                  className="w-full h-48 object-cover"
+                />
+              ) : (
+                <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-500">Image not available</span>
+                </div>
+              )}
+              <div className="p-4">
+                <h2 className="text-lg font-bold text-gray-800">
+                  {programme.Name}
+                </h2>
+                <p className="text-gray-600">{programme.ProgDesc}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

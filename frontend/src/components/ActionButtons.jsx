@@ -27,7 +27,7 @@ function ActionButtons() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 flex flex-col gap-3 items-end">
+    <div className="fixed bottom-[6.25rem] right-8 flex flex-col gap-3 items-end z-30">
       {/* WhatsApp Button */}
       <a
         href="https://wa.me/6581804413"
@@ -35,7 +35,7 @@ function ActionButtons() {
         rel="noopener noreferrer"
       >
         <button
-          className={`bg-yellow border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 z-20 ${
+          className={`bg-yellow border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 ${
             hoveredButton === "whatsapp" ? "w-48" : "w-14"
           }`}
           id="whatsapp"
@@ -56,7 +56,7 @@ function ActionButtons() {
       {/* Newsletter Button */}
       <button
         onClick={handleNewsletterClick} // Handle click to show popup
-        className={`bg-yellow border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 z-20 ${
+        className={`bg-yellow border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 ${
           hoveredButton === "newsletter" ? "w-48" : "w-14"
         }`}
         id="newsletter"
@@ -74,9 +74,9 @@ function ActionButtons() {
       </button>
 
       {/* Survey Button */}
-      <a href="#" target="_blank" rel="noopener noreferrer">
+      <a href="/survey" target="_blank" rel="noopener noreferrer">
         <button
-          className={`bg-yellow border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 z-20 ${
+          className={`bg-yellow border-none cursor-pointer p-1 rounded-full shadow-lg transition-all duration-300 flex items-center justify-start h-14 ${
             hoveredButton === "survey" ? "w-48" : "w-14"
           }`}
           id="survey"
@@ -96,7 +96,7 @@ function ActionButtons() {
 
       {/* Scroll to Top Button (Doesn't Expand) */}
       <button
-        className="bg-[#3A3A37] border-none cursor-pointer p-1 rounded-full shadow-lg hover:scale-110 transition-transform duration-300 w-14 h-14 z-20"
+        className="bg-[#3A3A37] border-none cursor-pointer p-1 rounded-full shadow-lg hover:scale-110 transition-transform duration-300 w-14 h-14"
         id="scrollTop"
         onClick={scrollToTop}
       >

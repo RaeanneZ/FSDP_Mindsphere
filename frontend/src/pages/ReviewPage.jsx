@@ -11,6 +11,7 @@ import Footer from "../components/Footer";
 import CheckoutProgress from "../components/CheckoutProgress";
 import EventDetail from "../components/EventDetail";
 import ChildPaymentForm from "../components/ChildPaymentForm";
+import { imageArray } from "../constants";
 import backendService from "../utils/backendService";
 
 const ReviewPage = () => {
@@ -132,12 +133,6 @@ const ReviewPage = () => {
         const today = new Date();
         const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
 
-        const paymentData = {
-            total: quantity * parseFloat(tierDetails.Cost),
-            courseName: programDetails.title,
-            dueDate: formattedDate, // Set due date to today
-        };
-
         try {
             // Prepare the child data for sending to the backend
             const childrenPayload = childrenData.map((child, index) => ({
@@ -150,6 +145,14 @@ const ReviewPage = () => {
                     : "None",
             }));
             console.log(contactInfo.email);
+          
+    const paymentData = {
+      total: quantity * parseFloat(tierDetails.Cost),
+      courseName: programDetails.Name,
+      selectedPlanID: tierDetails.TierID,
+      dueDate: formattedDate, // Set due date to today
+    };
+
 
             await bookingService.addBooking(
                 contactInfo.name,
@@ -201,31 +204,18 @@ const ReviewPage = () => {
                 </button>
             </div>
         );
-    }
+    }       
 
-    return (
-        <div className="flex flex-col min-h-screen">
-            <Navbar />
+  // Find the image that matches the programDetails.ProgID
+  const matchedImage = imageArray.find(
+    (imageObj) => imageObj.id === programDetails.ProgID
+  );
 
-            <main className="flex-grow p-6 max-w-2xl mx-auto sm:w-[80%]">
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+    <main className="flex-grow p-6 max-w-2xl mx-auto sm:w-[80%]">
                 <CheckoutProgress imageType="cart" />
-
-                <CheckoutItem
-                    programName={programDetails.Name}
-                    programTier={tierDetails.Level}
-                    price={parseFloat(tierDetails.Cost)}
-                    quantity={quantity}
-                    onIncrease={() => setQuantity(quantity + 1)}
-                    onDecrease={() => setQuantity(Math.max(1, quantity - 1))}
-                />
-                <ContactForm
-                    contactInfo={contactInfo}
-                    setContactInfo={setContactInfo}
-                />
-                <DietaryRequirements
-                    dietary={dietary}
-                    setDietary={setDietary}
-                />
 
                 {/* Render ChildPaymentForm components based on quantity */}
                 {Array.from({ length: quantity }, (_, index) => (
@@ -235,6 +225,26 @@ const ReviewPage = () => {
                         saveChildData={handleChildDataChange} // Pass the handler to each ChildPaymentForm
                     />
                 ))}
+
+        {/* Loop through imageArray and render CheckoutItem for each image */}
+        {matchedImage && (
+          <CheckoutItem
+            programName={programDetails.Name}
+            programTier={tierDetails.Level}
+            price={parseFloat(tierDetails.Cost)}
+            quantity={quantity}
+            image={matchedImage.image} // Pass the image to CheckoutItem
+            alt={matchedImage.alt} // Pass the alt text to CheckoutItem
+            onIncrease={() => setQuantity(quantity + 1)}
+            onDecrease={() => setQuantity(Math.max(1, quantity - 1))}
+          />
+        )}
+
+        <ContactForm
+          contactInfo={contactInfo}
+          setContactInfo={setContactInfo}
+        />
+        <DietaryRequirements dietary={dietary} setDietary={setDietary} />
 
                 <div className="my-20">
                     <h4 className="font-semibold text-lg">Select Dates</h4>
