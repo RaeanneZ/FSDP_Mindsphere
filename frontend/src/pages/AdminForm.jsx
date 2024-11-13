@@ -4,6 +4,7 @@ import RoundSlider from "../components/RoundSlider";
 import PieChartComponent from "../components/PieChart";
 import EnquiryList from "../components/EnquiryList";
 import {
+  courseData,
   enquiryData,
   enquiryPieChartData,
   viewershipData,
@@ -11,6 +12,7 @@ import {
 } from "../constants";
 import BarChartComponent from "../components/BarChart";
 import DonutChart from "../components/DonutChart";
+import CourseCard from "../components/CourseCard";
 
 const data = {
   visitors: 2000,
@@ -248,19 +250,10 @@ const AdminForm = () => {
       </div>
 
       {/* Arc Slider */}
-      <div className="bg-white rounded-lg shadow-md p-4 w-64 text-center">
-        <RoundSlider />
-        <hr className="my-2" />
-        <div className="flex justify-between text-sm">
-          <div>
-            <div>Date 1</div>
-            <div>Date 2</div>
-          </div>
-          <div className="text-right">
-            <div>Full</div>
-            <div>6</div>
-          </div>
-        </div>
+      <div className="dashboard">
+        {courseData.map((course, index) => (
+          <CourseCard key={index} course={course} />
+        ))}
       </div>
 
       {/* Pie Chart */}

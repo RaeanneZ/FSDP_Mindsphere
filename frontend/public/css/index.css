@@ -73,3 +73,37 @@ circle {
 .enquiry-item p {
   margin: 0;
 }
+
+.dashboard {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.course-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.sessions {
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.session {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #666;
+}
+
+.more {
+  color: #ffc107;
+  cursor: pointer;
+  margin-top: 10px;
+}
