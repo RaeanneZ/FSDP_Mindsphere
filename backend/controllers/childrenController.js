@@ -7,24 +7,34 @@ require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 // Original addChild (with Interests) for signup
 const addChild = async (req, res) => {
-    const { GuardianEmail, Name, Gender, Dob, Needs, School, Interests } =
-        req.body;
+    const { GuardianEmail, Name, Gender, Dob, Needs, School, Interests, Nickname, ReasonName, Favorites, Job, ReasonJob } =
+    req.body;
 
-  console.log("Request Body:", req.body);
-  try {
+    console.log("Request Body:", req.body);
+    try {
     const newChild = await Children.addChild({
-      GuardianEmail,
-      Name,
-      Gender,
-      Dob,
-      Needs,
-      School,
-      Interests,
+        GuardianEmail,
+        Name,
+        Gender,
+        Dob,
+        Needs,
+        School,
+        Interests,
     });
+
+    const extendedChild = {
+        ...newChild,
+        Interests,
+        Nickname,
+        ReasonName,
+        Favorites,
+        Job,
+        ReasonJob
+    };
 
     console.log("NEWCHILD: ", newChild)
 
-    const pdfPath = await Children.generatePDF(newChild);
+    const pdfPath = await Children.generatePDF(extendedChild);
 
     const options = { 
         year: 'numeric', 
