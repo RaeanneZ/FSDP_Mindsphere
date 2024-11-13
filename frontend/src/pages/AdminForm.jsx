@@ -3,7 +3,12 @@ import CircularSlider from "@fseehawer/react-circular-slider";
 import RoundSlider from "../components/RoundSlider";
 import PieChartComponent from "../components/PieChart";
 import EnquiryList from "../components/EnquiryList";
-import { enquiryData, pieChartData } from "../constants";
+import {
+  enquiryData,
+  enquiryPieChartData,
+  websiteRatingData,
+} from "../constants";
+import BarChartComponent from "../components/BarChart";
 
 const data = {
   visitors: 2000,
@@ -260,8 +265,19 @@ const AdminForm = () => {
       <div className="dashboard">
         <h1>Professionals</h1>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <PieChartComponent data={pieChartData} onPieClick={handlePieClick} />
+          <PieChartComponent
+            data={enquiryPieChartData}
+            onPieClick={handlePieClick}
+          />
           <EnquiryList data={enquiryData} selectedCategory={selectedCategory} />
+        </div>
+      </div>
+
+      {/* Bar Chart */}
+      <div className="dashboard">
+        <h1>Bar Chart</h1>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <BarChartComponent data={websiteRatingData} />
         </div>
       </div>
     </div>

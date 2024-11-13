@@ -93,9 +93,16 @@ export const enquiryData = [
   },
 ];
 
-export const pieChartData = [
+export const enquiryPieChartData = [
   { name: "New Enquiries", value: 6, color: "#FF4D4D" },
   { name: "Discussions in Progress", value: 4, color: "#FFC107" },
   { name: "Delivered", value: 2, color: "#B0BEC5" },
   { name: "Confirmed", value: 1, color: "#009688" },
+];
+
+export const websiteRatingData = [
+  { aveRating: 2, month: "August", color: "#FF4D4D" },
+  { aveRating: 3.5, month: "September", color: "#FFC107" },
+  { aveRating: 4.5, month: "October", color: "#B0BEC5" },
+  { aveRating: 5, month: "November", color: "#009688" },
 ];
