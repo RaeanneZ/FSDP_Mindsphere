@@ -95,7 +95,7 @@ app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
 app.post("/api/postFeedback", ProgrammeFeedbackController.postFeedback);
 app.post("/api/addChild", childrenController.addChild);
 app.post("/api/addChildPayment", childrenController.addChildPayment);
-app.put("/api/updateChild", childrenController.updateChild);
+app.put("/api/updateChild/:ChildID", childrenController.updateChild);
 app.get(
     "/api/getChildByEmail/:GuardianEmail",
     childrenController.getChildByEmail
