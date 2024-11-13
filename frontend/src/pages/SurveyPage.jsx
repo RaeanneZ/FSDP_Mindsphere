@@ -36,6 +36,8 @@ const SurveyPage = () => {
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
+  const validationErrors = {};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
