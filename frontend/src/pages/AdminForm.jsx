@@ -6,9 +6,11 @@ import EnquiryList from "../components/EnquiryList";
 import {
   enquiryData,
   enquiryPieChartData,
+  viewershipData,
   websiteRatingData,
 } from "../constants";
 import BarChartComponent from "../components/BarChart";
+import DonutChart from "../components/DonutChart";
 
 const data = {
   visitors: 2000,
@@ -278,6 +280,14 @@ const AdminForm = () => {
         <h1>Bar Chart</h1>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <BarChartComponent data={websiteRatingData} />
+        </div>
+      </div>
+
+      {/* Donut Chart */}
+      <div className="dashboard">
+        <h1>Donut Chart</h1>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <DonutChart data={viewershipData} />
         </div>
       </div>
     </div>

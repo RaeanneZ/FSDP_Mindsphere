@@ -4,14 +4,14 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
 const PieChartComponent = ({ data, onPieClick }) => {
   return (
-    <PieChart width={600} height={400}>
+    <PieChart width={800} height={400}>
       <Pie
         data={data}
         dataKey="value"
         cx="50%"
         cy="50%"
-        label={({ name, value }) => `${name}: ${value}`}
-        outerRadius={120}
+        label={({ name, views }) => `${name}: ${views}`}
+        outerRadius={150}
         fill="#8884d8"
         onClick={(entry) => onPieClick(entry.name)}
       >

@@ -106,3 +106,40 @@ export const websiteRatingData = [
   { aveRating: 4.5, month: "October", color: "#B0BEC5" },
   { aveRating: 5, month: "November", color: "#009688" },
 ];
+
+export const viewershipData = [
+  { name: "Professionals", views: 400, color: "#FF4D4D" }, // Red
+  { name: "Workshops", views: 700, color: "#FFC107" }, // Yellow
+  { name: "Labs", views: 200, color: "#B0BEC5" }, // Grey
+  { name: "Camps", views: 1000, color: "#009688" }, // Green
+];
+
+export const courseData = [
+  {
+    title: "Public Speaking",
+    currentCount: 39,
+    maxCount: 45,
+    sessions: [
+      { date: "30/11/2024", level: "Beginner", status: "Full" },
+      { date: "5/12/2024", level: "Intermediate", slotsLeft: 6 },
+    ],
+  },
+  {
+    title: "PSLE Oral",
+    currentCount: 39,
+    maxCount: 45,
+    sessions: [
+      { date: "30/11/2024", level: "Beginner", status: "Full" },
+      { date: "5/12/2024", level: "Intermediate", slotsLeft: 6 },
+    ],
+  },
+  {
+    title: "Entrepreneurship",
+    currentCount: 39,
+    maxCount: 45,
+    sessions: [
+      { date: "30/11/2024", level: "Beginner", status: "Full" },
+      { date: "5/12/2024", level: "Intermediate", slotsLeft: 6 },
+    ],
+  },
+];
