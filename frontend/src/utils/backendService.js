@@ -1,7 +1,7 @@
 import axios from "axios";
 //import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
 
-const isLocalhost = window.location.hostname === 'localhost';
+const isLocalhost = window.location.hostname === "localhost";
 const apiUrl = isLocalhost
   ? "http://localhost:5000/api"
   : "http://100.83.156.26:5000/api"; // neil tailscale network
