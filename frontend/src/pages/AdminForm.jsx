@@ -1,4 +1,6 @@
 import React from "react";
+import CircularSlider from "@fseehawer/react-circular-slider";
+import RoundSlider from "../components/RoundSlider";
 
 const data = {
   visitors: 2000,
@@ -225,6 +227,21 @@ const AdminForm = () => {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-md p-4 w-64 text-center">
+        <RoundSlider />
+        <hr className="my-2" />
+        <div className="flex justify-between text-sm">
+          <div>
+            <div>Date 1</div>
+            <div>Date 2</div>
+          </div>
+          <div className="text-right">
+            <div>Full</div>
+            <div>6</div>
+          </div>
         </div>
       </div>
     </div>

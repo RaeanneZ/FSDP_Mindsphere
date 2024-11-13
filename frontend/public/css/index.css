@@ -40,3 +40,22 @@
   cursor: not-allowed;
   /* Change the cursor to indicate it's not clickable */
 }
+
+path:nth-child(1) {
+  fill: none;
+  stroke: #cecece;
+  stroke-width: 13px;
+}
+
+path:nth-child(2) {
+  fill: none;
+  stroke: #1980d0;
+  stroke-width: 13px;
+}
+
+circle {
+  fill: #1980d0;
+  stroke: #fff;
+  stroke-width: 5px;
+  r: 12px;
+}
