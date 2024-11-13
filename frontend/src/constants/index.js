@@ -41,3 +41,61 @@ export const childInterestFields = [
   "hobby",
   "animal",
 ];
+
+export const enquiryData = [
+  {
+    id: 1,
+    category: "New Enquiries",
+    organization: "Org A",
+    callbackTime: "10:00 AM",
+  },
+  {
+    id: 2,
+    category: "New Enquiries",
+    organization: "Org B",
+    callbackTime: "11:00 AM",
+  },
+  {
+    id: 3,
+    category: "New Enquiries",
+    organization: "Org C",
+    callbackTime: "12:00 PM",
+  },
+  {
+    id: 4,
+    category: "Discussions in Progress",
+    organization: "Org D",
+    callbackTime: "1:00 PM",
+  },
+  {
+    id: 5,
+    category: "Discussions in Progress",
+    organization: "Org E",
+    callbackTime: "2:00 PM",
+  },
+  {
+    id: 6,
+    category: "Delivered",
+    organization: "Org F",
+    callbackTime: "3:00 PM",
+  },
+  {
+    id: 7,
+    category: "Delivered",
+    organization: "Org G",
+    callbackTime: "4:00 PM",
+  },
+  {
+    id: 8,
+    category: "Confirmed",
+    organization: "Org H",
+    callbackTime: "5:00 PM",
+  },
+];
+
+export const pieChartData = [
+  { name: "New Enquiries", value: 6, color: "#FF4D4D" },
+  { name: "Discussions in Progress", value: 4, color: "#FFC107" },
+  { name: "Delivered", value: 2, color: "#B0BEC5" },
+  { name: "Confirmed", value: 1, color: "#009688" },
+];

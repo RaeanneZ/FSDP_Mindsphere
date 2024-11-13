@@ -41,11 +41,11 @@
   /* Change the cursor to indicate it's not clickable */
 }
 
-path:nth-child(1) {
+/* path:nth-child(1) {
   fill: none;
   stroke: #cecece;
   stroke-width: 13px;
-}
+} */
 
 path:nth-child(2) {
   fill: none;
@@ -57,5 +57,19 @@ circle {
   fill: #1980d0;
   stroke: #fff;
   stroke-width: 5px;
-  r: 12px;
+  border-radius: 12px;
+}
+
+.dashboard {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.enquiry-item {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.enquiry-item p {
+  margin: 0;
 }

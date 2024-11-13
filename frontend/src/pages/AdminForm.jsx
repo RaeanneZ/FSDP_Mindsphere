@@ -1,6 +1,9 @@
 import React from "react";
 import CircularSlider from "@fseehawer/react-circular-slider";
 import RoundSlider from "../components/RoundSlider";
+import PieChartComponent from "../components/PieChart";
+import EnquiryList from "../components/EnquiryList";
+import { enquiryData, pieChartData } from "../constants";
 
 const data = {
   visitors: 2000,
@@ -72,6 +75,13 @@ const AdminForm = () => {
         return statusOrder[a.status] - statusOrder[b.status];
       })
     );
+  };
+
+  // Pie Chart For Professionals
+  const [selectedCategory, setSelectedCategory] = React.useState(null);
+
+  const handlePieClick = (category) => {
+    setSelectedCategory(category);
   };
 
   return (
@@ -230,6 +240,7 @@ const AdminForm = () => {
         </div>
       </div>
 
+      {/* Arc Slider */}
       <div className="bg-white rounded-lg shadow-md p-4 w-64 text-center">
         <RoundSlider />
         <hr className="my-2" />
@@ -242,6 +253,15 @@ const AdminForm = () => {
             <div>Full</div>
             <div>6</div>
           </div>
+        </div>
+      </div>
+
+      {/* Pie Chart */}
+      <div className="dashboard">
+        <h1>Professionals</h1>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <PieChartComponent data={pieChartData} onPieClick={handlePieClick} />
+          <EnquiryList data={enquiryData} selectedCategory={selectedCategory} />
         </div>
       </div>
     </div>
