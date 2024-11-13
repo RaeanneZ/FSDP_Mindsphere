@@ -300,18 +300,28 @@ const childrenService = {
 
   updateChild: async (childData) => {
     try {
-      const response = await axios.put(`${apiUrl}/updateChild`, {
-        ...childData,
-      });
-      return {
-        success: true,
-      };
+      if (!childData.ChildID) {
+        throw new Error("ChildID is required");
+      }
+
+      const response = await axios.put(
+        `${apiUrl}/children/${childData.ChildID}`,
+        {
+          Name: childData.Name,
+          Gender: childData.Gender,
+          Dob: childData.Dob,
+          Needs: childData.Needs,
+          School: childData.School,
+          Interests: childData.Interests,
+        }
+      );
+      return response.data;
     } catch (err) {
       console.error("BackendService: Error updating child: ", err);
       return {
         success: false,
-        message: "Sign-up failed",
-        error: err.response.data,
+        message: "Update failed",
+        error: err.response?.data || err.message,
       };
     }
   },
