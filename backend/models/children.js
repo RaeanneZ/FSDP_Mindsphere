@@ -1,5 +1,9 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const path = require("path");
+
 
 class Children {
     //attributes
@@ -165,6 +169,62 @@ class Children {
             return result.recordset;
         } catch (err) {
             console.error("Error fetching child by email:", err);
+        }
+    }
+
+    static async generatePDF(child) {
+        try {
+            const doc = new PDFDocument({ margin: 50 });
+
+            console.log("CHILDINFO:" ,  child)
+
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            const dateStr = `${day}-${month}-${year}-(${hours}-${minutes})`;
+            
+            const filePath = `./backend/pdf/Children/Child_${child.Name.replace(/\s+/g, "_")}_(${dateStr}).pdf`;
+            
+            doc.pipe(fs.createWriteStream(filePath));
+    
+            const logoPath = path.join(__dirname, "../assets/mindsphere_logo.png");
+            doc.image(logoPath, { width: 100, align: "center" })
+                .moveDown(1);
+    
+            doc.fontSize(20).font("Helvetica-Bold").text("Child Details", {
+                align: "center",
+                underline: true,
+            });
+            doc.moveDown(1);
+    
+            doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+            doc.moveDown(1.5);
+    
+            function addField(label, value) {
+                doc.fontSize(12).font("Helvetica-Bold").text(label + ":", { align: "left" });
+                doc.fontSize(12).font("Helvetica").text(value, { align: "left" });
+                doc.moveDown(1);
+            }
+
+
+            addField("Guardian Email", child.GuardianEmail);
+            addField("Child Name", child.Name);
+            addField("Gender", child.Gender);
+            addField("Date of Birth", child.Dob);
+            addField("Needs", child.Needs);
+            addField("School", child.School);
+            addField("Interests", child.Interests);
+
+            doc.end();
+
+            console.log(`PDF generated at ${filePath}`);
+            return filePath
+        } catch (err) {
+            console.error("ModelError: Error generating Child PDF:", err);
         }
     }
 }

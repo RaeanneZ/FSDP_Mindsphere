@@ -1,5 +1,9 @@
 // childrenController.js
 const Children = require("../models/children");
+const uploadFileToDrive = require("../middlewares/uploadFileToDrive");
+const path = require("path");
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+
 
 // Original addChild (with Interests) for signup
 const addChild = async (req, res) => {
@@ -17,9 +21,34 @@ const addChild = async (req, res) => {
       School,
       Interests,
     });
+
+    console.log("NEWCHILD: ", newChild)
+
+    const pdfPath = await Children.generatePDF(newChild);
+
+    const options = { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false 
+    };
+    
+    const dateStr = new Date().toLocaleString('en-GB', options)  
+        .replace(/\//g, '-')                                     
+        .replace(', ', ')-(');                                   
+    
+    const fileName = `Child_${newChild.Name}_(${dateStr}).pdf`;
+
+    const FOLDER_ID = process.env.GOOGLE_CHILDREN_FOLDER_ID;
+    const uploadedFileId = await uploadFileToDrive(pdfPath, fileName, FOLDER_ID);
+
     res.status(201).json({
       message: "Child added successfully",
       child: newChild,
+      pdfPath: pdfPath,
+      fileId: uploadedFileId,
     });
   } catch (err) {
     console.error(err);
