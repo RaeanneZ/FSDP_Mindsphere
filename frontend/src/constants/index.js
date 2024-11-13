@@ -143,3 +143,8 @@ export const courseData = [
     ],
   },
 ];
+
+export const surveyData = {
+  publicity: ["Google", "Word of Mouth", "Facebook"],
+  keyInterests: ["Entrepreneurship", "Toastmaster", "Leadership"],
+};

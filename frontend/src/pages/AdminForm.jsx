@@ -7,12 +7,14 @@ import {
   courseData,
   enquiryData,
   enquiryPieChartData,
+  surveyData,
   viewershipData,
   websiteRatingData,
 } from "../constants";
 import BarChartComponent from "../components/BarChart";
 import DonutChart from "../components/DonutChart";
 import CourseCard from "../components/CourseCard";
+import SurveyDashboardSection from "../components/SurveyDashboardSection";
 
 const data = {
   visitors: 2000,
@@ -94,7 +96,7 @@ const AdminForm = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="p-8 min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-darkBlue text-white text-center p-4 rounded-lg">
           <div className="text-lg">Visitors</div>
@@ -250,7 +252,7 @@ const AdminForm = () => {
       </div>
 
       {/* Arc Slider */}
-      <div className="dashboard">
+      <div className="dashboard flex items-center justify-center">
         {courseData.map((course, index) => (
           <CourseCard key={index} course={course} />
         ))}
@@ -264,7 +266,24 @@ const AdminForm = () => {
             data={enquiryPieChartData}
             onPieClick={handlePieClick}
           />
+          <div className="bg-gray-300 w-[2px] h-[100%] ml-[10rem] mr-10"></div>
           <EnquiryList data={enquiryData} selectedCategory={selectedCategory} />
+        </div>
+      </div>
+
+      {/* Website Visitor Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-20">
+        <div className="bg-darkBlue text-white text-center p-4 rounded-lg">
+          <div className="text-lg">Visitors</div>
+          <div className="text-3xl font-bold">{data.visitors}</div>
+        </div>
+        <div className="bg-darkBlue text-white text-center p-4 rounded-lg">
+          <div className="text-lg">Subscribers</div>
+          <div className="text-3xl font-bold">{data.subscribers}</div>
+        </div>
+        <div className="bg-darkBlue text-white text-center p-4 rounded-lg">
+          <div className="text-lg">Members</div>
+          <div className="text-3xl font-bold">{data.members}</div>
         </div>
       </div>
 
@@ -276,11 +295,28 @@ const AdminForm = () => {
         </div>
       </div>
 
-      {/* Donut Chart */}
-      <div className="dashboard">
-        <h1>Donut Chart</h1>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <DonutChart data={viewershipData} />
+      <div className="grid grid-cols-4 gap-4">
+        {/* Survey */}
+        <div className="dashboard flex bg-lightBlue rounded-lg">
+          <h1 className="font-bold text-xl">Survey Feedback</h1>
+          <div className="flex flex-col items-center justify-center">
+            <SurveyDashboardSection
+              title="Publicity"
+              items={surveyData.publicity}
+            />
+            <SurveyDashboardSection
+              title="Key Interests"
+              items={surveyData.keyInterests}
+            />
+          </div>
+        </div>
+
+        {/* Donut Chart */}
+        <div className="dashboard bg-lightBlue rounded-lg col-span-3">
+          <h1 className="font-bold text-xl">Viewership</h1>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <DonutChart data={viewershipData} />
+          </div>
         </div>
       </div>
     </div>
