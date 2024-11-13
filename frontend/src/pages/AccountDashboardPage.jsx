@@ -10,13 +10,14 @@ import AccountOverview from "../components/AccountOverview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import backendService from "../utils/backendService";
+import ConfirmationPopUp from "../components/ConfirmationPopup";
 
 const AccountDashboardPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [accountData, setAccountData] = useState({});
   const [regCoursesData, setRegCoursesData] = useState({});
-  const { accountService } = backendService;
+  const { accountService, childrenService } = backendService;
   const [formData, setFormData] = useState({
     name: "",
     dob: "",
@@ -24,11 +25,12 @@ const AccountDashboardPage = () => {
     relationship: "",
     address: "",
   });
-  const [children, setChildren] = useState([1]);
+  const [children, setChildren] = useState([]);
+  const [originalChildrenData, setOriginalChildrenData] = useState([]);
   const [errors, setErrors] = useState({});
   const [originalData, setOriginalData] = useState({});
   const [isUpdated, setIsUpdated] = useState(false);
-  const [successMessageVisible, setSuccessMessageVisible] = useState(false); // State for success message
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   // Effect to retrieve the email from session storage
   useEffect(() => {
@@ -48,6 +50,7 @@ const AccountDashboardPage = () => {
     const fetchData = async () => {
       try {
         console.log("The email is ", email);
+
         // Start of gettting all Account information
         const fetchedAccountData = await accountService.getAccountByEmail(
           email
@@ -75,6 +78,31 @@ const AccountDashboardPage = () => {
           email
         );
         setRegCoursesData(fetchedBookingData); // Set the fetched account data to state
+        console.log(regCoursesData);
+
+        // Fetch children data
+        const fetchedChildrenData = await childrenService.getChildByEmail(
+          email
+        );
+        //setChildren(fetchedChildrenData); // Set the fetched children data to state
+
+        // Create an array to hold original children data
+        const originalChildrenArray = fetchedChildrenData.map((child) => ({
+          dob: child.Dob,
+          gender: child.Gender === "F" ? "Female" : "Male",
+          name: child.Name,
+          school: child.School,
+          skillsets: child.Interests,
+          specialLearningNeeds: child.Needs,
+        }));
+
+        // Store the original children data in session storage
+        sessionStorage.setItem(
+          "childData",
+          JSON.stringify(originalChildrenArray)
+        );
+        setOriginalChildrenData(originalChildrenArray); // Set the state for original children data
+        console.log(originalChildrenArray);
       } catch (error) {
         console.error("Error fetching account data:", error);
       }
@@ -100,11 +128,6 @@ const AccountDashboardPage = () => {
     }
 
     const { name, value } = e.target;
-
-    // Debugging: Log the event and the name and value
-    console.log("Event:", e);
-    console.log("Name:", name);
-    console.log("Value:", value);
 
     // Check if name is defined
     if (!name) {
@@ -163,6 +186,7 @@ const AccountDashboardPage = () => {
       console.log("Email: ", email);
       console.log("Form Data: ", formData);
 
+      // Update Account
       const updatedFormattedData = {
         ContactNo: formData.contactNumber,
         Name: formData.name,
@@ -175,14 +199,46 @@ const AccountDashboardPage = () => {
         updatedFormattedData
       );
 
+      // Update Children
+      // Get updated list from session storage
+      const storedChildrenData = sessionStorage.getItem("childData");
+      const parsedChildrenData = JSON.parse(storedChildrenData) || [];
+
+      const updateChildForm = async (updatedFormattedChildrenData) => {
+        await childrenService.updateChild(updatedFormattedChildrenData);
+      };
+
+      // Iterate over parsed children data
+      const childResponses = await Promise.all(
+        parsedChildrenData.map(async (child) => {
+          const updatedFormattedChildrenData = {
+            GuardianEmail: email,
+            Name: child.name,
+            Gender: child.gender === "Female" ? "F" : "M",
+            Dob: child.dob,
+            Needs: child.specialLearningNeeds,
+            School: child.school,
+            Interests: child.skillsets,
+          };
+
+          console.log("Guardian Email is: ", email);
+          console.log("Children: ", child);
+          console.log("Name is: ", updatedFormattedChildrenData.Name);
+          console.log("Gender is: ", updatedFormattedChildrenData.Gender);
+          console.log("DOB is: ", updatedFormattedChildrenData.Dob);
+          console.log("Needs is: ", updatedFormattedChildrenData.Needs);
+          console.log("School is: ", updatedFormattedChildrenData.School);
+          console.log("Interest is: ", updatedFormattedChildrenData.Interests);
+
+          return updateChildForm(updatedFormattedChildrenData);
+        })
+      );
+
       if (response) {
         console.log("Account updated successfully. Response is ", response);
         setOriginalData(formData); // Update original data to the newly updated data
         setIsUpdated(false); // Reset the updated state
-        setSuccessMessageVisible(true); // Show success message
-        setTimeout(() => {
-          setSuccessMessageVisible(false); // Hide after 3 seconds
-        }, 3000);
+        setIsModalOpen(true); // Show the modal
       } else {
         console.error("Error updating account");
       }
@@ -211,16 +267,13 @@ const AccountDashboardPage = () => {
           bookingdata={regCoursesData}
         />
 
-        {/* Success Message Popup */}
-        {successMessageVisible && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-5 rounded shadow-md text-center">
-              <h2 className="text-lg font-semibold">
-                Your Account has been updated successfully!
-              </h2>
-            </div>
-          </div>
-        )}
+        {/* Modal for Success Message */}
+        <ConfirmationPopUp
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)} // Close the modal
+          message="Account successfully updated!"
+          instruction=""
+        />
 
         {/* Account Update Section */}
         <div className="bg-lightYellow">
@@ -295,11 +348,12 @@ const AccountDashboardPage = () => {
                 Enter your child&#39;s / ward&#39;s particulars so that we can
                 better understand them
               </h1>
-              {children.map((number) => (
+              {originalChildrenData.map((child, index) => (
                 <ChildAccordion
-                  key={number}
-                  number={number}
+                  key={index}
+                  number={index + 1} // or any other identifier you want to use
                   saveChildData={saveChildData}
+                  childData={child} // Pass the child data to the ChildAccordion
                 />
               ))}
               <div
@@ -313,7 +367,6 @@ const AccountDashboardPage = () => {
                 <button
                   type="submit"
                   className="bg-yellow text-white font-semibold py-3 px-6 rounded mt-4 w-full"
-                  disabled={!isUpdated}
                 >
                   Update
                 </button>

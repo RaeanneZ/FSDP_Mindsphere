@@ -125,9 +125,9 @@ const Navbar = () => {
             {loggedIn ? (
               <div className="flex items-center space-x-2">
                 <img
-                  src="https://via.placeholder.com/40"
+                  src={profile}
                   alt="Profile"
-                  className="w-8 h-8 rounded-full border border-gray-300 cursor-pointer"
+                  className="w-8 h-8 rounded-full cursor-pointer"
                   onClick={handleProfileClick} // Add onClick to navigate on profile click
                 />
                 <button

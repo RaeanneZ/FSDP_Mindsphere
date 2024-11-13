@@ -29,6 +29,7 @@ import ErrorPage from "./pages/errorPage.jsx";
 
 // Import CSS
 import "../public/css/index.css";
+import AdminForm from "./pages/AdminForm.jsx";
 
 const router = createBrowserRouter([
   {
@@ -120,6 +121,11 @@ const router = createBrowserRouter([
     path: "/about",
     element: <AboutPage />,
     errorElement: <div>404 Not Found</div>,
+  },
+  {
+    path: "/admin",
+    element: <AdminForm />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

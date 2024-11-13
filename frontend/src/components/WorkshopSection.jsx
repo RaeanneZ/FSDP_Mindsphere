@@ -1,7 +1,7 @@
 // WorkshopSection.jsx
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import ImageCarousel from "./ImageCarousel";
+import { profile } from "../utils";
 
 const WorkshopSection = ({
   images,
@@ -10,6 +10,8 @@ const WorkshopSection = ({
   testimonials,
   onSelectPlan,
 }) => {
+  console.log("Workshop section: ", selectedProgramme);
+  console.log("Workshop testimonial: ", testimonials);
   return (
     <div className="flex justify-center py-16 px-4">
       <div className="w-full max-w-7xl bg-lightYellow rounded-xl p-6 sm:p-10 mx-auto">
@@ -95,19 +97,16 @@ const WorkshopSection = ({
                 key={index}
                 className="bg-white rounded-lg p-4 sm:p-6 shadow-md"
               >
-                <p className="text-gray-700 italic">"{testimonial.feedback}"</p>
+                <p className="text-gray-700 italic">"{testimonial.FdbkDesc}"</p>
                 <div className="flex items-center mt-4">
                   <img
-                    src={testimonial.avatar}
-                    alt={`${testimonial.name}'s avatar`}
+                    src={profile}
+                    alt={`${testimonial.AccName}'s avatar`}
                     className="w-8 sm:w-10 h-8 sm:h-10 rounded-full mr-4"
                   />
                   <div>
                     <p className="text-gray-800 font-semibold">
-                      {testimonial.name}
-                    </p>
-                    <p className="text-gray-500 text-xs sm:text-sm">
-                      {testimonial.title}
+                      {testimonial.AccName}
                     </p>
                   </div>
                 </div>
@@ -118,30 +117,6 @@ const WorkshopSection = ({
       </div>
     </div>
   );
-};
-
-WorkshopSection.propTypes = {
-  testimonials: PropTypes.arrayOf(
-    PropTypes.shape({
-      feedback: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      avatar: PropTypes.string.isRequired,
-    })
-  ),
-  onSelectPlan: PropTypes.func.isRequired,
-};
-
-WorkshopSection.defaultProps = {
-  testimonials: [
-    {
-      feedback:
-        "This is a sample testimonial. It is here to demonstrate what a user review would look like.",
-      name: "Sample User",
-      title: "Position",
-      avatar: "https://via.placeholder.com/40",
-    },
-  ],
 };
 
 export default WorkshopSection;

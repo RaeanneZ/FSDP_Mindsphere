@@ -6,8 +6,12 @@ import Dropdown from "../components/Dropdown";
 import Rating from "../components/Rating";
 import FeedbackText from "../components/FeedbackText";
 import EmailSubscribe from "../components/EmailSubscribe";
+import ConfirmationPopup from "../components/ConfirmationPopup";
+import backendService from "../utils/backendService";
 
 const SurveyPage = () => {
+  const { formService } = backendService;
+
   const location = useLocation();
   const navigate = useNavigate();
   const { title, message } = location.state || {
@@ -22,30 +26,45 @@ const SurveyPage = () => {
     email: "",
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errors, setErrors] = useState({});
+
   const updateFeedback = (key, value) => {
     setFeedback((prev) => ({ ...prev, [key]: value }));
+
+    // Clear the error for the specific field when the user updates it
+    setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Replace with the correct backend function
-    // try {
-    //   const response = await fetch("/api/submit-feedback", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(feedback),
-    //   });
-    //   if (response.ok) {
-    //     alert("Feedback submitted successfully!");
-    //   } else {
-    //     alert("Failed to submit feedback.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error submitting feedback:", error);
-    //   alert("Error submitting feedback.");
-    // }
+
+    // Validate source and rating
+    if (!feedback.source) {
+      validationErrors.source = "Please select a source.";
+    }
+    if (feedback.rating === null) {
+      validationErrors.rating = "Please provide a rating.";
+    }
+
+    // If there are validation errors, set them and return
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    // Backend function to send survey
+    const response = await formService.addSurvey(
+      Object.keys(feedback.email).length === 0 ? "" : feedback.email,
+      feedback.source,
+      feedback.rating,
+      Object.keys(feedback.comments).length === 0 ? "" : feedback.comments
+    );
+
+    if (response != false) {
+      setIsModalOpen(true); // Show the modal on successful submission
+    }
+    navigate("/");
   };
 
   const handleClose = () => {
@@ -69,7 +88,15 @@ const SurveyPage = () => {
         <p className="text-lg mb-8">{message}</p>
 
         <Dropdown onSelect={(value) => updateFeedback("source", value)} />
+        {errors.source && (
+          <p className="text-red-500 text-sm">{errors.source}</p>
+        )}
+
         <Rating onRate={(value) => updateFeedback("rating", value)} />
+        {errors.rating && (
+          <p className="text-red-500 text-sm">{errors.rating}</p>
+        )}
+
         <FeedbackText
           onComment={(value) => updateFeedback("comments", value)}
         />
@@ -79,11 +106,19 @@ const SurveyPage = () => {
 
         <button
           type="submit"
-          className="bg-[#D9A43E] text-white py-3 px-6 rounded-lg mt-8 text-lg mx-auto block"
+          className="bg-yellow text-white py-3 px-6 rounded-lg mt-8 text-lg mx-auto block"
         >
           Submit
         </button>
       </form>
+
+      {/* Modal for Success Message */}
+      <ConfirmationPopup
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // Close the modal
+        message="Thank you for your feedback!"
+        instruction="We will work on it to better improve our service"
+      />
     </div>
   );
 };
