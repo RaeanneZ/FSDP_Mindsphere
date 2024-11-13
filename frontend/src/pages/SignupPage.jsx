@@ -110,7 +110,7 @@ const SignupPage = () => {
               <input
                 type="text"
                 placeholder="Verification Code"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
                 required
