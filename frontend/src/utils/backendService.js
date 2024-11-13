@@ -4,7 +4,7 @@ import axios from "axios";
 const isLocalhost = window.location.hostname === "localhost";
 const apiUrl = isLocalhost
   ? "http://localhost:5000/api"
-  : "http://100.83.156.26:5000/api"; // neil tailscale network
+  : "http://100.97.230.39:5000/api"; // neil tailscale network // laptop: http://100.83.156.26:5000/api
 
 // Programmes methods
 

@@ -10,7 +10,7 @@ const { initializeReminderSystem } = require("./models/reminderEmailModel");
 // CORS CONFIG
 const cors = require("cors");
 const corsOptions = {
-    origin: ["http://localhost:5173", "http://100.83.156.26:5173"], // neil tailscale network
+    origin: ["http://localhost:5173", "http://100.83.156.26:5173", "http://100.97.230.39:5173"],  // neil tailscale network laptop: http://100.83.156.26:5000
 };
 
 // CONTROLLERS AND ROUTES
