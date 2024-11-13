@@ -1,5 +1,8 @@
 # Mindsphere Singapore Website
 
+![Mindsphere Logo](https://mindsphere.sg/_next/static/media/logo-colour.2df06475.png)
+
+
 Welcome to the Mindsphere Singapore website Fullstack Project! This application is built using React with Vite and Node.js with Express, designed to deliver a seamless experience while navigating Mindsphere’s range of training and coaching programs.
 
 ## Installation Notes
