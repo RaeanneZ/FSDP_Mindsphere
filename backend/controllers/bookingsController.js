@@ -29,8 +29,6 @@ const addBooking = async (req, res) => {
                 .json({ error: "Booking with this BookingID already exists." });
         }
 
-        schedule = await programmeScheduleController.getScheduleByID()
-
 
         // dummy data not thought yet
         const paymentData = {
@@ -38,7 +36,6 @@ const addBooking = async (req, res) => {
             ProgID: newBooking.ProgID,
             Quantity: newBooking.quantity,
             TotalCost: newBooking.totalCost,
-            Schedule: schedule,
         };
 
         await Payment.addPayment(paymentData);
