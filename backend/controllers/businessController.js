@@ -1,4 +1,6 @@
 const Business = require("../models/businesses");
+const stakeholderEmail = require("../controllers/stakeholderEmailController")
+
 const uploadFileToDrive = require("../middlewares/uploadFileToDrive");
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
@@ -72,13 +74,14 @@ const addBusiness = async (req, res) => {
         const FOLDER_ID = process.env.GOOGLE_BUSINESS_FOLDER_ID;
         const uploadedFileId = await uploadFileToDrive(pdfPath, fileName, FOLDER_ID);
 
-
+        const sendStakeholderEmail = await stakeholderEmail.sendBusinessEmailStakeholder(newBusiness)
 
         res.status(201).json({
             message: "Business added successfully",
             Business: newBusiness,
             pdfPath: pdfPath,
             fileId: uploadedFileId,
+            email: sendStakeholderEmail,
         });
     } catch (err) {
         console.error(err);
