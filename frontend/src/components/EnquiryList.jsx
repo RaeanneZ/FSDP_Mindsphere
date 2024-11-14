@@ -20,9 +20,22 @@ const EnquiryList = ({ data, selectedCategory }) => {
             <p>
               <strong>Organization:</strong> {enquiry.organization}
             </p>
-            <p>
-              <strong>Callback Time:</strong> {enquiry.callbackTime}
-            </p>
+            {selectedCategory === "New Enquiries" && (
+              <p>
+                <strong>Callback Time:</strong> {enquiry.callbackTime}
+              </p>
+            )}
+            {selectedCategory === "Discussions in Progress" && (
+              <p>
+                <strong>Response Time:</strong> {enquiry.callbackTime}
+              </p>
+            )}
+            {selectedCategory === "Confirmed" && (
+              <p>
+                <strong>Delivery Time:</strong> {enquiry.callbackTime}
+              </p>
+            )}
+            {selectedCategory === "Delivered" && null}
           </div>
         ))
       )}

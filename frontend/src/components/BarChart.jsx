@@ -3,7 +3,7 @@ import { Bar, BarChart, Rectangle, Tooltip, XAxis, YAxis } from "recharts";
 
 const BarChartComponent = ({ data }) => {
   return (
-    <BarChart width={300} height={200} data={data}>
+    <BarChart width={300} height={150} data={data}>
       <Bar
         dataKey="aveRating"
         fill="#0E9BAC"

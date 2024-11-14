@@ -38,10 +38,10 @@ const AdminForm = () => {
         </div>
 
         {/* Middle Section: Pie Chart and Enquiry List */}
-        <div className="flex flex-col md:flex-row gap-8 bg-lightBlue p-6 rounded-lg shadow-md">
-          <div className="flex-1 ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-lightBlue p-6 rounded-lg shadow-md">
+          <div className="col-span-2 self-center justify-self-center">
             <h2 className="text-lg font-semibold mb-4">Professionals</h2>
-            <div className="w-full h-[300px] sm:h-[400px]">
+            <div className="w-full h-full">
               {/* Ensure the PieChart is responsive */}
               <PieChartComponent
                 data={enquiryPieChartData}
@@ -49,9 +49,8 @@ const AdminForm = () => {
               />
             </div>
           </div>
-          <div className="w-[2px] bg-gray-200 rounded-lg"></div>
-          <div className="flex-1">
-            <h2 className="text-lg font-semibold mb-4">Enquiries</h2>
+          <div className="col-span-1 flex items-center">
+            <div className="divider w-[2px] h-full bg-gray-200 rounded-lg mr-10"></div>
             <EnquiryList
               data={enquiryData}
               selectedCategory={selectedCategory}
@@ -78,7 +77,7 @@ const AdminForm = () => {
         {/* Bottom Section: Survey Feedback and Donut Chart */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: Survey Feedback */}
-          <div className="col-span-1 bg-lightBlue p-6 rounded-lg shadow-md">
+          <div className="h-full col-span-1 bg-lightBlue p-6 rounded-lg shadow-md">
             <h2 className="text-lg font-semibold mb-4">Survey Feedback</h2>
             <div className="flex flex-col items-center">
               <SurveyDashboardSection
@@ -95,7 +94,7 @@ const AdminForm = () => {
               <h3 className="text-md text-center font-semibold mb-2">
                 Website Satisfaction Rating
               </h3>
-              <div className="w-full h-[250px] sm:h-[300px]">
+              <div className="w-full h-full">
                 {/* Ensure Bar Chart is responsive */}
                 <BarChartComponent data={websiteRatingData} />
               </div>
