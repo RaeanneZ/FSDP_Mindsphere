@@ -2,17 +2,11 @@
 const Children = require("../models/children");
 const uploadFileToDrive = require("../middlewares/uploadFileToDrive");
 const path = require("path");
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-
+require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
 
 // Original addChild (with Interests) for signup
 const addChild = async (req, res) => {
-    const { GuardianEmail, Name, Gender, Dob, Needs, School, Interests, Nickname, ReasonName, Favorites, Job, ReasonJob } =
-    req.body;
-
-    console.log("Request Body:", req.body);
-    try {
-    const newChild = await Children.addChild({
+    const {
         GuardianEmail,
         Name,
         Gender,
@@ -20,50 +14,72 @@ const addChild = async (req, res) => {
         Needs,
         School,
         Interests,
-    });
-
-    const extendedChild = {
-        ...newChild,
-        Interests,
         Nickname,
         ReasonName,
         Favorites,
         Job,
-        ReasonJob
-    };
+        ReasonJob,
+    } = req.body;
 
-    console.log("NEWCHILD: ", newChild)
+    console.log("Request Body:", req.body);
+    try {
+        const newChild = await Children.addChild({
+            GuardianEmail,
+            Name,
+            Gender,
+            Dob,
+            Needs,
+            School,
+            Interests,
+        });
 
-    const pdfPath = await Children.generatePDF(extendedChild);
+        const extendedChild = {
+            ...newChild,
+            Interests,
+            Nickname,
+            ReasonName,
+            Favorites,
+            Job,
+            ReasonJob,
+        };
 
-    const options = { 
-        year: 'numeric', 
-        month: '2-digit', 
-        day: '2-digit', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        hour12: false 
-    };
-    
-    const dateStr = new Date().toLocaleString('en-GB', options)  
-        .replace(/\//g, '-')                                     
-        .replace(', ', ')-(');                                   
-    
-    const fileName = `Child_${newChild.Name}_(${dateStr}).pdf`;
+        console.log("NEWCHILD: ", newChild);
 
-    const FOLDER_ID = process.env.GOOGLE_CHILDREN_FOLDER_ID;
-    const uploadedFileId = await uploadFileToDrive(pdfPath, fileName, FOLDER_ID);
+        const pdfPath = await Children.generatePDF(extendedChild);
 
-    res.status(201).json({
-      message: "Child added successfully",
-      child: newChild,
-      pdfPath: pdfPath,
-      fileId: uploadedFileId,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("ControllerError: Error adding child");
-  }
+        const options = {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        };
+
+        const dateStr = new Date()
+            .toLocaleString("en-GB", options)
+            .replace(/\//g, "-")
+            .replace(", ", ")-(");
+
+        const fileName = `Child_${newChild.Name}_(${dateStr}).pdf`;
+
+        const FOLDER_ID = process.env.GOOGLE_CHILDREN_FOLDER_ID;
+        const uploadedFileId = await uploadFileToDrive(
+            pdfPath,
+            fileName,
+            FOLDER_ID
+        );
+
+        res.status(201).json({
+            message: "Child added successfully",
+            child: newChild,
+            pdfPath: pdfPath,
+            fileId: uploadedFileId,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("ControllerError: Error adding child");
+    }
 };
 
 // New addChildPayment (without Interests) for payment
@@ -111,12 +127,12 @@ const addChildPayment = async (req, res) => {
 };
 
 const updateChild = async (req, res) => {
-    const { ChildID } = req.params; // Retrieve ChildID from URL parameters
-    const { Name, Gender, Dob, Needs, School, Interests } = req.body;
+    const { GuardianEmail, Name, Gender, Dob, Needs, School, Interests } =
+        req.body;
 
     // Basic validation to check if required fields are provided
     const missingFields = [];
-    if (!ChildID) missingFields.push("ChildID");
+    if (!GuardianEmail) missingFields.push("GuardianEmail");
     if (!Name) missingFields.push("Name");
     if (!Gender) missingFields.push("Gender");
     if (!Dob) missingFields.push("Dob");
@@ -142,7 +158,7 @@ const updateChild = async (req, res) => {
 
     try {
         const updatedChild = await Children.updateChild({
-            ChildID,
+            GuardianEmail,
             Name,
             Gender,
             Dob,
