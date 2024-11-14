@@ -42,6 +42,19 @@ export const childInterestFields = [
   "animal",
 ];
 
+export const ProfessionalReview = [
+  {
+    FdbkDesc:
+      "Mr. Yio’s dedication to fostering a supportive and dynamic learning environment was evident throughout the course. His ability to connect with participants and provide personalized feedback greatly enhanced the learning experience. I am immensely grateful for the knowledge and skills I have gained under his guidance, and I am confident that these will serve me well in my future leadership endeavors.",
+    AccName: "Geryl Lim",
+  },
+  {
+    FdbkDesc:
+      "I highly recommend Simon as a trainer and I am grateful for the opportunity to learn from such a seasoned professional and look forward to applying these teachings for continued success in my career.",
+    AccName: "Lisa Seow",
+  },
+];
+
 export const enquiryData = [
   {
     id: 1,

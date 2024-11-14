@@ -29,7 +29,7 @@ const LoginPage = () => {
     try {
       // Call the loginAccount method with the credentials
       const response = await accountService.loginAccount(credentials);
-
+      console.log(response);
       // Check if the login was successful
       if (response && response.success) {
         login(); // Set loggedIn to true in the context

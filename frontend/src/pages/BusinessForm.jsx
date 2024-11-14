@@ -2,11 +2,12 @@ import React from "react";
 import Flatpickr from "react-flatpickr"; // Import Flatpickr
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
 import "flatpickr/dist/themes/confetti.css"; // Import the confetti theme
-import { prof } from "../utils";
+import { prof, profile } from "../utils";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ConfirmationPopup from "../components/ConfirmationPopup";
 import backendService from "../utils/backendService";
+import { ProfessionalReview } from "../constants";
 
 const BusinessForm = () => {
   const { useState } = React;
@@ -309,6 +310,35 @@ const BusinessForm = () => {
               message="Thank you for your interest!"
               instruction="We will contact you soon"
             />
+          </div>
+        </div>
+
+        {/* Testimonials */}
+        <div className="md:mx-40 mt-16 px-4 py-10 bg-blue-50 rounded-lg">
+          <h3 className="text-xl sm:text-2xl font-bold text-center text-gray-800">
+            Hear from our learners
+          </h3>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+            {ProfessionalReview.map((testimonial, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg p-4 sm:p-6 shadow-md"
+              >
+                <p className="text-gray-700 italic">"{testimonial.FdbkDesc}"</p>
+                <div className="flex items-center mt-4">
+                  <img
+                    src={profile}
+                    alt={`${testimonial.AccName}'s avatar`}
+                    className="w-8 sm:w-10 h-8 sm:h-10 rounded-full mr-4"
+                  />
+                  <div>
+                    <p className="text-gray-800 font-semibold">
+                      {testimonial.AccName}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

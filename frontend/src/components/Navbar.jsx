@@ -11,17 +11,23 @@ import { useAuth } from "../contexts/AuthContext"; // Import the custom hook
 import { useNavigate } from "react-router-dom"; // Import useNavigate if using react-router
 
 const Navbar = () => {
+  const email = sessionStorage.getItem("AccountEmail") || "";
   const [menuOpen, setMenuOpen] = useState(false);
   const { loggedIn, logout } = useAuth(); // Access the loggedIn state and logout function from context
   const navigate = useNavigate(); // Initialize navigate for navigation
 
   const handleLogout = () => {
     logout(); // Logs out the user by updating context state
+    navigate("/");
   };
 
   const handleProfileClick = () => {
     if (loggedIn) {
-      navigate("/accountmanagement"); // Navigate to account management if logged in
+      if (email === "admin@gmail.com") {
+        navigate("/admin"); // Navigate to admin if the email is admin
+      } else {
+        navigate("/accountmanagement"); // Navigate to account management if not admin
+      }
     }
   };
 
