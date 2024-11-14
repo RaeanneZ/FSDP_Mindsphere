@@ -120,8 +120,8 @@ export const enquiryPieChartData = [
 
 export const websiteRatingData = [
   { aveRating: 3.5, month: "September" },
-  { aveRating: 4.5, month: "October" },
-  { aveRating: 5, month: "November" },
+  { aveRating: 4.2, month: "October" },
+  { aveRating: 4.8, month: "November" },
   { aveRating: 0, month: "December" },
 ];
 
