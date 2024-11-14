@@ -26,7 +26,7 @@ const BarLineChart = ({ name, data }) => {
           {/* Bar for Views */}
           <Bar dataKey="views" barSize={20} fill="#8884d8" />
           {/* Line for Sales */}
-          <Line type="monotone" dataKey="sales" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="sales" stroke="#ff7300" />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
