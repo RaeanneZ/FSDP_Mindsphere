@@ -16,8 +16,8 @@ const SemiCircleGauge = ({ currentCount, maxCount }) => {
             data={data}
             startAngle={180}
             endAngle={0}
-            innerRadius={70}
-            outerRadius={100}
+            innerRadius={100}
+            outerRadius={120}
             dataKey="value"
           >
             {data.map((entry, index) => (

@@ -101,10 +101,10 @@ export const enquiryPieChartData = [
 ];
 
 export const websiteRatingData = [
-  { aveRating: 2, month: "August", color: "#FF4D4D" },
-  { aveRating: 3.5, month: "September", color: "#FFC107" },
-  { aveRating: 4.5, month: "October", color: "#B0BEC5" },
-  { aveRating: 5, month: "November", color: "#009688" },
+  { aveRating: 3.5, month: "September" },
+  { aveRating: 4.5, month: "October" },
+  { aveRating: 5, month: "November" },
+  { aveRating: 0, month: "December" },
 ];
 
 export const viewershipData = [

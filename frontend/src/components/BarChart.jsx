@@ -3,14 +3,14 @@ import { Bar, BarChart, Rectangle, Tooltip, XAxis, YAxis } from "recharts";
 
 const BarChartComponent = ({ data }) => {
   return (
-    <BarChart width={400} height={200} data={data}>
+    <BarChart width={300} height={200} data={data}>
       <Bar
         dataKey="aveRating"
         fill="#0E9BAC"
         activeBar={<Rectangle fill="#0E8392" />}
       />
       <XAxis dataKey="month" />
-      <YAxis dataKey="aveRating" />
+      <YAxis dataKey="aveRating" type="number" domain={[0, 5]} />
       <Tooltip cursor={{ fill: "transparent" }} />
     </BarChart>
   );

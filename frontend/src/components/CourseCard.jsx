@@ -4,7 +4,7 @@ import SemiCircleGauge from "./SemicircleGauge";
 
 const CourseCard = ({ course }) => {
   return (
-    <div className="course-card h-full flex flex-col  justify-center">
+    <div className="course-card h-full flex flex-col justify-center">
       <SemiCircleGauge
         currentCount={course.currentCount}
         maxCount={course.maxCount}

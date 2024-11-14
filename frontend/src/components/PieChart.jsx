@@ -24,7 +24,6 @@ const PieChartComponent = ({ data, onPieClick }) => {
         ))}
       </Pie>
       <Tooltip />
-      <Legend />
     </PieChart>
   );
 };
