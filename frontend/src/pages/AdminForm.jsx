@@ -107,7 +107,7 @@ const AdminForm = () => {
             </div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
-            <div className="text-lg">Subscribers</div>
+            <div className="text-lg">Newsletter Subscription</div>
             <div className="text-3xl font-bold">
               {programmeDashboardData.subscribers}
             </div>
