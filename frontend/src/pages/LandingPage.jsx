@@ -43,13 +43,6 @@ const { programmeFeedBackService } = backendService;
 const feedbackByID = await programmeFeedBackService.getFeedbackByID(1);
 console.log(feedbackByID);
 
-const { programmeService } = backendService;
-const email = "iamjovantan@gmail.com";
-const programmes = await programmeService.getRegisteredProgrammesByAccount(
-  email
-);
-console.log(programmes);
-
 const LandingPage = () => {
   const navigate = useNavigate();
 
