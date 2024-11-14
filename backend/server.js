@@ -10,7 +10,11 @@ const { initializeReminderSystem } = require("./models/reminderEmailModel");
 // CORS CONFIG
 const cors = require("cors");
 const corsOptions = {
-    origin: ["http://localhost:5173", "http://100.83.156.26:5173", "http://100.97.230.39:5173"],  // neil tailscale network laptop: http://100.83.156.26:5000
+  origin: [
+    "http://localhost:5173",
+    "http://100.83.156.26:5173",
+    "http://100.97.230.39:5173",
+  ], // neil tailscale network laptop: http://100.83.156.26:5000
 };
 
 // CONTROLLERS AND ROUTES
@@ -89,6 +93,7 @@ app.put("/api/account/:email", accountController.updateAccountByEmail);
 app.put("/api/register", accountController.registerAccount);
 app.post("/api/signUp", accountController.signUp);
 app.post("/api/login", accountController.login);
+app.post("/api/login/admin", accountController.login);
 app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
 app.post("/api/postFeedback", ProgrammeFeedbackController.postFeedback);
 app.post("/api/addChild", childrenController.addChild);
@@ -101,7 +106,10 @@ app.get(
 app.use("/api/payments", paymentEmailRoutes);
 app.get("/api/newsletter", newsletterController.getAllEmail);
 app.post("/api/newsletter", newsletterController.addEmailNewsletter);
-app.get("/api/programmes/registered/:email", programmesController.getRegisteredProgrammesByAccount);
+app.get(
+  "/api/programmes/registered/:email",
+  programmesController.getRegisteredProgrammesByAccount
+);
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
 app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
 app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
@@ -125,3 +133,13 @@ process.on("SIGINT", async () => {
   console.log("Server is gracefully shutting down");
   process.exit(0);
 });
+
+async function genSaltnHash() {
+  const bcrypt = require("bcrypt");
+  const salt = await bcrypt.genSalt(10);
+  console.log(salt);
+  const HashedPassword = await bcrypt.hash("thisisadmin", salt);
+  console.log(HashedPassword);
+}
+
+genSaltnHash();
