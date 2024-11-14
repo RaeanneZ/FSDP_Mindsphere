@@ -9,7 +9,9 @@ import {
   enquiryPieChartData,
   surveyData,
   viewershipData,
+  salesSupplyData,
   websiteRatingData,
+  programmeDashboardData,
 } from "../constants";
 import BarChartComponent from "../components/BarChart";
 import DonutChart from "../components/DonutChart";
@@ -17,12 +19,7 @@ import CourseCard from "../components/CourseCard";
 import SurveyDashboardSection from "../components/SurveyDashboardSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
-const data = {
-  visitors: 2000,
-  subscribers: 5000,
-  members: 400,
-};
+import BarLineChart from "../components/BarLineChart";
 
 const AdminForm = () => {
   const [selectedCategory, setSelectedCategory] = React.useState(null);
@@ -61,7 +58,9 @@ const AdminForm = () => {
         {/* Middle Section: Pie Chart and Enquiry List */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-lightBlue p-6 rounded-lg shadow-md">
           <div className="col-span-2 self-center justify-self-center">
-            <h2 className="text-lg font-semibold mb-4">Professionals</h2>
+            <h2 className="text-xl font-semibold text-center mb-4">
+              Professionals
+            </h2>
             <div className="w-full h-full">
               {/* Ensure the PieChart is responsive */}
               <PieChartComponent
@@ -83,15 +82,21 @@ const AdminForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Visitors</div>
-            <div className="text-3xl font-bold">{data.visitors}</div>
+            <div className="text-3xl font-bold">
+              {programmeDashboardData.visitors}
+            </div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Subscribers</div>
-            <div className="text-3xl font-bold">{data.subscribers}</div>
+            <div className="text-3xl font-bold">
+              {programmeDashboardData.subscribers}
+            </div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Members</div>
-            <div className="text-3xl font-bold">{data.members}</div>
+            <div className="text-3xl font-bold">
+              {programmeDashboardData.members}
+            </div>
           </div>
         </div>
 
@@ -129,11 +134,17 @@ const AdminForm = () => {
           </div>
 
           {/* Right: Donut Chart */}
-          <div className="lg:col-span-2 bg-lightBlue p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-4">Viewership</h2>
-            <div className="w-full h-full">
+          <div className="w-full h-full lg:col-span-2 bg-lightBlue p-6 rounded-lg shadow-md">
+            <h2 className="text-lg font-semibold mb-4">Viewership vs Sales</h2>
+            <div className="w-full h-full grid grid-cols-2 gap-4">
               {/* Ensure Donut Chart is responsive */}
-              <DonutChart data={viewershipData} />
+              <BarLineChart name={"Workshop"} data={salesSupplyData.Workshop} />
+              <BarLineChart name={"Camp"} data={salesSupplyData.Camp} />
+              <BarLineChart name={"Lab"} data={salesSupplyData.Lab} />
+              <BarLineChart
+                name={"Professional"}
+                data={salesSupplyData.Professional}
+              />
             </div>
           </div>
         </div>

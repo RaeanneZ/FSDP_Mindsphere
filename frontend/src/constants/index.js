@@ -143,22 +143,19 @@ export const courseData = [
     ],
   },
   {
-    title: "PSLE Oral",
-    currentCount: 39,
-    maxCount: 45,
+    title: "PSLE Power Up",
+    currentCount: 34,
+    maxCount: 50,
     sessions: [
-      { date: "30/11/2024", level: "Beginner", status: "Full" },
-      { date: "5/12/2024", level: "Intermediate", slotsLeft: 6 },
+      { date: "19/12/2024", level: " ", slotsLeft: 3 },
+      { date: "28/12/2024", level: " ", slotsLeft: 13 },
     ],
   },
   {
     title: "Entrepreneurship",
-    currentCount: 39,
-    maxCount: 45,
-    sessions: [
-      { date: "30/11/2024", level: "Beginner", status: "Full" },
-      { date: "5/12/2024", level: "Intermediate", slotsLeft: 6 },
-    ],
+    currentCount: 8,
+    maxCount: 15,
+    sessions: [{ date: "12/12/2024", level: " ", slotsLeft: 7 }],
   },
 ];
 
@@ -168,9 +165,9 @@ export const surveyData = {
 };
 
 export const programmeDashboardData = {
-  visitors: 2000,
-  subscribers: 5000,
-  members: 400,
+  visitors: 1176,
+  subscribers: 500,
+  members: 73,
   date: "2024-10-08",
   professionals: [
     { id: 1, status: "Enquire", date: "2024-10-08" },
@@ -219,5 +216,28 @@ export const programmeDashboardData = {
       date: "20/12/2024",
       seats: 50,
     },
+  ],
+};
+
+export const salesSupplyData = {
+  Workshop: [
+    { month: "Sept", sales: 15, views: 100 },
+    { month: "Oct", sales: 4, views: 200 },
+    { month: "Nov", sales: 20, views: 400 },
+  ],
+  Camp: [
+    { month: "Sept", sales: 1, views: 8 },
+    { month: "Oct", sales: 10, views: 85 },
+    { month: "Nov", sales: 23, views: 200 },
+  ],
+  Lab: [
+    { month: "Sept", sales: 4, views: 40 },
+    { month: "Oct", sales: 1, views: 9 },
+    { month: "Nov", sales: 3, views: 14 },
+  ],
+  Professional: [
+    { month: "Sept", sales: 1, views: 30 },
+    { month: "Oct", sales: 1, views: 10 },
+    { month: "Nov", sales: 1, views: 80 },
   ],
 };

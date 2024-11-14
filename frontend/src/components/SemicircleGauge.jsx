@@ -9,7 +9,7 @@ const SemiCircleGauge = ({ currentCount, maxCount }) => {
   ];
 
   return (
-    <div style={{ width: "100%", height: "200px" }}>
+    <div style={{ width: "100%", height: "270px" }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -17,7 +17,7 @@ const SemiCircleGauge = ({ currentCount, maxCount }) => {
             startAngle={180}
             endAngle={0}
             innerRadius={100}
-            outerRadius={120}
+            outerRadius={130}
             dataKey="value"
           >
             {data.map((entry, index) => (
