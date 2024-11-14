@@ -29,15 +29,8 @@ const CheckoutItem = ({
     <div className="grid grid-cols-3 gap-4 border-b pb-2 mb-4">
       {/* Program Container */}
       <div className="flex items-center flex-1 mb-2 md:mb-0">
-        <div className="w-16 h-16 bg-gray-300 rounded mr-4 overflow-hidden">
-          <img
-            src={image}
-            alt={alt}
-            className="w-full h-full object-cover" // Changed to object-cover
-          />
-        </div>
         <div>
-          <h3 className="font-semibold text-sm md:text-md lg:text-lg">
+          <h3 className="font-semibold text-md md:text-lg lg:text-xl">
             {programName}
           </h3>
           <p className="text-sm text-gray-500">{programTier}</p>

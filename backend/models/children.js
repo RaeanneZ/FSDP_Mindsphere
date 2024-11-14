@@ -219,6 +219,11 @@ class Children {
             addField("Needs", child.Needs);
             addField("School", child.School);
             addField("Interests", child.Interests);
+            addField("Nickname", child.Nickname);
+            addField("Reason for nickname", child.ReasonName);
+            addField("Favorites", child.Favorites);
+            addField("Job", child.Job);
+            addField("Reason for job", child.ReasonJob)
 
             doc.end();
 

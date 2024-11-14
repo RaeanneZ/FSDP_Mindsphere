@@ -40,3 +40,69 @@
   cursor: not-allowed;
   /* Change the cursor to indicate it's not clickable */
 }
+
+/* path:nth-child(1) {
+  fill: none;
+  stroke: #cecece;
+  stroke-width: 13px;
+} */
+
+path:nth-child(2) {
+  fill: none;
+  stroke: #1980d0;
+  stroke-width: 13px;
+}
+
+circle {
+  fill: #1980d0;
+  stroke: #fff;
+  stroke-width: 5px;
+  border-radius: 12px;
+}
+
+.dashboard {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.enquiry-item {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.enquiry-item p {
+  margin: 0;
+}
+
+.dashboard {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  /* background-color: #f5f7fa; */
+}
+
+.course-card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+.sessions {
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.session {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #666;
+}
+
+.more {
+  color: #ffc107;
+  cursor: pointer;
+  margin-top: 10px;
+}

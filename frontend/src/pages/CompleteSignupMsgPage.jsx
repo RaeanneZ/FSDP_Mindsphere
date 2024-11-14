@@ -23,7 +23,7 @@ const CompleteSignupMsgPage = () => {
             }
 
             // Ensure child is in the correct format before sending
-            const childPayload = {
+            let childPayload = {
               GuardianEmail: parentData[0].email,
               Name: child.name,
               Gender: shortformGender,
@@ -32,6 +32,29 @@ const CompleteSignupMsgPage = () => {
               Interests: child.skillsets,
               School: child.school,
             };
+
+            // If the optional form is filled, pdf it
+            if (
+              typeof childData.nickname != "undefined" &&
+              typeof childData.favorites != "undefined" &&
+              typeof childData.job != "undefined"
+            ) {
+              childPayload = {
+                GuardianEmail: parentData[0].email,
+                Name: child.name,
+                Gender: shortformGender,
+                Dob: child.dob,
+                Needs: child.specialLearningNeeds,
+                Interests: child.skillsets,
+                School: child.school,
+                Nickname: child.nickname,
+                ReasonName: child.reasonName,
+                Favorites: child.favorites, // This is an array
+                Job: child.job,
+                ReasonJob: child.reasonJob,
+              };
+            }
+
             // Send each child data to the backend
             await childrenService.addChild(childPayload);
           }

@@ -17,7 +17,7 @@ const AccountDashboardPage = () => {
   const [email, setEmail] = useState();
   const [accountData, setAccountData] = useState({});
   const [regCoursesData, setRegCoursesData] = useState({});
-  const { accountService, childrenService } = backendService;
+  const { accountService, childrenService, programmeService } = backendService;
   const [formData, setFormData] = useState({
     name: "",
     dob: "",
@@ -74,9 +74,8 @@ const AccountDashboardPage = () => {
         }); // Store original data for comparison
 
         // Start of gettting all Booking information
-        const fetchedBookingData = await accountService.retrieveAccountInfo(
-          email
-        );
+        const fetchedBookingData =
+          await programmeService.getRegisteredProgrammesByAccount(email);
         setRegCoursesData(fetchedBookingData); // Set the fetched account data to state
         console.log(regCoursesData);
 
@@ -108,9 +107,8 @@ const AccountDashboardPage = () => {
       }
 
       try {
-        const accountBookingInfo = await accountService.retrieveAccountInfo(
-          email
-        );
+        const accountBookingInfo =
+          await programmeService.getRegisteredProgrammesByAccount(email);
         console.log(accountBookingInfo);
         // Handle accountInfo as necessary (not shown in original code)
       } catch (error) {

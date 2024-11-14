@@ -26,6 +26,7 @@ import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ErrorPage from "./pages/errorPage.jsx";
+import AdminPanel from "./pages/AdminPanel.jsx";
 
 // Import CSS
 import "../public/css/index.css";
@@ -120,13 +121,18 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: <AboutPage />,
-    errorElement: <div>404 Not Found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/admin",
     element: <AdminForm />,
     errorElement: <ErrorPage />,
   },
+  // {
+  //   path: "/adminPanel",
+  //   element: <AdminPanel />,
+  //   errorElement: <ErrorPage />,
+  // },
 ]);
 
 createRoot(document.getElementById("root")).render(

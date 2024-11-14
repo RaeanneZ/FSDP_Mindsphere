@@ -1,7 +1,10 @@
 import axios from "axios";
 //import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
 
-const apiUrl = "http://localhost:5000/api";
+const isLocalhost = window.location.hostname === "localhost";
+const apiUrl = isLocalhost
+  ? "http://localhost:5000/api"
+  : "http://100.97.230.39:5000/api"; // neil tailscale network // laptop: http://100.83.156.26:5000/api
 
 // Programmes methods
 
@@ -296,20 +299,99 @@ const childrenService = {
     }
   },
 
-  updateChild: async (childData) => {
+  getAccountByEmail: async (email) => {
     try {
-      const response = await axios.put(`${apiUrl}/updateChild`, {
-        ...childData,
+      const response = await axios.get(`${apiUrl}/account/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting account by email: ", err);
+      throw err;
+    }
+  },
+
+  updateAccountByEmail: async (email, accountData) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/account/${email}`,
+        accountData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error updating account: ", err);
+      throw err;
+    }
+  },
+
+  retrieveAccountInfo: async (email) => {
+    try {
+      const response = await axios.get(`${apiUrl}/bookings/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error retrieving account info: ", err);
+    }
+  },
+
+  signUp: async (email, password, verifCode) => {
+    try {
+      const response = await axios.post(`${apiUrl}/signUp`, {
+        email,
+        password,
+        verifCode,
       });
+      //return response.data;
       return {
         success: true,
       };
     } catch (err) {
-      console.error("BackendService: Error updating child: ", err);
       return {
         success: false,
         message: "Sign-up failed",
         error: err.response.data,
+      };
+    }
+  },
+
+  // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
+  // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
+  // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
+};
+
+//Children methods
+const childrenService = {
+  addChild: async (childData) => {
+    try {
+      const response = await axios.post(`${apiUrl}/addChild`, childData);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding child: ", err);
+      throw err;
+    }
+  },
+
+  updateChild: async (childData) => {
+    try {
+      if (!childData.ChildID) {
+        throw new Error("ChildID is required");
+      }
+
+      const response = await axios.put(
+        `${apiUrl}/children/${childData.ChildID}`,
+        {
+          Name: childData.Name,
+          Gender: childData.Gender,
+          Dob: childData.Dob,
+          Needs: childData.Needs,
+          School: childData.School,
+          Interests: childData.Interests,
+        }
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error updating child: ", err);
+      return {
+        success: false,
+        message: "Update failed",
+        error: err.response?.data || err.message,
       };
     }
   },

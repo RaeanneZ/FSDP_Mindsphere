@@ -81,8 +81,22 @@ const AccountOverview = ({ accountdata, bookingdata }) => {
                 key={index}
                 className="flex justify-between border-t border-gray-300 pt-2"
               >
-                <span>{program.ProgID}</span>
-                <span>{program.TrasacID}</span>
+                <span>
+                  {program.progName} - {program.level}
+                </span>
+                <span>
+                  {new Date(program.startDate).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}{" "}
+                  -{" "}
+                  {new Date(program.endDate).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
               </li>
             ))}
           </ul>
