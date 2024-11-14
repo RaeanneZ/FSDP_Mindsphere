@@ -16,15 +16,10 @@ const CompleteSignupMsgPage = () => {
         // Check if childData is valid and an array
         if (Array.isArray(childData) && childData.length > 0) {
           for (const child of childData) {
-            let shortformGender = "M";
+            let shortformGender = child.gender === "Female" ? "F" : "M";
 
-            if (child.gender == "Female") {
-              shortformGender = "F";
-            }
-
-            // Ensure child is in the correct format before sending
             let childPayload = {
-              GuardianEmail: parentData[0].email,
+              GuardianEmail: parentData[0]?.email,
               Name: child.name,
               Gender: shortformGender,
               Dob: child.dob,
@@ -33,29 +28,17 @@ const CompleteSignupMsgPage = () => {
               School: child.school,
             };
 
-            // If the optional form is filled, pdf it
-            if (
-              typeof childData.nickname != "undefined" &&
-              typeof childData.favorites != "undefined" &&
-              typeof childData.job != "undefined"
-            ) {
+            if (child.nickname && child.favorites && child.job) {
               childPayload = {
-                GuardianEmail: parentData[0].email,
-                Name: child.name,
-                Gender: shortformGender,
-                Dob: child.dob,
-                Needs: child.specialLearningNeeds,
-                Interests: child.skillsets,
-                School: child.school,
+                ...childPayload,
                 Nickname: child.nickname,
                 ReasonName: child.reasonName,
-                Favorites: child.favorites, // This is an array
+                Favorites: child.favorites,
                 Job: child.job,
                 ReasonJob: child.reasonJob,
               };
             }
 
-            // Send each child data to the backend
             await childrenService.addChild(childPayload);
           }
           console.log(
@@ -70,7 +53,7 @@ const CompleteSignupMsgPage = () => {
     };
 
     addChildrenToBackend(); // Call the function to add children to the backend
-  }, [childrenService]); // Add childrenService as a dependency
+  }, []); // Add childrenService as a dependency
 
   return (
     <div
