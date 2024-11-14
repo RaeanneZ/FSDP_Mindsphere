@@ -32,6 +32,7 @@ const programmeService = {
       throw err;
     }
   },
+
   getRegisteredProgrammesByAccount: async (email) => {
     try {
       const response = await axios.get(
@@ -226,6 +227,75 @@ const accountService = {
         message: "Login failed",
         error: err.response.data,
       };
+    }
+  },
+
+  getAccountByEmail: async (email) => {
+    try {
+      const response = await axios.get(`${apiUrl}/account/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting account by email: ", err);
+      throw err;
+    }
+  },
+
+  updateAccountByEmail: async (email, accountData) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/account/${email}`,
+        accountData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error updating account: ", err);
+      throw err;
+    }
+  },
+
+  retrieveAccountInfo: async (email) => {
+    try {
+      const response = await axios.get(`${apiUrl}/bookings/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error retrieving account info: ", err);
+    }
+  },
+
+  signUp: async (email, password, verifCode) => {
+    try {
+      const response = await axios.post(`${apiUrl}/signUp`, {
+        email,
+        password,
+        verifCode,
+      });
+      //return response.data;
+      return {
+        success: true,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        message: "Sign-up failed",
+        error: err.response.data,
+      };
+    }
+  },
+
+  // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
+  // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
+  // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
+};
+
+//Children methods
+const childrenService = {
+  addChild: async (childData) => {
+    try {
+      const response = await axios.post(`${apiUrl}/addChild`, childData);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding child: ", err);
+      throw err;
     }
   },
 

@@ -1,45 +1,62 @@
+# Mindsphere Singapore Website
 
-# React + Vite
+![Mindsphere Logo](https://mindsphere.sg/_next/static/media/logo-colour.2df06475.png)
 
-  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the Mindsphere Singapore website Fullstack Project! This application is built using React with Vite and Node.js with Express, designed to deliver a seamless experience while navigating Mindsphere’s range of training and coaching programs.
 
-  
+## Installation Notes
 
-Currently, two official plugins are available:
+Ensure you have a `.env` file in the root directory. Check the example provided for setting up environment variables for frontend and backend functionality.
 
-  
+### Setting Up the Project
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+1. **Install dependencies:**
+   - First, navigate to the **frontend** and **backend** folders and run `npm install` in both:
+     ```bash
+     cd frontend
+     npm install
+     cd ../backend
+     npm install
+     ```
 
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+2. **Run the Development Server:**
+   - To run both the backend and frontend at the same time, execute the following command in the root folder:
+     ```bash
+     npm run dev
+     ```
 
-  
+3. **Run Frontend Only:**
+   - To run only the frontend, use:
+     ```bash
+     cd frontend
+     npm run dev
+     ```
 
-# Notes
+4. **Run Backend Only:**
+   - To run only the backend, use:
+     ```bash
+     cd backend
+     node server.js
+     ```
 
-Make sure you have .env file in root directory, example is pinned in tg group
+5. **Terminate the Server:**
+   - To stop the server, press **CTRL+C** in the terminal.
 
-Need to first `cd` into **both** frontend and backend folder and `npm install` in **both** the folders
+## APIs and Libraries Used
 
-To run the **backend and frontend** at the same time run this in the root folder in terminal
+This application uses a variety of APIs and libraries to enhance functionality:
 
- `npm run dev`
+- **Google API**: Integrated for various application needs, including access to location services, mapping, and authentication as required.
+- **Google Drive API**: Utilized to enable seamless integration with Google Drive for data storage, document access, and secure file sharing.
+- **PDFKit**: Utilized for creating, editing, and managing PDF documents programmatically, supporting reports, certificates, and downloadable materials.
+- **IBM AI Chatbot**: Integrated to provide an interactive, AI-driven chatbot experience, assisting users with inquiries and providing guidance within the platform.
 
-To only run **frontend** follow the step in terminal
+## Built With
 
- 1. `cd frontend`
- 2. `npm run dev`
- 
-To only run **backend** follow the step in terminal
+- **React** and **Vite** - React library for building the user interface, enhanced by Vite for fast builds and hot module replacement.
+- **Node.js** and **Express** - Backend functionality is powered by Node.js and Express, facilitating robust server-side operations.
+- **ESLint** - Enforces code consistency and style.
+- **MSSQL** - Provides a scalable, high-performance database for backend data handling.
 
-1. `cd backend`
-2. `node server.js` 
- 
-To terminate the server enter **CTRL+C** in terminal
-
- 
-
- 
-  
+---
