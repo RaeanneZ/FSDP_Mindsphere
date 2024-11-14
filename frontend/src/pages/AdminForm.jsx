@@ -8,13 +8,11 @@ import {
   enquiryData,
   enquiryPieChartData,
   surveyData,
-  viewershipData,
   salesSupplyData,
   websiteRatingData,
   programmeDashboardData,
 } from "../constants";
 import BarChartComponent from "../components/BarChart";
-import DonutChart from "../components/DonutChart";
 import CourseCard from "../components/CourseCard";
 import SurveyDashboardSection from "../components/SurveyDashboardSection";
 import Navbar from "../components/Navbar";
@@ -23,10 +21,32 @@ import BarLineChart from "../components/BarLineChart";
 
 const AdminForm = () => {
   const [selectedCategory, setSelectedCategory] = React.useState(null);
+  const [isDesktop, setIsDesktop] = React.useState(window.innerWidth >= 1440);
 
   const handlePieClick = (category) => {
     setSelectedCategory(category);
   };
+
+  const handleResize = () => {
+    setIsDesktop(window.innerWidth >= 1440);
+  };
+
+  React.useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  if (!isDesktop) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <h1 className="text-xl font-bold">
+          Please view this page on a laptop or larger screen.
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full items-center">
@@ -42,7 +62,7 @@ const AdminForm = () => {
         {/* Date Filter */}
         <div className="flex self-end items-center space-x-2">
           <u>
-            <span className="text-lg font-medium mr-4">Oct - Dec 2024</span>
+            <span className="text-lg font-medium mr-4">Sept - Dec 2024</span>
             <FontAwesomeIcon icon={faChevronDown} />
           </u>
         </div>
@@ -135,7 +155,7 @@ const AdminForm = () => {
 
           {/* Right: Donut Chart */}
           <div className="w-full h-full lg:col-span-2 bg-lightBlue p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-4">Viewership vs Sales</h2>
+            <h2 className="text-lg font-semibold mb-4">Views vs Sales</h2>
             <div className="w-full h-full grid grid-cols-2 gap-4">
               {/* Ensure Donut Chart is responsive */}
               <BarLineChart name={"Workshop"} data={salesSupplyData.Workshop} />
