@@ -1,4 +1,6 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import PieChartComponent from "../components/PieChart";
 import EnquiryList from "../components/EnquiryList";
 import {
@@ -13,6 +15,8 @@ import BarChartComponent from "../components/BarChart";
 import DonutChart from "../components/DonutChart";
 import CourseCard from "../components/CourseCard";
 import SurveyDashboardSection from "../components/SurveyDashboardSection";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const data = {
   visitors: 2000,
@@ -29,8 +33,25 @@ const AdminForm = () => {
 
   return (
     <div className="w-full items-center">
+      <Navbar />
       <div className="p-4 w-[80%] max-w-screen-xl mx-auto flex flex-col min-h-screen gap-8">
+        {/* Greeting */}
+        <div className="greeting mb-10">
+          <h1 className="text-3xl font-bold">
+            Good Morning, <span className="text-yellow">Christine</span>
+          </h1>
+        </div>
+
+        {/* Date Filter */}
+        <div className="flex self-end items-center space-x-2">
+          <u>
+            <span className="text-lg font-medium mr-4">Oct - Dec 2024</span>
+            <FontAwesomeIcon icon={faChevronDown} />
+          </u>
+        </div>
+
         {/* Top Section: Programme Cards */}
+        <h1 className="text-xl font-bold">Programme Take-Up Rate</h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {courseData.map((course, index) => (
             <CourseCard key={index} course={course} />
@@ -78,7 +99,10 @@ const AdminForm = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: Survey Feedback */}
           <div className="h-full col-span-1 bg-lightBlue p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold mb-4">Survey Feedback</h2>
+            <div className="surveyHeader flex justify-between align-baseline mb-6">
+              <h2 className="text-lg font-semibold mb-4">Survey Feedback</h2>
+              <span>20 Ratings</span> {/* Hardcoded */}
+            </div>
             <div className="flex flex-col items-center">
               <SurveyDashboardSection
                 title="Publicity"
@@ -98,6 +122,9 @@ const AdminForm = () => {
                 {/* Ensure Bar Chart is responsive */}
                 <BarChartComponent data={websiteRatingData} />
               </div>
+              <p className="text-gray-600 text-center mt-4">
+                😡 Too few course dates
+              </p>
             </div>
           </div>
 
@@ -111,6 +138,7 @@ const AdminForm = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

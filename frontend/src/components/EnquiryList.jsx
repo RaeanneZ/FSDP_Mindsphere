@@ -1,14 +1,23 @@
 // EnquiryList.js
 import React from "react";
+import { enquiryPieChartData } from "../constants";
 
 const EnquiryList = ({ data, selectedCategory }) => {
   const filteredData = selectedCategory
     ? data.filter((item) => item.category === selectedCategory)
     : [];
 
+  // Find the color for the selected category
+  const categoryData = enquiryPieChartData.find(
+    (item) => item.name === selectedCategory
+  );
+  const categoryColor = categoryData ? categoryData.color : "#000";
+
   return (
     <div style={{ width: "300px" }}>
-      <h2>{selectedCategory || "Select a category"}</h2>
+      <h2 className="font-bold" style={{ color: categoryColor }}>
+        {selectedCategory || "Select a category"}
+      </h2>
       {filteredData.length === 0 ? (
         <p>No enquiries to show</p>
       ) : (

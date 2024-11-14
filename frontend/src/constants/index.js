@@ -112,10 +112,10 @@ export const enquiryData = [
 ];
 
 export const enquiryPieChartData = [
-  { name: "New Enquiries", value: 6, color: "#FF4D4D" },
-  { name: "Discussions in Progress", value: 4, color: "#FFC107" },
-  { name: "Delivered", value: 2, color: "#B0BEC5" },
-  { name: "Confirmed", value: 1, color: "#009688" },
+  { name: "New Enquiries", value: 6, color: "#FF4D4D" }, // Red
+  { name: "Discussions in Progress", value: 4, color: "#db7c26" }, // Orange
+  { name: "Delivered", value: 2, color: "#0e6ba8" }, // Blue
+  { name: "Confirmed", value: 1, color: "#009688" }, // Teal
 ];
 
 export const websiteRatingData = [
@@ -165,4 +165,59 @@ export const courseData = [
 export const surveyData = {
   publicity: ["Google", "Word of Mouth", "Facebook"],
   keyInterests: ["Entrepreneurship", "Toastmaster", "Leadership"],
+};
+
+export const programmeDashboardData = {
+  visitors: 2000,
+  subscribers: 5000,
+  members: 400,
+  date: "2024-10-08",
+  professionals: [
+    { id: 1, status: "Enquire", date: "2024-10-08" },
+    { id: 2, status: "In Progress", date: "2024-10-08" },
+    { id: 3, status: "Complete", date: "2024-10-08" },
+  ],
+  transactions: [
+    { id: 1, programme: "S1020", qty: 2, status: "Paid", date: "2024-10-08" },
+    {
+      id: 2,
+      programme: "$499",
+      qty: 1,
+      status: "Pending",
+      date: "2024-10-08",
+    },
+    { id: 3, programme: "$800", qty: 1, status: "Paid", date: "2024-10-08" },
+  ],
+  programmes: [
+    {
+      id: 1,
+      name: "Programme Name",
+      price: "$300",
+      venue: "Venue",
+      sessions: ["5/12/2024 - 7/12/2024", "4/1/2024 - 6/1/2024"],
+    },
+    {
+      id: 2,
+      name: "Programme Name",
+      price: "",
+      venue: "Venue",
+      sessions: ["5/12/2024 - 7/12/2024", "4/1/2024 - 6/1/2024"],
+    },
+  ],
+  seminars: [
+    {
+      id: 1,
+      name: "Seminar Name",
+      venue: "Venue",
+      date: "20/12/2024",
+      seats: 50,
+    },
+    {
+      id: 2,
+      name: "Seminar Name",
+      venue: "Venue",
+      date: "20/12/2024",
+      seats: 50,
+    },
+  ],
 };
