@@ -12,8 +12,9 @@ Ensure you have a `.env` file in the root directory. Check the example provided 
 ### Setting Up the Project
 
 1. **Install dependencies:**
-   - First, navigate to the **frontend** and **backend** folders and run `npm install` in both:
+   - First, navigate to the **root**, **frontend** and **backend** folders and run `npm install` in both:
      ```bash
+     npm install
      cd frontend
      npm install
      cd ../backend
