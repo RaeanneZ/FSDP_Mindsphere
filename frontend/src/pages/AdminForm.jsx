@@ -18,6 +18,7 @@ import SurveyDashboardSection from "../components/SurveyDashboardSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BarLineChart from "../components/BarLineChart";
+import AdminMonthDropdown from "../components/AdminMonthDropdown";
 
 const AdminForm = () => {
   const [selectedCategory, setSelectedCategory] = React.useState(null);
@@ -61,10 +62,7 @@ const AdminForm = () => {
 
         {/* Date Filter */}
         <div className="flex self-end items-center space-x-2">
-          <u>
-            <span className="text-lg font-medium mr-4">Sept - Dec 2024</span>
-            <FontAwesomeIcon icon={faChevronDown} />
-          </u>
+          <AdminMonthDropdown />
         </div>
 
         {/* Top Section: Programme Cards */}
