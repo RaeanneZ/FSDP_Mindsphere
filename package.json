@@ -2,7 +2,7 @@
   "name": "fsdp-mindsphere",
   "version": "1.0.0",
   "scripts": {
-    "backend": "nodemon backend/server.js",
+    "backend": "nodemon --config backend/nodemon.json backend/server.js",
     "frontend": "npm run dev --prefix frontend",
     "log": "echo 'Frontend is running at http://localhost:5173' && echo 'Backend is running at http://localhost:5000'",
     "servers": "concurrently --kill-others --handle-sigint -r \"npm run backend\" \"npm run frontend\"",
