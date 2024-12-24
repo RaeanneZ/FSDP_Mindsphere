@@ -3,6 +3,7 @@ const express = require("express");
 const dbConfig = require("./dbConfig");
 require("dotenv").config();
 const sql = require("mssql");
+const fs = require('fs');
 const path = require("path");
 const chalk = require("chalk");
 const { initializeReminderSystem } = require("./models/reminderEmailModel");
@@ -31,6 +32,15 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
+const swaggerPath = path.join(__dirname, 'swagger.json');
+// Asynchronously write the generated Swagger spec to the file, overwriting it
+fs.writeFile(swaggerPath, JSON.stringify(swaggerSpec, null, 2), (err) => {
+    if (err) {
+        console.error('Error writing swagger.json:', err);
+    } else {
+        console.log('Swagger spec saved as swagger.json');
+    }
+});
 
 
 

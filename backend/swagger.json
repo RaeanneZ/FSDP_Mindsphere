@@ -1,0 +1,226 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Minsdsphere backend API Documentation",
+    "version": "1.0.0",
+    "description": "API for Mindsphere backend website"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "paths": {
+    "/api/schedules": {
+      "get": {
+        "summary": "Get all schedules",
+        "tags": [
+          "Schedules"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of all schedules"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new schedule",
+        "tags": [
+          "Schedules"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "SchedID": {
+                    "type": "integer",
+                    "description": "The unique schedule ID (used for duplicate check)."
+                  },
+                  "ProgID": {
+                    "type": "integer",
+                    "description": "The ID of the associated programme."
+                  },
+                  "DateStart": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "The start date of the schedule in ISO format (YYYY-MM-DD)."
+                  },
+                  "DateEnd": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "The end date of the schedule in ISO format (YYYY-MM-DD)."
+                  },
+                  "Venue": {
+                    "type": "string",
+                    "description": "The venue where the schedule will take place."
+                  },
+                  "TotalSeats": {
+                    "type": "integer",
+                    "description": "The total number of seats available for the schedule."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Schedule added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "The ID of the newly created schedule."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request, usually due to missing or invalid parameters."
+          },
+          "409": {
+            "description": "Conflict, duplicate `SchedID` exists."
+          },
+          "500": {
+            "description": "Internal Server Error, could be caused by a database issue or unexpected errors."
+          }
+        }
+      }
+    },
+    "/api/schedules/{schedID}": {
+      "get": {
+        "summary": "Get remaining slots for a schedule",
+        "tags": [
+          "Schedules"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "schedID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the schedule"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The number of remaining slots"
+          },
+          "404": {
+            "description": "Schedule not found"
+          }
+        }
+      }
+    },
+    "/api/survey/newSurvey": {
+      "post": {
+        "summary": "Add a new survey",
+        "tags": [
+          "Survey"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The email address of the user submitting the survey."
+                  },
+                  "howHear": {
+                    "type": "string",
+                    "description": "How the user heard about the service or website."
+                  },
+                  "expRating": {
+                    "type": "integer",
+                    "description": "The user’s experience rating (an integer between 1 and 10)."
+                  },
+                  "feedbackText": {
+                    "type": "string",
+                    "description": "The user’s feedback text, which cannot exceed 1000 characters."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Survey added successfully and PDF generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Success message indicating the survey was added."
+                    },
+                    "Survey": {
+                      "type": "object",
+                      "properties": {
+                        "surveyID": {
+                          "type": "integer",
+                          "description": "The unique ID of the survey."
+                        },
+                        "email": {
+                          "type": "string",
+                          "description": "The email address of the user who submitted the survey."
+                        },
+                        "howHear": {
+                          "type": "string",
+                          "description": "How the user heard about the service or website."
+                        },
+                        "expRating": {
+                          "type": "integer",
+                          "description": "The user’s experience rating (an integer between 1 and 10)."
+                        },
+                        "feedbackText": {
+                          "type": "string",
+                          "description": "The user’s feedback text."
+                        }
+                      }
+                    },
+                    "pdfPath": {
+                      "type": "string",
+                      "description": "The file path of the generated PDF for the survey."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, one or more fields are incorrect."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": [
+    {
+      "name": "Schedules",
+      "description": "API for managing schedules"
+    },
+    {
+      "name": "Survey",
+      "description": "API for managing surveys"
+    }
+  ]
+}
