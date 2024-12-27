@@ -5,6 +5,10 @@ require("dotenv").config();
 const sql = require("mssql");
 const path = require("path");
 const chalk = require("chalk");
+const LinkedInStrategy = require("passport-linkedin-oauth2").Strategy;
+const session = require("express-session");
+const passport = require("passport");
+
 const { initializeReminderSystem } = require("./models/reminderEmailModel");
 
 // CORS CONFIG
@@ -50,6 +54,63 @@ async function connectToDatabase() {
         process.exit(1);
     }
 }
+
+// SESSION MANAGEMENT
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+    })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+// PASSPORT LINKEDIN STRATEGY
+passport.use(
+    new LinkedInStrategy(
+        {
+            clientID: process.env.LINKEDIN_CLIENT_ID,
+            clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+            callbackURL: process.env.LINKEDIN_CALLBACK_URL,
+            scope: ["r_liteprofile", "r_emailaddress"],
+        },
+        (accessToken, refreshToken, profile, done) => {
+            const user = {
+                linkedinId: profile.id,
+                email: profile.emails[0].value,
+                name: profile.displayName,
+            };
+            return done(null, user);
+        }
+    )
+);
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
+
+// LINKEDIN AUTH ROUTES
+app.get(
+    "/auth/linkedin",
+    passport.authenticate("linkedin", {
+        scope: ["r_liteprofile", "r_emailaddress"],
+    })
+);
+
+app.get(
+    "/auth/linkedin/callback",
+    passport.authenticate("linkedin", {
+        failureRedirect: "/login",
+        session: false,
+    }),
+    (req, res) => {
+        // Successful login, send user data
+        res.status(200).json({
+            message: "LinkedIn login successful!",
+            user: req.user,
+        });
+    }
+);
 
 // ROUTES
 app.get("/", async (req, res) => {
