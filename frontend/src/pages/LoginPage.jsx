@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import backendService from "../utils/backendService";
+import linkedinService from "../utils/linkedinService"; // Temporary backend
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { LinkedIn } from "react-linkedin-login-oauth2";
@@ -10,6 +11,8 @@ import { LinkedIn } from "react-linkedin-login-oauth2";
 const LoginPage = () => {
   // ENV
   const LINKEDIN_CLIENTID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
+  const LINKEDIN_REDIRECT_URL = import.meta.env.VITE_LINKEDIN_CALLBACK_URL;
+
   // For Backend
   const { accountService } = backendService;
 
@@ -111,7 +114,7 @@ const LoginPage = () => {
               clientId={LINKEDIN_CLIENTID}
               onFailure={handleLinkedInFailure}
               onSuccess={(code) => handleLinkedInSuccess(code)}
-              redirectUri="http://localhost:3000/linkedin"
+              redirectUri={LINKEDIN_REDIRECT_URL}
             >
               <button className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
                 Login with LinkedIn
