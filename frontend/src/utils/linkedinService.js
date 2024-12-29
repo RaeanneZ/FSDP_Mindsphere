@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const clientId = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
-const clientSecret = import.meta.env.VITE_LINKEDIN_CLIENT_SECRET;
-const redirectUri = import.meta.env.VITE_LINKEDIN_CALLBACK_URL;
+const clientId = import.meta.VITE_LINKEDIN_CLIENT_ID;
+const clientSecret = import.meta.VITE_LINKEDIN_CLIENT_SECRET;
+const redirectUri = import.meta.VITE_LINKEDIN_CALLBACK_URL;
 
 const linkedinService = {
   getAccessToken: async (code) => {

@@ -11,7 +11,9 @@ import { LinkedIn } from "react-linkedin-login-oauth2";
 const LoginPage = () => {
   // ENV
   const LINKEDIN_CLIENTID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
+  console.log("The client id is: ", LINKEDIN_CLIENTID);
   const LINKEDIN_REDIRECT_URL = import.meta.env.VITE_LINKEDIN_CALLBACK_URL;
+  console.log("The client redirect url is: ", LINKEDIN_REDIRECT_URL);
 
   // For Backend
   const { accountService } = backendService;
@@ -67,6 +69,17 @@ const LoginPage = () => {
     setError("LinkedIn login failed. Please try again.");
   };
 
+  const handleLinkedInLogin = () => {
+    const params = new URLSearchParams({
+      response_type: "code",
+      client_id: LINKEDIN_CLIENTID,
+      redirect_uri: LINKEDIN_REDIRECT_URL,
+      scope: "openid email profile",
+    });
+
+    window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`;
+  };
+
   return (
     <>
       <Navbar />
@@ -110,16 +123,19 @@ const LoginPage = () => {
           {/* Linkedin Login */}
           <div className="flex flex-col items-center mt-6">
             <p className="text-gray-600 mb-2">Or login with:</p>
-            <LinkedIn
+            {/* <LinkedIn
               clientId={LINKEDIN_CLIENTID}
               onFailure={handleLinkedInFailure}
               onSuccess={(code) => handleLinkedInSuccess(code)}
               redirectUri={LINKEDIN_REDIRECT_URL}
+            > */}
+            <button
+              onClick={handleLinkedInLogin}
+              className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
             >
-              <button className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-                Login with LinkedIn
-              </button>
-            </LinkedIn>
+              Login with LinkedIn
+            </button>
+            {/* </LinkedIn> */}
             {/* End of Linkedin Login */}
           </div>
         </div>
