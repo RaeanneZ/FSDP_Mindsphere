@@ -5,8 +5,11 @@ import { useAuth } from "../contexts/AuthContext";
 import backendService from "../utils/backendService";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { LinkedIn } from "react-linkedin-login-oauth2";
 
 const LoginPage = () => {
+  // ENV
+  const LINKEDIN_CLIENTID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
   // For Backend
   const { accountService } = backendService;
 
@@ -42,6 +45,23 @@ const LoginPage = () => {
       console.error("Login error:", error);
       setError("An error occurred while logging in. Please try again.");
     }
+  };
+
+  // For linkedin
+  const handleLinkedInSuccess = async (code) => {
+    try {
+      const accessToken = await linkedinService.getAccessToken(code);
+      const userData = await linkedinService.getUserData(accessToken);
+      console.log("LinkedIn User Data:", userData);
+    } catch (error) {
+      console.error("LinkedIn Login Error:", error);
+      setError("Failed to login with LinkedIn. Please try again.");
+    }
+  };
+
+  const handleLinkedInFailure = (error) => {
+    console.error("LinkedIn Login Failed:", error);
+    setError("LinkedIn login failed. Please try again.");
   };
 
   return (
@@ -83,6 +103,22 @@ const LoginPage = () => {
               </a>
             </p>
           </form>
+
+          {/* Linkedin Login */}
+          <div className="flex flex-col items-center mt-6">
+            <p className="text-gray-600 mb-2">Or login with:</p>
+            <LinkedIn
+              clientId={LINKEDIN_CLIENTID}
+              onFailure={handleLinkedInFailure}
+              onSuccess={(code) => handleLinkedInSuccess(code)}
+              redirectUri="http://localhost:3000/linkedin"
+            >
+              <button className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                Login with LinkedIn
+              </button>
+            </LinkedIn>
+            {/* End of Linkedin Login */}
+          </div>
         </div>
       </div>
       <Footer />
