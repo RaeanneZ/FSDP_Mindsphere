@@ -53,21 +53,21 @@ const LoginPage = () => {
   };
 
   // For linkedin
-  const handleLinkedInSuccess = async (code) => {
-    try {
-      const accessToken = await linkedinService.getAccessToken(code);
-      const userData = await linkedinService.getUserData(accessToken);
-      console.log("LinkedIn User Data:", userData);
-    } catch (error) {
-      console.error("LinkedIn Login Error:", error);
-      setError("Failed to login with LinkedIn. Please try again.");
-    }
-  };
+  // const handleLinkedInSuccess = async (code) => {
+  //   try {
+  //     const accessToken = await linkedinService.getAccessToken(code);
+  //     const userData = await linkedinService.getUserData(accessToken);
+  //     console.log("LinkedIn User Data:", userData);
+  //   } catch (error) {
+  //     console.error("LinkedIn Login Error:", error);
+  //     setError("Failed to login with LinkedIn. Please try again.");
+  //   }
+  // };
 
-  const handleLinkedInFailure = (error) => {
-    console.error("LinkedIn Login Failed:", error);
-    setError("LinkedIn login failed. Please try again.");
-  };
+  // const handleLinkedInFailure = (error) => {
+  //   console.error("LinkedIn Login Failed:", error);
+  //   setError("LinkedIn login failed. Please try again.");
+  // };
 
   const handleLinkedInLogin = () => {
     const params = new URLSearchParams({
