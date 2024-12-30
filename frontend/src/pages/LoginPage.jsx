@@ -10,9 +10,10 @@ import { LinkedIn } from "react-linkedin-login-oauth2";
 
 const LoginPage = () => {
   // ENV
-  const LINKEDIN_CLIENTID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
+  console.log(import.meta.env);
+  const LINKEDIN_CLIENTID = "86ht58ahsszrl1";
   console.log("The client id is: ", LINKEDIN_CLIENTID);
-  const LINKEDIN_REDIRECT_URL = import.meta.env.VITE_LINKEDIN_CALLBACK_URL;
+  const LINKEDIN_REDIRECT_URL = "http://localhost:5000/auth/linkedin/callback";
   console.log("The client redirect url is: ", LINKEDIN_REDIRECT_URL);
 
   // For Backend
