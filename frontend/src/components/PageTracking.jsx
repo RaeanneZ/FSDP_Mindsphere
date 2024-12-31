@@ -10,7 +10,7 @@ const PageTracking = () => {
     // Set a new timer for 2 minutes
     const timer = setTimeout(() => {
       console.log("2 minutes is up! Current page:", location.pathname);
-    }, 500); // 2 minutes in milliseconds
+    }, 2 * 60 * 1000); // 2 minutes in milliseconds
 
     // Cleanup the timer on unmount or route change
     return () => {

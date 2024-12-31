@@ -25,7 +25,7 @@ import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ErrorPage from "./pages/errorPage.jsx";
-import AdminPanel from "./pages/AdminPanel.jsx";
+import Layout from "./components/Layout.jsx";
 
 // Import CSS
 import "../public/css/index.css";
@@ -37,105 +37,135 @@ import PageTracking from "./components/PageTracking.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LandingPage />,
+    element: <Layout />, // Use Layout as the main component
     errorElement: <ErrorPage />,
+    children: [
+      { path: "", element: <LandingPage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SignupPage /> },
+      { path: "personalisation", element: <PersonalisationCoverPage /> },
+      { path: "accountSetup", element: <AccountManagementPage /> },
+      { path: "childPageContainer", element: <ChildrenPageContainer /> },
+      { path: "accountSetup/childSection", element: <ChildrenInfoHeader /> },
+      { path: "accountSetup/childName", element: <ChildrenNamePage /> },
+      { path: "accountSetup/childFav", element: <ChildrenFavPage /> },
+      { path: "accountSetup/childAmbition", element: <ChildrenAmbition /> },
+      { path: "welcome", element: <CompleteSignupMsgPage /> },
+      { path: "products", element: <ProductPage /> },
+      { path: "businessEnquiry", element: <BusinessForm /> },
+      { path: "review", element: <ReviewPage /> },
+      { path: "payment", element: <PaymentPage /> },
+      { path: "accountmanagement", element: <AccountDashboardPage /> },
+      { path: "survey", element: <SurveyPage /> },
+      { path: "about", element: <AboutPage /> },
+      { path: "admin", element: <AdminForm /> },
+      // Add other routes here...
+    ],
   },
-  {
-    path: "/login",
-    element: <LoginPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/signup",
-    element: <SignupPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/personalisation",
-    element: <PersonalisationCoverPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/accountSetup",
-    element: <AccountManagementPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/childPageContainer",
-    element: <ChildrenPageContainer />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/accountSetup/childSection",
-    element: <ChildrenInfoHeader />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/accountSetup/childName",
-    element: <ChildrenNamePage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/accountSetup/childFav",
-    element: <ChildrenFavPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/accountSetup/childAmbition",
-    element: <ChildrenAmbition />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/welcome",
-    element: <CompleteSignupMsgPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/products",
-    element: <ProductPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/businessEnquiry",
-    element: <BusinessForm />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/review",
-    element: <ReviewPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/payment",
-    element: <PaymentPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/accountmanagement",
-    element: <AccountDashboardPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/survey",
-    element: <SurveyPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/about",
-    element: <AboutPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/admin",
-    element: <AdminForm />,
-    errorElement: <ErrorPage />,
-  },
-  // {
-  //   path: "/adminPanel",
-  //   element: <AdminPanel />,
-  //   errorElement: <ErrorPage />,
-  // },
 ]);
+
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <LandingPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/login",
+//     element: <LoginPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/signup",
+//     element: <SignupPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/personalisation",
+//     element: <PersonalisationCoverPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/accountSetup",
+//     element: <AccountManagementPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/childPageContainer",
+//     element: <ChildrenPageContainer />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/accountSetup/childSection",
+//     element: <ChildrenInfoHeader />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/accountSetup/childName",
+//     element: <ChildrenNamePage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/accountSetup/childFav",
+//     element: <ChildrenFavPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/accountSetup/childAmbition",
+//     element: <ChildrenAmbition />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/welcome",
+//     element: <CompleteSignupMsgPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/products",
+//     element: <ProductPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/businessEnquiry",
+//     element: <BusinessForm />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/review",
+//     element: <ReviewPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/payment",
+//     element: <PaymentPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/accountmanagement",
+//     element: <AccountDashboardPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/survey",
+//     element: <SurveyPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/about",
+//     element: <AboutPage />,
+//     errorElement: <ErrorPage />,
+//   },
+//   {
+//     path: "/admin",
+//     element: <AdminForm />,
+//     errorElement: <ErrorPage />,
+//   },
+//   // {
+//   //   path: "/adminPanel",
+//   //   element: <AdminPanel />,
+//   //   errorElement: <ErrorPage />,
+//   // },
+// ]);
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
