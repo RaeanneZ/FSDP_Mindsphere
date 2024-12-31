@@ -41,26 +41,86 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "", element: <LandingPage /> },
-      { path: "login", element: <LoginPage /> },
-      { path: "signup", element: <SignupPage /> },
-      { path: "personalisation", element: <PersonalisationCoverPage /> },
-      { path: "accountSetup", element: <AccountManagementPage /> },
-      { path: "childPageContainer", element: <ChildrenPageContainer /> },
-      { path: "accountSetup/childSection", element: <ChildrenInfoHeader /> },
-      { path: "accountSetup/childName", element: <ChildrenNamePage /> },
-      { path: "accountSetup/childFav", element: <ChildrenFavPage /> },
-      { path: "accountSetup/childAmbition", element: <ChildrenAmbition /> },
-      { path: "welcome", element: <CompleteSignupMsgPage /> },
       { path: "products", element: <ProductPage /> },
       { path: "businessEnquiry", element: <BusinessForm /> },
-      { path: "review", element: <ReviewPage /> },
-      { path: "payment", element: <PaymentPage /> },
-      { path: "accountmanagement", element: <AccountDashboardPage /> },
-      { path: "survey", element: <SurveyPage /> },
       { path: "about", element: <AboutPage /> },
-      { path: "admin", element: <AdminForm /> },
-      // Add other routes here...
+      // Add other routes
     ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignupPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/personalisation",
+    element: <PersonalisationCoverPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/accountSetup",
+    element: <AccountManagementPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/childPageContainer",
+    element: <ChildrenPageContainer />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/accountSetup/childSection",
+    element: <ChildrenInfoHeader />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/accountSetup/childName",
+    element: <ChildrenNamePage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/accountSetup/childFav",
+    element: <ChildrenFavPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/accountSetup/childAmbition",
+    element: <ChildrenAmbition />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/welcome",
+    element: <CompleteSignupMsgPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/review",
+    element: <ReviewPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/payment",
+    element: <PaymentPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/accountmanagement",
+    element: <AccountDashboardPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/survey",
+    element: <SurveyPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/admin",
+    element: <AdminForm />,
+    errorElement: <ErrorPage />,
   },
 ]);
 
