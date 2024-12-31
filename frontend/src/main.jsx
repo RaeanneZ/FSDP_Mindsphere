@@ -1,5 +1,4 @@
 // main.jsx
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -31,6 +30,9 @@ import AdminPanel from "./pages/AdminPanel.jsx";
 // Import CSS
 import "../public/css/index.css";
 import AdminForm from "./pages/AdminForm.jsx";
+
+// Import PageTrackingComponent
+import PageTracking from "./components/PageTracking.jsx";
 
 const router = createBrowserRouter([
   {
@@ -139,6 +141,8 @@ createRoot(document.getElementById("root")).render(
   <AuthProvider>
     {" "}
     {/* Wrap RouterProvider with AuthProvider */}
-    <RouterProvider router={router} />
+    <RouterProvider router={router}>
+      <PageTracking />
+    </RouterProvider>
   </AuthProvider>
 );
