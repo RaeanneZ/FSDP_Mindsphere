@@ -7,6 +7,7 @@ import ChildAccordion from "../components/ChildAccordion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import backendService from "../utils/backendService";
+import { Autocomplete } from "@react-google-maps/api"; // Import Autocomplete
 
 const AccountManagementPage = () => {
   // For Backend
@@ -16,6 +17,7 @@ const AccountManagementPage = () => {
   const navigate = useNavigate(); // Create history object
   const [errors, setErrors] = React.useState({}); // State for error messages
   const [children, setChildren] = React.useState([1]);
+  const [autocomplete, setAutocomplete] = React.useState(null); // State for Autocomplete
 
   // This is for parent form
   const [formData, setFormData] = React.useState({
@@ -36,6 +38,11 @@ const AccountManagementPage = () => {
       ...formData,
       [name]: value,
     });
+  };
+
+  // Function to handle place selection
+  const onPlaceSelected = (place) => {
+    setFormData({ ...formData, address: place.formatted_address });
   };
 
   const validateForm = () => {
@@ -200,15 +207,26 @@ const AccountManagementPage = () => {
               </select>
             </div>
 
-            <input
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={formData.address}
-              onChange={handleChange}
-              className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
-              required
-            />
+            {/* Google Maps Place Autocomplete */}
+            <Autocomplete
+              onLoad={(autocomplete) => setAutocomplete(autocomplete)}
+              onPlaceChanged={() => {
+                if (autocomplete) {
+                  const place = autocomplete.getPlace();
+                  onPlaceSelected(place);
+                }
+              }}
+            >
+              <input
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={formData.address}
+                onChange={handleChange}
+                className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+                required
+              />
+            </Autocomplete>
           </div>
           {/* End of Parent Input */}
 
