@@ -24,7 +24,6 @@ const AccountManagementPage = () => {
     address: "",
   });
   const autocompleteRef = useRef(null);
-  //const [autocomplete, setAutocomplete] = React.useState(null); // State for Autocomplete
 
   // Load Google Maps script dynamically
   useEffect(() => {
@@ -80,11 +79,6 @@ const AccountManagementPage = () => {
     const updatedData = { ...formData, dob: localDateStr }; // Update only the dob field
     setFormData(updatedData); // Update the state
   };
-
-  // Function to handle place selection
-  // const onPlaceSelected = (place) => {
-  //   setFormData({ ...formData, address: place.formatted_address });
-  // };
 
   const validateForm = () => {
     const newErrors = {};
