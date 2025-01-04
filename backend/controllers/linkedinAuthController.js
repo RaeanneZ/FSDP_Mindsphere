@@ -1,27 +1,33 @@
-const passport = require("passport");
+const {
+    addOrUpdateAccount,
+    findAccountByLinkedInId,
+} = require("../models/accountModel");
 
-// LinkedIn Login
-const linkedInLogin = passport.authenticate("linkedin", {
-    scope: ["r_liteprofile", "r_emailaddress"],
-});
+const handleLinkedInCallback = async (req, res) => {
+    try {
+        const { id: linkedinId, displayName: name, emails } = req.user;
+        const accessToken = req.authInfo.accessToken;
 
-// LinkedIn Callback
-const linkedInCallback = passport.authenticate("linkedin", {
-    failureRedirect: "/login",
-    session: false,
-});
+        // Add or update the account
+        await addOrUpdateAccount(
+            linkedinId,
+            name,
+            emails[0].value,
+            accessToken
+        );
 
-// Success Handler
-const loginSuccess = (req, res) => {
-    const user = req.user;
-    res.status(200).json({
-        message: "Login successful!",
-        user,
-    });
+        res.status(200).json({
+            message: "LinkedIn login successful!",
+            user: {
+                linkedinId,
+                name,
+                email: emails[0].value,
+            },
+        });
+    } catch (error) {
+        console.error("Error in LinkedIn callback:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 };
 
-module.exports = {
-    linkedInLogin,
-    linkedInCallback,
-    loginSuccess,
-};
+module.exports = { handleLinkedInCallback };

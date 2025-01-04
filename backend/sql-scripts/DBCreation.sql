@@ -88,9 +88,11 @@ CREATE TABLE Account (
 	RoleID int null default 2,
 	Salt varchar(255) not null,
 	HashedPassword varchar(255) not null,
+	LinkedInID varchar(255) NULL,
+    LinkedInAccessToken varchar(255) NULL,
 	constraint PK_Account primary key (AccID),
 	constraint FK_Account_RoleID foreign key (RoleID) references Roles(RoleID),
-	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))
+	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending')),
 )
 GO
 

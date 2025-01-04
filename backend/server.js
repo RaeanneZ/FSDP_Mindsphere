@@ -103,14 +103,135 @@ app.get(
         failureRedirect: "/login",
         session: false,
     }),
-    (req, res) => {
-        // Successful login, send user data
-        res.status(200).json({
-            message: "LinkedIn login successful!",
-            user: req.user,
-        });
+    async (req, res) => {
+        const { id, displayName, emails } = req.user;
+        const accessToken = req.authInfo.accessToken;
+
+        try {
+            // Extract user info from LinkedIn
+            const linkedInId = id;
+            const email = emails[0]?.value; // Email is required to uniquely identify user
+            const name = displayName;
+
+            // Insert or update user in the database
+            const query = `
+                IF EXISTS (SELECT 1 FROM Users WHERE Email = @Email)
+                BEGIN
+                    UPDATE Users
+                    SET LinkedInID = @LinkedInID,
+                        LinkedInAccessToken = @AccessToken,
+                        Name = @Name
+                    WHERE Email = @Email
+                END
+                ELSE
+                BEGIN
+                    INSERT INTO Users (Email, LinkedInID, LinkedInAccessToken, Name)
+                    VALUES (@Email, @LinkedInID, @AccessToken, @Name)
+                END
+            `;
+
+            const pool = await sql.connect(dbConfig);
+            await pool
+                .request()
+                .input("Email", sql.VarChar, email)
+                .input("LinkedInID", sql.VarChar, linkedInId)
+                .input("AccessToken", sql.VarChar, accessToken)
+                .input("Name", sql.VarChar, name)
+                .query(query);
+
+            console.log("User data stored/updated in database");
+
+            res.status(200).json({
+                message: "LinkedIn login successful!",
+                user: { email, name, linkedInId },
+            });
+        } catch (error) {
+            console.error("Error storing user data:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
     }
 );
+
+app.post("/auth/linkedin/callback", async (req, res) => {
+    try {
+        const { id, displayName, emails, accessToken } = req.body;
+
+        if (!id || !emails || emails.length === 0 || !accessToken) {
+            return res.status(400).json({ error: "Invalid LinkedIn data" });
+        }
+
+        // Simulate retrieving or creating an account
+        const email = emails[0];
+        const name = displayName;
+
+        const pool = await sql.connect(dbConfig);
+
+        // Check if the account already exists by email
+        const existingAccount = await pool
+            .request()
+            .input("Email", sql.VarChar, email)
+            .query("SELECT * FROM Account WHERE Email = @Email");
+
+        if (existingAccount.recordset.length > 0) {
+            // Update the existing account with LinkedIn ID and access token
+            await pool
+                .request()
+                .input("Email", sql.VarChar, email)
+                .input("LinkedInID", sql.VarChar, id)
+                .input("LinkedInAccessToken", sql.VarChar, accessToken)
+                .query(
+                    "UPDATE Account SET LinkedInID = @LinkedInID, LinkedInAccessToken = @LinkedInAccessToken WHERE Email = @Email"
+                );
+        } else {
+            // Create a new account with LinkedIn data
+            await pool
+                .request()
+                .input("Name", sql.VarChar, name)
+                .input("Email", sql.VarChar, email)
+                .input("LinkedInID", sql.VarChar, id)
+                .input("LinkedInAccessToken", sql.VarChar, accessToken)
+                .query(
+                    `INSERT INTO Account (Name, Email, LinkedInID, LinkedInAccessToken, Salt, HashedPassword) 
+                    VALUES (@Name, @Email, @LinkedInID, @LinkedInAccessToken, '', '')`
+                );
+        }
+
+        res.status(200).json({
+            message: "LinkedIn login simulated successfully!",
+            user: { linkedinId: id, name, email },
+        });
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+app.get("/accounts/linkedin/:LinkedInID", async (req, res) => {
+    try {
+        const { LinkedInID } = req.params;
+
+        if (!LinkedInID) {
+            return res.status(400).json({ error: "LinkedInID is required" });
+        }
+
+        const pool = await sql.connect(dbConfig);
+
+        // Query the database for the account with the LinkedIn ID
+        const result = await pool
+            .request()
+            .input("LinkedInID", sql.VarChar, LinkedInID)
+            .query("SELECT * FROM Account WHERE LinkedInID = @LinkedInID");
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ error: "Account not found" });
+        }
+
+        res.status(200).json(result.recordset[0]);
+    } catch (err) {
+        console.error("Error retrieving account:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 // ROUTES
 app.get("/", async (req, res) => {
