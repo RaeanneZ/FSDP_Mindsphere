@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 import { location, time, slots } from "../utils";
 import backendService from "../utils/backendService";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"; // Import Google Maps components
+import Modal from "react-modal"; // Import a modal library
 
 const EventDetail = ({ event }) => {
   // DB Method to grab remaining slots via ScheduleID
   const { progScheduleService } = backendService;
   const [remainingSlots, setRemainingSlots] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [mapLocation, setMapLocation] = useState({ lat: 0, lng: 0 }); // State for map location
+  const [loading, setLoading] = useState(false); // State for loading
+  const [googleApiLoaded, setGoogleApiLoaded] = useState(false);
+
+  //API KEY
+  const googleCloud_Key = import.meta.env.VITE_GOOGLECLOUD_APIKEY;
 
   const getRemainingSlots = async () => {
     try {
@@ -25,7 +34,34 @@ const EventDetail = ({ event }) => {
     }
   }, [event]);
 
-  // Method to seperate DateStart and DateEnd via event.StartDate and event.endDate
+  const handleGoogleApiLoad = () => {
+    setGoogleApiLoaded(true);
+  };
+
+  // Function to open the modal and set the map location
+  const handleLocationClick = async () => {
+    if (!googleApiLoaded) {
+      console.error("Google Maps API is not loaded yet.");
+      return;
+    }
+
+    setLoading(true); // Set loading to true
+
+    const geocoder = new window.google.maps.Geocoder(); // Create a new Geocoder instance
+    // Geocode the location name
+    geocoder.geocode({ address: event.Venue }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        const location = results[0].geometry.location;
+        setMapLocation({ lat: location.lat(), lng: location.lng() }); // Set the map location
+        setIsModalOpen(true); // Open the modal
+      } else {
+        console.error(
+          "Geocode was not successful for the following reason: " + status
+        );
+      }
+      setLoading(false); // Set loading to false
+    });
+  };
 
   // Rendering display
   if (!event) return <p>Select an event date to see details</p>;
@@ -38,7 +74,12 @@ const EventDetail = ({ event }) => {
       </h2>
       <div className="flex items-center gap-2 mb-2">
         <img src={location} alt="Location icon" className="w-5 h-5" />
-        <p>{event.Venue}</p>
+        <p
+          onClick={handleLocationClick}
+          className="cursor-pointer text-blue-500"
+        >
+          {event.Venue}
+        </p>
       </div>
       <div className="flex items-center gap-2 mb-2">
         <img src={time} alt="Time icon" className="w-5 h-5" />
@@ -50,6 +91,33 @@ const EventDetail = ({ event }) => {
         {/* Wait for db method */}
         <p>{remainingSlots} slots remaining</p>
       </div>
+
+      {/* Modal for Google Map */}
+      <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
+        <h2 className="text-lg font-bold">Location</h2>
+        {loading ? (
+          <p>Loading map...</p>
+        ) : (
+          <GoogleMap
+            mapContainerStyle={{ height: "400px", width: "100%" }}
+            center={mapLocation}
+            zoom={15}
+          >
+            <Marker position={mapLocation} />
+          </GoogleMap>
+        )}
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="mt-4 bg-red-500 text-white p-2 rounded"
+        >
+          Close
+        </button>
+      </Modal>
+
+      <LoadScript
+        googleMapsApiKey={googleCloud_Key}
+        onLoad={handleGoogleApiLoad}
+      />
     </div>
   );
 };

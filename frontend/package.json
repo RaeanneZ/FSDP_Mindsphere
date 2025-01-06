@@ -25,6 +25,7 @@
     "react-circular-slider-svg": "^0.3.0",
     "react-dom": "^18.3.1",
     "react-flatpickr": "^3.10.13",
+    "react-modal": "^3.16.3",
     "react-router-dom": "^6.27.0",
     "recharts": "^2.13.3"
   },
