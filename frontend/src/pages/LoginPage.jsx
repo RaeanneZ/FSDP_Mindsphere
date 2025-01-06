@@ -53,32 +53,40 @@ const LoginPage = () => {
     }
   };
 
-  // For linkedin
-  // const handleLinkedInSuccess = async (code) => {
-  //   try {
-  //     const accessToken = await linkedinService.getAccessToken(code);
-  //     const userData = await linkedinService.getUserData(accessToken);
-  //     console.log("LinkedIn User Data:", userData);
-  //   } catch (error) {
-  //     console.error("LinkedIn Login Error:", error);
-  //     setError("Failed to login with LinkedIn. Please try again.");
-  //   }
-  // };
-
-  // const handleLinkedInFailure = (error) => {
-  //   console.error("LinkedIn Login Failed:", error);
-  //   setError("LinkedIn login failed. Please try again.");
-  // };
-
   const handleLinkedInLogin = () => {
     const params = new URLSearchParams({
       response_type: "code",
       client_id: LINKEDIN_CLIENTID,
       redirect_uri: LINKEDIN_REDIRECT_URL,
-      scope: "openid email profile",
+      scope: "openid profile email",
     });
 
     window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`;
+  };
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    if (code) {
+      handleLinkedInCallback(code);
+    }
+  }, []);
+
+  const handleLinkedInCallback = async (code) => {
+    try {
+      const accessToken = await linkedinService.getAccessToken(code);
+
+      const userData = await linkedinService.getUserData(accessToken);
+      console.log("LinkedIn User Data:", userData);
+
+      // Optionally, log in the user or store session data
+      sessionStorage.setItem("AccountEmail", userData.email);
+      navigate("/"); // Redirect to homepage
+    } catch (error) {
+      console.error("LinkedIn login error:", error);
+      setError("Failed to log in with LinkedIn.");
+    }
   };
 
   return (
