@@ -4,10 +4,9 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig(({ mode }) => {
   // Load environment variables based on the mode (e.g., 'development', 'production').
-  console.log("VITE MODE IS: ", mode);
   const env = loadEnv(mode, process.cwd(), ""); // Load all .env variables
   const isLocalhost = process.env.NODE_ENV === "development";
-  console.log("ENV currently contains: ", env);
+
   return {
     plugins: [react()],
     server: {
