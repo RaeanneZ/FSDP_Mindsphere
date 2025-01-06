@@ -12,9 +12,7 @@ const LoginPage = () => {
   // ENV
   console.log(import.meta.env);
   const LINKEDIN_CLIENTID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
-  console.log("The client id is: ", LINKEDIN_CLIENTID);
   const LINKEDIN_REDIRECT_URL = import.meta.env.VITE_LINKEDIN_CALLBACK_URL;
-  console.log("The client redirect url is: ", LINKEDIN_REDIRECT_URL);
 
   // For Backend
   const { accountService } = backendService;
