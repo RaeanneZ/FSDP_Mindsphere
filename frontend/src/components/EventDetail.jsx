@@ -13,6 +13,9 @@ const EventDetail = ({ event }) => {
   const [loading, setLoading] = useState(false); // State for loading
   const [googleApiLoaded, setGoogleApiLoaded] = useState(false);
 
+  //API KEY
+  const googleCloud_Key = import.meta.env.VITE_GOOGLECLOUD_APIKEY;
+
   const getRemainingSlots = async () => {
     try {
       const remainingSlot = await progScheduleService.getRemainingSlots(
@@ -112,7 +115,7 @@ const EventDetail = ({ event }) => {
       </Modal>
 
       <LoadScript
-        googleMapsApiKey="AIzaSyBnKxMhlVWLJX_7gGbC99S_piNax12lM_g"
+        googleMapsApiKey={googleCloud_Key}
         onLoad={handleGoogleApiLoad}
       />
     </div>

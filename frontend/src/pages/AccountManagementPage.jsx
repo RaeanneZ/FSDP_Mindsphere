@@ -30,7 +30,9 @@ const AccountManagementPage = () => {
     const loadGoogleMapsScript = () => {
       if (!window.google) {
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBnKxMhlVWLJX_7gGbC99S_piNax12lM_g&libraries=places`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${
+          import.meta.env.VITE_GOOGLECLOUD_APIKEY
+        }&libraries=places`;
         script.async = true;
         script.defer = true;
         script.onload = () => initializeAutocomplete(); // Initialize Autocomplete on script load
