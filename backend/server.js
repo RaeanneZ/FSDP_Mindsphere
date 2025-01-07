@@ -6,6 +6,7 @@ const sql = require("mssql");
 const path = require("path");
 const chalk = require("chalk");
 const { initializeReminderSystem } = require("./models/reminderEmailModel");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // CORS CONFIG
 const cors = require("cors");
