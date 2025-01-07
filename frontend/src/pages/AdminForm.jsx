@@ -22,7 +22,7 @@ import AdminMonthDropdown from "../components/AdminMonthDropdown";
 import TrackerService from "../utils/trackerService"; // Import TrackerService
 
 const AdminForm = () => {
-  // For Tracking ----------------------------------------------------
+  // For Tracking ----------------------------------------------------------------------
   const [trackingData, setTrackingData] = React.useState({
     visitors: 0,
     programmeClicks: {},
@@ -42,8 +42,9 @@ const AdminForm = () => {
   React.useEffect(() => {
     fetchTrackingData(); // Fetch tracking data when the component mounts
   }, []);
-  // For Tracking ----------------------------------------------------
+  // For Tracking ----------------------------------------------------------------------
 
+  // For Chart Generation --------------------------------------------------------------
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [isDesktop, setIsDesktop] = React.useState(window.innerWidth >= 1440);
 
@@ -71,8 +72,8 @@ const AdminForm = () => {
       </div>
     );
   }
+  // For Chart Generation --------------------------------------------------------------
 
-  console.log("Current visitor count is: ", trackingData.visitors);
   return (
     <div className="w-full items-center">
       <Navbar />

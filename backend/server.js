@@ -119,6 +119,7 @@ PaymentEmailController.sendMembershipCodes;
 
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store
+// Every hour save to database
 let visitors = 0;
 const programmeClicks = {};
 
