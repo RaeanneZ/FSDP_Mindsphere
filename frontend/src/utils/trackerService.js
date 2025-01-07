@@ -20,8 +20,16 @@ const TrackerService = {
   },
 
   getStatistics: async () => {
-    const response = await fetch(`${API_BASE_URL}/track/statistics`);
-    return response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/track/statistics`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json(); // Parse JSON only if the response is valid
+    } catch (error) {
+      console.error("Error in getStatistics:", error.message);
+      return { visitors: 0, programmeClicks: {} }; // Return default values on error
+    }
   },
 };
 

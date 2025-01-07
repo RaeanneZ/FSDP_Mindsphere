@@ -19,8 +19,31 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BarLineChart from "../components/BarLineChart";
 import AdminMonthDropdown from "../components/AdminMonthDropdown";
+import TrackerService from "../utils/trackerService"; // Import TrackerService
 
 const AdminForm = () => {
+  // For Tracking ----------------------------------------------------
+  const [trackingData, setTrackingData] = React.useState({
+    visitors: 0,
+    programmeClicks: {},
+  });
+
+  // Fetch tracking data from backend
+  const fetchTrackingData = async () => {
+    try {
+      const data = await TrackerService.getStatistics();
+      console.log("Backend Response:", data); // Debug: Log the response
+      setTrackingData(data);
+    } catch (error) {
+      console.error("Error fetching tracking data:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchTrackingData(); // Fetch tracking data when the component mounts
+  }, []);
+  // For Tracking ----------------------------------------------------
+
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [isDesktop, setIsDesktop] = React.useState(window.innerWidth >= 1440);
 
@@ -49,6 +72,7 @@ const AdminForm = () => {
     );
   }
 
+  console.log("Current visitor count is: ", trackingData.visitors);
   return (
     <div className="w-full items-center">
       <Navbar />
@@ -100,9 +124,7 @@ const AdminForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Visitors</div>
-            <div className="text-3xl font-bold">
-              {programmeDashboardData.visitors}
-            </div>
+            <div className="text-3xl font-bold">{trackingData.visitors}</div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Newsletter Subscription</div>
