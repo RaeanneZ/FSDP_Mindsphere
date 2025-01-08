@@ -1,4 +1,3 @@
-// PaymentPage.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -11,99 +10,119 @@ import LoadingPopup from "../components/LoadingPopup";
 import backendService from "../utils/backendService";
 import {
   Elements,
-  CardElement,
+  PaymentElement,
   useStripe,
   useElements,
-  PaymentElement,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY); // Replace with your Stripe publishable key
 
-const PaymentPage = () => {
-  const { paymentService } = backendService;
+const PaymentForm = ({ clientSecret, booking }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [paymentData, setPaymentData] = useState(null);
-  const [loading, setLoading] = useState(false); // State for loading
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const storedBookingDetails = sessionStorage.getItem("bookingDetails");
-  const booking = storedBookingDetails ? JSON.parse(storedBookingDetails) : {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  console.log(booking.contactInfo.email);
-  useEffect(() => {
-    const data = JSON.parse(sessionStorage.getItem("paymentData"));
-    if (data) {
-      setPaymentData(data);
+    if (!stripe || !elements) {
+      console.error("Stripe.js has not loaded yet.");
+      return;
     }
-  }, []);
 
-  console.log("Booking email to send: ", booking.contactInfo.email);
-  const approvePayment = async () => {
-    if (booking.contactInfo.email) {
-      setLoading(true); // Show loading popup
-      try {
-        // Backend ------------------------------------------------------------------------
-        // await paymentService.makePayment(
-        //   booking.contactInfo.email,
-        //   booking.contactInfo.name
-        // );
+    setLoading(true);
 
-        // Stripe Payment -----------------------------------------------------------------
-        const stripe = await stripePromise;
-
-        // Get the client secret from your backend
-        const { clientSecret } = await paymentService.clientSecret({
-          amount: 500000,
-          currency: "sgd", // Or your desired currency
-        });
-
-        // Confirm the payment with Stripe.js
-        const result = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: elements.getElement("card"),
+    try {
+      // Confirm payment with Stripe
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          receipt_email: booking.contactInfo.email,
+          payment_method_data: {
             billing_details: {
               name: booking.contactInfo.name,
               email: booking.contactInfo.email,
             },
           },
-        });
+          return_url: window.location.origin, // Optional redirect after payment
+        },
+      });
 
-        if (result.error) {
-          console.error("Payment failed:", result.error.message);
-        } else if (result.paymentIntent.status === "succeeded") {
-          // Payment succeeded
-          navigate("/survey", {
-            state: {
-              title: "We can't wait to see you there!",
-              message:
-                "Meanwhile, please provide us your feedback. It will help us to improve.",
-            },
-          });
-        }
-        // Stripe Payment -----------------------------------------------------------------
-
-        // Navigate to SurveyPage with success message
-        // navigate("/survey", {
-        //   state: {
-        //     title: "We can't wait to see you there!",
-        //     message:
-        //       "Meanwhile, please provide us your feedback. It will help us to improve.",
-        //   },
-        // });
-      } catch (error) {
-        console.error("Payment failed", error);
-      } finally {
-        setLoading(false); // Hide loading popup
+      if (error) {
+        console.error("Payment failed:", error.message);
+        alert(`Payment failed: ${error.message}`);
+        setLoading(false);
+        return;
       }
-    } else {
-      console.error("Contact info is not available for payment.");
+
+      if (paymentIntent?.status === "succeeded") {
+        // Payment succeeded
+        navigate("/survey", {
+          state: {
+            title: "We can't wait to see you there!",
+            message:
+              "Meanwhile, please provide us your feedback. It will help us to improve.",
+          },
+        });
+      } else {
+        console.error("Payment did not succeed:", paymentIntent);
+        alert("Payment failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error processing payment:", err);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  return (
+    <form onSubmit={handleSubmit}>
+      <PaymentElement />
+      <button
+        type="submit"
+        disabled={loading || !stripe || !elements}
+        className={`bg-yellow text-white font-semibold py-3 px-6 rounded w-full mt-4 ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+      >
+        {loading ? "Processing..." : "Payment Complete"}
+      </button>
+    </form>
+  );
+};
+
+const PaymentPage = () => {
+  const [clientSecret, setClientSecret] = useState(null);
+  const [paymentData, setPaymentData] = useState(null);
+  const navigate = useNavigate();
+
+  const storedBookingDetails = sessionStorage.getItem("bookingDetails");
+  const booking = storedBookingDetails ? JSON.parse(storedBookingDetails) : {};
+
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      try {
+        const { clientSecret } = await backendService.clientSecret();
+        setClientSecret(clientSecret);
+      } catch (err) {
+        console.error("Error fetching client secret:", err);
+        alert("Failed to initialize payment. Please try again.");
+        navigate("/"); // Redirect to a safe page if initialization fails
+      }
+    };
+
+    fetchClientSecret();
+
+    const data = JSON.parse(sessionStorage.getItem("paymentData"));
+    if (data) {
+      setPaymentData(data);
+    }
+  }, [navigate]);
+
   const cancelPayment = () => {
-    // Delete the booking object
     navigate("/survey", {
       state: {
         title: "We are sad to see you go!",
@@ -112,43 +131,32 @@ const PaymentPage = () => {
     });
   };
 
-  if (!paymentData) {
+  if (!clientSecret || !paymentData) {
     return <p>Loading...</p>;
   }
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      {loading && <LoadingPopup />} {/* Show loading popup when loading */}
       <main className="flex-grow p-4 sm:p-6 mx-auto w-full max-w-lg lg:max-w-[800px]">
         <CheckoutProgress imageType="payment" />
-
         <PaymentSummary
           total={`$${paymentData.total}`}
           courseName={paymentData.courseName}
         />
         <PaymentDueDate dueDate={paymentData.dueDate} />
-
         <div className="mt-6">
           <PayNowSection />
-          <form onSubmit={approvePayment}>
-            <PaymentElement />
-          </form>
+          <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <PaymentForm clientSecret={clientSecret} booking={booking} />
+          </Elements>
         </div>
-
-        {/* Button Container for Side by Side Layout */}
         <div className="flex justify-between mt-6">
           <button
             onClick={cancelPayment}
             className="bg-gray-400 text-white font-semibold py-3 px-6 rounded w-full mr-2"
           >
             Cancel Payment
-          </button>
-          <button
-            onClick={approvePayment}
-            className="bg-yellow text-white font-semibold py-3 px-6 rounded w-full ml-2"
-          >
-            Payment Complete
           </button>
         </div>
       </main>
