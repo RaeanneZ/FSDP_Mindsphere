@@ -97,6 +97,8 @@ const PaymentForm = ({ clientSecret, booking }) => {
 const PaymentPage = () => {
   const [clientSecret, setClientSecret] = useState(null);
   const [paymentData, setPaymentData] = useState(null);
+  const { paymentService } = backendService;
+
   const navigate = useNavigate();
 
   const storedBookingDetails = sessionStorage.getItem("bookingDetails");
@@ -105,7 +107,7 @@ const PaymentPage = () => {
   useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        const { clientSecret } = await backendService.clientSecret();
+        const { clientSecret } = await paymentService.clientSecret();
         setClientSecret(clientSecret);
       } catch (err) {
         console.error("Error fetching client secret:", err);
@@ -146,7 +148,7 @@ const PaymentPage = () => {
         />
         <PaymentDueDate dueDate={paymentData.dueDate} />
         <div className="mt-6">
-          <PayNowSection />
+          {/* <PayNowSection /> */}
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <PaymentForm clientSecret={clientSecret} booking={booking} />
           </Elements>
