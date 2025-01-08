@@ -51,15 +51,7 @@ const PaymentPage = () => {
         });
 
         // Confirm the payment with Stripe.js
-        const result = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: elements.getElement("card"),
-            billing_details: {
-              name: booking.contactInfo.name,
-              email: booking.contactInfo.email,
-            },
-          },
-        });
+        const result = await stripe.confirmCardPayment(clientSecret);
 
         if (result.error) {
           console.error("Payment failed:", result.error.message);
