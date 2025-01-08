@@ -9,6 +9,7 @@ import PaymentDueDate from "../components/PaymentDueDate";
 import PayNowSection from "../components/PaynowSection";
 import LoadingPopup from "../components/LoadingPopup";
 import backendService from "../utils/backendService";
+import { loadStripe } from "@stripe/stripe-js"; // Import Stripe.js
 
 const stripePromise = loadStripe("your-publishable-key-here"); // Replace with your Stripe publishable key
 
@@ -44,9 +45,9 @@ const PaymentPage = () => {
         const stripe = await stripePromise;
 
         // Get the client secret from your backend
-        const { clientSecret } = await paymentService.createPaymentIntent({
-          amount: paymentData.total * 100, // Convert amount to cents
-          currency: "usd", // Or your desired currency
+        const { clientSecret } = await paymentService.clientSecret({
+          amount: paymentData.total,
+          currency: "sgd", // Or your desired currency
         });
 
         // Confirm the payment with Stripe.js
