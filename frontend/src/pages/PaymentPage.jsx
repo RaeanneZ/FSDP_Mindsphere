@@ -36,17 +36,17 @@ const PaymentPage = () => {
       setLoading(true); // Show loading popup
       try {
         // Backend ------------------------------------------------------------------------
-        await paymentService.makePayment(
-          booking.contactInfo.email,
-          booking.contactInfo.name
-        );
+        // await paymentService.makePayment(
+        //   booking.contactInfo.email,
+        //   booking.contactInfo.name
+        // );
 
         // Stripe Payment -----------------------------------------------------------------
         const stripe = await stripePromise;
 
         // Get the client secret from your backend
         const { clientSecret } = await paymentService.clientSecret({
-          amount: paymentData.total,
+          amount: 5000,
           currency: "sgd", // Or your desired currency
         });
 

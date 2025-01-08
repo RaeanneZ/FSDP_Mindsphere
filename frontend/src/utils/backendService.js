@@ -66,7 +66,11 @@ const paymentService = {
   },
   clientSecret: async () => {
     try {
-      const response = await axios.get(`${apiUrl}/stripe/payment`);
+      const response = await axios.post(`${apiUrl}/stripe/payment`, {
+        amount: 5000,
+        currency: "sgd",
+      });
+      console.log(response.data);
       return response.data;
     } catch (err) {
       console.error("BackendService: Error getting client secret: ", err);
