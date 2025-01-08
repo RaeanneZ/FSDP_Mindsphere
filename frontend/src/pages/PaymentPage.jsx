@@ -10,6 +10,8 @@ import PayNowSection from "../components/PaynowSection";
 import LoadingPopup from "../components/LoadingPopup";
 import backendService from "../utils/backendService";
 
+const stripePromise = loadStripe("your-publishable-key-here"); // Replace with your Stripe publishable key
+
 const PaymentPage = () => {
   const { paymentService } = backendService;
   const [paymentData, setPaymentData] = useState(null);
@@ -32,18 +34,54 @@ const PaymentPage = () => {
     if (booking.contactInfo.email) {
       setLoading(true); // Show loading popup
       try {
+        // Backend ------------------------------------------------------------------------
         await paymentService.makePayment(
           booking.contactInfo.email,
           booking.contactInfo.name
         );
-        // Navigate to SurveyPage with success message
-        navigate("/survey", {
-          state: {
-            title: "We can't wait to see you there!",
-            message:
-              "Meanwhile, please provide us your feedback. It will help us to improve.",
+
+        // Stripe Payment -----------------------------------------------------------------
+        const stripe = await stripePromise;
+
+        // Get the client secret from your backend
+        const { clientSecret } = await paymentService.createPaymentIntent({
+          amount: paymentData.total * 100, // Convert amount to cents
+          currency: "usd", // Or your desired currency
+        });
+
+        // Confirm the payment with Stripe.js
+        const result = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement("card"),
+            billing_details: {
+              name: booking.contactInfo.name,
+              email: booking.contactInfo.email,
+            },
           },
         });
+
+        if (result.error) {
+          console.error("Payment failed:", result.error.message);
+        } else if (result.paymentIntent.status === "succeeded") {
+          // Payment succeeded
+          navigate("/survey", {
+            state: {
+              title: "We can't wait to see you there!",
+              message:
+                "Meanwhile, please provide us your feedback. It will help us to improve.",
+            },
+          });
+        }
+        // Stripe Payment -----------------------------------------------------------------
+
+        // Navigate to SurveyPage with success message
+        // navigate("/survey", {
+        //   state: {
+        //     title: "We can't wait to see you there!",
+        //     message:
+        //       "Meanwhile, please provide us your feedback. It will help us to improve.",
+        //   },
+        // });
       } catch (error) {
         console.error("Payment failed", error);
       } finally {
