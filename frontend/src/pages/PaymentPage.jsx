@@ -9,12 +9,19 @@ import PaymentDueDate from "../components/PaymentDueDate";
 import PayNowSection from "../components/PaynowSection";
 import LoadingPopup from "../components/LoadingPopup";
 import backendService from "../utils/backendService";
-import { loadStripe } from "@stripe/stripe-js"; // Import Stripe.js
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe("your-publishable-key-here"); // Replace with your Stripe publishable key
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY); // Replace with your Stripe publishable key
 
 const PaymentPage = () => {
   const { paymentService } = backendService;
+  const elements = useElements();
   const [paymentData, setPaymentData] = useState(null);
   const [loading, setLoading] = useState(false); // State for loading
   const navigate = useNavigate();
@@ -46,12 +53,19 @@ const PaymentPage = () => {
 
         // Get the client secret from your backend
         const { clientSecret } = await paymentService.clientSecret({
-          amount: 5000,
+          amount: 500000,
           currency: "sgd", // Or your desired currency
         });
 
         // Confirm the payment with Stripe.js
-        const result = await stripe.confirmCardPayment(clientSecret);
+        const result = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement),
+            billing_details: {
+              name: booking.contactInfo.name,
+            },
+          },
+        });
 
         if (result.error) {
           console.error("Payment failed:", result.error.message);
