@@ -14,6 +14,7 @@ import {
   CardElement,
   useStripe,
   useElements,
+  PaymentElement,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -21,6 +22,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY); // Rep
 
 const PaymentPage = () => {
   const { paymentService } = backendService;
+  const stripe = useStripe();
   const elements = useElements();
   const [paymentData, setPaymentData] = useState(null);
   const [loading, setLoading] = useState(false); // State for loading
@@ -60,9 +62,10 @@ const PaymentPage = () => {
         // Confirm the payment with Stripe.js
         const result = await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
-            card: elements.getElement(CardElement),
+            card: elements.getElement("card"),
             billing_details: {
               name: booking.contactInfo.name,
+              email: booking.contactInfo.email,
             },
           },
         });
@@ -128,6 +131,9 @@ const PaymentPage = () => {
 
         <div className="mt-6">
           <PayNowSection />
+          <form onSubmit={approvePayment}>
+            <PaymentElement />
+          </form>
         </div>
 
         {/* Button Container for Side by Side Layout */}
