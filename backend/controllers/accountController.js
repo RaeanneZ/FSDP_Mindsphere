@@ -192,10 +192,40 @@ const retrieveAccountInfo = async (req, res) => {
 //         res.status(500).send("ControllerError: Signup error");
 //     }
 // };
+const addVerificationCode = async (req, res) => {
+    // for testing adding manually
+    const { email, verifCode } = req.body;
+
+    if (!email || !verifCode) {
+        return res
+            .status(400)
+            .json({ message: "Email and verification code are required." });
+    }
+
+    try {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `
+          INSERT INTO AccountVerification (Email, verifCode)
+          VALUES (@Email, @verifCode);
+      `;
+
+        const request = connection.request();
+        request.input("Email", sql.VarChar(50), email);
+        request.input("verifCode", sql.Int, verifCode);
+        await request.query(sqlQuery);
+        connection.close();
+
+        res.status(201).json({
+            message: "Verification code added successfully.",
+        });
+    } catch (err) {
+        console.error("Error adding verification code:", err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
 
 const signUp = async (req, res) => {
-    console.log("Request Body:", req.body);
-    const { email, verifCode: rawVerifCode } = req.body;
+    const { email, password, verifCode: rawVerifCode } = req.body;
     const trimmedEmail = email.trim();
     const verifCode = parseInt(rawVerifCode, 10);
 
@@ -219,12 +249,24 @@ const signUp = async (req, res) => {
                 .json({ message: "Invalid verification code" });
         }
 
-        // Insert account with no password (LinkedIn users can set up password later)
-        const accountResult = await Account.signUp(trimmedEmail, "", verifCode); // Empty password
+        // Prepare password data
+        let salt = "";
+        let hashedPassword = "";
+        if (password) {
+            salt = await bcrypt.genSalt(10);
+            hashedPassword = await bcrypt.hash(password, salt);
+        }
+
+        // Insert account
+        const accountResult = await Account.signUp(
+            trimmedEmail,
+            salt,
+            hashedPassword,
+            verifCode
+        );
 
         return res.status(201).json({
-            message:
-                "Signup successful. Please continue to set up your account.",
+            message: "Signup successful.",
             account: accountResult,
         });
     } catch (err) {
@@ -241,4 +283,5 @@ module.exports = {
     signUp,
     login,
     retrieveAccountInfo,
+    addVerificationCode,
 };

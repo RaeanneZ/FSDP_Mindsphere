@@ -86,8 +86,8 @@ CREATE TABLE Account (
 	dateOfBirth datetime null,
 	relationshipToChild varchar(255) null,
 	RoleID int null default 2,
-	Salt varchar(255) not null, /* Might have to change to null */
-	HashedPassword varchar(255) not null, /* Might have to change to null */
+	Salt varchar(255) null, /* Might have to change to null */
+	HashedPassword varchar(255) null, /* Might have to change to null */
 	LinkedInID varchar(255) NULL,
     LinkedInAccessToken varchar(255) NULL,
 	constraint PK_Account primary key (AccID),

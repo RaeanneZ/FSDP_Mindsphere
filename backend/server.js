@@ -33,6 +33,7 @@ const programmeTiersController = require("./controllers/programmeTierController"
 const businessController = require("./controllers/businessController");
 const surveyFormController = require("./controllers/surveyFormController");
 const reminderController = require("./controllers/reminderEmailController");
+const linkedinRoute = require("./routes/linkedinRoute");
 
 // APP SETUP
 const app = express();
@@ -88,6 +89,7 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+app.post("/addVerification", accountController.addVerificationCode);
 app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
@@ -118,6 +120,8 @@ app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
 app.post("/api/reminders/initialize", reminderController.initializeReminders);
 app.get("/api/reminders", reminderController.getScheduledReminders);
 PaymentEmailController.sendMembershipCodes;
+
+app.use("/", linkedinRoute);
 
 // START REMINDER SYSTEM ON SERVER START
 initializeReminderSystem();
