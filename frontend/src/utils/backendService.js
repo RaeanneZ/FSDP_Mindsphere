@@ -457,6 +457,19 @@ const programmeFeedBackService = {
     },
 };
 
+const dashboardService = {
+    getDashboardMetrics: async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/dashboard-metrics`);
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error retrieving dashboard metrics: "),
+            err
+        };
+        throw err;
+    }
+}
+
 export default {
     programmeService,
     progScheduleService,
