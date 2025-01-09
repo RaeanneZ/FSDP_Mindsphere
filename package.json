@@ -5,9 +5,9 @@
     "backend": "nodemon --config backend/nodemon.json backend/server.js",
     "frontend": "npm run dev --prefix frontend",
     "log": "echo 'Frontend is running at http://localhost:5173' && echo 'Backend is running at http://localhost:5000'",
-    "servers": "concurrently --kill-others --handle-sigint -r \"npm run backend\" \"npm run frontend\"",
+    "dev": "concurrently --kill-others --handle-sigint -r \"npm run backend\" \"npm run frontend\"",
     "setup": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "production": "npm run setup && npm run servers"
+    "production": "npm run setup && npm run dev"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
