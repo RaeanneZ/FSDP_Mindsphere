@@ -65,6 +65,22 @@ if exists (select * from sysobjects where name='Roles' and type='U')
     drop table Roles
 GO
 
+IF EXISTS (SELECT * FROM sysobjects WHERE name = 'ProgrammeSlotSummary' AND xtype = 'V')
+    DROP VIEW ProgrammeSlotSummary;
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE name = 'MembersAndNewsletterCount' AND xtype = 'V')
+    DROP VIEW MembersAndNewsletterCount;
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesRevenue' AND xtype = 'V')
+    DROP VIEW SalesRevenue;
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesPendingPayment' AND xtype = 'V')
+    DROP VIEW SalesPendingPayment;
+GO
+
 -------------------------------------------------------------------------------------------------------------
 
 
@@ -232,6 +248,51 @@ create table Bookings (
 	constraint FK_Bookings_SchedID foreign key (SchedID) references ProgrammeSchedule(SchedID),
 	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID)
 )
+go
+
+-------------------------------------------------------------------------------------------------------------
+
+CREATE VIEW ProgrammeSlotSummary AS
+SELECT 
+    P.ProgID,
+    P.Name AS ProgrammeName,
+    SUM(PS.TotalSeats) AS TotalSlots,
+    COALESCE(SUM(B.NumSeats), 0) AS SlotsTaken,
+    SUM(PS.TotalSeats) - COALESCE(SUM(B.NumSeats), 0) AS SlotsRemaining
+FROM 
+    Programmes P
+LEFT JOIN ProgrammeSchedule PS ON P.ProgID = PS.ProgID
+LEFT JOIN Bookings B ON PS.SchedID = B.SchedID
+GROUP BY 
+    P.ProgID, P.Name;
+
+go
+
+CREATE VIEW MembersAndNewsletterCount AS
+SELECT 
+    (SELECT COUNT(*) FROM Account) AS TotalAccounts,
+    (SELECT COUNT(*) FROM Newsletter) AS TotalNewsletterSubscriptions;
+
+go
+
+create view SalesRevenue as
+select 
+	sum(TotalCost) as TotalSalesRevenue,
+	count(*) as NumberOfSales
+from Payment
+WHERE 
+    TransacStatus = 'Paid';
+
+go
+
+create view SalesPendingPayment as
+select 
+	sum(TotalCost) as TotalPendingRevenue,
+	count(*) as NumberOfPendingSales
+from Payment
+where
+	TransacStatus = 'Pending';
+
 go
 
 -------------------------------------------------------------------------------------------------------------
