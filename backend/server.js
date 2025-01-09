@@ -107,8 +107,10 @@ app.get("/", async (req, res) => {
 
 app.use("/api/schedules", require("./routes/schedulesRoutes"));
 app.use("/api/survey", require("./routes/surveyRoutes"));
+app.use("/api/dashboard-metrics",require("./routes/dashboardMetricRoutes"));
 
-// missing cleaned up services [bookings, business, payments, programmes, account, feedback, children, newsletter, reminders]
+// routes refactor not done for the following
+// [bookings, business, payments, programmes, account, feedback, children, newsletter, reminders]
 
 app.get("/api/bookings", bookingsController.getAllBookings);
 app.post("/api/bookings", bookingsController.addBooking);
