@@ -22,6 +22,7 @@ const AccountEntry = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isSignup, setIsSignup] = useState(false);
+  const [newsletter, setNewsletter] = useState(true);
   const { login } = useAuth(); // Access the login function from context
 
   useEffect(() => {
@@ -54,8 +55,15 @@ const AccountEntry = () => {
     }
   };
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async (e) => {
+    e.preventDefault();
     console.log("Create Account button clicked");
+
+    // Add email if newsletter = true
+    if (newsletter) {
+      await newsletterService.addEmailNewletter(email);
+    }
+
     // Add your Create Account functionality here
   };
 
@@ -126,6 +134,30 @@ const AccountEntry = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
               required
             />
+
+            {isSignup && (
+              <>
+                <div className="flex items-center justify-between mt-4">
+                  <label className="text-gray-700">
+                    Newsletter subscription
+                  </label>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={newsletter}
+                      onChange={() => setNewsletter(!newsletter)}
+                    />
+                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-yellow-300 dark:peer-focus:ring-yellow peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow"></div>
+                  </label>
+                </div>
+                <p className="text-sm mt-0 text-gray-500">
+                  Receive the latest promotions and design releases.{" "}
+                  <span className="text-red-500">No spam, promise.</span>
+                </p>
+              </>
+            )}
+
             <button
               type="submit"
               className="w-full px-4 py-2 mt-4 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow"

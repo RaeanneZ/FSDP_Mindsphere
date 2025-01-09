@@ -8,7 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 
 // Import all the pages
 import LandingPage from "./pages/LandingPage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
+import MemberVerificationPage from "./pages/MemberVerificationPage.jsx";
 import PersonalisationCoverPage from "./pages/PersonalisationCoverPage.jsx";
 import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/verification",
-    element: <SignupPage />,
+    element: <MemberVerificationPage />,
     errorElement: <ErrorPage />,
   },
   {
