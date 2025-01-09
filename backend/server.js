@@ -90,8 +90,8 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
     }
 });
 
-app.post("/api/verify-email", accountController.verifyEmail);
-app.post("/api/create-account", accountController.createAccount);
+app.post("/api/account/verifyEmail", accountController.verifyEmail);
+app.post("/api/account/createAccount", accountController.createAccount);
 app.post("/addVerification", accountController.addVerificationCode);
 app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
