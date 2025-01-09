@@ -16,7 +16,7 @@ import ReviewPage from "./pages/ReviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import AccountDashboardPage from "./pages/AccountDashboardPage.jsx";
 import SurveyPage from "./pages/SurveyPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
+import AccountEntry from "./pages/AccountEntry.jsx";
 import ChildrenNamePage from "./pages/ChildrenNamePage.jsx";
 import ChildrenFavPage from "./pages/ChildrenFavPage.jsx";
 import ChildrenAmbition from "./pages/ChildrenAmbition.jsx";
@@ -40,12 +40,17 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: <AccountEntry />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/verification",
+    element: <SignupPage />,
     errorElement: <ErrorPage />,
   },
   {
     path: "/signup",
-    element: <SignupPage />,
+    element: <AccountEntry />,
     errorElement: <ErrorPage />,
   },
   {
