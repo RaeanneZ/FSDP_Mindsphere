@@ -42,7 +42,7 @@ npm run setup
 
 ```bash
 
-npm run servers
+npm run dev
 
 ```
 
@@ -86,6 +86,9 @@ npm run backend
 5.  **Terminate the Server:**
 
 - To stop the server, press **CTRL+C** in the terminal.
+
+6. **API Documentation**
+- You can view the API Documentation by navigating to **localhost:5000/api-docs** once the servers are up and running
 
   
 
