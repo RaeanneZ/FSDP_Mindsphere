@@ -203,7 +203,7 @@ class Account {
         }
     }
 
-    static async verification(Email, verifCode) {
+    static async verifyEmailCode(Email, verifCode) {
         let connection;
         try {
             connection = await sql.connect(dbConfig);
@@ -222,6 +222,35 @@ class Account {
             if (connection) {
                 connection.close();
             }
+        }
+    }
+
+    static async createAccount(email, password) {
+        try {
+            const connection = await sql.connect(dbConfig);
+
+            // Generate salt and hash password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            // Insert into Account table
+            const insertAccountQuery = `
+                INSERT INTO Account (Email, Salt, HashedPassword) 
+                VALUES (@Email, @salt, @hashedPassword);
+            `;
+
+            const request = connection.request();
+            request.input("Email", sql.VarChar(50), email.trim());
+            request.input("salt", sql.VarChar(255), salt);
+            request.input("hashedPassword", sql.VarChar(255), hashedPassword);
+
+            await request.query(insertAccountQuery);
+            connection.close();
+
+            return { message: "Account successfully created" };
+        } catch (err) {
+            console.error("Error creating account:", err);
+            throw new Error("Error creating account: " + err.message);
         }
     }
 }

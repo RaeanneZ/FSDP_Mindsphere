@@ -1,4 +1,5 @@
 import axios from "axios";
+import { createAccount } from "../../../backend/models/account";
 //import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
 
 const isLocalhost = window.location.hostname === "localhost";
@@ -274,26 +275,67 @@ const accountService = {
         }
     },
 
-    signUp: async (email, password, verifCode) => {
+    // signUp: async (email, password, verifCode) => {
+    //     try {
+    //         const response = await axios.post(`${apiUrl}/signUp`, {
+    //             email,
+    //             password,
+    //             verifCode,
+    //         });
+    //         //return response.data;
+    //         return {
+    //             success: true,
+    //         };
+    //     } catch (err) {
+    //         return {
+    //             success: false,
+    //             message: "Sign-up failed",
+    //             error: err.response.data,
+    //         };
+    //     }
+    // },
+
+    createAccount: async (email, password) => {
         try {
-            const response = await axios.post(`${apiUrl}/signUp`, {
-                email,
-                password,
-                verifCode,
-            });
-            //return response.data;
+            const response = await axios.post(
+                `${apiUrl}/account/createAccount`,
+                {
+                    email,
+                    password,
+                }
+            );
             return {
                 success: true,
+                message:
+                    "Account created successfully. Please check your email for verification.",
             };
         } catch (err) {
             return {
                 success: false,
-                message: "Sign-up failed",
-                error: err.response.data,
+                message: "Account creation failed",
+                error: err.response?.data,
             };
         }
     },
 
+    verifyEmail: async (email, verificationCode) => {
+        try {
+            const response = await axios.post(`${apiUrl}/account/verifyEmail`, {
+                email,
+                verificationCode,
+            });
+            return {
+                success: true,
+                message: "Email verified successfully.",
+            };
+        } catch (err) {
+            return {
+                success: false,
+                message: "Email verification failed",
+                error: err.response?.data,
+            };
+        }
+    },
     // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
     // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
     // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
