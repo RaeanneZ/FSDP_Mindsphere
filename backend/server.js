@@ -89,13 +89,15 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+app.post("/api/verify-email", accountController.verifyEmail);
+app.post("/api/create-account", accountController.createAccount);
 app.post("/addVerification", accountController.addVerificationCode);
 app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
 app.put("/api/account/:email", accountController.updateAccountByEmail);
 app.put("/api/register", accountController.registerAccount);
-app.post("/api/signUp", accountController.signUp);
 app.post("/api/login", accountController.login);
 app.post("/api/login/admin", accountController.login);
 app.get("/api/feedbacks", ProgrammeFeedbackController.getAllFeedback);
