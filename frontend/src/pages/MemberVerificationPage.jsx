@@ -43,13 +43,8 @@ const MemberVerificationPage = () => {
     // Store the updated parent data in session storage
     sessionStorage.setItem("parentData", JSON.stringify(parentDataArray));
 
-    // Change this to the verification method
-    // const response = await accountService.signUp(
-    //   email,
-    //   password,
-    //   verificationCode
-    // );
-    const response = { success: true };
+    // VerifyEmail with backend
+    const response = await accountService.verifyEmail(email, verificationCode);
 
     if (!response.success) {
       setError(

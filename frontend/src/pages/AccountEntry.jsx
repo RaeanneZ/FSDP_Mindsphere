@@ -65,6 +65,13 @@ const AccountEntry = () => {
     }
 
     // Add your Create Account functionality here
+    const response = accountService.createAccount(email, password);
+
+    if (response.success) {
+      navigate("/accountSetup");
+    } else {
+      setError(response.message);
+    }
   };
 
   const handleLinkedInLogin = () => {
