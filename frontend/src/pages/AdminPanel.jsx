@@ -1,16 +1,34 @@
 import React from "react";
 import { programmeDashboardData } from "../constants";
+import TrackerService from "../utils/trackerService"; // Import TrackerService
 
 const AdminPanel = () => {
+  const [trackingData, setTrackingData] = useState({
+    visitors: 0,
+    programmeClicks: {},
+  });
+
+  // Fetch tracking data from backend
+  const fetchTrackingData = async () => {
+    try {
+      const data = await TrackerService.getStatistics();
+      setTrackingData(data); // Update state with the fetched data
+    } catch (error) {
+      console.error("Error fetching tracking data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrackingData(); // Fetch tracking data when the component mounts
+  }, []);
+
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <div className="p-8 min-h-screen">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-darkBlue text-white text-center p-4 rounded-lg">
             <div className="text-lg">Visitors</div>
-            <div className="text-3xl font-bold">
-              {programmeDashboardData.visitors}
-            </div>
+            <div className="text-3xl font-bold">{trackingData.visitors}</div>
           </div>
           <div className="bg-darkBlue text-white text-center p-4 rounded-lg">
             <div className="text-lg">Subscribers</div>
