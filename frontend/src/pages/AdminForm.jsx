@@ -19,21 +19,33 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BarLineChart from "../components/BarLineChart";
 import AdminMonthDropdown from "../components/AdminMonthDropdown";
+import backendService from "../utils/backendService";
 import TrackerService from "../utils/trackerService"; // Import TrackerService
 
 const AdminForm = () => {
-  // For Tracking ----------------------------------------------------------------------
+  const { dashboardService } = backendService;
+
+  // For Tracking and Backend ----------------------------------------------------------------------
   const [trackingData, setTrackingData] = React.useState({
     visitors: 0,
     programmeClicks: {},
+  });
+  const [dashboardData, setDashboardData] = React.useState({
+    MembersAndNewsletterSubCount: {}, // Attributes: TotalAccounts, TotalNewsletterSubscription
+    ProgrammeSlotSummary: [], // Attributes: Objects - ProgID, ProgrammeName, TotalSlots, SlotsTaken, SlotsRemaining
+    SalesMetrics: [], // Attributes: TotalSalesRevenue, NumberOfSales
+    SurveyFeedbackMetrics: {}, // Attributes: avgSurveyRaating, top3SurveyCategory
   });
 
   // Fetch tracking data from backend
   const fetchTrackingData = async () => {
     try {
       const data = await TrackerService.getStatistics();
+      const dashboard = await dashboardService.getDashboardMetrics();
       console.log("Backend Response:", data); // Debug: Log the response
       setTrackingData(data);
+      setDashboardData(dashboard);
+      console.log("Dashboard data: ", dashboardData);
     } catch (error) {
       console.error("Error fetching tracking data:", error);
     }
@@ -42,7 +54,7 @@ const AdminForm = () => {
   React.useEffect(() => {
     fetchTrackingData(); // Fetch tracking data when the component mounts
   }, []);
-  // For Tracking ----------------------------------------------------------------------
+  // For Tracking and Backend ----------------------------------------------------------------------
 
   // For Chart Generation --------------------------------------------------------------
   const [selectedCategory, setSelectedCategory] = React.useState(null);
