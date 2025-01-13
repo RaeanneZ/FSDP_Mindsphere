@@ -31,29 +31,35 @@ const AdminForm = () => {
     programmeClicks: {},
   });
   const [dashboardData, setDashboardData] = React.useState({
-    MembersAndNewsletterSubCount: {}, // Attributes: TotalAccounts, TotalNewsletterSubscription
-    ProgrammeSlotSummary: [], // Attributes: Objects - ProgID, ProgrammeName, TotalSlots, SlotsTaken, SlotsRemaining
-    SalesMetrics: [], // Attributes: TotalSalesRevenue, NumberOfSales
-    SurveyFeedbackMetrics: {}, // Attributes: avgSurveyRaating, top3SurveyCategory
+    MembersAndNewsletterSubCount: [], // Attributes: [{TotalAccounts, TotalNewsletterSubscription}]
+    ProgrammeSlotSummary: [], // Attributes: [{ProgID, ProgrammeName, TotalSlots, SlotsTaken, SlotsRemaining}]
+    SalesMetrics: [], // Attributes: [{TotalSalesRevenue, NumberOfSales}]
+    SurveyFeedbackMetrics: {}, // Attributes: {avgSurveyRaating, top3SurveyCategory}
   });
 
   // Fetch tracking data from backend
-  const fetchTrackingData = async () => {
+  const fetchData = async () => {
     try {
       const data = await TrackerService.getStatistics();
       const dashboard = await dashboardService.getDashboardMetrics();
+
       console.log("Backend Response:", data); // Debug: Log the response
+      console.log("Dashboard data: ", dashboard);
+
       setTrackingData(data);
       setDashboardData(dashboard);
-      console.log("Dashboard data: ", dashboardData);
     } catch (error) {
       console.error("Error fetching tracking data:", error);
     }
   };
 
   React.useEffect(() => {
-    fetchTrackingData(); // Fetch tracking data when the component mounts
+    fetchData(); // Fetch tracking data when the component mounts
   }, []);
+
+  React.useEffect(() => {
+    console.log("Updated Dashboard Data:", dashboardData);
+  }, [dashboardData]);
   // For Tracking and Backend ----------------------------------------------------------------------
 
   // For Chart Generation --------------------------------------------------------------
@@ -142,13 +148,16 @@ const AdminForm = () => {
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Newsletter Subscription</div>
             <div className="text-3xl font-bold">
-              {programmeDashboardData.subscribers}
+              {
+                dashboardData.MembersAndNewsletterSubCount[0]
+                  .TotalNewsletterSubscriptions
+              }
             </div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Members</div>
             <div className="text-3xl font-bold">
-              {programmeDashboardData.members}
+              {dashboardData.MembersAndNewsletterSubCount[0].TotalAccounts}
             </div>
           </div>
         </div>
