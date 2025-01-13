@@ -10,7 +10,6 @@ import {
   surveyData,
   salesSupplyData,
   websiteRatingData,
-  programmeDashboardData,
 } from "../constants";
 import BarChartComponent from "../components/BarChart";
 import CourseCard from "../components/CourseCard";
@@ -24,6 +23,9 @@ import TrackerService from "../utils/trackerService"; // Import TrackerService
 
 const AdminForm = () => {
   const { dashboardService } = backendService;
+  // For Chart Generation --------------------------------------------------------------
+  const [selectedCategory, setSelectedCategory] = React.useState(null);
+  const [isDesktop, setIsDesktop] = React.useState(window.innerWidth >= 1440);
 
   // For Tracking and Backend ----------------------------------------------------------------------
   const [trackingData, setTrackingData] = React.useState({
@@ -37,35 +39,27 @@ const AdminForm = () => {
     SurveyFeedbackMetrics: {}, // Attributes: {avgSurveyRaating, top3SurveyCategory}
   });
 
-  // Fetch tracking data from backend
-  const fetchData = async () => {
-    try {
-      const data = await TrackerService.getStatistics();
-      const dashboard = await dashboardService.getDashboardMetrics();
-
-      console.log("Backend Response:", data); // Debug: Log the response
-      console.log("Dashboard data: ", dashboard);
-
-      setTrackingData(data);
-      setDashboardData(dashboard);
-    } catch (error) {
-      console.error("Error fetching tracking data:", error);
-    }
-  };
-
   React.useEffect(() => {
-    fetchData(); // Fetch tracking data when the component mounts
+    const fetchDataAsync = async () => {
+      try {
+        const data = await TrackerService.getStatistics();
+        console.log(data);
+        const dashboard = await dashboardService.getDashboardMetrics();
+        console.log("Dashboard data is: ", dashboard);
+        setTrackingData(data);
+        setDashboardData(dashboard);
+        console.log("fetchData executed");
+        console.log("Data in the dashboardData is ", dashboardData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchDataAsync();
   }, []);
-
-  React.useEffect(() => {
-    console.log("Updated Dashboard Data:", dashboardData);
-  }, [dashboardData]);
   // For Tracking and Backend ----------------------------------------------------------------------
 
   // For Chart Generation --------------------------------------------------------------
-  const [selectedCategory, setSelectedCategory] = React.useState(null);
-  const [isDesktop, setIsDesktop] = React.useState(window.innerWidth >= 1440);
-
   const handlePieClick = (category) => {
     setSelectedCategory(category);
   };
@@ -90,6 +84,7 @@ const AdminForm = () => {
       </div>
     );
   }
+
   // For Chart Generation --------------------------------------------------------------
 
   return (
@@ -148,16 +143,15 @@ const AdminForm = () => {
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Newsletter Subscription</div>
             <div className="text-3xl font-bold">
-              {
-                dashboardData.MembersAndNewsletterSubCount[0]
-                  .TotalNewsletterSubscriptions
-              }
+              {dashboardData?.MembersAndNewsletterSubCount[0]
+                ?.TotalNewsletterSubscriptions || 0}
             </div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Members</div>
             <div className="text-3xl font-bold">
-              {dashboardData.MembersAndNewsletterSubCount[0].TotalAccounts}
+              {dashboardData?.MembersAndNewsletterSubCount[0]?.TotalAccounts ||
+                0}
             </div>
           </div>
         </div>
