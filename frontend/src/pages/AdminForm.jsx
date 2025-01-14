@@ -10,7 +10,6 @@ import {
   surveyData,
   salesSupplyData,
   websiteRatingData,
-  programmeDashboardData,
 } from "../constants";
 import BarChartComponent from "../components/BarChart";
 import CourseCard from "../components/CourseCard";
@@ -18,11 +17,49 @@ import SurveyDashboardSection from "../components/SurveyDashboardSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BarLineChart from "../components/BarLineChart";
+import AdminMonthDropdown from "../components/AdminMonthDropdown";
+import backendService from "../utils/backendService";
+import TrackerService from "../utils/trackerService"; // Import TrackerService
 
 const AdminForm = () => {
+  const { dashboardService } = backendService;
+  // For Chart Generation --------------------------------------------------------------
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [isDesktop, setIsDesktop] = React.useState(window.innerWidth >= 1440);
 
+  // For Tracking and Backend ----------------------------------------------------------------------
+  const [trackingData, setTrackingData] = React.useState({
+    visitors: 0,
+    programmeClicks: {},
+  });
+  const [dashboardData, setDashboardData] = React.useState({
+    MembersAndNewsletterSubCount: [], // Attributes: [{TotalAccounts, TotalNewsletterSubscription}]
+    ProgrammeSlotSummary: [], // Attributes: [{ProgID, ProgrammeName, TotalSlots, SlotsTaken, SlotsRemaining}]
+    SalesMetrics: [], // Attributes: [{TotalSalesRevenue, NumberOfSales}]
+    SurveyFeedbackMetrics: {}, // Attributes: {avgSurveyRaating, top3SurveyCategory}
+  });
+
+  React.useEffect(() => {
+    const fetchDataAsync = async () => {
+      try {
+        const data = await TrackerService.getStatistics();
+        console.log(data);
+        const dashboard = await dashboardService.getDashboardMetrics();
+        console.log("Dashboard data is: ", dashboard);
+        setTrackingData(data);
+        setDashboardData(dashboard);
+        console.log("fetchData executed");
+        console.log("Data in the dashboardData is ", dashboardData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchDataAsync();
+  }, []);
+  // For Tracking and Backend ----------------------------------------------------------------------
+
+  // For Chart Generation --------------------------------------------------------------
   const handlePieClick = (category) => {
     setSelectedCategory(category);
   };
@@ -48,6 +85,8 @@ const AdminForm = () => {
     );
   }
 
+  // For Chart Generation --------------------------------------------------------------
+
   return (
     <div className="w-full items-center">
       <Navbar />
@@ -61,10 +100,7 @@ const AdminForm = () => {
 
         {/* Date Filter */}
         <div className="flex self-end items-center space-x-2">
-          <u>
-            <span className="text-lg font-medium mr-4">Sept - Dec 2024</span>
-            <FontAwesomeIcon icon={faChevronDown} />
-          </u>
+          <AdminMonthDropdown />
         </div>
 
         {/* Top Section: Programme Cards */}
@@ -102,20 +138,20 @@ const AdminForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Visitors</div>
-            <div className="text-3xl font-bold">
-              {programmeDashboardData.visitors}
-            </div>
+            <div className="text-3xl font-bold">{trackingData.visitors}</div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Newsletter Subscription</div>
             <div className="text-3xl font-bold">
-              {programmeDashboardData.subscribers}
+              {dashboardData?.MembersAndNewsletterSubCount[0]
+                ?.TotalNewsletterSubscriptions || 0}
             </div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Members</div>
             <div className="text-3xl font-bold">
-              {programmeDashboardData.members}
+              {dashboardData?.MembersAndNewsletterSubCount[0]?.TotalAccounts ||
+                0}
             </div>
           </div>
         </div>
