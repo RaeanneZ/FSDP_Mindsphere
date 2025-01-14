@@ -44,6 +44,9 @@ fs.writeFile(swaggerPath, JSON.stringify(swaggerSpec, null, 2), (err) => {
 
 
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+
 // CORS CONFIG
 const cors = require("cors");
 const corsOptions = {
@@ -181,6 +184,7 @@ app.post("/api/reminders/initialize", reminderController.initializeReminders);
 app.get("/api/reminders", reminderController.getScheduledReminders);
 PaymentEmailController.sendMembershipCodes;
 
+
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store
 // Every hour save to database
@@ -209,6 +213,11 @@ app.get("/track/statistics", (req, res) => {
   res.json({ visitors, programmeClicks }); // Use the correct variable names
 });
 // END OF Tracking JS -----------------------------------------------------------------
+
+//stripe
+const paymentRoutes = require("./routes/paymentRoutes");
+app.use("/api/stripe", paymentRoutes);
+
 
 // START REMINDER SYSTEM ON SERVER START
 initializeReminderSystem();

@@ -64,6 +64,19 @@ const paymentService = {
       throw err;
     }
   },
+  clientSecret: async () => {
+    try {
+      const response = await axios.post(`${apiUrl}/stripe/payment`, {
+        amount: 5000,
+        currency: "sgd",
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting client secret: ", err);
+      throw err;
+    }
+  },
 };
 
 const progScheduleService = {
