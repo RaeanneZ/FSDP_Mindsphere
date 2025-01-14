@@ -7,7 +7,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 
 const addBusiness = async (req, res) => {
-    const { Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest, enquiryStatus } = req.body;
+    const { Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest } = req.body;
 
     // VALIDATION LOGIC
     if (!Name || typeof Name !== 'string' || Name.length > 50) {
@@ -42,7 +42,7 @@ const addBusiness = async (req, res) => {
         return res.status(400).send("Invalid callbackRequest: Please provide a valid datetime.");
     }
 
-    enquiryStatus = 'New Enquiry';
+    const enquiryStatus = 'New Enquiry';
 
     try {
         const newBusiness = await Business.addBusiness({
@@ -92,7 +92,20 @@ const addBusiness = async (req, res) => {
     }
 };
 
+const getEnquiries = async (req, res) => {
+    try {
+        const enquiries = await Business.getEnquiries();
+        res.status(200).json(enquiries)
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("ControllerError: Error retrieving enquiries")
+    }
+}
 
 
 
-module.exports = { addBusiness };
+
+module.exports = { 
+    addBusiness,
+    getEnquiries
+};
