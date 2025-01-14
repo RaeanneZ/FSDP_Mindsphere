@@ -3,51 +3,43 @@ import Timeline from "../components/Timeline";
 
 const timelineData = [
   {
-    text: "Wrote my first blog post ever on Medium",
-    date: "March 03 2017",
+    text: "Sent Enquiry",
+    date: "January 01 2025",
     category: {
-      tag: "medium",
+      tag: "Completed",
       color: "#018f69",
     },
     link: {
       url: "https://medium.com/@popflorin1705/javascript-coding-challenge-1-6d9c712963d2",
-      text: "Read more",
+      text: "View Document Here",
     },
   },
   {
-    text: "Wrote my first blog post ever on Medium",
-    date: "March 03 2017",
+    text: "Proposal Draft 1",
+    date: "January 18 2025",
     category: {
-      tag: "medium",
-      color: "#018f69",
+      tag: "Pending",
+      color: "#edc55b",
     },
     link: {
       url: "https://medium.com/@popflorin1705/javascript-coding-challenge-1-6d9c712963d2",
-      text: "Read more",
+      text: "View Document Here",
     },
   },
   {
-    text: "Wrote my first blog post ever on Medium",
-    date: "March 03 2017",
+    text: "Finalize Proposal",
+    date: "Feburary 03 2025",
     category: {
-      tag: "medium",
-      color: "#018f69",
-    },
-    link: {
-      url: "https://medium.com/@popflorin1705/javascript-coding-challenge-1-6d9c712963d2",
-      text: "Read more",
+      tag: "Incomplete",
+      color: "#dbe0e2",
     },
   },
   {
-    text: "Wrote my first blog post ever on Medium",
-    date: "March 03 2017",
+    text: "Full Payment",
+    date: "March 03 2025",
     category: {
-      tag: "medium",
-      color: "#018f69",
-    },
-    link: {
-      url: "https://medium.com/@popflorin1705/javascript-coding-challenge-1-6d9c712963d2",
-      text: "Read more",
+      tag: "Incomplete",
+      color: "#dbe0e2",
     },
   },
 ];
