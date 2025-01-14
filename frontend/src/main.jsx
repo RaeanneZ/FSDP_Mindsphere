@@ -1,4 +1,3 @@
-// main.jsx
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -31,8 +30,9 @@ import Layout from "./components/Layout.jsx";
 import "../public/css/index.css";
 import AdminForm from "./pages/AdminForm.jsx";
 
-// Import PageTrackingComponent
+// Import components
 import PageTracking from "./components/PageTracking.jsx";
+import Chatbot from "./components/Chatbot.jsx";
 
 const router = createBrowserRouter([
   {
@@ -229,10 +229,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
-    {" "}
     {/* Wrap RouterProvider with AuthProvider */}
     <RouterProvider router={router}>
       <PageTracking />
+      <Chatbot /> {/* Add the chatbot component */}
     </RouterProvider>
   </AuthProvider>
 );
