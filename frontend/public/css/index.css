@@ -141,7 +141,7 @@ circle {
 }
 
 .timeline-item-content {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 10px 10px 20px 0px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   background-color: #fff;
   display: flex;
@@ -157,7 +157,7 @@ circle {
 .timeline-item-content::after {
   content: ' ';
   background-color: #fff;
-  box-shadow: 1px -1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 10px 10px 20px 0px rgba(0, 0, 0, 0.2);
   position: absolute;
   right: -7.5px;
   top: calc(50% - 7.5px);
