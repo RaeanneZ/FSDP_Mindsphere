@@ -9,12 +9,15 @@
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.5",
+    "@stripe/react-stripe-js": "^3.1.1",
+    "@stripe/stripe-js": "^5.5.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "jsonwebtoken": "^9.0.2",
     "lottie-react": "^2.4.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "stripe": "^17.5.0"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",
