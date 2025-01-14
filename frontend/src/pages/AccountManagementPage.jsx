@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
@@ -14,17 +14,51 @@ const AccountManagementPage = () => {
 
   // Frontend
   const navigate = useNavigate(); // Create history object
-  const [errors, setErrors] = React.useState({}); // State for error messages
-  const [children, setChildren] = React.useState([1]);
-
-  // This is for parent form
-  const [formData, setFormData] = React.useState({
+  const [errors, setErrors] = useState({}); // State for error messages
+  const [children, setChildren] = useState([1]);
+  const [formData, setFormData] = useState({
     name: "",
     dob: "",
     contactNumber: "",
     relationship: "",
     address: "",
   });
+  const autocompleteRef = useRef(null);
+
+  // Load Google Maps script dynamically
+  useEffect(() => {
+    const loadGoogleMapsScript = () => {
+      if (!window.google) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${
+          import.meta.env.VITE_GOOGLECLOUD_APIKEY
+        }&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => initializeAutocomplete(); // Initialize Autocomplete on script load
+        document.body.appendChild(script);
+      } else {
+        initializeAutocomplete(); // Initialize if script is already loaded
+      }
+    };
+
+    const initializeAutocomplete = () => {
+      if (autocompleteRef.current) {
+        const autocomplete = new window.google.maps.places.Autocomplete(
+          autocompleteRef.current,
+          { types: ["geocode"] }
+        );
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          if (place.formatted_address) {
+            setFormData({ ...formData, address: place.formatted_address });
+          }
+        });
+      }
+    };
+
+    loadGoogleMapsScript();
+  }, [formData]);
 
   const addChild = () => {
     setChildren([...children, children.length + 1]);
@@ -36,6 +70,16 @@ const AccountManagementPage = () => {
       ...formData,
       [name]: value,
     });
+  };
+  const handleDateChange = (date) => {
+    const localDateStr = date[0]
+      ? new Date(date[0].getTime() - date[0].getTimezoneOffset() * 60000)
+          .toISOString()
+          .split("T")[0]
+      : ""; // Format the date with timezone adjustment
+
+    const updatedData = { ...formData, dob: localDateStr }; // Update only the dob field
+    setFormData(updatedData); // Update the state
   };
 
   const validateForm = () => {
@@ -70,17 +114,6 @@ const AccountManagementPage = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Returns true if no errors
-  };
-
-  const handleDateChange = (date) => {
-    const localDateStr = date[0]
-      ? new Date(date[0].getTime() - date[0].getTimezoneOffset() * 60000)
-          .toISOString()
-          .split("T")[0]
-      : ""; // Format the date with timezone adjustment
-
-    const updatedData = { ...formData, dob: localDateStr }; // Update only the dob field
-    setFormData(updatedData); // Update the state
   };
 
   const handleSubmit = async (e) => {
@@ -200,13 +233,15 @@ const AccountManagementPage = () => {
               </select>
             </div>
 
+            {/* Google Maps Place Autocomplete */}
             <input
               type="text"
               name="address"
+              ref={autocompleteRef}
               placeholder="Address"
               value={formData.address}
               onChange={handleChange}
-              className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+              className="p-3 border border-gray-300 rounded-md"
               required
             />
           </div>
