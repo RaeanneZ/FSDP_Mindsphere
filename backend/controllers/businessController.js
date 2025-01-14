@@ -7,7 +7,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 
 const addBusiness = async (req, res) => {
-    const { Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest } = req.body;
+    const { Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest, enquiryStatus } = req.body;
 
     // VALIDATION LOGIC
     if (!Name || typeof Name !== 'string' || Name.length > 50) {
@@ -42,6 +42,8 @@ const addBusiness = async (req, res) => {
         return res.status(400).send("Invalid callbackRequest: Please provide a valid datetime.");
     }
 
+    enquiryStatus = 'New Enquiry';
+
     try {
         const newBusiness = await Business.addBusiness({
             Name,
@@ -52,6 +54,7 @@ const addBusiness = async (req, res) => {
             orgName,
             helpText,
             callbackRequest,
+            enquiryStatus
         });
 
         const pdfPath = await Business.generatePDF(newBusiness);

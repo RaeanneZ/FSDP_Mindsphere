@@ -15,6 +15,7 @@ class Business {
         orgName,
         helpText,
         callbackRequest,
+        enquiryStatus
     ) {
         this.Name = Name;
         this.ContactNo = ContactNo;
@@ -24,6 +25,7 @@ class Business {
         this.orgName = orgName;
         this.helpText = helpText;
         this.callbackRequest = callbackRequest;
+        this.enquiryStatus = enquiryStatus;
     }
 
     static async addBusiness({
@@ -35,12 +37,13 @@ class Business {
         orgName,
         helpText,
         callbackRequest,
+        enquiryStatus
     }) {
         try {
             const connection = await sql.connect(dbConfig);
-            const sqlQuery = `INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest) 
+            const sqlQuery = `INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest, enquiryStatus) 
                               OUTPUT INSERTED.* 
-                              VALUES (@Name, @ContactNo, @Email, @exNumOfDays, @groupSize, @orgName, @helpText, @callbackRequest)`; // Include callbackRequest in SQL query
+                              VALUES (@Name, @ContactNo, @Email, @exNumOfDays, @groupSize, @orgName, @helpText, @callbackRequest, @enquiryStatus)`; // Include callbackRequest in SQL query
 
             const request = connection.request();
             
@@ -52,6 +55,7 @@ class Business {
             request.input("orgName", orgName);
             request.input("helpText", helpText);
             request.input("callbackRequest", callbackRequest);
+            request.input("enquiryStatus", enquiryStatus)
 
             const result = await request.query(sqlQuery);
             connection.close();
@@ -105,6 +109,7 @@ class Business {
             addField("Organization Name", business.orgName);
             addField("Help Text", business.helpText);
             addField("Callback Request Time", business.callbackRequest ? business.callbackRequest : "N/A");
+            addField("Current Enquiry Status", business.enquiryStatus);
 
             doc.end();
 
@@ -112,6 +117,34 @@ class Business {
             return filePath;
         } catch (err) {
             console.error("ModelError: Error generating PDF:", err);
+        }
+    }
+
+    static async getEnquiries() {
+        try {
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `SELECT * FROM Businesses`;
+            const request = connection.request();
+            const result = await request.query(sqlQuery);
+            connection.close;
+
+            return result.recordset.map(
+                (row) => 
+                    new Business(
+                        row.BusinessID,
+                        row.Name,
+                        row.ContactNo,
+                        row.Email,
+                        row.exNumOfDays,
+                        row.groupSize,
+                        row.orgName,
+                        row.helpText,
+                        row.callbackRequest,
+                        row.enquiryStatus
+                    )
+            );
+        } catch (err) {
+            console.error("ModelError: Error retrieving enquiries");
         }
     }
     
