@@ -480,4 +480,5 @@ export default {
     newsletterService,
     formService,
     programmeFeedBackService,
+    dashboardService
 };
