@@ -31,6 +31,7 @@ import B2BEnquiryTimelineTracker from "./pages/B2BEnquiryTimelineTracker.jsx";
 
 // Import CSS
 import "../public/css/index.css";
+import AdminB2BManagement from "./pages/AdminB2BManagement.jsx";
 
 const router = createBrowserRouter([
   {
@@ -131,6 +132,11 @@ const router = createBrowserRouter([
   {
     path: "/timeline",
     element: <B2BEnquiryTimelineTracker />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/B2BManagement",
+    element: <AdminB2BManagement />,
     errorElement: <ErrorPage />,
   },
 ]);
