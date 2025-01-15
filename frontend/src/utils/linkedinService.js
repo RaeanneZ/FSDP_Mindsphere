@@ -1,19 +1,26 @@
 import axios from "axios";
 
 const linkedinService = {
+    // Fetches an access token from the backend.
+    // @param {string} code - Authorization code received from LinkedIn
+    // @returns {string} Access token
+
     getAccessToken: async (code) => {
         try {
             const response = await axios.post("/api/linkedin/token", { code });
-            return response.data.access_token;
+            return response.data.accessToken; // Extracts the access token
         } catch (error) {
             console.error("LinkedIn token error:", error);
             throw new Error("Failed to get access token from LinkedIn");
         }
     },
 
+    // Fetches LinkedIn user ID using the access token.
+    // @param {string} accessToken - The LinkedIn access token
+    // @returns {object} LinkedIn user ID
+
     getUserProfile: async (accessToken) => {
         try {
-            // Get basic profile
             const profileResponse = await axios.get(
                 "https://api.linkedin.com/v2/me",
                 {
@@ -21,39 +28,31 @@ const linkedinService = {
                 }
             );
 
-            // Get email address
-            const emailResponse = await axios.get(
-                "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
-                {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                }
-            );
-
             return {
-                id: profileResponse.data.id,
-                firstName: profileResponse.data.localizedFirstName,
-                lastName: profileResponse.data.localizedLastName,
-                email: emailResponse.data.elements[0]["handle~"].emailAddress,
+                id: profileResponse.data.id, // Only LinkedIn user ID
             };
         } catch (error) {
             console.error("LinkedIn profile error:", error);
-            throw new Error("Failed to fetch LinkedIn user data");
+            throw new Error("Failed to fetch LinkedIn user profile");
         }
     },
 
-    authenticateWithBackend: async (linkedinProfile) => {
-        try {
-            const response = await axios.post("/api/auth/linkedin", {
-                linkedinId: linkedinProfile.id,
-                email: linkedinProfile.email,
-                firstName: linkedinProfile.firstName,
-                lastName: linkedinProfile.lastName,
-            });
+    // Stores LinkedIn user ID and access token in the backend.
+    // @param {string} linkedInId - The LinkedIn user ID
+    // @param {string} accessToken - The LinkedIn access token
 
-            return response.data; // Should include JWT token or session info
+    storeLinkedInData: async (data) => {
+        console.log("Sending LinkedIn data to backend:", data);
+        try {
+            const response = await axios.post("/api/linkedin/store", data);
+            console.log("Response from /api/linkedin/store:", response.data);
+            return response.data;
         } catch (error) {
-            console.error("Backend auth error:", error);
-            throw new Error("Failed to authenticate with backend");
+            console.error(
+                "Error posting to /api/linkedin/store:",
+                error.response?.data || error.message
+            );
+            throw new Error("Failed to store LinkedIn data.");
         }
     },
 };
