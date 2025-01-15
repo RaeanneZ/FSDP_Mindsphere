@@ -57,7 +57,7 @@ const AdminB2BManagement = () => {
     <>
       <Navbar />
       <div
-        className="bg-contain bg-center flex justify-center items-center"
+        className="bg-cover flex justify-center items-center"
         style={{ backgroundImage: `url(${introBg})` }}
       >
         <div className="max-w-2xl mx-auto p-6 space-y-6">
