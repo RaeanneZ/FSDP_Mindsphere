@@ -18,5 +18,7 @@ router.get("/",businessController.getEnquiries);
 
 router.post("/addBusiness", businessController.addBusiness);
 
+router.put("/updateStatus", businessController.updateStatus)
+
 
 module.exports = router;

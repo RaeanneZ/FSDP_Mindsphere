@@ -467,6 +467,25 @@ const dashboardService = {
             err
         };
         throw err;
+    },
+
+    updateBusinessEnquiry: async (status, BusinessID) => {
+        try {
+            const updateData = {
+                status: status,
+                BusinessID: BusinessID
+            };
+
+            const response = await axios.put(`${apiUrl}/business/updateStatus`, updateData);
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error updating business enquiry: ", err);
+            return {
+                success: false,
+                message: "Updating business enquiry failed",
+                error: err.response ? err.response.data : err.message,
+            }
+        }
     }
 }
 

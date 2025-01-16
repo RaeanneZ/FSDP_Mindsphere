@@ -147,6 +147,25 @@ class Business {
             console.error("ModelError: Error retrieving enquiries");
         }
     }
+
+    static async updateStatus(status, BusinessID) {
+        try {
+            const connection = await sql.connect(dbConfig);
+            const sqlQuery = `UPDATE Businesses SET enquiryStatus = @status WHERE BusinessID = @BusinessID`;
+
+            const request = connection.request();
+            request.input("status", sql.VarChar, status);
+            request.input("BusinessID", sql.Int, BusinessID);
+
+            const result = await request.query(sqlQuery);
+
+            connection.close();
+            return result;
+        } catch (err) {
+            console.error("ModelError: Error updating enquiry status: ", err);
+            throw err;
+        }
+    }
     
 }
 

@@ -102,10 +102,32 @@ const getEnquiries = async (req, res) => {
     }
 }
 
+const updateStatus = async (req, res) => {
+    try {
+        const { status, BusinessID } = req.body;
+
+        if (!status || !BusinessID) {
+            return res.status(400).send("BadRequest: Missing required fields 'status' or 'BusinessID'");
+        }
+
+        const result = await Business.updateStatus(status, BusinessID);
+
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).send("NotFound: No business found with the given BusinessID");
+        }
+
+        res.status(200).send("Success: Enquiry status updated");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("ControllerError: Error updating enquiry status");
+    }
+};
+
 
 
 
 module.exports = { 
     addBusiness,
-    getEnquiries
+    getEnquiries,
+    updateStatus
 };
