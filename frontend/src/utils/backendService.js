@@ -459,6 +459,30 @@ const dashboardService = {
   },
 };
 
+const meetingService = {
+  createMeeting: async (meetingData) => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/whereby/create`,
+        meetingData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("Error creating meeting: ", err);
+      throw err;
+    }
+  },
+  getAllMeetings: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/whereby/all`);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching all meetings: ", err);
+      throw err;
+    }
+  },
+};
+
 export default {
   programmeService,
   progScheduleService,
@@ -470,4 +494,5 @@ export default {
   formService,
   programmeFeedBackService,
   dashboardService,
+  meetingService,
 };
