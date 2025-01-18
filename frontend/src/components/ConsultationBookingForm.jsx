@@ -7,12 +7,16 @@ const ConsultationBookingForm = ({ selectedSlot }) => {
   const handleSubmit = async () => {
     const meetingData = {
       userId: email,
-      adminId: "admin-id", // Replace with dynamic admin logic
+      adminId: "admin-id",
       startTime: selectedSlot.start,
       endTime: selectedSlot.end,
     };
-    await backendService.wherebyService.createMeeting(meetingData);
-    alert("Meeting scheduled successfully!");
+    const result = await backendService.wherebyService.createMeeting(
+      meetingData
+    );
+    alert(
+      `Meeting scheduled successfully! Join your call: ${result.meeting.roomUrl}`
+    );
   };
 
   return (

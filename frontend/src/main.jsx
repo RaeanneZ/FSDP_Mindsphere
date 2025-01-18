@@ -32,6 +32,7 @@ import "../public/css/index.css";
 import AdminForm from "./pages/AdminForm.jsx";
 import AdminConsultationSummaryPage from "./pages/AdminConsultationSummaryPage.jsx";
 import BookingPage from "./pages/BookingPage.jsx";
+import VideoCall from "./components/VideoCall.jsx";
 
 const router = createBrowserRouter([
   {
@@ -137,6 +138,11 @@ const router = createBrowserRouter([
   {
     path: "/consultationSummary",
     element: <AdminConsultationSummaryPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/video-call/:meetingId",
+    element: <VideoCall />,
     errorElement: <ErrorPage />,
   },
 ]);

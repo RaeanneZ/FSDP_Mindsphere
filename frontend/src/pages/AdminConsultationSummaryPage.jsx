@@ -29,6 +29,13 @@ const AdminConsultationSummaryPage = () => {
               <strong>End Time:</strong>{" "}
               {new Date(meeting.endTime).toLocaleString()}
             </p>
+
+            <Link
+              to={`/video-call/${meeting.id}`}
+              className="text-blue-500 underline"
+            >
+              Join Room
+            </Link>
           </div>
         ))}
       </div>
