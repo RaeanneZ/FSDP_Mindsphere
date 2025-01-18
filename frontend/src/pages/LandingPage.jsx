@@ -32,16 +32,16 @@ import WatsonChat from "../components/WatsonChat";
 // const children = await childrenService.getChildByEmail(email);
 // console.log(children);
 
-const { programmeService } = backendService;
-const email = "iamjovantan@gmail.com";
-const programmes = await programmeService.getRegisteredProgrammesByAccount(
-  email
-);
-console.log(programmes);
+// const { programmeService } = backendService;
+// const email = "iamjovantan@gmail.com";
+// const programmes = await programmeService.getRegisteredProgrammesByAccount(
+//   email
+// );
+// console.log(programmes);
 
-const { programmeFeedBackService } = backendService;
-const feedbackByID = await programmeFeedBackService.getFeedbackByID(1);
-console.log(feedbackByID);
+// const { programmeFeedBackService } = backendService;
+// const feedbackByID = await programmeFeedBackService.getFeedbackByID(1);
+// console.log(feedbackByID);
 
 const LandingPage = () => {
   const navigate = useNavigate();
