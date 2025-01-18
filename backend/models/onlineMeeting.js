@@ -4,7 +4,7 @@ const axios = require("axios");
 const MeetingModel = require("./MeetingModel");
 const API_KEY = process.env.WHEREBY_API_KEY;
 
-exports.createMeeting = async (userId, adminId, startTime, endTime) => {
+exports.createMeeting = async (userId, startTime, endTime) => {
   const response = await axios.post(
     "https://api.whereby.dev/v1/meetings",
     {
@@ -25,7 +25,6 @@ exports.createMeeting = async (userId, adminId, startTime, endTime) => {
     startTime,
     endTime,
     userId,
-    adminId,
     isLocked: true,
   });
 

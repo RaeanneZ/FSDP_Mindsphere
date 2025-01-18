@@ -2,10 +2,9 @@ const WherebyService = require("../models/onlineMeeting");
 
 const createMeeting = async (req, res) => {
   try {
-    const { userId, adminId, startTime, endTime } = req.body;
+    const { userId, startTime, endTime } = req.body;
     const meeting = await WherebyService.createMeeting(
       userId,
-      adminId,
       startTime,
       endTime
     );
