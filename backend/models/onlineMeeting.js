@@ -1,4 +1,4 @@
-// This is purely to handle all Whereby API
+// This is purely to handle all Whereby API (Single Responsibility Principle)
 
 const axios = require("axios");
 const MeetingModel = require("./MeetingModel");

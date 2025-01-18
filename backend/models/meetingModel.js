@@ -1,4 +1,4 @@
-// This is to handle all api calls to the database
+// This is to handle all api calls to the database (Single Responsibility Principle)
 
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
