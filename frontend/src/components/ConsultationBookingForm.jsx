@@ -25,10 +25,15 @@ const ConsultationBookingForm = ({ selectedSlot }) => {
       startTime: selectedSlot.start,
       endTime: selectedSlot.end,
     };
-    const result = await meetingService.createMeeting(meetingData);
-    alert(
-      `Meeting scheduled successfully! Join your call: ${result.meeting.roomUrl}`
-    );
+    try {
+      const result = await meetingService.createMeeting(meetingData);
+      alert(
+        `Meeting scheduled successfully! Join your call: ${result.roomUrl}`
+      );
+    } catch (error) {
+      console.error("Error creating meeting:", error.message);
+      alert("Failed to create the meeting. Please try again.");
+    }
   };
 
   // Format the start and end times

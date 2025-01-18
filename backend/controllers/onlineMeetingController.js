@@ -3,13 +3,21 @@ const WherebyService = require("../models/onlineMeeting");
 const createMeeting = async (req, res) => {
   try {
     const { userId, startTime, endTime } = req.body;
+    // Validate inputs
+    if (!userId || !startTime || !endTime) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Call the Whereby service
     const meeting = await WherebyService.createMeeting(
       userId,
       startTime,
       endTime
     );
+
     res.status(201).json({ message: "Meeting created successfully", meeting });
   } catch (error) {
+    console.error("Error creating meeting:", error);
     res.status(500).json({ error: error.message });
   }
 };
