@@ -36,20 +36,17 @@ const LoginPage = () => {
             const accessToken = await linkedinService.getAccessToken(code);
             console.log("Access Token Retrieved:", accessToken);
 
+            // Save token in session storage or local storage
+            sessionStorage.setItem("LinkedInAccessToken", accessToken);
+
+            // Optionally retrieve the user profile to display or process further
             const userProfile = await linkedinService.getUserProfile(
                 accessToken
             );
             console.log("User Profile Retrieved:", userProfile);
 
-            console.log("Calling storeLinkedInData...");
-            const storeResponse = await linkedinService.storeLinkedInData({
-                email: userProfile.email,
-                linkedInId: userProfile.id,
-                accessToken,
-            });
-            console.log("Store Response:", storeResponse);
-
-            navigate("/"); // Redirect to homepage
+            // Redirect to home or dashboard after login
+            navigate("/");
         } catch (error) {
             console.error("Error in LinkedIn Callback:", error);
             setError("Failed to log in with LinkedIn.");
@@ -57,10 +54,8 @@ const LoginPage = () => {
     };
 
     useEffect(() => {
-        console.log("useEffect triggered");
         const params = new URLSearchParams(window.location.search);
         const code = params.get("code");
-        console.log("Authorization Code from URL:", code);
         if (code) {
             handleLinkedInCallback(code);
         }

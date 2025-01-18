@@ -123,6 +123,7 @@ app.post("/api/reminders/initialize", reminderController.initializeReminders);
 app.get("/api/reminders", reminderController.getScheduledReminders);
 PaymentEmailController.sendMembershipCodes;
 
+app.use("/api/linkedin", linkedinRoute);
 app.use("/", linkedinRoute);
 
 // START REMINDER SYSTEM ON SERVER START

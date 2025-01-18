@@ -8,6 +8,27 @@ const router = express.Router();
 const { LINKEDIN_CLIENT_ID, LINKEDIN_CLIENT_SECRET, LINKEDIN_CALLBACK_URL } =
     process.env;
 
+router.post("/userinfo", async (req, res) => {
+    const { accessToken } = req.body;
+
+    try {
+        const response = await axios.get(
+            "https://api.linkedin.com/v2/userinfo",
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+        res.json(response.data);
+    } catch (error) {
+        console.error(
+            "Error fetching LinkedIn userinfo:",
+            error.response?.data || error.message
+        );
+        res.status(500).json({ error: "Failed to fetch LinkedIn userinfo" });
+    }
+});
 // Exchange Authorization Code for Access Token
 router.post("/api/linkedin/token", async (req, res) => {
     const { code } = req.body;
@@ -50,81 +71,33 @@ router.post("/api/linkedin/token", async (req, res) => {
     }
 });
 
-// Fetch LinkedIn User Profile and Email
-router.get("/api/linkedin/user", async (req, res) => {
-    const authHeader = req.headers.authorization;
-    const accessToken = authHeader?.split(" ")[1];
-
-    if (!accessToken) {
-        return res.status(400).json({ error: "Access token is required" });
-    }
-
-    try {
-        const profileResponse = await axios.get(
-            "https://api.linkedin.com/v2/me",
-            { headers: { Authorization: `Bearer ${accessToken}` } }
-        );
-
-        const emailResponse = await axios.get(
-            "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))",
-            { headers: { Authorization: `Bearer ${accessToken}` } }
-        );
-
-        const userProfile = {
-            id: profileResponse.data.id,
-            firstName: profileResponse.data.localizedFirstName,
-            lastName: profileResponse.data.localizedLastName,
-            email: emailResponse.data.elements[0]["handle~"].emailAddress,
-        };
-
-        res.status(200).json(userProfile);
-    } catch (error) {
-        console.error(
-            "Error fetching LinkedIn user data:",
-            error.response?.data || error.message
-        );
-        res.status(500).json({ error: "Failed to fetch LinkedIn user data" });
-    }
-});
-
-// Store LinkedIn ID and Access Token in Database
+// Store LinkedIn Access Token in Database
 router.post("/api/linkedin/store", async (req, res) => {
-    const { email, linkedInId, accessToken } = req.body;
+    const { sub, accessToken } = req.body;
 
-    if (!email || !linkedInId || !accessToken) {
-        console.error("Missing required fields:", {
-            email,
-            linkedInId,
-            accessToken,
-        });
+    if (!sub || !accessToken) {
+        console.error("Missing required fields:", { sub, accessToken });
         return res.status(400).json({
-            error: "Email, LinkedIn ID, and access token are required.",
+            error: "Sub (unique LinkedIn ID) and access token are required.",
         });
     }
 
     try {
-        console.log("Storing LinkedIn Data:", {
-            email,
-            linkedInId,
-            accessToken,
-        });
+        console.log("Storing LinkedIn Data:", { sub, accessToken });
 
         const query = `
-            IF EXISTS (SELECT 1 FROM Account WHERE Email = @Email)
+            IF EXISTS (SELECT 1 FROM Account WHERE LinkedInSub = @LinkedInSub)
                 UPDATE Account 
-                SET LinkedInID = @LinkedInID, LinkedInAccessToken = @AccessToken
-                WHERE Email = @Email
+                SET LinkedInAccessToken = @AccessToken
+                WHERE LinkedInSub = @LinkedInSub
             ELSE
-                INSERT INTO Account (Email, LinkedInID, LinkedInAccessToken)
-                VALUES (@Email, @LinkedInID, @AccessToken)
+                INSERT INTO Account (LinkedInSub, LinkedInAccessToken, RoleID)
+                VALUES (@LinkedInSub, @AccessToken, 2)
         `;
-
-        console.log("Executing Query:", query);
 
         const pool = await sql.connect(dbConfig);
         const request = pool.request();
-        request.input("Email", sql.VarChar(50), email);
-        request.input("LinkedInID", sql.VarChar(255), linkedInId);
+        request.input("LinkedInSub", sql.VarChar(255), sub);
         request.input("AccessToken", sql.VarChar(255), accessToken);
 
         const result = await request.query(query);
@@ -136,35 +109,36 @@ router.post("/api/linkedin/store", async (req, res) => {
         });
     } catch (error) {
         console.error("Error storing LinkedIn data:", error.message);
-        res.status(500).json({ error: "Failed to store LinkedIn data." });
+        res.status(500).json({
+            error: "Failed to store LinkedIn data.",
+        });
     }
 });
 
-// Get Stored LinkedIn Data
-router.get("/api/linkedin/stored/:id", async (req, res) => {
-    const { id } = req.params;
+// Fetch User Data Using Access Token (Optional for validation)
+router.get("/api/linkedin/user", async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const accessToken = authHeader?.split(" ")[1];
 
-    if (!id) {
-        return res.status(400).json({ error: "LinkedIn ID is required" });
+    if (!accessToken) {
+        return res.status(400).json({ error: "Access token is required" });
     }
 
     try {
-        const pool = await sql.connect(dbConfig);
-        const result = await pool
-            .request()
-            .input("LinkedInID", sql.VarChar(255), id)
-            .query("SELECT * FROM Account WHERE LinkedInID = @LinkedInID");
+        const userInfoResponse = await axios.get(
+            "https://api.linkedin.com/v2/userinfo",
+            {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            }
+        );
 
-        if (result.recordset.length === 0) {
-            return res
-                .status(404)
-                .json({ error: `No data found for LinkedIn ID: ${id}` });
-        }
-
-        res.status(200).json(result.recordset[0]);
+        res.status(200).json(userInfoResponse.data);
     } catch (error) {
-        console.error("Error retrieving stored data:", error.message);
-        res.status(500).json({ error: "Failed to retrieve LinkedIn data" });
+        console.error(
+            "Error fetching LinkedIn user data:",
+            error.response?.data || error.message
+        );
+        res.status(500).json({ error: "Failed to fetch LinkedIn user data" });
     }
 });
 
