@@ -17,6 +17,10 @@ if exists (select * from sysobjects where name='Bookings' and type='U')
     drop table Bookings
 GO
 
+if exists (select * from sysobjects where name='Meetings' and type='U')
+    drop table Meetings
+GO
+
 if exists (select * from sysobjects where name='ProgrammeSchedule' and type='U')
     drop table ProgrammeSchedule
 GO
@@ -248,6 +252,16 @@ create table Bookings (
 	constraint FK_Bookings_SchedID foreign key (SchedID) references ProgrammeSchedule(SchedID),
 	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID)
 )
+go
+
+CREATE TABLE Meetings (
+    MeetingID VARCHAR(50) PRIMARY KEY,
+    RoomURL VARCHAR(255) NOT NULL,
+    StartTime DATETIME NOT NULL,
+    EndTime DATETIME NOT NULL,
+    UserID VARCHAR(50) NOT NULL,
+    IsLocked BIT NOT NULL DEFAULT 1
+);
 go
 
 -------------------------------------------------------------------------------------------------------------
