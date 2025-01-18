@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import backendService from "../services/backendService";
+import backendService from "../utils/backendService";
 
 const localizer = momentLocalizer(moment);
 

@@ -481,6 +481,14 @@ const meetingService = {
       throw err;
     }
   },
+  getMeetingDetails: async (meetingId) => {
+    // Fetch meeting details from the database using the meetingId
+    const meeting = await MeetingModel.findById(meetingId);
+    if (!meeting) {
+      throw new Error("Meeting not found");
+    }
+    return { roomUrl: meeting.hostRoomUrl };
+  },
 };
 
 export default {

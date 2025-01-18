@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import backendService from "../services/backendService";
+import backendService from "../utils/backendService";
 
 const ConsultationBookingForm = ({ selectedSlot }) => {
   const [email, setEmail] = useState("");
