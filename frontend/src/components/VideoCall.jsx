@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import backendService from "../utils/backendService";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
 
 const VideoCall = () => {
   const { meetingId } = useParams();
@@ -13,7 +15,16 @@ const VideoCall = () => {
       try {
         console.log("Fetching Meeting");
         const data = await meetingService.getMeetingDetails(meetingId);
-        setRoomUrl(data.roomUrl);
+
+        // Get AccountEmail from session storage
+        const accountEmail = sessionStorage.getItem("AccountEmail");
+
+        // Use HostRoomURL if the user is admin
+        if (accountEmail === "admin@gmail.com") {
+          setRoomUrl(data.HostRoomURL);
+        } else {
+          setRoomUrl(data.RoomURL);
+        }
       } catch (err) {
         setError("Failed to load meeting details. Please contact support.");
       }
@@ -30,15 +41,21 @@ const VideoCall = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Video Call</h1>
-      <iframe
-        src={roomUrl}
-        allow="camera; microphone; fullscreen; speaker; display-capture"
-        className="w-full h-[80vh] border rounded"
-        title="Whereby Video Call"
-      />
-    </div>
+    <>
+      <Navbar />
+      <div className="container mx-auto p-4">
+        <h1 className="w-full text-2xl font-bold mb-4">
+          Mindsphere Consultation
+        </h1>
+        <iframe
+          src={roomUrl}
+          allow="camera; microphone; fullscreen; speaker; display-capture"
+          className="w-full h-[80vh] border rounded"
+          title="Whereby Video Call"
+        />
+      </div>
+      <Footer />
+    </>
   );
 };
 

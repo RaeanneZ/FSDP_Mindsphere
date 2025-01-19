@@ -490,6 +490,15 @@ const meetingService = {
       console.error("Error fetching meeting details:", err);
       throw err;
     }
+
+    // Response is:
+    //     EndTime: "2025-01-22T06:00:00.000Z"
+    //     HostRoomURL: "https://mindsphere-online.whereby.com/8debaa42-8338-434e-9198-be6bd5c0b210?roomKey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZWV0aW5nSWQiOiI5NTY1ODIxMiIsInJvb21SZWZlcmVuY2UiOnsicm9vbU5hbWUiOiIvOGRlYmFhNDItODMzOC00MzRlLTkxOTgtYmU2YmQ1YzBiMjEwIiwib3JnYW5pemF0aW9uSWQiOiIzMDY0MjkifSwiaXNzIjoiaHR0cHM6Ly9hY2NvdW50cy5zcnYud2hlcmVieS5jb20iLCJpYXQiOjE3MzcyNjY2OTQsInJvb21LZXlUeXBlIjoibWVldGluZ0hvc3QifQ.QFNF8qjihoiEJbVKWq1KrWpqX6tbXTchjoGVQBibu_g"
+    //     IsLocked: true
+    //     MeetingID:"95658212"
+    //     RoomURL: "https://mindsphere-online.whereby.com/8debaa42-8338-434e-9198-be6bd5c0b210"
+    //     StartTime: "2025-01-22T03:00:00.000Z"
+    //     UserID: "raeannezou@gmail.com"
   },
 };
 
