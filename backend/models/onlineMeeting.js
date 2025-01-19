@@ -5,7 +5,6 @@ const MeetingModel = require("./meetingModel");
 const API_KEY = process.env.WHEREBY_API_KEY;
 
 exports.createMeeting = async (UserEmail, startTime, endTime) => {
-  console.log("Entered create meeting");
   try {
     // Step 1: Create the meeting via Whereby API
     const response = await axios.post(
