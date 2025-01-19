@@ -9,7 +9,6 @@ import ValueBanner from "../components/ValueBanner";
 import Footer from "../components/Footer";
 import backendService from "../utils/backendService";
 import CorporateProgramsSection from "../components/CorporateProgramsSection";
-import WatsonChat from "../components/WatsonChat";
 
 // const { accountService } = backendService;
 // const account = await accountService.signUp(
@@ -54,7 +53,6 @@ const LandingPage = () => {
 
   return (
     <>
-      <WatsonChat />
       <Navbar />
       <LandingBanner />
       <ProgrammeSection onProgrammeSelect={handleProgrammeSelect} />
