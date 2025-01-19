@@ -38,14 +38,14 @@ const AdminConsultationSummaryPage = () => {
     <>
       <Navbar />
       <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">Admin Consultation Summary</h1>
+        <h1 className="text-3xl font-bold mb-6">Consultation Overview</h1>
 
         {/* Responsive Layout for Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
           {/* Today's Meetings Section */}
           <div>
             <h2 className="text-2xl font-semibold mb-4">Today's Meetings</h2>
-            <div className="relative border-l-2 border-gray-200 pl-6">
+            <div className="w-[80%] relative border-l-2 border-gray-200 pl-6">
               {todayMeetings.length === 0 ? (
                 <p className="text-gray-500">
                   No meetings scheduled for today.
@@ -87,8 +87,12 @@ const AdminConsultationSummaryPage = () => {
                               : "border-gray-200"
                           } rounded-md shadow-md bg-white`}
                         >
-                          <p>
-                            <strong>Meeting ID:</strong> {meeting.MeetingID}
+                          <p className="pb-4 flex flex-col">
+                            <strong>Meeting ID: {meeting.MeetingID}</strong>
+                            <sub className="text-sm">
+                              {" "}
+                              Client: {meeting.UserID}
+                            </sub>{" "}
                           </p>
                           <p>
                             <strong>Start Time:</strong>{" "}
