@@ -27,7 +27,7 @@ const TimelineMeeting = ({ meeting, isCurrentMeeting, currentTime }) => {
         >
           <p className="pb-4 flex flex-col">
             <strong>Meeting ID: {meeting.MeetingID}</strong>
-            <sub className="text-sm">Client: {meeting.UserID}</sub>
+            <sub className="text-sm">Client: {meeting.UserEmail}</sub>
           </p>
           <p>
             <strong>Start Time:</strong>{" "}

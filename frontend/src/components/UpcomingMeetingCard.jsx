@@ -6,7 +6,7 @@ const UpcomingMeetingCard = ({ meeting }) => {
     <div className="p-4 border border-gray-200 rounded-lg shadow-md bg-lightBlue">
       <p className="pb-4 flex flex-col">
         <strong>Meeting ID: {meeting.MeetingID}</strong>
-        <sub className="text-sm">Client: {meeting.UserID}</sub>
+        <sub className="text-sm">Client: {meeting.UserEmail}</sub>
       </p>
       <p>
         <strong>Start Time:</strong>{" "}

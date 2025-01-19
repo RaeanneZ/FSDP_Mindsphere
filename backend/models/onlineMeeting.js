@@ -4,7 +4,7 @@ const axios = require("axios");
 const MeetingModel = require("./meetingModel");
 const API_KEY = process.env.WHEREBY_API_KEY;
 
-exports.createMeeting = async (userId, startTime, endTime) => {
+exports.createMeeting = async (UserEmail, startTime, endTime) => {
   console.log("Entered create meeting");
   try {
     // Step 1: Create the meeting via Whereby API
@@ -33,7 +33,7 @@ exports.createMeeting = async (userId, startTime, endTime) => {
       roomUrl: meeting.roomUrl, // This is for participants (link to be placed at member side)
       startTime,
       endTime,
-      userId,
+      UserEmail,
       isLocked: true,
     });
 

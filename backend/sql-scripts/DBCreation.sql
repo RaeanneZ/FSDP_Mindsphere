@@ -260,8 +260,9 @@ CREATE TABLE Meetings (
 	HostRoomURL NVARCHAR(MAX) NOT NULL,
     StartTime DATETIME NOT NULL,
     EndTime DATETIME NOT NULL,
-    UserID VARCHAR(50) NOT NULL,
-    IsLocked BIT NOT NULL DEFAULT 1
+    UserEmail VARCHAR(50) NOT NULL,
+    IsLocked BIT NOT NULL DEFAULT 1,
+	CONSTRAINT FK_Meetings_UserEmail FOREIGN KEY (UserEmail) REFERENCES Account(Email)
 );
 go
 

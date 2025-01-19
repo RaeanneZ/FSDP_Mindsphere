@@ -3,15 +3,15 @@ const MeetingModel = require("../models/meetingModel");
 
 const createMeeting = async (req, res) => {
   try {
-    const { userId, startTime, endTime } = req.body;
+    const { UserEmail, startTime, endTime } = req.body;
     // Validate inputs
-    if (!userId || !startTime || !endTime) {
+    if (!UserEmail || !startTime || !endTime) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
     // Call the Whereby service
     const meeting = await WherebyModel.createMeeting(
-      userId,
+      UserEmail,
       startTime,
       endTime
     );

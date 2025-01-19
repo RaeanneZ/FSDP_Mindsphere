@@ -21,7 +21,7 @@ const ConsultationBookingForm = ({ selectedSlot }) => {
 
   const handleSubmit = async () => {
     const meetingData = {
-      userId: email,
+      UserEmail: email,
       startTime: selectedSlot.start,
       endTime: selectedSlot.end,
     };

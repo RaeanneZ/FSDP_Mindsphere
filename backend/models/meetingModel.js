@@ -11,15 +11,15 @@ class MeetingModel {
       roomUrl,
       startTime,
       endTime,
-      userId,
+      UserEmail,
       isLocked,
     } = meetingData;
 
     const connection = await sql.connect(dbConfig);
     const sqlQuery = `
-            INSERT INTO Meetings (MeetingID, RoomURL, HostRoomURL, StartTime, EndTime, UserID, IsLocked)
+            INSERT INTO Meetings (MeetingID, RoomURL, HostRoomURL, StartTime, EndTime, UserEmail, IsLocked)
             OUTPUT INSERTED.*
-            VALUES (@MeetingID, @RoomURL, @HostRoomURL, @StartTime, @EndTime, @UserID, @IsLocked)
+            VALUES (@MeetingID, @RoomURL, @HostRoomURL, @StartTime, @EndTime, @UserEmail, @IsLocked)
         `;
     const request = connection.request();
     request.input("MeetingID", sql.VarChar(50), meetingId);
@@ -27,7 +27,7 @@ class MeetingModel {
     request.input("HostRoomURL", sql.NVarChar(sql.MAX), hostroomURL); // Updated to NVARCHAR(MAX)
     request.input("StartTime", sql.DateTime, startTime);
     request.input("EndTime", sql.DateTime, endTime);
-    request.input("UserID", sql.VarChar(50), userId);
+    request.input("UserEmail", sql.VarChar(50), UserEmail);
     request.input("IsLocked", sql.Bit, isLocked);
 
     const result = await request.query(sqlQuery);

@@ -498,7 +498,7 @@ const meetingService = {
     //     MeetingID:"95658212"
     //     RoomURL: "https://mindsphere-online.whereby.com/8debaa42-8338-434e-9198-be6bd5c0b210"
     //     StartTime: "2025-01-22T03:00:00.000Z"
-    //     UserID: "raeannezou@gmail.com"
+    //     UserEmail: "raeannezou@gmail.com"
   },
 };
 
