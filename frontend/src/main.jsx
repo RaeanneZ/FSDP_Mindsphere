@@ -1,4 +1,3 @@
-// main.jsx
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -26,11 +25,20 @@ import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ErrorPage from "./pages/errorPage.jsx";
+import AdminForm from "./pages/AdminForm.jsx";
+
+// Import components
+import Chatbot from "./components/Chatbot.jsx";
 
 // Import CSS
 import "../public/css/index.css";
-import AdminForm from "./pages/AdminForm.jsx";
 
+// Define a function to track pages
+const trackPage = (page) => {
+  console.log(`Tracked page: ${page}`); // Replace with your analytics logic
+};
+
+// Router configuration
 const router = createBrowserRouter([
   {
     path: "/",
@@ -129,10 +137,15 @@ const router = createBrowserRouter([
   },
 ]);
 
+// Render the app with RouterProvider and Chatbot
 createRoot(document.getElementById("root")).render(
-  <AuthProvider>
-    {" "}
-    {/* Wrap RouterProvider with AuthProvider */}
-    <RouterProvider router={router} />
-  </AuthProvider>
+  <StrictMode>
+    <AuthProvider>
+      <RouterProvider router={router} />
+      <Chatbot
+        trackPage={trackPage}
+        companyInfo={`I'm your friendly Mindsphere chatbot (SphereBot).`}
+      />
+    </AuthProvider>
+  </StrictMode>
 );
