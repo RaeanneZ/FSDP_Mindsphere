@@ -117,18 +117,13 @@ circle {
   font-family: "Inter", sans-serif;
 }
 
-body {
-  width: 100%;
-  min-height: 100vh;
-}
-
 #chatbot-toggler {
   position: fixed;
   bottom: 30px;
-  right: 31px;
+  right: 35px;
   border: none;
-  height: 55px;
-  width: 55px;
+  height: 50px;
+  width: 50px;
   display: flex;
   cursor: pointer;
   align-items: center;
@@ -140,26 +135,37 @@ body {
   z-index: 1000; /* Ensure visibility above other elements */
 }
 
-#chatbot-toggler span {
-  color: #fff;
-  font-family: "Material Symbols Rounded", sans-serif; /* Force Google icons font */
-  font-size: 1.5rem; /* Icon size */
-}
-
 .container.show-chatbot #chatbot-toggler {
   transform: rotate(90deg);
+}
+
+#chatbot-toggler span {
+  color: #fff;
+  font-family: "Material Symbols Rounded", sans-serif; /* Google icons font */
+  font-size: 1.5rem; /* Icon size */
+  position: absolute;
+  transition: opacity 0.2s ease;
+}
+
+#chatbot-toggler span:last-child,
+.container.show-chatbot #chatbot-toggler span:first-child {
+  opacity: 0;
+}
+
+.container.show-chatbot #chatbot-toggler span:last-child {
+  opacity: 1;
 }
 
 .chatbot-popup {
   position: fixed;
   width: 420px;
   opacity: 0;
-  right: 31px;
+  right: 35px;
   bottom: 90px;
   pointer-events: none;
   transform: scale(0.2);
   overflow: hidden;
-  background: #fff; /* Chatbot-specific background */
+  background: #fff; /* Chatbot background */
   border-radius: 15px;
   transform-origin: bottom right;
   box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
