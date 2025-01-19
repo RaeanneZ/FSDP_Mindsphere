@@ -36,8 +36,8 @@ const Navbar = () => {
     if (email === "admin@gmail.com") {
       return (
         <>
-          <a href="/" className="hover:text-gray-900">
-            Home
+          <a href="/consultationSummary" className="hover:text-gray-900">
+            Consultations
           </a>
           <a href="/admin" className="hover:text-gray-900">
             Dashboard
