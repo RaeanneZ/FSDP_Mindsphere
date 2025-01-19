@@ -6,13 +6,12 @@ const VideoCall = () => {
   const { meetingId } = useParams();
   const [roomUrl, setRoomUrl] = useState(null);
   const [error, setError] = useState(null);
+  const { meetingService } = backendService;
 
   useEffect(() => {
     async function fetchMeetingDetails() {
       try {
-        const data = await backendService.wherebyService.getMeetingDetails(
-          meetingId
-        );
+        const data = await meetingService.getMeetingDetails(meetingId);
         setRoomUrl(data.roomUrl);
       } catch (err) {
         setError("Failed to load meeting details. Please contact support.");
