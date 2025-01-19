@@ -288,7 +288,7 @@ const AccountDashboardPage = () => {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">Consultation Bookings</h2>
               <button
-                onClick={() => navigate("/book-consultation")}
+                onClick={() => navigate("/bookConsult")}
                 className="bg-yellow text-white font-semibold py-2 px-6 rounded"
               >
                 Book a Consultation
