@@ -71,7 +71,6 @@ const programmeTiersController = require("./controllers/programmeTierController"
 const businessController = require("./controllers/businessController");
 const surveyFormController = require("./controllers/surveyFormController");
 const reminderController = require("./controllers/reminderEmailController");
-const onlineMeetingController = require("./controllers/onlineMeetingController");
 
 // APP SETUP
 const app = express();

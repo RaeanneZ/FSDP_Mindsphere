@@ -9,6 +9,10 @@ const createMeeting = async (req, res) => {
     }
 
     // Call the Whereby service
+    console.log("Entered the controller");
+    console.log("CreateRoom/ userid: ", userId);
+    console.log("CreateRoom/ startTime: ", startTime);
+    console.log("CreateRoom/ endTime: ", endTime);
     const meeting = await WherebyService.createMeeting(
       userId,
       startTime,

@@ -5,17 +5,25 @@ const dbConfig = require("../dbConfig");
 
 class MeetingModel {
   static async saveMeeting(meetingData) {
-    const { meetingId, roomUrl, startTime, endTime, userId, isLocked } =
-      meetingData;
+    const {
+      meetingId,
+      hostroomURL,
+      roomUrl,
+      startTime,
+      endTime,
+      userId,
+      isLocked,
+    } = meetingData;
 
     const connection = await sql.connect(dbConfig);
     const sqlQuery = `
-            INSERT INTO Meetings (MeetingID, RoomURL, StartTime, EndTime, UserID, IsLocked)
+            INSERT INTO Meetings (MeetingID, HostRoomURL, RoomURL, StartTime, EndTime, UserID, IsLocked)
             OUTPUT INSERTED.*
-            VALUES (@MeetingID, @RoomURL, @StartTime, @EndTime, @UserID, @IsLocked)
+            VALUES (@MeetingID, @HostRoomURL, @RoomURL, @StartTime, @EndTime, @UserID, @IsLocked)
         `;
     const request = connection.request();
     request.input("MeetingID", sql.VarChar(50), meetingId);
+    request.input("HostRoomURL", sql.VarChar(255), hostroomURL);
     request.input("RoomURL", sql.VarChar(255), roomUrl);
     request.input("StartTime", sql.DateTime, startTime);
     request.input("EndTime", sql.DateTime, endTime);
