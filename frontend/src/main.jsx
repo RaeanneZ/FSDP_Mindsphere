@@ -1,9 +1,11 @@
-import { StrictMode } from "react";
+import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 // Import AuthProvider for global authentication state
 import { AuthProvider } from "./contexts/AuthContext.jsx";
+import PageTracking from "./components/PageTracking.jsx";
+import Chatbot from "./components/Chatbot.jsx";
 
 // Import all the pages
 import LandingPage from "./pages/LandingPage.jsx";
@@ -24,11 +26,8 @@ import AccountManagementPage from "./pages/AccountManagementPage.jsx";
 import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
-import ErrorPage from "./pages/errorPage.jsx";
+import ErrorPage from "./pages/ErrorPage.jsx";
 import AdminForm from "./pages/AdminForm.jsx";
-
-// Import components
-import Chatbot from "./components/Chatbot.jsx";
 
 // Import CSS
 import "../public/css/index.css";
@@ -137,15 +136,50 @@ const router = createBrowserRouter([
   },
 ]);
 
-// Render the app with RouterProvider and Chatbot
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-      <Chatbot
-        trackPage={trackPage}
-        companyInfo={`I'm your friendly Mindsphere chatbot (SphereBot).`}
-      />
-    </AuthProvider>
-  </StrictMode>
-);
+// Define inactivity messages
+const inactivityMessages = {
+  "/": "Need help exploring the homepage?",
+  "/login": "Having trouble logging in?",
+  "/signup": "Need assistance with signing up?",
+  "/personalisation": "Need help with personalising your account?",
+  "/accountSetup": "Need help setting up your account?",
+  "/childPageContainer": "Need help managing your children's details?",
+  "/accountSetup/childSection": "Stuck on the child section setup?",
+  "/accountSetup/childName": "Need help entering your child's name?",
+  "/accountSetup/childFav": "Need suggestions for your child's favorites?",
+  "/accountSetup/childAmbition":
+    "Need guidance with entering your child's ambition?",
+  "/welcome": "Excited to explore the platform? Let us guide you!",
+  "/products": "Need help selecting a product?",
+  "/businessEnquiry": "Have questions about submitting a business inquiry?",
+  "/review": "Need help writing or submitting a review?",
+  "/payment": "Need help checking out?",
+  "/accountmanagement": "Need assistance managing your account?",
+  "/survey": "Need help completing the survey?",
+  "/about": "Want to learn more about us? Let me guide you!",
+  "/admin": "Need admin-specific guidance?",
+};
+
+const MainApp = () => {
+  const [autoOpenMessage, setAutoOpenMessage] = useState(null);
+
+  // Handle inactivity and set appropriate messages
+  const handleInactivity = (page) => {
+    const message = inactivityMessages[page];
+    if (message) {
+      setAutoOpenMessage(message);
+    }
+  };
+
+  return (
+    <StrictMode>
+      <AuthProvider>
+        <PageTracking trackPage={trackPage} onInactivity={handleInactivity} />
+        <RouterProvider router={router} />
+        <Chatbot trackPage={trackPage} autoOpenMessage={autoOpenMessage} />
+      </AuthProvider>
+    </StrictMode>
+  );
+};
+
+createRoot(document.getElementById("root")).render(<MainApp />);

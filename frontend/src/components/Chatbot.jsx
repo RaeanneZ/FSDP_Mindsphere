@@ -4,7 +4,7 @@ import ChatForm from "../components/ChatForm";
 import ChatMessage from "../components/ChatMessage";
 import { companyInfo } from "../constants/companyInfo";
 
-const Chatbot = () => {
+const Chatbot = ({ trackPage, autoOpenMessage }) => {
   const chatBodyRef = useRef();
   const [showChatbot, setShowChatbot] = useState(false);
   const [chatHistory, setChatHistory] = useState([
@@ -14,6 +14,19 @@ const Chatbot = () => {
       text: companyInfo,
     },
   ]);
+  const [hasShownAutoMessage, setHasShownAutoMessage] = useState(false); // New state to track auto message
+
+  // Handle auto-opening the chatbot with a message
+  useEffect(() => {
+    if (autoOpenMessage && !hasShownAutoMessage) {
+      setShowChatbot(true);
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "model", text: autoOpenMessage },
+      ]);
+      setHasShownAutoMessage(true); // Mark that we've shown the auto message
+    }
+  }, [autoOpenMessage, hasShownAutoMessage]);
 
   const generateBotResponse = async (history) => {
     const updateHistory = (text, isError = false) => {
@@ -57,6 +70,12 @@ const Chatbot = () => {
       });
     }
   }, [chatHistory]);
+
+  useEffect(() => {
+    if (showChatbot) {
+      trackPage(window.location.pathname);
+    }
+  }, [showChatbot, trackPage]);
 
   return (
     <div className={`container ${showChatbot ? "show-chatbot" : ""}`}>
