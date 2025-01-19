@@ -1,4 +1,5 @@
-const WherebyService = require("../models/onlineMeeting");
+const WherebyModel = require("../models/onlineMeeting");
+const MeetingModel = require("../models/meetingModel");
 
 const createMeeting = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ const createMeeting = async (req, res) => {
     }
 
     // Call the Whereby service
-    const meeting = await WherebyService.createMeeting(
+    const meeting = await WherebyModel.createMeeting(
       userId,
       startTime,
       endTime
@@ -24,7 +25,7 @@ const createMeeting = async (req, res) => {
 
 const getAllMeetings = async (req, res) => {
   try {
-    const meetings = await WherebyService.getAllMeetings();
+    const meetings = await MeetingModel.getAllMeetings();
     res.status(200).json(meetings);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -34,7 +35,7 @@ const getAllMeetings = async (req, res) => {
 const getMeetingDetails = async (req, res) => {
   try {
     const { meetingId } = req.params;
-    const meeting = await WherebyService.getMeetingDetails(meetingId);
+    const meeting = await MeetingModel.getMeetingDetails(meetingId);
     res.status(200).json(meeting);
   } catch (error) {
     res.status(404).json({ error: error.message });

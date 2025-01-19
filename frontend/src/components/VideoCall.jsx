@@ -11,6 +11,7 @@ const VideoCall = () => {
   useEffect(() => {
     async function fetchMeetingDetails() {
       try {
+        console.log("Fetching Meeting");
         const data = await meetingService.getMeetingDetails(meetingId);
         setRoomUrl(data.roomUrl);
       } catch (err) {

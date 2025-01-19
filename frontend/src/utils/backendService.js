@@ -482,12 +482,14 @@ const meetingService = {
     }
   },
   getMeetingDetails: async (meetingId) => {
-    // Fetch meeting details from the database using the meetingId
-    const meeting = await MeetingModel.findById(meetingId);
-    if (!meeting) {
-      throw new Error("Meeting not found");
+    try {
+      const response = await axios.get(`${apiUrl}/whereby/${meetingId}`);
+      console.log(response);
+      return response.data; // Fetch meeting details from backend
+    } catch (err) {
+      console.error("Error fetching meeting details:", err);
+      throw err;
     }
-    return { roomUrl: meeting.hostRoomUrl };
   },
 };
 
