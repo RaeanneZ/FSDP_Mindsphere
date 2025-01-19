@@ -9,7 +9,7 @@ const ConsultationBookingForm = ({ selectedSlot }) => {
 
   // Effect to retrieve the email from session storage
   useEffect(() => {
-    const storedEmail = "raeannezou@gmail.com"; //const storedEmail = sessionStorage.getItem("AccountEmail");
+    const storedEmail = sessionStorage.getItem("AccountEmail");
 
     if (storedEmail === null) {
       navigate("/login"); // Redirect to login page
@@ -27,9 +27,8 @@ const ConsultationBookingForm = ({ selectedSlot }) => {
     };
     try {
       const result = await meetingService.createMeeting(meetingData);
-      alert(
-        `Meeting scheduled successfully! Join your call: ${result.roomUrl}`
-      );
+      alert(`Meeting scheduled successfully!`);
+      navigate("/accountmanagement");
     } catch (error) {
       console.error("Error creating meeting:", error.message);
       alert("Failed to create the meeting. Please try again.");
