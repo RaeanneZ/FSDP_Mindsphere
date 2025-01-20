@@ -13,8 +13,7 @@ const sendSandboxBroadcastMessage = async (req, res) => {
 
         const results = [];
         for (const user of users) {
-            const response = await TwilioSandbox.sendMessage({ phoneNum: '+6589217943', message });
-            console.log(response);
+            const response = await TwilioSandbox.sendMessage({ userName: user.name, phoneNum: user.phoneNum, message });
             results.push({ phoneNum: user.phoneNum, sid: response });
         }
 

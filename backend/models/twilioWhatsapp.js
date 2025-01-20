@@ -39,12 +39,12 @@ class TwilioSandbox {
         }
     }
 
-    static async sendMessage({ phoneNum, message }) {
+    static async sendMessage({ userName, phoneNum, message }) {
         try {
             console.log("Sending message to:", phoneNum);
             console.log("From:", TWILIO_SANDBOX_NUMBER);
             const response = await client.messages.create({
-                body: message,
+                body: `Hey ${userName}\n\n` + message,
                 from: TWILIO_SANDBOX_NUMBER,
                 to: `whatsapp:${phoneNum}`,
             });
