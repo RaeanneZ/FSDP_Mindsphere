@@ -49,6 +49,10 @@ if exists (select * from sysobjects where name='Children' and type='U')
     drop table Children
 GO
 
+if exists (select * from sysobjects where name='WhatsappUsers' and type ='U')
+	drop table WhatsappUsers
+go
+
 if exists (select * from sysobjects where name='Newsletter' and type ='U')
 	drop table Newsletter
 go
@@ -120,6 +124,13 @@ go
 CREATE TABLE Newsletter (
 	Email varchar(50) not null,
 	constraint PK_Newsletter primary key (Email),
+);
+
+CREATE TABLE WhatsappUsers (
+	WsID int not null IDENTITY(1,1),
+	Name varchar(50) not null,
+	phoneNum varchar(50) not null,
+	constraint PK_WsUsers primary key (WsID)
 );
 
 create table Children (
@@ -418,4 +429,8 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
 ('Nancy Blue', 'nancyblue@example.com', '56789012', 4, 2, 
  '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
  'Gluten-Free', 2, 1, 5, 'Quiet room needed', '2024-11-13');
+
+
+INSERT INTO WhatsappUsers (Name, phoneNum)
+VALUES ('Neil Hadziq', '+6589217943')
 
