@@ -486,7 +486,28 @@ const dashboardService = {
                 error: err.response ? err.response.data : err.message,
             }
         }
+    },
+
+    sendBroadcastMessage: async (message) => {
+        try {
+            const sendData = {
+                message: message
+            };
+    
+            // Assuming your API URL for sending broadcast messages is '/whatsapp/sendBroadcast'
+            const response = await axios.post(`${apiUrl}/whatsapp/send-broadcast`, sendData);
+            
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error sending broadcast message: ", err);
+            return {
+                success: false,
+                message: "Sending broadcast message failed",
+                error: err.response ? err.response.data : err.message,
+            };
+        }
     }
+    
 }
 
 export default {
