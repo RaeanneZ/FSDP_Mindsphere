@@ -31,6 +31,10 @@ class autogenCert {
       );
       pdf.image(templatePath, 0, 0, { width: 841 }); // Add the image as the background
 
+      // Add the logo or another image inside the certificate
+      const logoPath = path.join(__dirname, "../assets", "mindsphere_logo.png"); // Your logo or another image
+      pdf.image(logoPath, 320, 420, { width: 200 });
+
       // Ensure the directory exists
       fs.mkdirSync(customDirectory, { recursive: true });
 
@@ -39,14 +43,14 @@ class autogenCert {
         .fontSize(30)
         .font("Helvetica-Bold")
         .fillColor("black")
-        .text(name, 250, 250, { width: 500, align: "center" });
+        .text(name, 180, 330, { width: 500, align: "center" });
 
       // Add the workshop text over the template (adjust position)
       pdf
         .fontSize(18)
         .font("Helvetica")
         .fillColor("black")
-        .text(`Workshop: ${workshop}`, 250, 300, {
+        .text(workshop, 180, 380, {
           width: 500,
           align: "center",
         });
