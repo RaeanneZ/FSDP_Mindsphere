@@ -3,7 +3,7 @@ const express = require("express");
 const dbConfig = require("./dbConfig");
 require("dotenv").config();
 const sql = require("mssql");
-const fs = require('fs');
+const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
 const { initializeReminderSystem } = require("./models/reminderEmailModel");
@@ -12,40 +12,38 @@ const swaggerUi = require("swagger-ui-express");
 
 // Swagger options
 const swaggerOptions = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "Minsdsphere backend API Documentation",
-            version: "1.0.0",
-            description: "API for Mindsphere backend website",
-        },
-        servers: [
-            {
-                url: "http://localhost:5000",
-            },
-        ],
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Minsdsphere backend API Documentation",
+      version: "1.0.0",
+      description: "API for Mindsphere backend website",
     },
-    apis: [
-        path.join(__dirname, "server.js"), // Main server file
-        path.join(__dirname, "routes/*.js"), // All route files
-    ],};
+    servers: [
+      {
+        url: "http://localhost:5000",
+      },
+    ],
+  },
+  apis: [
+    path.join(__dirname, "server.js"), // Main server file
+    path.join(__dirname, "routes/*.js"), // All route files
+  ],
+};
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-const swaggerPath = path.join(__dirname, 'swagger.json');
+const swaggerPath = path.join(__dirname, "swagger.json");
 // Asynchronously write the generated Swagger spec to the file, overwriting it
 fs.writeFile(swaggerPath, JSON.stringify(swaggerSpec, null, 2), (err) => {
-    if (err) {
-        console.error('Error writing swagger.json:', err);
-    } else {
-        console.log('Swagger spec saved as swagger.json');
-    }
+  if (err) {
+    console.error("Error writing swagger.json:", err);
+  } else {
+    console.log("Swagger spec saved as swagger.json");
+  }
 });
 
-
-
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
 
 // CORS CONFIG
 const cors = require("cors");
@@ -73,6 +71,7 @@ const programmeTiersController = require("./controllers/programmeTierController"
 const businessController = require("./controllers/businessController");
 const surveyFormController = require("./controllers/surveyFormController");
 const reminderController = require("./controllers/reminderEmailController");
+const autogenCertController = require("./controllers/autogen-certController");
 
 // APP SETUP
 const app = express();
@@ -94,7 +93,6 @@ async function connectToDatabase() {
 // ROUTES
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
 app.get("/", async (req, res) => {
   try {
     await connectToDatabase();
@@ -106,11 +104,9 @@ app.get("/", async (req, res) => {
   }
 });
 
-
-
 app.use("/api/schedules", require("./routes/schedulesRoutes"));
 app.use("/api/survey", require("./routes/surveyRoutes"));
-app.use("/api/dashboard-metrics",require("./routes/dashboardMetricRoutes"));
+app.use("/api/dashboard-metrics", require("./routes/dashboardMetricRoutes"));
 
 // routes refactor not done for the following
 // [bookings, business, payments, programmes, account, feedback, children, newsletter, reminders]
@@ -120,14 +116,12 @@ app.post("/api/bookings", bookingsController.addBooking);
 app.delete("/api/bookings", bookingsController.deleteBooking);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
 
-
 app.post("/api/business/addBusiness", businessController.addBusiness);
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
 app.put("/api/payments/makePayment", paymentController.makePayment);
 app.use("/api/payments", paymentEmailRoutes);
-
 
 app.get("/api/programmes", programmesController.getAllProgrammes);
 app.get("/api/programmes/registered/:email", async (req, res) => {
@@ -141,11 +135,13 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-app.get("/api/programmes/registered/:email",programmesController.getRegisteredProgrammesByAccount);
+app.get(
+  "/api/programmes/registered/:email",
+  programmesController.getRegisteredProgrammesByAccount
+);
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
 app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
 app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
-
 
 app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
@@ -161,7 +157,10 @@ app.post("/api/postFeedback", ProgrammeFeedbackController.postFeedback);
 app.post("/api/addChild", childrenController.addChild);
 app.post("/api/addChildPayment", childrenController.addChildPayment);
 app.put("/api/children/updateChild", childrenController.updateChild);
-app.get("/api/getChildByEmail/:GuardianEmail", childrenController.getChildByEmail);
+app.get(
+  "/api/getChildByEmail/:GuardianEmail",
+  childrenController.getChildByEmail
+);
 
 app.get("/api/newsletter", newsletterController.getAllEmail);
 app.post("/api/newsletter", newsletterController.addEmailNewsletter);
@@ -184,6 +183,8 @@ app.post("/api/reminders/initialize", reminderController.initializeReminders);
 app.get("/api/reminders", reminderController.getScheduledReminders);
 PaymentEmailController.sendMembershipCodes;
 
+// autogenerate certificate
+app.post("/api/certificate", autogenCertController.generateCert);
 
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store
@@ -217,7 +218,6 @@ app.get("/track/statistics", (req, res) => {
 //stripe
 const paymentRoutes = require("./routes/paymentRoutes");
 app.use("/api/stripe", paymentRoutes);
-
 
 // START REMINDER SYSTEM ON SERVER START
 initializeReminderSystem();
