@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import backendService from "../utils/backendService";
 
-const SignupPage = () => {
+const MemberVerificationPage = () => {
   // For Backend
   const { accountService, newsletterService } = backendService;
 
@@ -10,9 +10,7 @@ const SignupPage = () => {
   const { useState } = React;
   const navigate = useNavigate(); // Create navigate object
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
-  const [newsletter, setNewsletter] = useState(true);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -20,9 +18,7 @@ const SignupPage = () => {
 
     // Debug statements
     console.log("Email:", email);
-    console.log("Password:", password);
     console.log("Verification Code:", verificationCode);
-    console.log("Newsletter Subscription:", newsletter);
 
     // Validate email
     if (!isGmail(email)) {
@@ -41,19 +37,14 @@ const SignupPage = () => {
     // Create and store the parentData
     const parentData = {
       email,
-      password,
-      newsletter,
     };
     parentDataArray.push(parentData);
 
     // Store the updated parent data in session storage
     sessionStorage.setItem("parentData", JSON.stringify(parentDataArray));
 
-    const response = await accountService.signUp(
-      email,
-      password,
-      verificationCode
-    );
+    // VerifyEmail with backend
+    const response = await accountService.verifyEmail(email, verificationCode);
 
     if (!response.success) {
       setError(
@@ -61,12 +52,9 @@ const SignupPage = () => {
       );
       return;
     } else {
-      // Add email if newsletter = true
-      if (newsletter) {
-        await newsletterService.addEmailNewletter(email);
-      }
       // Navigate to the next page
-      navigate("/personalisation"); // Navigate to the next page
+      sessionStorage.setItem("signup", "true");
+      navigate("/signup");
     }
   };
 
@@ -79,7 +67,8 @@ const SignupPage = () => {
     <div className="w-screen h-screen flex justify-center items-center">
       <div className="w-full max-w-2xl p-8 space-y-6 bg-white">
         <h1 className="text-2xl font-bold text-black">
-          Enter your email and password to create your brand new membership
+          Enter your email and the verification code sent to your inbox to join
+          the family
         </h1>
         <p className="text-gray-600">Almost done! We hate paperwork, too</p>
         {error && <p className="text-red-500">{error}</p>}
@@ -91,14 +80,6 @@ const SignupPage = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               required
             />
 
@@ -117,27 +98,11 @@ const SignupPage = () => {
               />
             </div>
           </div>
-          <div className="flex items-center justify-between mt-4">
-            <label className="text-gray-700">Newsletter subscription</label>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={newsletter}
-                onChange={() => setNewsletter(!newsletter)}
-              />
-              <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-yellow-300 dark:peer-focus:ring-yellow peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow"></div>
-            </label>
-          </div>
-          <p className="text-sm text-gray-500">
-            Receive the latest promotions and design releases.{" "}
-            <span className="text-red-500">No spam, promise.</span>
-          </p>
           <button
             type="submit"
             className="w-full px-4 py-2 my-8 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow"
           >
-            Create Account
+            Verify Email
           </button>
 
           <p className="text-center text-gray-600">
@@ -152,4 +117,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default MemberVerificationPage;
