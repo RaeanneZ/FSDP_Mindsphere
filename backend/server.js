@@ -57,7 +57,6 @@ const corsOptions = {
 };
 
 // CONTROLLERS AND ROUTES
-const verifyJWT = require("./middlewares/authValidate");
 const progSchedController = require("./controllers/progSchedController");
 const accountController = require("./controllers/accountController");
 const bookingsController = require("./controllers/bookingsController");
@@ -75,6 +74,7 @@ const reminderController = require("./controllers/reminderEmailController");
 const emailRoutes = require("./routes/emailRoutes");
 const emailSchedulerRoutes = require("./routes/emailSchedulerRoutes");
 const groupEmailRoutes = require("./routes/groupEmailRoutes");
+const draftRoutes = require("./routes/draftRoutes");
 
 // APP SETUP
 const app = express();
@@ -188,10 +188,11 @@ app.post("/api/reminders/initialize", reminderController.initializeReminders);
 app.get("/api/reminders", reminderController.getScheduledReminders);
 PaymentEmailController.sendMembershipCodes;
 
-// Custom Email route
+// Custom Email feature route
 app.use("/api/email", emailRoutes);
 app.use("/api/email-scheduler", emailSchedulerRoutes);
 app.use("/api/group-email", groupEmailRoutes);
+app.use("/api/drafts", draftRoutes);
 
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store

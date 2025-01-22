@@ -76,6 +76,10 @@ GO
 if exists (select * from sysobjects where name='ScheduledEmails' and type='U')
 	drop table ScheduledEmails
 GO
+
+if exists (select * from sysobjects where name='Drafts' and type='U')
+	drop table Drafts
+GO
 -------------------------------------------------------------------------------------------------------------
 
 
@@ -288,6 +292,17 @@ CREATE TABLE ScheduledEmails (
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 go
+
+CREATE TABLE Drafts (
+    DraftID INT IDENTITY(1,1) PRIMARY KEY,
+    Subject NVARCHAR(255),
+    Body NVARCHAR(MAX),
+    Recipient NVARCHAR(255),
+    Attachment NVARCHAR(255),
+    CreatedBy NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
+);
 
 -------------------------------------------------------------------------------------------------------------
 
