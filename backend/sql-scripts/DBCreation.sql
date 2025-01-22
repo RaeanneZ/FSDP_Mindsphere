@@ -65,63 +65,65 @@ if exists (select * from sysobjects where name='Roles' and type='U')
     drop table Roles
 GO
 
-IF EXISTS (SELECT * FROM sysobjects WHERE name = 'ProgrammeSlotSummary' AND xtype = 'V')
-    DROP VIEW ProgrammeSlotSummary;
+if exists (select * from sysobjects where name='EmailTemplates' and type='U')
+	drop table EmailTemplates
 GO
 
-IF EXISTS (SELECT * FROM sysobjects WHERE name = 'MembersAndNewsletterCount' AND xtype = 'V')
-    DROP VIEW MembersAndNewsletterCount;
+if exists (select * from sysobjects where name='EmailLogs' and type='U')
+	drop table EmailLogs
 GO
 
-IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesRevenue' AND xtype = 'V')
-    DROP VIEW SalesRevenue;
+if exists (select * from sysobjects where name='ScheduledEmails' and type='U')
+	drop table ScheduledEmails
 GO
-
-IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesPendingPayment' AND xtype = 'V')
-    DROP VIEW SalesPendingPayment;
-GO
-
 -------------------------------------------------------------------------------------------------------------
 
 
+-- Table for user roles
 create table Roles (
 	RoleID int not null,	
 	Name varchar(50) default 'User',
-	constraint PK_Roles primary key (RoleID),
+	constraint PK_Roles primary key (RoleID)
 )
 go
 
+-- Account table updated: Removed LinkedInID, added LinkedInSub for unique identifier
 CREATE TABLE Account (
 	AccID int not null IDENTITY(1,1),
 	Name varchar(50) null,
 	Email varchar(50) not null unique,
-	ContactNo char(8)  null unique,
+	ContactNo char(8) null unique,
 	memberStatus char(10) null default 'Pending',
 	memberExpiry datetime null,
 	address varchar(255) null,
 	dateOfBirth datetime null,
 	relationshipToChild varchar(255) null,
 	RoleID int null default 2,
-	Salt varchar(255) not null,
-	HashedPassword varchar(255) not null,
+	Salt varchar(255) null, 
+	HashedPassword varchar(255) null, 
+	LinkedInSub varchar(255) NOT NULL, -- Unique LinkedIn identifier
+	LinkedInAccessToken varchar(255) NOT NULL, -- Access token storage
 	constraint PK_Account primary key (AccID),
 	constraint FK_Account_RoleID foreign key (RoleID) references Roles(RoleID),
 	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))
 )
-GO
+go
 
+-- Verification codes for email validation
 CREATE TABLE AccountVerification (
 	Email varchar(50) not null,
 	verifCode int not null,
-	constraint PK_AccountVerification primary key (Email),
+	constraint PK_AccountVerification primary key (Email)
 )
 go
 
+-- Newsletter subscription table
 CREATE TABLE Newsletter (
 	Email varchar(50) not null,
-	constraint PK_Newsletter primary key (Email),
+	constraint PK_Newsletter primary key (Email)
 );
 
+-- Children associated with user accounts
 create table Children (
 	ChildID int not null IDENTITY(1,1),
 	GuardianEmail varchar(50) not null,
@@ -135,8 +137,9 @@ create table Children (
 	constraint FK_Children_GuardianEmail foreign key (GuardianEmail) references Account(Email),
 	constraint CHK_Gender check (Gender in ('M', 'F'))
 )
-GO
+go
 
+-- Business inquiries table
 create table Businesses (
 	BusinessID int not null identity(1,1),
 	Name varchar(50) not null,
@@ -151,6 +154,7 @@ create table Businesses (
 )
 go
 
+-- Feedback survey form
 create table surveyForm (
 	surveyID int not null identity(1,1),
 	email varchar(50) null,
@@ -159,9 +163,9 @@ create table surveyForm (
 	feedbackText varchar(1000) null,
 	constraint PK_SurveyForm primary key (surveyID)
 )
-GO
+go
 
--- removed agerange, cost, added progintro
+-- Programmes and their types
 create table Programmes (
 	ProgID int not null,
 	Name varchar(50) not null,
@@ -171,9 +175,10 @@ create table Programmes (
 	constraint PK_Programmes primary key (ProgID),
 	Constraint CHK_ProgType check (ProgType in ('Light','Regular','Premium'))
 )
-GO
+go
 
-create table ProgrammeTier(
+-- Programme tiers for customization
+create table ProgrammeTier (
 	TierID int not null,
 	ProgID int not null,
 	TierDesc varchar(255),
@@ -189,6 +194,7 @@ create table ProgrammeTier(
 )
 go
 
+-- Payments table
 create table Payment (
 	TransacID int not null IDENTITY(1,1),
 	Email varchar(50) not null,
@@ -203,7 +209,7 @@ create table Payment (
 )
 go
 
-
+-- Feedback for programmes
 create table ProgrammeFeedback (
 	FeedbackID int not null IDENTITY(1,1),
 	ProgID int not null,
@@ -211,11 +217,11 @@ create table ProgrammeFeedback (
 	FdbkDesc varchar(255),
 	constraint PK_ProgrammeFeedback primary key (FeedbackID),
 	constraint FK_ProgFeedback_ProgID foreign key (ProgID) references Programmes(ProgID),
-	constraint FK_AccID foreign key (AccID) references Account(AccID),
+	constraint FK_AccID foreign key (AccID) references Account(AccID)
 )
 go
 
-
+-- Programme schedules
 create table ProgrammeSchedule (
 	SchedID int not null IDENTITY(1,1),
 	ProgID int not null,
@@ -228,6 +234,7 @@ create table ProgrammeSchedule (
 )
 go
 
+-- Bookings table for customer reservations
 create table Bookings (
 	BookingID int not null IDENTITY(1,1),
 	Name varchar(50) not null,
@@ -250,49 +257,36 @@ create table Bookings (
 )
 go
 
--------------------------------------------------------------------------------------------------------------
-
-CREATE VIEW ProgrammeSlotSummary AS
-SELECT 
-    P.ProgID,
-    P.Name AS ProgrammeName,
-    SUM(PS.TotalSeats) AS TotalSlots,
-    COALESCE(SUM(B.NumSeats), 0) AS SlotsTaken,
-    SUM(PS.TotalSeats) - COALESCE(SUM(B.NumSeats), 0) AS SlotsRemaining
-FROM 
-    Programmes P
-LEFT JOIN ProgrammeSchedule PS ON P.ProgID = PS.ProgID
-LEFT JOIN Bookings B ON PS.SchedID = B.SchedID
-GROUP BY 
-    P.ProgID, P.Name;
-
+CREATE TABLE EmailTemplates (
+    TemplateID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Subject NVARCHAR(255) NOT NULL,
+    Body NVARCHAR(MAX) NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
 go
 
-CREATE VIEW MembersAndNewsletterCount AS
-SELECT 
-    (SELECT COUNT(*) FROM Account) AS TotalAccounts,
-    (SELECT COUNT(*) FROM Newsletter) AS TotalNewsletterSubscriptions;
-
+CREATE TABLE EmailLogs (
+    LogID INT IDENTITY(1,1) PRIMARY KEY,
+    Recipient NVARCHAR(255) NOT NULL,
+    Subject NVARCHAR(255) NOT NULL,
+    Body NVARCHAR(MAX) NOT NULL,
+    SentAt DATETIME DEFAULT GETDATE(),
+    SentBy NVARCHAR(255) NOT NULL
+);
 go
 
-create view SalesRevenue as
-select 
-	sum(TotalCost) as TotalSalesRevenue,
-	count(*) as NumberOfSales
-from Payment
-WHERE 
-    TransacStatus = 'Paid';
-
-go
-
-create view SalesPendingPayment as
-select 
-	sum(TotalCost) as TotalPendingRevenue,
-	count(*) as NumberOfPendingSales
-from Payment
-where
-	TransacStatus = 'Pending';
-
+CREATE TABLE ScheduledEmails (
+    EmailID INT IDENTITY(1,1) PRIMARY KEY,
+    Recipient NVARCHAR(255) NOT NULL,
+    Subject NVARCHAR(255) NOT NULL,
+    Body NVARCHAR(MAX) NOT NULL,
+    SendAt DATETIME NOT NULL,
+    Status NVARCHAR(50) DEFAULT 'Pending', -- Pending, Sent, Failed
+    CreatedBy NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
 go
 
 -------------------------------------------------------------------------------------------------------------
@@ -303,18 +297,19 @@ INSERT INTO Roles (RoleID, Name) VALUES
 (2, 'User');
 
 -- Insert data into Account
-INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address, dateOfBirth, relationshipToChild, RoleID, Salt, HashedPassword) VALUES
-('John Doe', 'johndoe@example.com', '12345678', 'Active', '2025-12-31', '123 Main St, Springfield, IL', '1990-01-01', 'Father', 2, 'randomsalt1', 'hashedpassword1'),
-('Jane Smith', 'janesmith@example.com', '23456789', 'Inactive', NULL, '456 Elm St, Springfield, IL', '1985-02-15', 'Mother', 2, 'randomsalt2', 'hashedpassword2'),
-('Mark Evans', 'markevans@example.com', '34567890', 'Pending', NULL, '789 Oak St, Springfield, IL', '1992-03-22', 'Guardian', 2, 'randomsalt3', 'hashedpassword3'),
-('Lucy Gray', 'lucygray@example.com', '45678901', 'Active', '2026-01-01', '321 Pine St, Springfield, IL', '1995-04-10', 'Mother', 2, 'randomsalt4', 'hashedpassword4'),
-('Emma White', 'emmawhite@example.com', '56789012', 'Active', '2025-11-15', '654 Cedar St, Springfield, IL', '1991-05-05', 'Guardian', 2, 'randomsalt5', 'hashedpassword5'),
-('Jovan Tan', 'iamjovantan@gmail.com', '67890123', 'Pending', NULL, '987 Birch St, Springfield, IL', '1988-06-30', 'Father', 2, 'randomsalt6', 'hashedpassword6'),
-('Nancy Blue', 'nancyblue@example.com', '78901234', 'Active', '2025-12-15', '159 Maple St, Springfield, IL', '1994-07-25', 'Mother', 2, 'randomsalt7', 'hashedpassword7'),
-('Oliver Red', 'oliverred@example.com', '89012345', 'Active', '2025-10-05', '753 Walnut St, Springfield, IL', '1986-08-20', 'Father', 2, 'randomsalt8', 'hashedpassword8'),
-('Chris Green', 'chrisgreen@example.com', '90123456', 'Inactive', NULL, '951 Ash St, Springfield, IL', '1993-09-15', 'Guardian', 2, 'randomsalt9', 'hashedpassword9'),
-('Sophia Brown', 'sophiabrown@example.com', '01234567', 'Active', '2026-05-20', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt10', 'hashedpassword10'),
-('Admin', 'admin@gmail.com', '99008833', NULL, NULL, '9876 Fake St, Imaginary City, IC', '2000-12-25', NULL, 1, '$2b$10$IIJkOdfcvizT0Q2uCmw5QO', '$2b$10$IIJkOdfcvizT0Q2uCmw5QODYi5TYzkE3t2QrwBx8rlwp5TirPu7wW');
+INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address, dateOfBirth, relationshipToChild, RoleID, Salt, HashedPassword, LinkedInSub, LinkedInAccessToken) VALUES
+('John Doe', 'johndoe@example.com', '12345678', 'Active', '2025-12-31', '123 Main St, Springfield, IL', '1990-01-01', 'Father', 2, 'randomsalt1', 'hashedpassword1', '', ''),
+('Jane Smith', 'janesmith@example.com', '23456789', 'Inactive', NULL, '456 Elm St, Springfield, IL', '1985-02-15', 'Mother', 2, 'randomsalt2', 'hashedpassword2', '', ''),
+('Mark Evans', 'markevans@example.com', '34567890', 'Pending', NULL, '789 Oak St, Springfield, IL', '1992-03-22', 'Guardian', 2, 'randomsalt3', 'hashedpassword3', '', ''),
+('Lucy Gray', 'lucygray@example.com', '45678901', 'Active', '2026-01-01', '321 Pine St, Springfield, IL', '1995-04-10', 'Mother', 2, 'randomsalt4', 'hashedpassword4', '', ''),
+('Emma White', 'emmawhite@example.com', '56789012', 'Active', '2025-11-15', '654 Cedar St, Springfield, IL', '1991-05-05', 'Guardian', 2, 'randomsalt5', 'hashedpassword5', '', ''),
+('Bob', 'iamjovantan@gmail.com', '67890123', 'Pending', NULL, '987 Birch St, Springfield, IL', '1988-06-30', 'Father', 2, 'randomsalt6', 'hashedpassword6', '', ''),
+('Nancy Blue', 'nancyblue@example.com', '78901234', 'Active', '2025-12-15', '159 Maple St, Springfield, IL', '1994-07-25', 'Mother', 2, 'randomsalt7', 'hashedpassword7', '', ''),
+('Oliver Red', 'oliverred@example.com', '89012345', 'Active', '2025-10-05', '753 Walnut St, Springfield, IL', '1986-08-20', 'Father', 2, 'randomsalt8', 'hashedpassword8', '', ''),
+('Chris Green', 'chrisgreen@example.com', '90123456', 'Inactive', NULL, '951 Ash St, Springfield, IL', '1993-09-15', 'Guardian', 2, 'randomsalt9', 'hashedpassword9', '', ''),
+('Sophia Brown', 'sophiabrown@example.com', '01234567', 'Active', '2026-05-20', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt10', 'hashedpassword10', '', ''),
+('Jovan Tan', 's10259920@connect.np.edu.sg', '12121212', 'Active', '2026-04-03', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt11', 'hashedpassword11', '', ''),
+('Admin', 'admin@gmail.com', '99008833', NULL, NULL, '9876 Fake St, Imaginary City, IC', '2000-12-25', NULL, 1, '$2b$10$IIJkOdfcvizT0Q2uCmw5QO', '$2b$10$IIJkOdfcvizT0Q2uCmw5QODYi5TYzkE3t2QrwBx8rlwp5TirPu7wW', '', '');
 
 -- Insert data into Children
 INSERT INTO Children (GuardianEmail, Name, Gender, Dob, Needs, School, Interests) VALUES
@@ -417,3 +412,7 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
  '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
  'Gluten-Free', 2, 1, 5, 'Quiet room needed', '2024-11-13');
 
+ SELECT * FROM Account;
+SELECT * FROM EmailTemplates;
+SELECT * FROM EmailLogs;
+SELECT * FROM ScheduledEmails;
