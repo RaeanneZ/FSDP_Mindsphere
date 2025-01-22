@@ -27,6 +27,7 @@ function getAuthUrl() {
   const url = oauth2Client.generateAuthUrl({
     access_type: 'offline',  // To get the refresh token
     scope: SCOPES,
+    prompt: 'consent'       // Forces the consent screen to show every time
   });
 
   console.log('Authorize this app by visiting this URL:', url);
