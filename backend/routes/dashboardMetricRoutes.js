@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const dashboardMetricsController = require("../controllers/dashboardMetricsController");
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
 
 /**
  * @swagger
@@ -90,5 +92,7 @@ router.get(
     "/",
     dashboardMetricsController.getDashboardMetrics
 );
+
+router.post("/uploadEnquiryAttachment", upload.single("file"), dashboardMetricsController.uploadEnquiryAttachment)
 
 module.exports = router;

@@ -449,7 +449,7 @@ const programmeFeedBackService = {
 const dashboardService = {
     getDashboardMetrics: async () => {
         try {
-            const response = await axios.get(`${apiUrl}/dashboard-metrics`);
+            const response = await axios.get(`${apiUrl}/adminDashboard`);
             return response.data;
         } catch (err) {
             console.error("BackendService: Error retrieving dashboard metrics: "),
@@ -495,8 +495,26 @@ const dashboardService = {
                 error: err.response ? err.response.data : err.message,
             };
         }
-    }
+    },
     
+    uploadEnquiryAttachment: async (formData, BusinessID) => {
+    try {
+      formData.append("BusinessID", BusinessID);
+        const response = await axios.post(`${apiUrl}/adminDashboard/uploadEnquiryAttachment`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error uploading file:", error);
+        return {
+            success: false,
+            message: "File upload failed",
+            error: error.response ? error.response.data : error.message,
+        };
+    }
+    }
 }
 
 export default {
