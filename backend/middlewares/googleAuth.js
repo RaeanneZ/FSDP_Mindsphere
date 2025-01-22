@@ -27,12 +27,10 @@ async function authenticate() {
   } catch (error) {
     console.error('❌ Error authenticating OAuth2 client:', error.message);
 
-    console.error(
-      '\nThe refresh token is invalid or expired. Follow these steps to resolve this:\n' +
+    console.warn(
+      '\nWarning: The Google API refresh token is invalid or expired. Follow these steps to resolve this:\n' +
       '1. Ensure you are logged into Google with the email: mindspheredp@gmail.com.\n' +
-      '2. Run the Google Auth Refresh script to get a new refresh token:\n' +
-      '   node backend/middlewares/GoogleAuthRefresh.js\n' +
-      '3. Update the ".env" file with the new refresh token.'
+      '2. Follow the steps in the script below'
     );
 
     try {
@@ -43,7 +41,7 @@ async function authenticate() {
     
       child.on('close', (code) => {
         if (code === 0) {
-          console.log('✅ Refresh Token Updated, restart the server');
+          console.log('✅');
         } else {
           console.error(`Google Auth Refresh script exited with code ${code}`);
         }
@@ -51,10 +49,6 @@ async function authenticate() {
     } catch (spawnError) {
       console.error('❌ Error while attempting to run googleAuthRefresh.js:', spawnError.message);
     }
-
-    console.warn(
-      '\n⚠️ Warning: OAuth2 client is not authenticated. Some features may be unavailable.'
-    );
   }
 }
 
