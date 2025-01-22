@@ -447,27 +447,67 @@ const programmeFeedBackService = {
 };
 
 const dashboardService = {
-  getDashboardMetrics: async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/dashboard-metrics`);
-      return response.data;
-    } catch (err) {
-      console.error("BackendService: Error retrieving dashboard metrics: "),
-        err;
+    getDashboardMetrics: async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/dashboard-metrics`);
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error retrieving dashboard metrics: "),
+            err
+        };
+        throw err;
+    },
+
+    updateBusinessEnquiry: async (status, BusinessID) => {
+        try {
+            const updateData = {
+                status: status,
+                BusinessID: BusinessID
+            };
+
+            const response = await axios.put(`${apiUrl}/business/updateStatus`, updateData);
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error updating business enquiry: ", err);
+            return {
+                success: false,
+                message: "Updating business enquiry failed",
+                error: err.response ? err.response.data : err.message,
+            }
+        }
+    },
+
+    sendBroadcastMessage: async (message) => {
+        try {
+            const sendData = {
+                message: message
+            };
+    
+            // Assuming your API URL for sending broadcast messages is '/whatsapp/sendBroadcast'
+            const response = await axios.post(`${apiUrl}/whatsapp/send-broadcast`, sendData);
+            
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error sending broadcast message: ", err);
+            return {
+                success: false,
+                message: "Sending broadcast message failed",
+                error: err.response ? err.response.data : err.message,
+            };
+        }
     }
-    throw err;
-  },
-};
+    
+}
 
 export default {
-  programmeService,
-  progScheduleService,
-  accountService,
-  childrenService,
-  bookingService,
-  paymentService,
-  newsletterService,
-  formService,
-  programmeFeedBackService,
-  dashboardService,
+    programmeService,
+    progScheduleService,
+    accountService,
+    childrenService,
+    bookingService,
+    paymentService,
+    newsletterService,
+    formService,
+    programmeFeedBackService,
+    dashboardService
 };

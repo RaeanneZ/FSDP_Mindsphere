@@ -42,6 +42,8 @@ const addBusiness = async (req, res) => {
         return res.status(400).send("Invalid callbackRequest: Please provide a valid datetime.");
     }
 
+    const enquiryStatus = 'New Enquiry';
+
     try {
         const newBusiness = await Business.addBusiness({
             Name,
@@ -52,6 +54,7 @@ const addBusiness = async (req, res) => {
             orgName,
             helpText,
             callbackRequest,
+            enquiryStatus
         });
 
         const pdfPath = await Business.generatePDF(newBusiness);
@@ -89,7 +92,42 @@ const addBusiness = async (req, res) => {
     }
 };
 
+const getEnquiries = async (req, res) => {
+    try {
+        const enquiries = await Business.getEnquiries();
+        res.status(200).json(enquiries)
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("ControllerError: Error retrieving enquiries")
+    }
+}
+
+const updateStatus = async (req, res) => {
+    try {
+        const { status, BusinessID } = req.body;
+
+        if (!status || !BusinessID) {
+            return res.status(400).send("BadRequest: Missing required fields 'status' or 'BusinessID'");
+        }
+
+        const result = await Business.updateStatus(status, BusinessID);
+
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).send("NotFound: No business found with the given BusinessID");
+        }
+
+        res.status(200).send("Success: Enquiry status updated");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("ControllerError: Error updating enquiry status");
+    }
+};
 
 
 
-module.exports = { addBusiness };
+
+module.exports = { 
+    addBusiness,
+    getEnquiries,
+    updateStatus
+};

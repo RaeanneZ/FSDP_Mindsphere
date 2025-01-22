@@ -35,8 +35,9 @@ const uploadFileToDrive = async (filePath, fileName, FOLDER_ID) => {
 
                 console.log(`File uploaded successfully with ID: ${file.data.id}`);
                 return file.data.id;
-            } catch (error) {
+            } catch (err) {
                 console.error('File not found:', absoluteFilePath);
+                console.error(err)
                 return;
             }
         }, 1000);
