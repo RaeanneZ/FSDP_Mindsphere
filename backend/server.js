@@ -2,6 +2,7 @@
 const express = require("express");
 const dbConfig = require("./dbConfig");
 require("dotenv").config();
+require("./scheduler");
 const sql = require("mssql");
 const fs = require("fs");
 const path = require("path");
