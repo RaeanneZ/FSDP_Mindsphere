@@ -41,6 +41,11 @@ GO
 if exists (select * from sysobjects where name='surveyForm' and type='U')
     drop table surveyForm
 GO
+
+if exists (select * from sysobjects where name='enquiryTimeline' and type='U')
+    drop table enquiryTimeline
+GO
+
 if exists (select * from sysobjects where name='Businesses' and type='U')
     drop table Businesses
 GO
@@ -161,6 +166,18 @@ create table Businesses (
 	enquiryStatus varchar(50) not null default ('New Enquiry'),
 	constraint PK_Business primary key (BusinessID),
 	constraint CHK_Status check (enquiryStatus in ('New Enquiry', 'In Progress', 'Confirmed', 'Completed'))
+)
+go
+
+create table enquiryTimeline (
+	TimelineID int not null identity(1,1),
+	BusinessID int not null,
+	Text varchar(255) not null,
+	tag varchar(50) not null,
+	linkToPDF varchar(255) null,
+	createdDate datetime not null,
+	constraint PK_enquiryTimeline primary key (TimelineID),
+	constraint FK_enquiryTimeline foreign key (BusinessID) references Businesses(BusinessID)
 )
 go
 
