@@ -74,6 +74,7 @@ const surveyFormController = require("./controllers/surveyFormController");
 const reminderController = require("./controllers/reminderEmailController");
 const emailRoutes = require("./routes/emailRoutes");
 const emailSchedulerRoutes = require("./routes/emailSchedulerRoutes");
+const groupEmailRoutes = require("./routes/groupEmailRoutes");
 
 // APP SETUP
 const app = express();
@@ -190,6 +191,7 @@ PaymentEmailController.sendMembershipCodes;
 // Custom Email route
 app.use("/api/email", emailRoutes);
 app.use("/api/email-scheduler", emailSchedulerRoutes);
+app.use("/api/group-email", groupEmailRoutes);
 
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store

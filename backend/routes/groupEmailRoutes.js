@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const EmailSchedulerController = require("../controllers/emailSchedulerController");
+const GroupEmailController = require("../controllers/groupEmailController");
 const { verifyJWT, authorizeAdmin } = require("../middlewares/authValidate");
 
-// Protect the email scheduling route
 router.post(
-    "/schedule",
+    "/send-group-email",
     verifyJWT,
     authorizeAdmin,
-    EmailSchedulerController.scheduleEmail
+    GroupEmailController.sendGroupEmail
 );
 
 module.exports = router;
