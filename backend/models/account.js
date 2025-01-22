@@ -207,17 +207,21 @@ class Account {
         let connection;
         try {
             connection = await sql.connect(dbConfig);
-            const sqlQuery = `SELECT * FROM AccountVerification 
-                           WHERE Email = @Email AND verifCode = @verifCode`;
+            const sqlQuery = `
+                SELECT * FROM AccountVerification 
+                WHERE Email = @Email AND verifCode = @verifCode;
+            `;
             const request = connection.request();
             request.input("Email", sql.VarChar(50), Email);
             request.input("verifCode", sql.Int, verifCode);
+
             const result = await request.query(sqlQuery);
 
-            return result.recordset;
+            // Return true if a matching record exists
+            return result.recordset.length > 0;
         } catch (err) {
-            console.error("Error verifying account:", err);
-            throw err;
+            console.error("Error verifying email code:", err);
+            throw err; // Re-throw the error to be handled by the caller
         } finally {
             if (connection) {
                 connection.close();

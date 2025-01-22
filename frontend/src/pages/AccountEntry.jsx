@@ -1,9 +1,7 @@
-// AccountEntry.jsx
+// LoginPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import backendService from "../utils/backendService";
-import linkedinService from "../utils/linkedinService"; // Temporary backend
+import linkedinService from "../utils/linkedinService";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -77,7 +75,7 @@ const AccountEntry = () => {
   const handleLinkedInLogin = () => {
     const params = new URLSearchParams({
       response_type: "code",
-      client_id: LINKEDIN_CLIENTID,
+      client_id: LINKEDIN_CLIENT_ID,
       redirect_uri: LINKEDIN_REDIRECT_URL,
       scope: "openid profile email",
     });
@@ -85,6 +83,34 @@ const AccountEntry = () => {
     window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`;
   };
 
+  const handleLinkedInCallback = async (code) => {
+    console.log("Inside handleLinkedInCallback with code:", code);
+    try {
+      const accessToken = await linkedinService.getAccessToken(code);
+      console.log("Access Token Retrieved:", accessToken);
+
+      // Save token in session storage or local storage
+      sessionStorage.setItem("LinkedInAccessToken", accessToken);
+
+      // Optionally retrieve the user profile to display or process further
+      const userProfile = await linkedinService.getUserProfile(accessToken);
+      console.log("User Profile Retrieved:", userProfile);
+
+      // Redirect to home or dashboard after login
+      navigate("/");
+    } catch (error) {
+      console.error("Error in LinkedIn Callback:", error);
+      setError("Failed to log in with LinkedIn.");
+    }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code) {
+      handleLinkedInCallback(code);
+    }
+  }, []);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
@@ -112,19 +138,10 @@ const AccountEntry = () => {
       <Navbar />
       <div className="w-screen flex justify-center items-center">
         <div className="w-full max-w-2xl p-8 space-y-6 bg-white">
-          <h1 className="text-2xl font-bold text-black">
-            {isSignup ? "Create Your Account" : "Membership Login"}
-          </h1>
-          <p className="text-gray-600">
-            {isSignup
-              ? "Join us and start your journey today."
-              : "Your journey is just one click away."}
-          </p>
+          <h1 className="text-2xl font-bold text-black">Membership Login</h1>
+          <p className="text-gray-600">Your journey is just one click away</p>
           {error && <p className="text-red-500">{error}</p>}
-          <form
-            onSubmit={isSignup ? handleCreateAccount : handleLogin}
-            className="space-y-4"
-          >
+          <form onSubmit={handleLogin} className="space-y-4">
             <input
               type="email"
               placeholder="Email"
@@ -141,36 +158,18 @@ const AccountEntry = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
               required
             />
-
-            {isSignup && (
-              <>
-                <div className="flex items-center justify-between mt-4">
-                  <label className="text-gray-700">
-                    Newsletter subscription
-                  </label>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={newsletter}
-                      onChange={() => setNewsletter(!newsletter)}
-                    />
-                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-yellow-300 dark:peer-focus:ring-yellow peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow"></div>
-                  </label>
-                </div>
-                <p className="text-sm mt-0 text-gray-500">
-                  Receive the latest promotions and design releases.{" "}
-                  <span className="text-red-500">No spam, promise.</span>
-                </p>
-              </>
-            )}
-
             <button
               type="submit"
               className="w-full px-4 py-2 mt-4 text-white bg-yellow rounded-lg hover:bg-yellow focus:outline-none focus:ring-2 focus:ring-yellow"
             >
-              {isSignup ? "Create Account" : "Login"}
+              Login
             </button>
+            <p className="text-center text-gray-600">
+              New to Mindsphere?{" "}
+              <a href="/signup" className="text-blue-500">
+                Sign Up Here
+              </a>
+            </p>
           </form>
 
           <div className="flex flex-col items-center mt-6">

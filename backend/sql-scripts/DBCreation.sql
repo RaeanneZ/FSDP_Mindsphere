@@ -71,7 +71,7 @@ GO
 create table Roles (
 	RoleID int not null,	
 	Name varchar(50) default 'User',
-	constraint PK_Roles primary key (RoleID),
+	constraint PK_Roles primary key (RoleID)
 )
 go
 
@@ -79,33 +79,33 @@ CREATE TABLE Account (
 	AccID int not null IDENTITY(1,1),
 	Name varchar(50) null,
 	Email varchar(50) not null unique,
-	ContactNo char(8)  null unique,
+	ContactNo char(8) null unique,
 	memberStatus char(10) null default 'Pending',
 	memberExpiry datetime null,
 	address varchar(255) null,
 	dateOfBirth datetime null,
 	relationshipToChild varchar(255) null,
 	RoleID int null default 2,
-	Salt varchar(255) null, /* Might have to change to null */
-	HashedPassword varchar(255) null, /* Might have to change to null */
-	LinkedInID varchar(255) NULL,
-    LinkedInAccessToken varchar(255) NULL,
+	Salt varchar(255) null, 
+	HashedPassword varchar(255) null, 
+	LinkedInSub varchar(255) NOT NULL, -- Unique LinkedIn identifier
+	LinkedInAccessToken varchar(255) NOT NULL, -- Access token storage
 	constraint PK_Account primary key (AccID),
 	constraint FK_Account_RoleID foreign key (RoleID) references Roles(RoleID),
 	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))
 )
-GO
+go
 
 CREATE TABLE AccountVerification (
 	Email varchar(50) not null,
 	verifCode int not null,
-	constraint PK_AccountVerification primary key (Email),
+	constraint PK_AccountVerification primary key (Email)
 )
 go
 
 CREATE TABLE Newsletter (
 	Email varchar(50) not null,
-	constraint PK_Newsletter primary key (Email),
+	constraint PK_Newsletter primary key (Email)
 );
 
 create table Children (
@@ -121,7 +121,7 @@ create table Children (
 	constraint FK_Children_GuardianEmail foreign key (GuardianEmail) references Account(Email),
 	constraint CHK_Gender check (Gender in ('M', 'F'))
 )
-GO
+go
 
 create table Businesses (
 	BusinessID int not null identity(1,1),
@@ -145,9 +145,8 @@ create table surveyForm (
 	feedbackText varchar(1000) null,
 	constraint PK_SurveyForm primary key (surveyID)
 )
-GO
+go
 
--- removed agerange, cost, added progintro
 create table Programmes (
 	ProgID int not null,
 	Name varchar(50) not null,
@@ -157,9 +156,9 @@ create table Programmes (
 	constraint PK_Programmes primary key (ProgID),
 	Constraint CHK_ProgType check (ProgType in ('Light','Regular','Premium'))
 )
-GO
+go
 
-create table ProgrammeTier(
+create table ProgrammeTier (
 	TierID int not null,
 	ProgID int not null,
 	TierDesc varchar(255),
@@ -189,7 +188,6 @@ create table Payment (
 )
 go
 
-
 create table ProgrammeFeedback (
 	FeedbackID int not null IDENTITY(1,1),
 	ProgID int not null,
@@ -197,10 +195,9 @@ create table ProgrammeFeedback (
 	FdbkDesc varchar(255),
 	constraint PK_ProgrammeFeedback primary key (FeedbackID),
 	constraint FK_ProgFeedback_ProgID foreign key (ProgID) references Programmes(ProgID),
-	constraint FK_AccID foreign key (AccID) references Account(AccID),
+	constraint FK_AccID foreign key (AccID) references Account(AccID)
 )
 go
-
 
 create table ProgrammeSchedule (
 	SchedID int not null IDENTITY(1,1),
@@ -235,6 +232,7 @@ create table Bookings (
 	constraint FK_Bookings_TransacID foreign key (TransacID) references Payment(TransacID)
 )
 go
+
 
 -------------------------------------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { createAccount } from "../../../backend/models/account";
-//import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
+// import { createAccount } from "../../../backend/models/account";
+// import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
 
 const isLocalhost = window.location.hostname === "localhost";
 const apiUrl = isLocalhost
