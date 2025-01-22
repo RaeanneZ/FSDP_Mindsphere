@@ -164,6 +164,7 @@ create table Businesses (
 	helpText varchar(1000),
 	callbackRequest datetime not null,
 	enquiryStatus varchar(50) not null default ('New Enquiry'),
+	createdAt DATETIME NOT NULL DEFAULT GETDATE(),
 	constraint PK_Business primary key (BusinessID),
 	constraint CHK_Status check (enquiryStatus in ('New Enquiry', 'In Progress', 'Confirmed', 'Completed'))
 )
@@ -449,5 +450,5 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
 
 
 INSERT INTO WhatsappUsers (Name, phoneNum)
-VALUES ('Neil Hadziq', '+6589217943')
+VALUES ('Neil Hadziq', '+6589217943');
 
