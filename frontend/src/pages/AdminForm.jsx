@@ -10,7 +10,6 @@ import {
   surveyData,
   salesSupplyData,
   websiteRatingData,
-  programmeDashboardData,
 } from "../constants";
 import BarChartComponent from "../components/BarChart";
 import CourseCard from "../components/CourseCard";
@@ -19,35 +18,48 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BarLineChart from "../components/BarLineChart";
 import AdminMonthDropdown from "../components/AdminMonthDropdown";
+import backendService from "../utils/backendService";
 import TrackerService from "../utils/trackerService"; // Import TrackerService
 
 const AdminForm = () => {
-  // For Tracking ----------------------------------------------------------------------
-  const [trackingData, setTrackingData] = React.useState({
-    visitors: 0,
-    programmeClicks: {},
-  });
-
-  // Fetch tracking data from backend
-  const fetchTrackingData = async () => {
-    try {
-      const data = await TrackerService.getStatistics();
-      console.log("Backend Response:", data); // Debug: Log the response
-      setTrackingData(data);
-    } catch (error) {
-      console.error("Error fetching tracking data:", error);
-    }
-  };
-
-  React.useEffect(() => {
-    fetchTrackingData(); // Fetch tracking data when the component mounts
-  }, []);
-  // For Tracking ----------------------------------------------------------------------
-
+  const { dashboardService } = backendService;
   // For Chart Generation --------------------------------------------------------------
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [isDesktop, setIsDesktop] = React.useState(window.innerWidth >= 1440);
 
+  // For Tracking and Backend ----------------------------------------------------------------------
+  const [trackingData, setTrackingData] = React.useState({
+    visitors: 0,
+    programmeClicks: {},
+  });
+  const [dashboardData, setDashboardData] = React.useState({
+    MembersAndNewsletterSubCount: [], // Attributes: [{TotalAccounts, TotalNewsletterSubscription}]
+    ProgrammeSlotSummary: [], // Attributes: [{ProgID, ProgrammeName, TotalSlots, SlotsTaken, SlotsRemaining}]
+    SalesMetrics: [], // Attributes: [{TotalSalesRevenue, NumberOfSales}]
+    SurveyFeedbackMetrics: {}, // Attributes: {avgSurveyRaating, top3SurveyCategory}
+  });
+
+  React.useEffect(() => {
+    const fetchDataAsync = async () => {
+      try {
+        const data = await TrackerService.getStatistics();
+        console.log(data);
+        const dashboard = await dashboardService.getDashboardMetrics();
+        console.log("Dashboard data is: ", dashboard);
+        setTrackingData(data);
+        setDashboardData(dashboard);
+        console.log("fetchData executed");
+        console.log("Data in the dashboardData is ", dashboardData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchDataAsync();
+  }, []);
+  // For Tracking and Backend ----------------------------------------------------------------------
+
+  // For Chart Generation --------------------------------------------------------------
   const handlePieClick = (category) => {
     setSelectedCategory(category);
   };
@@ -72,6 +84,7 @@ const AdminForm = () => {
       </div>
     );
   }
+
   // For Chart Generation --------------------------------------------------------------
 
   return (
@@ -130,13 +143,15 @@ const AdminForm = () => {
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Newsletter Subscription</div>
             <div className="text-3xl font-bold">
-              {programmeDashboardData.subscribers}
+              {dashboardData?.MembersAndNewsletterSubCount[0]
+                ?.TotalNewsletterSubscriptions || 0}
             </div>
           </div>
           <div className="bg-darkBlue text-white text-center p-6 rounded-lg shadow-md">
             <div className="text-lg">Members</div>
             <div className="text-3xl font-bold">
-              {programmeDashboardData.members}
+              {dashboardData?.MembersAndNewsletterSubCount[0]?.TotalAccounts ||
+                0}
             </div>
           </div>
         </div>

@@ -18,6 +18,9 @@ const ReviewPage = () => {
   const { bookingService, childrenService } = backendService;
   const navigate = useNavigate();
 
+  const googleCloud_Key = import.meta.env.VITE_GOOGLECLOUD_APIKEY;
+  console.log("Google cloud api key is: ", googleCloud_Key);
+
   // Get program details from session storage
   const storedProgrammeTier = sessionStorage.getItem("selectedPlan");
   const storedSelectedProgramme = sessionStorage.getItem("selectedProgramme");
