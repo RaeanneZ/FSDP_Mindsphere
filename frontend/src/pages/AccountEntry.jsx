@@ -159,7 +159,7 @@ const AccountEntry = () => {
     const code = params.get("code");
     if (code) {
       // Determine whether it's a login or signup process based on `isSignup`
-      if (isSignup) {
+      if (!isSignup) {
         handleCreateAccountWithLinkedIn(code);
       } else {
         handleLoginWithLinkedIn(code);
