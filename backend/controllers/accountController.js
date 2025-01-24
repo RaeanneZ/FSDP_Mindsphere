@@ -222,9 +222,6 @@ const verifyEmail = async (req, res) => {
   const { email, verifCode: rawVerifCode } = req.body;
   const verifCode = parseInt(rawVerifCode, 10);
 
-  console.log("Calling from controller/email: ", email);
-  console.log("Calling from controller/verifCode: ", rawVerifCode);
-
   try {
     // Validate verification code format
     if (isNaN(verifCode) || verifCode < 0) {

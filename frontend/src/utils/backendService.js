@@ -304,8 +304,6 @@ const accountService = {
   },
 
   verifyEmail: async (email, verificationCode) => {
-    console.log("Calling from backend/email: ", email);
-    console.log("Calling from backend/verificationCode: ", verificationCode);
     try {
       const response = await axios.post(`${apiUrl}/account/verifyEmail`, {
         email,
