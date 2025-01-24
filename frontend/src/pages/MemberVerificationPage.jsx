@@ -54,7 +54,7 @@ const MemberVerificationPage = () => {
     } else {
       // Navigate to the next page
       sessionStorage.setItem("signup", "true");
-      navigate("/signup");
+      navigate("/accountEntry");
     }
   };
 
