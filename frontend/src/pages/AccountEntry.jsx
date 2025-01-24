@@ -103,11 +103,67 @@ const AccountEntry = () => {
     }
   };
 
+  // New Features -----------------------------------------------------------------------------------------------------------------------------------
+  const handleLoginWithLinkedIn = async (code) => {
+    try {
+      const accessToken = await linkedinService.getAccessToken(code);
+      console.log("Access Token Retrieved for Login:", accessToken);
+
+      const userProfile = await linkedinService.getUserProfile(accessToken);
+      console.log("User Profile Retrieved for Login:", userProfile);
+
+      const credentials = { email: userProfile.email, password: "linkedin" }; // You might need a specific method to handle LinkedIn login passwords
+      const response = await accountService.loginAccount(credentials);
+
+      if (response?.success) {
+        login();
+        navigate("/");
+        sessionStorage.setItem("AccountEmail", userProfile.email);
+      } else {
+        setError("You do not have a Linkedin Account tied with us.");
+      }
+    } catch (error) {
+      console.error("Error in LinkedIn Login Callback:", error);
+      setError("Failed to login with LinkedIn.");
+    }
+  };
+
+  const handleCreateAccountWithLinkedIn = async (code) => {
+    try {
+      const accessToken = await linkedinService.getAccessToken(code);
+      console.log("Access Token Retrieved for Signup:", accessToken);
+
+      const userProfile = await linkedinService.getUserProfile(accessToken);
+      console.log("User Profile Retrieved for Signup:", userProfile);
+
+      const response = await accountService.createAccount(
+        userProfile.email,
+        "linkedin"
+      );
+
+      if (response.success) {
+        sessionStorage.setItem("signup", "false");
+        navigate("/accountSetup");
+      } else {
+        setError(response.message);
+      }
+    } catch (error) {
+      console.error("Error in LinkedIn Signup Callback:", error);
+      setError("Failed to sign up with LinkedIn.");
+    }
+  };
+  // New Features -----------------------------------------------------------------------------------------------------------------------------------
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     if (code) {
-      handleLinkedInCallback(code);
+      // Determine whether it's a login or signup process based on `isSignup`
+      if (isSignup) {
+        handleCreateAccountWithLinkedIn(code);
+      } else {
+        handleLoginWithLinkedIn(code);
+      }
     }
   }, []);
 

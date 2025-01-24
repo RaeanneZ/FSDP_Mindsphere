@@ -45,7 +45,7 @@ const MemberVerificationPage = () => {
 
     // VerifyEmail with backend
     const response = await accountService.verifyEmail(email, verificationCode);
-
+    console.log("response is: ", response);
     if (!response.success) {
       setError(
         "Verification failed. Please check your email and verification code."
