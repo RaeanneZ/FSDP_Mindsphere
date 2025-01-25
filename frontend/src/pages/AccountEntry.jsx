@@ -21,7 +21,7 @@ const AccountEntry = () => {
   const { login } = useAuth();
 
   useEffect(() => {
-    const signupStatus = sessionStorage.getItem("signup") === "true";
+    const signupStatus = sessionStorage.getItem("signup") == "true";
     setIsSignup(signupStatus);
   }, []);
 
@@ -90,7 +90,10 @@ const AccountEntry = () => {
       const userProfile = await linkedinService.getUserProfile(accessToken);
       console.log("User Profile Retrieved for Login:", userProfile);
 
-      const credentials = { email: userProfile.email, password: "linkedin" }; // You might need a specific method to handle LinkedIn login passwords
+      const credentials = {
+        email: userProfile.email,
+        password: userProfile.sub,
+      }; // You might need a specific method to handle LinkedIn login passwords
       const response = await accountService.loginAccount(credentials);
 
       if (response?.success) {
@@ -137,7 +140,7 @@ const AccountEntry = () => {
     const code = params.get("code");
     if (code) {
       // Determine whether it's a login or signup process based on `isSignup`
-      if (!isSignup) {
+      if (isSignup) {
         handleCreateAccountWithLinkedIn(code);
       } else {
         handleLoginWithLinkedIn(code);

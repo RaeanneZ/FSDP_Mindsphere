@@ -81,7 +81,7 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <a href="/login">
+            <a href="/accountEntry">
               <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
                 <FontAwesomeIcon icon={faUser} className="pr-2" />
                 Login
@@ -145,7 +145,7 @@ const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <a href="/accountEntry">
+              <a href="/address">
                 <button
                   className="bg-yellow text-white w-24 px-4 py-2 rounded-full hover:bg-yellow-600 flex items-center justify-center"
                   onClick={() => sessionStorage.setItem("signup", "false")}

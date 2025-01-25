@@ -154,6 +154,12 @@ const AccountManagementPage = () => {
     sessionStorage.setItem("childData", JSON.stringify(childData));
 
     // Method call to send parent account details to the backend (including email and password)
+    console.log(formData.name);
+    console.log(existingParentData[0].email);
+    console.log(formData.contactNumber);
+    console.log(formData.dob);
+    console.log(formData.relationship);
+    console.log(formData.address);
     try {
       // Format results to expected fields
       const accountData = {
