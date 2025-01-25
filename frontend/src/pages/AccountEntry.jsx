@@ -82,28 +82,6 @@ const AccountEntry = () => {
     window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`;
   };
 
-  const handleLinkedInCallback = async (code) => {
-    console.log("Inside handleLinkedInCallback with code:", code);
-    try {
-      const accessToken = await linkedinService.getAccessToken(code);
-      console.log("Access Token Retrieved:", accessToken);
-
-      const userProfile = await linkedinService.getUserProfile(accessToken);
-      console.log("User Profile Retrieved:", userProfile);
-
-      sessionStorage.setItem(
-        "LinkedInUserProfile",
-        JSON.stringify(userProfile)
-      );
-
-      navigate("/");
-    } catch (error) {
-      console.error("Error in LinkedIn Callback:", error);
-      setError("Failed to sign up with LinkedIn.");
-    }
-  };
-
-  // New Features -----------------------------------------------------------------------------------------------------------------------------------
   const handleLoginWithLinkedIn = async (code) => {
     try {
       const accessToken = await linkedinService.getAccessToken(code);
@@ -138,11 +116,12 @@ const AccountEntry = () => {
 
       const response = await accountService.createAccount(
         userProfile.email,
-        "linkedin"
+        userProfile.sub
       );
 
       if (response.success) {
         sessionStorage.setItem("signup", "false");
+        sessionStorage.setItem("linkedinData", JSON.stringify(userProfile));
         navigate("/accountSetup");
       } else {
         setError(response.message);
@@ -152,7 +131,6 @@ const AccountEntry = () => {
       setError("Failed to sign up with LinkedIn.");
     }
   };
-  // New Features -----------------------------------------------------------------------------------------------------------------------------------
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

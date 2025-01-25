@@ -25,6 +25,21 @@ const AccountManagementPage = () => {
   });
   const autocompleteRef = useRef(null);
 
+  // Retrieve data from session storage if `linkedinData` exists
+  useEffect(() => {
+    const linkedInData = JSON.parse(sessionStorage.getItem("linkedinData"));
+    if (linkedInData) {
+      setFormData((prevData) => ({
+        ...prevData,
+        name: linkedInData.given_name + " " + linkedInData.family_name || "",
+        address: linkedInData.locale?.country || "",
+        dob: "", // LinkedIn data doesn't provide DOB by default
+        contactNumber: "", // Update if LinkedIn data includes phone numbers
+        relationship: "", // Default as empty; user needs to input manually
+      }));
+    }
+  }, []);
+
   // Load Google Maps script dynamically
   useEffect(() => {
     const loadGoogleMapsScript = () => {
