@@ -1,6 +1,8 @@
 const EmailTemplateModel = require("../models/emailTemplateModel");
 const EmailLogModel = require("../models/emailLogModel");
 const { sendEmail } = require("../models/email");
+const fs = require("fs");
+const path = require("path");
 
 class EmailController {
     // Create a new email template
@@ -96,14 +98,31 @@ class EmailController {
 
             // Check if a file was uploaded
             if (req.file) {
+                // Resolve the file path
+                const filePath = path.resolve("uploads", req.file.filename);
+
+                // Add debug logs to check file existence
+                console.log("Looking for file at:", filePath);
+                console.log("Does file exist?", fs.existsSync(filePath));
+
+                // If the file exists, add it to attachments
+                if (!fs.existsSync(filePath)) {
+                    console.error("File does not exist at path:", filePath);
+                    return res.status(400).json({
+                        success: false,
+                        message: "Attachment file not found.",
+                    });
+                }
+
                 emailOptions.attachments.push({
                     filename: req.file.filename,
-                    path: req.file.path, // File path on disk
+                    path: filePath, // Use absolute path
+                    contentType: req.file.mimetype,
                 });
             }
 
             // Send the email
-            await sendEmail(emailOptions);
+            const result = await sendEmail(emailOptions);
 
             // Log the email in EmailLogs
             await EmailLogModel.logEmail(
@@ -116,6 +135,7 @@ class EmailController {
             return res.status(200).json({
                 success: true,
                 message: "Email sent successfully.",
+                result,
             });
         } catch (error) {
             console.error(
