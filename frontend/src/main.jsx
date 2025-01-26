@@ -8,7 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 
 // Import all the pages
 import LandingPage from "./pages/LandingPage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
+import MemberVerificationPage from "./pages/MemberVerificationPage.jsx";
 import PersonalisationCoverPage from "./pages/PersonalisationCoverPage.jsx";
 import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
@@ -16,7 +16,7 @@ import ReviewPage from "./pages/ReviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import AccountDashboardPage from "./pages/AccountDashboardPage.jsx";
 import SurveyPage from "./pages/SurveyPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
+import AccountEntry from "./pages/AccountEntry.jsx";
 import ChildrenNamePage from "./pages/ChildrenNamePage.jsx";
 import ChildrenFavPage from "./pages/ChildrenFavPage.jsx";
 import ChildrenAmbition from "./pages/ChildrenAmbition.jsx";
@@ -26,7 +26,6 @@ import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ErrorPage from "./pages/errorPage.jsx";
-import AdminPanel from "./pages/AdminPanel.jsx";
 
 // Import CSS
 import "../public/css/index.css";
@@ -39,13 +38,13 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/login",
-    element: <LoginPage />,
+    path: "/accountEntry",
+    element: <AccountEntry />,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/signup",
-    element: <SignupPage />,
+    path: "/verification",
+    element: <MemberVerificationPage />,
     errorElement: <ErrorPage />,
   },
   {
@@ -128,11 +127,6 @@ const router = createBrowserRouter([
     element: <AdminForm />,
     errorElement: <ErrorPage />,
   },
-  // {
-  //   path: "/adminPanel",
-  //   element: <AdminPanel />,
-  //   errorElement: <ErrorPage />,
-  // },
 ]);
 
 createRoot(document.getElementById("root")).render(

@@ -17,7 +17,10 @@ export const AuthProvider = ({ children }) => {
 
   // Functions to log in and log out
   const login = () => setLoggedIn(true);
-  const logout = () => setLoggedIn(false);
+  const logout = () => {
+    setLoggedIn(false);
+    sessionStorage.removeItem("AccountEmail");
+  };
 
   return (
     <AuthContext.Provider value={{ loggedIn, login, logout }}>

@@ -133,53 +133,140 @@ const retrieveAccountInfo = async (req, res) => {
   }
 };
 
-const signUp = async (req, res) => {
-  console.log("Request Body:", req.body);
-  const { email, password, verifCode: rawVerifCode } = req.body; // Rename to avoid reassigning
-  const trimmedEmail = email.trim();
-  const verifCode = parseInt(rawVerifCode, 10); // Use a new variable
+// const signUp = async (req, res) => {
+//     console.log("Request Body:", req.body);
+//     const { email, password, verifCode: rawVerifCode } = req.body; // Rename to avoid reassigning
+//     const trimmedEmail = email.trim();
+//     const verifCode = parseInt(rawVerifCode, 10); // Use a new variable
 
-  console.log("Verification Code:", verifCode);
-  console.log("Type of Verification Code:", typeof verifCode);
+//     console.log("Verification Code:", verifCode);
+//     console.log("Type of Verification Code:", typeof verifCode);
 
-  // Log the converted verifCode
-  console.log("Converted verification code:", verifCode);
+//     // Log the converted verifCode
+//     console.log("Converted verification code:", verifCode);
+
+//     try {
+//         // Validate the verification code
+//         if (isNaN(verifCode) || verifCode < 0) {
+//             return res
+//                 .status(400)
+//                 .json({ message: "Invalid verification code format" });
+//         }
+
+//         console.log("Final Verification Code being sent:", verifCode);
+
+//         // Check verification code
+//         const verificationResult = await Account.verification(
+//             trimmedEmail,
+//             verifCode
+//         );
+
+//         if (verificationResult.length === 0) {
+//             return res
+//                 .status(400)
+//                 .json({ message: "Invalid verification code" });
+//         }
+
+//         // Sign up the account
+//         const accountResult = await Account.signUp(
+//             trimmedEmail,
+//             password,
+//             verifCode
+//         );
+
+//         return res.status(201).json(accountResult); // Respond with account creation success
+//     } catch (err) {
+//         console.error(err);
+//         // Check for specific error messages
+//         if (err.message.includes("Invalid verification code")) {
+//             return res
+//                 .status(400)
+//                 .json({ message: "Invalid verification code" });
+//         }
+//         res.status(500).send("ControllerError: Signup error");
+//     }
+// };
+const addVerificationCode = async (req, res) => {
+  // for testing adding manually
+  const { email, verifCode } = req.body;
+
+  if (!email || !verifCode) {
+    return res
+      .status(400)
+      .json({ message: "Email and verification code are required." });
+  }
 
   try {
-    // Validate the verification code
+    const connection = await sql.connect(dbConfig);
+    const sqlQuery = `
+          INSERT INTO AccountVerification (Email, verifCode)
+          VALUES (@Email, @verifCode);
+      `;
+
+    const request = connection.request();
+    request.input("Email", sql.VarChar(50), email);
+    request.input("verifCode", sql.Int, verifCode);
+    await request.query(sqlQuery);
+    connection.close();
+
+    res.status(201).json({
+      message: "Verification code added successfully.",
+    });
+  } catch (err) {
+    console.error("Error adding verification code:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const verifyEmail = async (req, res) => {
+  const { email, verifCode: rawVerifCode } = req.body;
+  const verifCode = parseInt(rawVerifCode, 10);
+
+  try {
+    // Validate verification code format
     if (isNaN(verifCode) || verifCode < 0) {
       return res
         .status(400)
         .json({ message: "Invalid verification code format" });
     }
 
-    console.log("Final Verification Code being sent:", verifCode);
+    // Verify the code
+    const isVerified = await Account.verifyEmailCode(email, verifCode);
 
-    // Check verification code
-    const verificationResult = await Account.verification(
-      trimmedEmail,
-      verifCode
-    );
-
-    if (verificationResult.length === 0) {
+    if (!isVerified) {
       return res.status(400).json({ message: "Invalid verification code" });
     }
 
-    // Sign up the account
-    const accountResult = await Account.signUp(
-      trimmedEmail,
-      password,
-      verifCode
-    );
-
-    return res.status(201).json(accountResult); // Respond with account creation success
+    return res.status(200).json({
+      message: "Email verification successful",
+      verified: true,
+    });
   } catch (err) {
     console.error(err);
-    // Check for specific error messages
-    if (err.message.includes("Invalid verification code")) {
-      return res.status(400).json({ message: "Invalid verification code" });
+    res.status(500).send("ControllerError: Email verification error");
+  }
+};
+
+const createAccount = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if account already exists
+    const existingAccount = await Account.getAccountByEmail(email);
+    if (existingAccount) {
+      return res.status(400).json({ message: "Account already exists" });
     }
-    res.status(500).send("ControllerError: Signup error");
+
+    // Create the account
+    const result = await Account.createAccount(email, password);
+
+    return res.status(201).json({
+      message: "Account created successfully",
+      account: result,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("ControllerError: Account creation error");
   }
 };
 
@@ -188,7 +275,9 @@ module.exports = {
   getAccountByEmail,
   updateAccountByEmail,
   registerAccount,
-  signUp,
   login,
   retrieveAccountInfo,
+  addVerificationCode,
+  verifyEmail,
+  createAccount,
 };
