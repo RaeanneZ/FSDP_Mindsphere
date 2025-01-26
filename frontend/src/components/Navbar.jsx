@@ -31,20 +31,25 @@ const Navbar = () => {
     }
   };
 
-  return (
-    <div className="relative">
-      <div className="flex justify-between items-center px-10 md:px-20 py-4">
-        <div className="flex items-center">
-          <a href="/">
-            <img
-              src={mindsphere}
-              alt="MindSphere logo"
-              className="mx-auto my-4"
-              width={180}
-            />
+  // Helper function to render navigation links
+  const renderLinks = () => {
+    if (email === "admin@gmail.com") {
+      return (
+        <>
+          <a href="/" className="hover:text-gray-900">
+            Home
           </a>
-        </div>
-        <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-lg">
+          <a href="/admin" className="hover:text-gray-900">
+            Dashboard
+          </a>
+          <a href="https://drive.google.com" className="hover:text-gray-900">
+            Drive
+          </a>
+        </>
+      );
+    } else {
+      return (
+        <>
           <a href="/" className="hover:text-gray-900">
             Home
           </a>
@@ -63,6 +68,26 @@ const Navbar = () => {
           <a href="#" className="hover:text-gray-900">
             Media
           </a>
+        </>
+      );
+    }
+  };
+
+  return (
+    <div className="relative">
+      <div className="flex justify-between items-center px-10 md:px-20 py-4">
+        <div className="flex items-center">
+          <a href="/">
+            <img
+              src={mindsphere}
+              alt="MindSphere logo"
+              className="mx-auto my-4"
+              width={180}
+            />
+          </a>
+        </div>
+        <div className="hidden lg:flex items-center space-x-6 text-gray-700 text-lg">
+          {renderLinks()}
 
           {loggedIn ? (
             <div className="flex items-center space-x-4">
@@ -81,7 +106,7 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <a href="/login">
+            <a href="/accountEntry">
               <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
                 <FontAwesomeIcon icon={faUser} className="pr-2" />
                 Login
@@ -128,6 +153,8 @@ const Navbar = () => {
               Media
             </a>
 
+            {renderLinks()}
+
             {loggedIn ? (
               <div className="flex items-center space-x-2">
                 <img
@@ -145,8 +172,11 @@ const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <a href="/login">
-                <button className="bg-yellow text-white w-24 px-4 py-2 rounded-full hover:bg-yellow-600 flex items-center justify-center">
+              <a href="/address">
+                <button
+                  className="bg-yellow text-white w-24 px-4 py-2 rounded-full hover:bg-yellow-600 flex items-center justify-center"
+                  onClick={() => sessionStorage.setItem("signup", "false")}
+                >
                   <FontAwesomeIcon icon={faUser} className="pr-2" />
                   Login
                 </button>

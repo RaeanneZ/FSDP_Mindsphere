@@ -1,23 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import backendService from "../utils/backendService";
+import TrackerService from "../utils/trackerService";
 import { imageArray } from "../constants";
 
 const ProgrammeSection = ({ onProgrammeSelect }) => {
-  const { useState, useEffect } = React;
   const { programmeService } = backendService;
   const [selectedProgrammeIndex, setSelectedProgrammeIndex] = useState(null);
   const [programmes, setProgrammes] = useState([]); // State to hold programmes
   const [loading, setLoading] = useState(true); // State to handle loading
 
-  const handleProgrammeClick = (index) => {
+  const handleProgrammeClick = async (index) => {
     setSelectedProgrammeIndex(index);
-
     const selectedProgramme = programmes[index];
+
     // Save the selected programme to session storage
     sessionStorage.setItem(
       "selectedProgramme",
       JSON.stringify(selectedProgramme)
     );
+
+    // Track the click
+    await TrackerService.incrementProgrammeClick(selectedProgramme.ProgID);
 
     // Pass the selected programme's ID to the parent component
     onProgrammeSelect(selectedProgramme); // Assuming each programme has a unique `id`
@@ -36,6 +39,7 @@ const ProgrammeSection = ({ onProgrammeSelect }) => {
   };
 
   useEffect(() => {
+    TrackerService.incrementVisitorCount(); // Increment visitor count
     getAllProgrammes(); // Call the async function when the component mounts
   }, []); // Empty dependency array means this runs once when the component mounts
 
@@ -48,7 +52,7 @@ const ProgrammeSection = ({ onProgrammeSelect }) => {
       <h1 className="text-3xl font-bold text-center mb-10">
         Our Signature Programmes
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {programmes.map((programme, index) => {
           const matchedImage = imageArray.find(
             (image) => image.id === programme.ProgID

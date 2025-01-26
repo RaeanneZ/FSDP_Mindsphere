@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css"; // Import Flatpickr styles
@@ -14,17 +14,66 @@ const AccountManagementPage = () => {
 
   // Frontend
   const navigate = useNavigate(); // Create history object
-  const [errors, setErrors] = React.useState({}); // State for error messages
-  const [children, setChildren] = React.useState([1]);
-
-  // This is for parent form
-  const [formData, setFormData] = React.useState({
+  const [errors, setErrors] = useState({}); // State for error messages
+  const [children, setChildren] = useState([1]);
+  const [formData, setFormData] = useState({
     name: "",
     dob: "",
     contactNumber: "",
     relationship: "",
     address: "",
   });
+  const autocompleteRef = useRef(null);
+
+  // Retrieve data from session storage if `linkedinData` exists
+  useEffect(() => {
+    const linkedInData = JSON.parse(sessionStorage.getItem("linkedinData"));
+    if (linkedInData) {
+      setFormData((prevData) => ({
+        ...prevData,
+        name: linkedInData.given_name + " " + linkedInData.family_name || "",
+        address: linkedInData.locale?.country || "",
+        dob: "", // LinkedIn data doesn't provide DOB by default
+        contactNumber: "", // Update if LinkedIn data includes phone numbers
+        relationship: "", // Default as empty; user needs to input manually
+      }));
+    }
+  }, []);
+
+  // Load Google Maps script dynamically
+  useEffect(() => {
+    const loadGoogleMapsScript = () => {
+      if (!window.google) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${
+          import.meta.env.VITE_GOOGLECLOUD_APIKEY
+        }&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => initializeAutocomplete(); // Initialize Autocomplete on script load
+        document.body.appendChild(script);
+      } else {
+        initializeAutocomplete(); // Initialize if script is already loaded
+      }
+    };
+
+    const initializeAutocomplete = () => {
+      if (autocompleteRef.current) {
+        const autocomplete = new window.google.maps.places.Autocomplete(
+          autocompleteRef.current,
+          { types: ["geocode"] }
+        );
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          if (place.formatted_address) {
+            setFormData({ ...formData, address: place.formatted_address });
+          }
+        });
+      }
+    };
+
+    loadGoogleMapsScript();
+  }, [formData]);
 
   const addChild = () => {
     setChildren([...children, children.length + 1]);
@@ -36,6 +85,16 @@ const AccountManagementPage = () => {
       ...formData,
       [name]: value,
     });
+  };
+  const handleDateChange = (date) => {
+    const localDateStr = date[0]
+      ? new Date(date[0].getTime() - date[0].getTimezoneOffset() * 60000)
+          .toISOString()
+          .split("T")[0]
+      : ""; // Format the date with timezone adjustment
+
+    const updatedData = { ...formData, dob: localDateStr }; // Update only the dob field
+    setFormData(updatedData); // Update the state
   };
 
   const validateForm = () => {
@@ -72,17 +131,6 @@ const AccountManagementPage = () => {
     return Object.keys(newErrors).length === 0; // Returns true if no errors
   };
 
-  const handleDateChange = (date) => {
-    const localDateStr = date[0]
-      ? new Date(date[0].getTime() - date[0].getTimezoneOffset() * 60000)
-          .toISOString()
-          .split("T")[0]
-      : ""; // Format the date with timezone adjustment
-
-    const updatedData = { ...formData, dob: localDateStr }; // Update only the dob field
-    setFormData(updatedData); // Update the state
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
@@ -106,6 +154,12 @@ const AccountManagementPage = () => {
     sessionStorage.setItem("childData", JSON.stringify(childData));
 
     // Method call to send parent account details to the backend (including email and password)
+    console.log(formData.name);
+    console.log(existingParentData[0].email);
+    console.log(formData.contactNumber);
+    console.log(formData.dob);
+    console.log(formData.relationship);
+    console.log(formData.address);
     try {
       // Format results to expected fields
       const accountData = {
@@ -200,13 +254,15 @@ const AccountManagementPage = () => {
               </select>
             </div>
 
+            {/* Google Maps Place Autocomplete */}
             <input
               type="text"
               name="address"
+              ref={autocompleteRef}
               placeholder="Address"
               value={formData.address}
               onChange={handleChange}
-              className="p-3 border border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-yellow"
+              className="p-3 border border-gray-300 rounded-md"
               required
             />
           </div>
