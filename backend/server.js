@@ -72,6 +72,7 @@ const businessController = require("./controllers/businessController");
 const surveyFormController = require("./controllers/surveyFormController");
 const reminderController = require("./controllers/reminderEmailController");
 const autogenCertController = require("./controllers/autogen-certController");
+const linkedinRoute = require("./routes/linkedinRoute");
 
 // APP SETUP
 const app = express();
@@ -139,6 +140,13 @@ app.get(
   "/api/programmes/registered/:email",
   programmesController.getRegisteredProgrammesByAccount
 );
+
+
+app.post("/api/account/verifyEmail", accountController.verifyEmail);
+app.post("/api/account/createAccount", accountController.createAccount);
+app.post("/addVerification", accountController.addVerificationCode);
+
+app.get("/api/programmes/registered/:email",programmesController.getRegisteredProgrammesByAccount);
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
 app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
 app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
@@ -147,7 +155,6 @@ app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
 app.put("/api/account/:email", accountController.updateAccountByEmail);
 app.put("/api/register", accountController.registerAccount);
-app.post("/api/signUp", accountController.signUp);
 app.post("/api/login", accountController.login);
 app.post("/api/login/admin", accountController.login);
 
@@ -185,6 +192,9 @@ PaymentEmailController.sendMembershipCodes;
 
 // autogenerate certificate
 app.post("/api/certificate", autogenCertController.generateCert);
+
+app.use("/api/linkedin", linkedinRoute);
+app.use("/", linkedinRoute);
 
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store
