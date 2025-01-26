@@ -36,13 +36,34 @@ import AdminConsultationSummaryPage from "./pages/AdminConsultationSummaryPage.j
 import BookingPage from "./pages/BookingPage.jsx";
 import VideoCall from "./components/VideoCall.jsx";
 import Layout from "./components/Layout.jsx";
-// Import components
-import PageTracking from "./components/PageTracking.jsx";
-import Chatbot from "./components/Chatbot.jsx";
 
 // Define a function to track pages
 const trackPage = (page) => {
   console.log(`Tracked page: ${page}`); // Replace with your analytics logic
+};
+
+// Define inactivity messages
+const inactivityMessages = {
+  "/": "Need help exploring the homepage?",
+  "/login": "Having trouble logging in?",
+  "/signup": "Need assistance with signing up?",
+  "/personalisation": "Need help with personalising your account?",
+  "/accountSetup": "Need help setting up your account?",
+  "/childPageContainer": "Need help managing your children's details?",
+  "/accountSetup/childSection": "Stuck on the child section setup?",
+  "/accountSetup/childName": "Need help entering your child's name?",
+  "/accountSetup/childFav": "Need suggestions for your child's favorites?",
+  "/accountSetup/childAmbition":
+    "Need guidance with entering your child's ambition?",
+  "/welcome": "Excited to explore the platform? Let us guide you!",
+  "/products": "Need help selecting a product?",
+  "/businessEnquiry": "Have questions about submitting a business inquiry?",
+  "/review": "Need help writing or submitting a review?",
+  "/payment": "Need help checking out?",
+  "/accountmanagement": "Need assistance managing your account?",
+  "/survey": "Need help completing the survey?",
+  "/about": "Want to learn more about us? Let me guide you!",
+  "/admin": "Need admin-specific guidance?",
 };
 
 // Router configuration
@@ -150,14 +171,6 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/timeline",
-    element: <B2BEnquiryTimelineTracker />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/B2BManagement",
-    element: <AdminB2BManagement />,
-
     path: "/consultationSummary",
     element: <AdminConsultationSummaryPage />,
     errorElement: <ErrorPage />,
@@ -168,54 +181,6 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 ]);
-
-// Define inactivity messages
-const inactivityMessages = {
-  "/": "Need help exploring the homepage?",
-  "/login": "Having trouble logging in?",
-  "/signup": "Need assistance with signing up?",
-  "/personalisation": "Need help with personalising your account?",
-  "/accountSetup": "Need help setting up your account?",
-  "/childPageContainer": "Need help managing your children's details?",
-  "/accountSetup/childSection": "Stuck on the child section setup?",
-  "/accountSetup/childName": "Need help entering your child's name?",
-  "/accountSetup/childFav": "Need suggestions for your child's favorites?",
-  "/accountSetup/childAmbition":
-    "Need guidance with entering your child's ambition?",
-  "/welcome": "Excited to explore the platform? Let us guide you!",
-  "/products": "Need help selecting a product?",
-  "/businessEnquiry": "Have questions about submitting a business inquiry?",
-  "/review": "Need help writing or submitting a review?",
-  "/payment": "Need help checking out?",
-  "/accountmanagement": "Need assistance managing your account?",
-  "/survey": "Need help completing the survey?",
-  "/about": "Want to learn more about us? Let me guide you!",
-  "/admin": "Need admin-specific guidance?",
-};
-
-const MainApp = () => {
-  const [autoOpenMessage, setAutoOpenMessage] = useState(null);
-
-  // Handle inactivity and set appropriate messages
-  const handleInactivity = (page) => {
-    const message = inactivityMessages[page];
-    if (message) {
-      setAutoOpenMessage(message);
-    }
-  };
-
-  return (
-    <StrictMode>
-      <AuthProvider>
-        <PageTracking trackPage={trackPage} onInactivity={handleInactivity} />
-        <RouterProvider router={router} />
-        <Chatbot trackPage={trackPage} autoOpenMessage={autoOpenMessage} />
-      </AuthProvider>
-    </StrictMode>
-  );
-};
-
-createRoot(document.getElementById("root")).render(<MainApp />);
 
 // const router = createBrowserRouter([
 //   {
@@ -320,12 +285,27 @@ createRoot(document.getElementById("root")).render(<MainApp />);
 //   // },
 // ]);
 
-createRoot(document.getElementById("root")).render(
-  <AuthProvider>
-    {/* Wrap RouterProvider with AuthProvider */}
-    <RouterProvider router={router}>
-      <PageTracking />
-      <Chatbot /> {/* Add the chatbot component */}
-    </RouterProvider>
-  </AuthProvider>
-);
+const MainApp = () => {
+  const [autoOpenMessage, setAutoOpenMessage] = useState(null);
+
+  // Handle inactivity and set appropriate messages
+  const handleInactivity = (page) => {
+    const message = inactivityMessages[page];
+    if (message) {
+      setAutoOpenMessage(message);
+    }
+  };
+
+  return (
+    <StrictMode>
+      <AuthProvider>
+        <PageTracking trackPage={trackPage} onInactivity={handleInactivity} />
+        <RouterProvider router={router} />
+        {/* Chatbot is retained from AIChatbot */}
+        <Chatbot trackPage={trackPage} autoOpenMessage={autoOpenMessage} />
+      </AuthProvider>
+    </StrictMode>
+  );
+};
+
+createRoot(document.getElementById("root")).render(<MainApp />);
