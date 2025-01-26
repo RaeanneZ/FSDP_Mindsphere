@@ -106,7 +106,9 @@ app.get("/", async (req, res) => {
 
 app.use("/api/schedules", require("./routes/schedulesRoutes"));
 app.use("/api/survey", require("./routes/surveyRoutes"));
-app.use("/api/dashboard-metrics", require("./routes/dashboardMetricRoutes"));
+app.use("/api/adminDashboard",require("./routes/dashboardMetricRoutes"));
+app.use("/api/business", require("./routes/businessRoutes"));
+app.use("/api/whatsapp", require("./routes/whatsappRoutes"))
 
 // routes refactor not done for the following
 // [bookings, business, payments, programmes, account, feedback, children, newsletter, reminders]
@@ -115,8 +117,6 @@ app.get("/api/bookings", bookingsController.getAllBookings);
 app.post("/api/bookings", bookingsController.addBooking);
 app.delete("/api/bookings", bookingsController.deleteBooking);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
-
-app.post("/api/business/addBusiness", businessController.addBusiness);
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);

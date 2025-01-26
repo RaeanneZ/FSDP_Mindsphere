@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const dashboardMetricsController = require("../controllers/dashboardMetricsController");
+const multer = require("multer");
+const { dash } = require("pdfkit");
+const upload = multer({ storage: multer.memoryStorage() });
 
 /**
  * @swagger
@@ -90,5 +93,9 @@ router.get(
     "/",
     dashboardMetricsController.getDashboardMetrics
 );
+
+router.post("/uploadEnquiryTimeline", upload.single("file"), dashboardMetricsController.addEnquiryTimeline)
+
+router.get("/timelines/:BusinessID", dashboardMetricsController.getTimelinesByBusinessID);
 
 module.exports = router;

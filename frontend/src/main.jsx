@@ -26,10 +26,12 @@ import ChildrenPageContainer from "./pages/ChildrenPageContainer.jsx";
 import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ErrorPage from "./pages/errorPage.jsx";
+import AdminForm from "./pages/AdminForm.jsx";
+import B2BEnquiryTimelineTracker from "./pages/B2BEnquiryTimelineTracker.jsx";
 
 // Import CSS
 import "../public/css/index.css";
-import AdminForm from "./pages/AdminForm.jsx";
+import AdminB2BManagement from "./pages/AdminB2BManagement.jsx";
 
 const router = createBrowserRouter([
   {
@@ -125,6 +127,16 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <AdminForm />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/timeline",
+    element: <B2BEnquiryTimelineTracker />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/B2BManagement",
+    element: <AdminB2BManagement />,
     errorElement: <ErrorPage />,
   },
 ]);
