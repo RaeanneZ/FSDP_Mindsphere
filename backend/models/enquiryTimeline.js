@@ -31,13 +31,11 @@ class enquiryTimeline {
             `;
             const request = connection.request();
     
-            // Add input parameters
             request.input("BusinessID", sql.Int, BusinessID);
             request.input("Text", sql.VarChar(255), Text);
             request.input("Tag", sql.VarChar(50), Tag);
             request.input("linkToPDF", sql.VarChar(255), linkToPDF || null);
     
-            // Execute query
             const result = await request.query(sqlQuery);
             connection.close();
     

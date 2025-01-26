@@ -28,7 +28,6 @@ const getDashboardMetrics = async (req, res) => {
 
 const addEnquiryTimeline = async (req, res) => {
     try {
-        // MISSING ADDING DATA TO THE TIMELINE DATABASE AND SENDING OUT NOTIFICATION
         const { BusinessID, Text, Tag } = req.body;
 
         if (!req.file) {
@@ -79,21 +78,18 @@ const addEnquiryTimeline = async (req, res) => {
             BusinessID,
             Text,
             Tag,
-            linkToPDF: shareUrl, // Store the share URL of the uploaded file
+            linkToPDF: shareUrl,
         };
 
         const insertedEnquiry = await enquiryTimeline.addEnquiryTimeline(enquiryData);
 
-
-
-        // Send the response
         res.status(200).send({
             success: true,
             message: "File uploaded and enquiry added successfully",
             filePath,
             driveFileId: uploadedFileId,
             shareUrl,
-            enquiryTimeline: insertedEnquiry, // Returning the inserted enquiry timeline data
+            enquiryTimeline: insertedEnquiry, 
         });
     } catch (err) {
         console.error("ControllerError: Error uploading enquiry attachment", err);
@@ -103,22 +99,18 @@ const addEnquiryTimeline = async (req, res) => {
 
 const getTimelinesByBusinessID = async (req, res) => {
     try {
-        const { BusinessID } = req.params;  // Assuming BusinessID is passed as a parameter in the URL
+        const { BusinessID } = req.params; 
 
-        // Validate that BusinessID is provided
         if (!BusinessID) {
             return res.status(400).send("BusinessID is required.");
         }
 
-        // Get the timelines from the model
         const timelines = await enquiryTimeline.getTimelinesByBusinessID(BusinessID);
 
-        // If no timelines are found
         if (timelines.length === 0) {
             return res.status(404).send("No timelines found for the specified BusinessID.");
         }
 
-        // Send the retrieved timelines as a response
         res.status(200).send({
             success: true,
             message: "Timelines retrieved successfully",
