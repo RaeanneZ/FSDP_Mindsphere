@@ -483,7 +483,6 @@ const dashboardService = {
                 message: message
             };
     
-            // Assuming your API URL for sending broadcast messages is '/whatsapp/sendBroadcast'
             const response = await axios.post(`${apiUrl}/whatsapp/send-broadcast`, sendData);
             
             return response.data;
