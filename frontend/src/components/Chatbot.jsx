@@ -53,6 +53,7 @@ const Chatbot = ({ trackPage, autoOpenMessage }) => {
       if (!response.ok)
         throw new Error(data?.error.message || "Something went wrong!");
 
+
       const apiResponseText = data.candidates[0].content.parts[0].text
         .replace(/\*\*(.*?)\*\*/g, "$1")
         .trim();
@@ -116,6 +117,7 @@ const Chatbot = ({ trackPage, autoOpenMessage }) => {
           </div>
 
           <div className="chat-footer">
+
             <ChatForm
               chatHistory={chatHistory}
               setChatHistory={setChatHistory}

@@ -17,6 +17,10 @@ if exists (select * from sysobjects where name='Bookings' and type='U')
     drop table Bookings
 GO
 
+if exists (select * from sysobjects where name='Meetings' and type='U')
+    drop table Meetings
+GO
+
 if exists (select * from sysobjects where name='ProgrammeSchedule' and type='U')
     drop table ProgrammeSchedule
 GO
@@ -41,6 +45,11 @@ GO
 if exists (select * from sysobjects where name='surveyForm' and type='U')
     drop table surveyForm
 GO
+
+if exists (select * from sysobjects where name='enquiryTimeline' and type='U')
+    drop table enquiryTimeline
+GO
+
 if exists (select * from sysobjects where name='Businesses' and type='U')
     drop table Businesses
 GO
@@ -48,6 +57,10 @@ GO
 if exists (select * from sysobjects where name='Children' and type='U')
     drop table Children
 GO
+
+if exists (select * from sysobjects where name='WhatsappUsers' and type ='U')
+	drop table WhatsappUsers
+go
 
 if exists (select * from sysobjects where name='Newsletter' and type ='U')
 	drop table Newsletter
@@ -65,6 +78,22 @@ if exists (select * from sysobjects where name='Roles' and type='U')
     drop table Roles
 GO
 
+if exists (select * from sysobjects where name='EmailTemplates' and type='U')
+	drop table EmailTemplates
+GO
+
+if exists (select * from sysobjects where name='EmailLogs' and type='U')
+	drop table EmailLogs
+GO
+
+if exists (select * from sysobjects where name='ScheduledEmails' and type='U')
+	drop table ScheduledEmails
+GO
+
+if exists (select * from sysobjects where name='Drafts' and type='U')
+	drop table Drafts
+GO
+
 IF EXISTS (SELECT * FROM sysobjects WHERE name = 'ProgrammeSlotSummary' AND xtype = 'V')
     DROP VIEW ProgrammeSlotSummary;
 GO
@@ -80,48 +109,63 @@ GO
 IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesPendingPayment' AND xtype = 'V')
     DROP VIEW SalesPendingPayment;
 GO
-
 -------------------------------------------------------------------------------------------------------------
 
 
+-- Table for user roles
 create table Roles (
 	RoleID int not null,	
 	Name varchar(50) default 'User',
-	constraint PK_Roles primary key (RoleID),
+	constraint PK_Roles primary key (RoleID)
 )
 go
 
+-- Account table updated: Removed LinkedInID, added LinkedInSub for unique identifier
 CREATE TABLE Account (
 	AccID int not null IDENTITY(1,1),
 	Name varchar(50) null,
 	Email varchar(50) not null unique,
-	ContactNo char(8)  null unique,
+	ContactNo char(8) null unique,
 	memberStatus char(10) null default 'Pending',
 	memberExpiry datetime null,
 	address varchar(255) null,
 	dateOfBirth datetime null,
 	relationshipToChild varchar(255) null,
 	RoleID int null default 2,
-	Salt varchar(255) not null,
-	HashedPassword varchar(255) not null,
+	Salt varchar(255) null, 
+	HashedPassword varchar(255) null, 
+	LinkedInSub varchar(255) NOT NULL, -- Unique LinkedIn identifier
+	LinkedInAccessToken varchar(255) NOT NULL, -- Access token storage
 	constraint PK_Account primary key (AccID),
 	constraint FK_Account_RoleID foreign key (RoleID) references Roles(RoleID),
 	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))
 )
-GO
+go
 
+-- Verification codes for email validation
 CREATE TABLE AccountVerification (
 	Email varchar(50) not null,
 	verifCode int not null,
-	constraint PK_AccountVerification primary key (Email),
+	constraint PK_AccountVerification primary key (Email)
 )
 go
 
+-- Newsletter subscription table
 CREATE TABLE Newsletter (
 	Email varchar(50) not null,
-	constraint PK_Newsletter primary key (Email),
+	constraint PK_Newsletter primary key (Email)
 );
 
+
+CREATE TABLE WhatsappUsers (
+	WsID int not null IDENTITY(1,1),
+	Name varchar(50) not null,
+	phoneNum varchar(50) not null,
+	constraint PK_WsUsers primary key (WsID)
+);
+
+
+-- Children associated with user accounts
 create table Children (
 	ChildID int not null IDENTITY(1,1),
 	GuardianEmail varchar(50) not null,
@@ -135,8 +179,9 @@ create table Children (
 	constraint FK_Children_GuardianEmail foreign key (GuardianEmail) references Account(Email),
 	constraint CHK_Gender check (Gender in ('M', 'F'))
 )
-GO
+go
 
+-- Business inquiries table
 create table Businesses (
 	BusinessID int not null identity(1,1),
 	Name varchar(50) not null,
@@ -147,10 +192,27 @@ create table Businesses (
 	orgName varchar(50) not null,
 	helpText varchar(1000),
 	callbackRequest datetime not null,
-	constraint PK_Business primary key (BusinessID)
+	enquiryStatus varchar(50) not null default ('New Enquiry'),
+	createdAt DATETIME NOT NULL DEFAULT GETDATE(),
+	constraint PK_Business primary key (BusinessID),
+	constraint CHK_Status check (enquiryStatus in ('New Enquiry', 'In Progress', 'Confirmed', 'Completed'))
 )
 go
 
+create table enquiryTimeline (
+	TimelineID int not null identity(1,1),
+	BusinessID int not null,
+	Text varchar(255) not null,
+	tag varchar(50) not null,
+	linkToPDF varchar(255) null,
+	createdDate datetime not null default getdate(),
+	constraint PK_enquiryTimeline primary key (TimelineID),
+	constraint FK_enquiryTimeline foreign key (BusinessID) references Businesses(BusinessID)
+)
+go
+
+
+-- Feedback survey form
 create table surveyForm (
 	surveyID int not null identity(1,1),
 	email varchar(50) null,
@@ -159,9 +221,9 @@ create table surveyForm (
 	feedbackText varchar(1000) null,
 	constraint PK_SurveyForm primary key (surveyID)
 )
-GO
+go
 
--- removed agerange, cost, added progintro
+-- Programmes and their types
 create table Programmes (
 	ProgID int not null,
 	Name varchar(50) not null,
@@ -171,9 +233,10 @@ create table Programmes (
 	constraint PK_Programmes primary key (ProgID),
 	Constraint CHK_ProgType check (ProgType in ('Light','Regular','Premium'))
 )
-GO
+go
 
-create table ProgrammeTier(
+-- Programme tiers for customization
+create table ProgrammeTier (
 	TierID int not null,
 	ProgID int not null,
 	TierDesc varchar(255),
@@ -189,6 +252,7 @@ create table ProgrammeTier(
 )
 go
 
+-- Payments table
 create table Payment (
 	TransacID int not null IDENTITY(1,1),
 	Email varchar(50) not null,
@@ -203,7 +267,7 @@ create table Payment (
 )
 go
 
-
+-- Feedback for programmes
 create table ProgrammeFeedback (
 	FeedbackID int not null IDENTITY(1,1),
 	ProgID int not null,
@@ -211,11 +275,11 @@ create table ProgrammeFeedback (
 	FdbkDesc varchar(255),
 	constraint PK_ProgrammeFeedback primary key (FeedbackID),
 	constraint FK_ProgFeedback_ProgID foreign key (ProgID) references Programmes(ProgID),
-	constraint FK_AccID foreign key (AccID) references Account(AccID),
+	constraint FK_AccID foreign key (AccID) references Account(AccID)
 )
 go
 
-
+-- Programme schedules
 create table ProgrammeSchedule (
 	SchedID int not null IDENTITY(1,1),
 	ProgID int not null,
@@ -228,6 +292,7 @@ create table ProgrammeSchedule (
 )
 go
 
+-- Bookings table for customer reservations
 create table Bookings (
 	BookingID int not null IDENTITY(1,1),
 	Name varchar(50) not null,
@@ -250,7 +315,65 @@ create table Bookings (
 )
 go
 
+CREATE TABLE EmailTemplates (
+    TemplateID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Subject NVARCHAR(255) NOT NULL,
+    Body NVARCHAR(MAX) NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE Meetings (
+    MeetingID VARCHAR(50) PRIMARY KEY,
+    RoomURL VARCHAR(255) NOT NULL,
+	HostRoomURL NVARCHAR(MAX) NOT NULL,
+    StartTime DATETIME NOT NULL,
+    EndTime DATETIME NOT NULL,
+    UserEmail VARCHAR(50) NOT NULL,
+    IsLocked BIT NOT NULL DEFAULT 1,
+	CONSTRAINT FK_Meetings_UserEmail FOREIGN KEY (UserEmail) REFERENCES Account(Email)
+);
+go
+
 -------------------------------------------------------------------------------------------------------------
+
+
+CREATE TABLE EmailLogs (
+    LogID INT IDENTITY(1,1) PRIMARY KEY,
+    Recipient NVARCHAR(255) NOT NULL,
+    Subject NVARCHAR(255) NOT NULL,
+    Body NVARCHAR(MAX) NOT NULL,
+    SentAt DATETIME DEFAULT GETDATE(),
+    SentBy NVARCHAR(255) NOT NULL
+);
+go
+
+CREATE TABLE ScheduledEmails (
+    EmailID INT IDENTITY(1,1) PRIMARY KEY,
+    Recipient NVARCHAR(255) NOT NULL,
+    Subject NVARCHAR(255) NOT NULL,
+    Body NVARCHAR(MAX) NOT NULL,
+    SendAt DATETIME NOT NULL,
+    Status NVARCHAR(50) DEFAULT 'Pending', -- Pending, Sent, Failed
+    CreatedBy NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+go
+
+CREATE TABLE Drafts (
+    DraftID INT IDENTITY(1,1) PRIMARY KEY,
+    Subject NVARCHAR(255),
+    Body NVARCHAR(MAX),
+    Recipient NVARCHAR(255),
+    Attachment NVARCHAR(255),
+    CreatedBy NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE()
+);
+go
+
+
 
 CREATE VIEW ProgrammeSlotSummary AS
 SELECT 
@@ -303,18 +426,19 @@ INSERT INTO Roles (RoleID, Name) VALUES
 (2, 'User');
 
 -- Insert data into Account
-INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address, dateOfBirth, relationshipToChild, RoleID, Salt, HashedPassword) VALUES
-('John Doe', 'johndoe@example.com', '12345678', 'Active', '2025-12-31', '123 Main St, Springfield, IL', '1990-01-01', 'Father', 2, 'randomsalt1', 'hashedpassword1'),
-('Jane Smith', 'janesmith@example.com', '23456789', 'Inactive', NULL, '456 Elm St, Springfield, IL', '1985-02-15', 'Mother', 2, 'randomsalt2', 'hashedpassword2'),
-('Mark Evans', 'markevans@example.com', '34567890', 'Pending', NULL, '789 Oak St, Springfield, IL', '1992-03-22', 'Guardian', 2, 'randomsalt3', 'hashedpassword3'),
-('Lucy Gray', 'lucygray@example.com', '45678901', 'Active', '2026-01-01', '321 Pine St, Springfield, IL', '1995-04-10', 'Mother', 2, 'randomsalt4', 'hashedpassword4'),
-('Emma White', 'emmawhite@example.com', '56789012', 'Active', '2025-11-15', '654 Cedar St, Springfield, IL', '1991-05-05', 'Guardian', 2, 'randomsalt5', 'hashedpassword5'),
-('Jovan Tan', 'iamjovantan@gmail.com', '67890123', 'Pending', NULL, '987 Birch St, Springfield, IL', '1988-06-30', 'Father', 2, 'randomsalt6', 'hashedpassword6'),
-('Nancy Blue', 'nancyblue@example.com', '78901234', 'Active', '2025-12-15', '159 Maple St, Springfield, IL', '1994-07-25', 'Mother', 2, 'randomsalt7', 'hashedpassword7'),
-('Oliver Red', 'oliverred@example.com', '89012345', 'Active', '2025-10-05', '753 Walnut St, Springfield, IL', '1986-08-20', 'Father', 2, 'randomsalt8', 'hashedpassword8'),
-('Chris Green', 'chrisgreen@example.com', '90123456', 'Inactive', NULL, '951 Ash St, Springfield, IL', '1993-09-15', 'Guardian', 2, 'randomsalt9', 'hashedpassword9'),
-('Sophia Brown', 'sophiabrown@example.com', '01234567', 'Active', '2026-05-20', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt10', 'hashedpassword10'),
-('Admin', 'admin@gmail.com', '99008833', NULL, NULL, '9876 Fake St, Imaginary City, IC', '2000-12-25', NULL, 1, '$2b$10$IIJkOdfcvizT0Q2uCmw5QO', '$2b$10$IIJkOdfcvizT0Q2uCmw5QODYi5TYzkE3t2QrwBx8rlwp5TirPu7wW');
+INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address, dateOfBirth, relationshipToChild, RoleID, Salt, HashedPassword, LinkedInSub, LinkedInAccessToken) VALUES
+('John Doe', 'johndoe@example.com', '12345678', 'Active', '2025-12-31', '123 Main St, Springfield, IL', '1990-01-01', 'Father', 2, 'randomsalt1', 'hashedpassword1', '', ''),
+('Jane Smith', 'janesmith@example.com', '23456789', 'Inactive', NULL, '456 Elm St, Springfield, IL', '1985-02-15', 'Mother', 2, 'randomsalt2', 'hashedpassword2', '', ''),
+('Mark Evans', 'markevans@example.com', '34567890', 'Pending', NULL, '789 Oak St, Springfield, IL', '1992-03-22', 'Guardian', 2, 'randomsalt3', 'hashedpassword3', '', ''),
+('Lucy Gray', 'lucygray@example.com', '45678901', 'Active', '2026-01-01', '321 Pine St, Springfield, IL', '1995-04-10', 'Mother', 2, 'randomsalt4', 'hashedpassword4', '', ''),
+('Emma White', 'emmawhite@example.com', '56789012', 'Active', '2025-11-15', '654 Cedar St, Springfield, IL', '1991-05-05', 'Guardian', 2, 'randomsalt5', 'hashedpassword5', '', ''),
+('Bob', 'iamjovantan@gmail.com', '67890123', 'Pending', NULL, '987 Birch St, Springfield, IL', '1988-06-30', 'Father', 2, 'randomsalt6', 'hashedpassword6', '', ''),
+('Nancy Blue', 'nancyblue@example.com', '78901234', 'Active', '2025-12-15', '159 Maple St, Springfield, IL', '1994-07-25', 'Mother', 2, 'randomsalt7', 'hashedpassword7', '', ''),
+('Oliver Red', 'oliverred@example.com', '89012345', 'Active', '2025-10-05', '753 Walnut St, Springfield, IL', '1986-08-20', 'Father', 2, 'randomsalt8', 'hashedpassword8', '', ''),
+('Chris Green', 'chrisgreen@example.com', '90123456', 'Inactive', NULL, '951 Ash St, Springfield, IL', '1993-09-15', 'Guardian', 2, 'randomsalt9', 'hashedpassword9', '', ''),
+('Sophia Brown', 'sophiabrown@example.com', '01234567', 'Active', '2026-05-20', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt10', 'hashedpassword10', '', ''),
+('Jovan Tan', 's10259920@connect.np.edu.sg', '12121212', 'Active', '2026-04-03', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt11', 'hashedpassword11', '', ''),
+('Admin', 'admin@gmail.com', '99008833', NULL, NULL, '9876 Fake St, Imaginary City, IC', '2000-12-25', NULL, 1, '$2b$10$IIJkOdfcvizT0Q2uCmw5QO', '$2b$10$IIJkOdfcvizT0Q2uCmw5QODYi5TYzkE3t2QrwBx8rlwp5TirPu7wW', '', '');
 
 -- Insert data into Children
 INSERT INTO Children (GuardianEmail, Name, Gender, Dob, Needs, School, Interests) VALUES
@@ -335,23 +459,23 @@ INSERT INTO Programmes (ProgID, Name, ProgIntro, ProgDesc, ProgType) VALUES
 (2, 'PSLE Power Up Camp', 'PSLE learning enhancement', 'Help PSLE takers learn efficiently and effectively', 'Regular'),
 (3, 'Future Entrepreneurs Labs', 'Learn about entrepreneurship', 'Study how to be an entrepreneur', 'Premium');
 
-INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest)
+INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest, enquiryStatus)
 VALUES 
 ('John Doe', '12345678', 'johndoe@company.com', 3, 20, 'Tech Innovations Ltd.', 
 'My employees here at Tech Innovations Ltd. need team bonding exercises to improve collaboration and communication skills. We are looking for interactive workshops that will help our team build trust, enhance problem-solving skills, and work more effectively together in a fast-paced tech environment. These sessions should also focus on improving leadership qualities within the team, encouraging creative thinking and better decision-making.',
-'2024-11-15 10:30:00'),
-('Jane Smith', '87654321', 'janesmith@company.com', 5, 50, 'Creative Solutions Inc.', 
+'2024-11-15 10:30:00', 'New Enquiry'),
+('Jane Smith', '87654321', 'neilhadziq31@gmail.com', 5, 50, 'Creative Solutions Inc.', 
 'At Creative Solutions Inc., our team is looking for creative workshops to stimulate innovation and foster collaboration. We need interactive sessions where employees can work together to solve real-world problems. We are also interested in leadership development and workshops that teach employees how to think outside the box, encouraging new ideas and creative solutions. It''s important to us that these workshops are fun and engaging, yet challenge our team to think critically.',
-'2024-11-16 09:00:00'),
+'2024-11-16 09:00:00', 'In Progress'),
 ('Emily Johnson', '11223344', 'emilyj@company.com', 2, 15, 'FutureTech Corp.', 
 'At FutureTech Corp., we are in need of technical workshops to help our employees keep up with the latest developments in AI, data analytics, and software development. Our team is looking for hands-on learning experiences that will give them practical skills they can apply to real projects. Additionally, we need workshops that can foster better communication between our technical and non-technical teams, ensuring they are aligned and can collaborate effectively on projects.',
-'2024-11-18 14:00:00'),
+'2024-11-18 14:00:00', 'Confirmed'),
 ('Michael Brown', '55667788', 'michaelb@company.com', 4, 30, 'Health Solutions Co.', 
 'Our team at Health Solutions Co. is looking for workshops focused on stress management and improving mental health awareness. We need help in teaching our employees how to manage work-related stress and maintain a healthy work-life balance. Additionally, we would love to have team-building activities that strengthen relationships between departments and encourage a positive, supportive work environment. These sessions should be interactive and practical, with tips that employees can use in their day-to-day work life.',
-'2024-11-19 11:45:00'),
+'2024-11-19 11:45:00', 'Completed'),
 ('Sophia Lee', '99887766', 'sophial@company.com', 3, 25, 'Retail Enterprises Ltd.', 
 'My team at Retail Enterprises Ltd. is seeking workshops that focus on improving customer service skills and handling difficult situations. We want to provide our employees with the tools they need to enhance customer interactions, resolve conflicts, and manage customer expectations more effectively. Additionally, we are interested in team-building activities that help strengthen our sales and customer support teams, promoting better communication and collaboration across the board.',
-'2024-11-20 13:00:00');
+'2024-11-20 13:00:00', 'Completed');
 
 -- Insert data into ProgrammeTier
 INSERT INTO ProgrammeTier (TierID, ProgID, TierDesc, Lunch, Level, Duration, ClassSize, AgeRange, Cost) VALUES
@@ -416,4 +540,8 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
 ('Nancy Blue', 'nancyblue@example.com', '56789012', 4, 2, 
  '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
  'Gluten-Free', 2, 1, 5, 'Quiet room needed', '2024-11-13');
+
+
+INSERT INTO WhatsappUsers (Name, phoneNum)
+VALUES ('Neil Hadziq', '+6589217943');
 
