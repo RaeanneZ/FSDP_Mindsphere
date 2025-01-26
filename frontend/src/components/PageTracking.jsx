@@ -1,27 +1,47 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const PageTracking = () => {
-  const location = useLocation();
+const PageTracking = ({ trackPage, onInactivity }) => {
+  const [timer, setTimer] = useState(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log(`2 minutes passed on page: ${location.pathname}`);
-      // Trigger chatbot action after 2 minutes
-      if (window.chatbotInstance) {
-        window.chatbotInstance.openChat(); // Open the chatbot (ensure this method exists in Chatbot.jsx)
-        window.chatbotInstance.sendMessage(
-          "You've been on this page for 2 minutes. Need assistance?"
-        ); // Send a message (ensure sendMessage is implemented in Chatbot.jsx)
-      }
-    }, 2 * 60 * 1000); // 2 minutes in milliseconds
+    const handleActivity = () => {
+      if (timer) clearTimeout(timer);
+
+      setTimer(
+        setTimeout(() => {
+          const currentPage = window.location.pathname;
+          onInactivity(currentPage); // Trigger inactivity logic
+        }, 60000) // Set to 1 minute for testing, change to 5 minutes in production
+      );
+    };
+
+    window.addEventListener("mousemove", handleActivity);
+    window.addEventListener("keypress", handleActivity);
+    window.addEventListener("click", handleActivity);
+
+    handleActivity(); // Reset timer when component loads
 
     return () => {
-      clearTimeout(timer); // Cleanup the timer when the component unmounts or location changes
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("keypress", handleActivity);
+      window.removeEventListener("click", handleActivity);
+      if (timer) clearTimeout(timer);
     };
-  }, [location]);
+  }, [timer, onInactivity]);
 
-  return null; // No UI is needed for this component
+  useEffect(() => {
+    const handlePageChange = () => {
+      trackPage(window.location.pathname);
+    };
+
+    window.addEventListener("popstate", handlePageChange);
+
+    return () => {
+      window.removeEventListener("popstate", handlePageChange);
+    };
+  }, [trackPage]);
+
+  return null;
 };
 
 export default PageTracking;

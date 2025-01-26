@@ -13,31 +13,37 @@ const ChatForm = ({ chatHistory, setChatHistory, generateBotResponse }) => {
       ...history,
       { role: "user", text: userMessage },
     ]);
+
     setTimeout(() => {
       setChatHistory((history) => [
         ...history,
         { role: "model", text: "Thinking..." },
       ]);
+
       generateBotResponse([
         ...chatHistory,
-        { role: "user", text: `Using the details provided, ${userMessage}` },
+        {
+          role: "user",
+          text: `Using the details provided above, please address this query: ${userMessage}`,
+        },
       ]);
     }, 600);
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
+    <form onSubmit={handleFormSubmit} className="chat-form">
       <input
         ref={inputRef}
-        type="text"
-        placeholder="Type your message..."
-        className="flex-grow p-2 border rounded-lg focus:outline-none focus:border-yellow-500"
+        placeholder="Message..."
+        className="message-input"
+        required
       />
       <button
         type="submit"
-        className="bg-yellow-500 text-white p-2 rounded-full"
+        id="send-message"
+        className="material-symbols-rounded"
       >
-        Send
+        arrow_upward
       </button>
     </form>
   );
