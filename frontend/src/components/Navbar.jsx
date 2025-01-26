@@ -134,6 +134,25 @@ const Navbar = () => {
             <FontAwesomeIcon className="text-xl" icon={faTimes} />
           </button>
           <nav className="flex flex-col space-y-4 text-gray-700 text-lg">
+            <a href="#" className="hover:text-gray-900">
+              Home
+            </a>
+            <a href="/about" className="hover:text-gray-900">
+              About Us
+            </a>
+            <a href="#" className="hover:text-gray-900">
+              CSR
+            </a>
+            <a href="/products" className="hover:text-gray-900">
+              Programmes
+            </a>
+            <a href="/businessEnquiry" className="hover:text-gray-900">
+              Business Enquiry
+            </a>
+            <a href="#" className="hover:text-gray-900">
+              Media
+            </a>
+
             {renderLinks()}
 
             {loggedIn ? (
