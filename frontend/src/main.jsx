@@ -26,27 +26,13 @@ import AboutPage from "./pages/AboutPage.jsx";
 import ErrorPage from "./pages/errorPage.jsx";
 import AdminForm from "./pages/AdminForm.jsx";
 import B2BEnquiryTimelineTracker from "./pages/B2BEnquiryTimelineTracker.jsx";
-
 // Import CSS
 import "../public/css/index.css";
 import AdminB2BManagement from "./pages/AdminB2BManagement.jsx";
-
 import AdminConsultationSummaryPage from "./pages/AdminConsultationSummaryPage.jsx";
 import BookingPage from "./pages/BookingPage.jsx";
 import VideoCall from "./components/VideoCall.jsx";
-
-// Import CSS
-import "../public/css/index.css";
-
-import B2BEnquiryTimelineTracker from "./pages/B2BEnquiryTimelineTracker.jsx";
 import Layout from "./components/Layout.jsx";
-
-
-// Import CSS
-import "../public/css/index.css";
-import AdminB2BManagement from "./pages/AdminB2BManagement.jsx";
-
-
 // Import components
 import PageTracking from "./components/PageTracking.jsx";
 import Chatbot from "./components/Chatbot.jsx";

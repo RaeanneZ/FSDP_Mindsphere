@@ -22,7 +22,7 @@
     "moment": "^2.30.1",
     "path": "^0.12.7",
     "react-big-calendar": "^1.17.1",
-    "react-linkedin-login-oauth2": "^2.0.1"
+    "react-linkedin-login-oauth2": "^2.0.1",
     "stripe": "^17.5.0"
   },
   "devDependencies": {

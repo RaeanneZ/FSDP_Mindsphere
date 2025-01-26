@@ -364,99 +364,94 @@ const bookingService = {
 
 //Account Methods
 const accountService = {
-    getAllAccounts: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/account`);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error getting all accounts: ", err);
-            throw err;
-        }
-    },
+  getAllAccounts: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/account`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting all accounts: ", err);
+      throw err;
+    }
+  },
 
-    // Remove password from this, append the rest of the account info inside.
-    // In account profile page, when user edit profile this will be called again
-    registerAccount: async (accountData) => {
-        try {
-            const response = await axios.put(`${apiUrl}/register`, accountData);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error registering account: ", err);
-            throw err;
-        }
-    },
+  // Remove password from this, append the rest of the account info inside.
+  // In account profile page, when user edit profile this will be called again
+  registerAccount: async (accountData) => {
+    try {
+      const response = await axios.put(`${apiUrl}/register`, accountData);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error registering account: ", err);
+      throw err;
+    }
+  },
 
-    loginAccount: async (credentials) => {
-        try {
-            console.log("Credentials", credentials);
-            const response = await axios.post(`${apiUrl}/login`, credentials);
-            return response.data;
-        } catch (err) {
-            return {
-                success: false,
-                message: "Login failed",
-                error: err.response.data,
-            };
-        }
-    },
+  loginAccount: async (credentials) => {
+    try {
+      console.log("Credentials", credentials);
+      const response = await axios.post(`${apiUrl}/login`, credentials);
+      return response.data;
+    } catch (err) {
+      return {
+        success: false,
+        message: "Login failed",
+        error: err.response.data,
+      };
+    }
+  },
 
-    getAccountByEmail: async (email) => {
-        try {
-            const response = await axios.get(`${apiUrl}/account/${email}`);
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error getting account by email: ",
-                err
-            );
-            throw err;
-        }
-    },
+  getAccountByEmail: async (email) => {
+    try {
+      const response = await axios.get(`${apiUrl}/account/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting account by email: ", err);
+      throw err;
+    }
+  },
 
-    updateAccountByEmail: async (email, accountData) => {
-        try {
-            const response = await axios.put(
-                `${apiUrl}/account/${email}`,
-                accountData
-            );
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error updating account: ", err);
-            throw err;
-        }
-    },
+  updateAccountByEmail: async (email, accountData) => {
+    try {
+      const response = await axios.put(
+        `${apiUrl}/account/${email}`,
+        accountData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error updating account: ", err);
+      throw err;
+    }
+  },
 
-    retrieveAccountInfo: async (email) => {
-        try {
-            const response = await axios.get(`${apiUrl}/bookings/${email}`);
-            return response.data;
-        } catch (err) {
-            console.error("Error retrieving account info: ", err);
-        }
-    },
+  retrieveAccountInfo: async (email) => {
+    try {
+      const response = await axios.get(`${apiUrl}/bookings/${email}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error retrieving account info: ", err);
+    }
+  },
 
-    signUp: async (email, password, verifCode) => {
-        try {
-            const response = await axios.post(`${apiUrl}/signUp`, {
-                email,
-                password,
-                verifCode,
-            });
-            //return response.data;
-            return {
-                success: true,
-            };
-        } catch (err) {
-            return {
-                success: false,
-                message: "Sign-up failed",
-                error: err.response.data,
-            };
-        }
-    },
-
-
-
+  
+  // signUp: async (email, password, verifCode) => {
+  //     try {
+  //         const response = await axios.post(`${apiUrl}/signUp`, {
+  //             email,
+  //             password,
+  //             verifCode,
+  //         });
+  //         //return response.data;
+  //         return {
+  //             success: true,
+  //         };
+  //     } catch (err) {
+  //         return {
+  //             success: false,
+  //             message: "Sign-up failed",
+  //             error: err.response.data,
+  //         };
+  //     }
+  // },
 
   createAccount: async (email, password) => {
     try {
@@ -468,7 +463,16 @@ const accountService = {
         success: true,
         message:
           "Account created successfully. Please check your email for verification.",
-
+      }
+    } catch (err) {
+      return {
+      success: false,
+      message: "Sign-up failed",
+        error: err.response.data,
+      };
+    }
+  },
+    
   signUp: async (email, password, verifCode) => {
     try {
       const response = await axios.post(`${apiUrl}/signUp`, {
@@ -507,12 +511,14 @@ const accountService = {
       };
     }
   },
-        message: "Sign-up failed",
-        error: err.response.data,
-      };
-    }
-  },
+        
+
+
+  // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
+  // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
+  // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
 };
+
 
 //Children methods
 const childrenService = {
@@ -565,125 +571,6 @@ const childrenService = {
     },
 };
 
-const newsletterService = {
-    getAllEmails: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/newsletter`);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error retrieving all emails: ", err);
-            throw err;
-        }
-    },
-
-    addEmailNewletter: async (email) => {
-        try {
-            const emailData = { Email: email };
-            const response = await axios.post(
-                `${apiUrl}/newsletter`,
-                emailData
-            );
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error adding email to newsletter: ",
-                err
-            );
-        }
-    },
-};
-
-const formService = {
-    addBusiness: async (
-        Name,
-        ContactNo,
-        Email,
-        exNumOfDays,
-        groupSize,
-        orgName,
-        helpText,
-        callbackRequest
-    ) => {
-        try {
-            const newBusiness = {
-                Name: Name,
-                ContactNo: ContactNo,
-                Email: Email,
-                exNumOfDays: exNumOfDays,
-                groupSize: groupSize,
-                orgName: orgName,
-                helpText: helpText,
-                callbackRequest: callbackRequest,
-            };
-
-            const response = await axios.post(
-                `${apiUrl}/business/addBusiness`,
-                newBusiness
-            );
-
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error adding new business: ", err);
-            return {
-                success: false,
-                message: "Adding business failed",
-                error: err.response ? err.response.data : err.message,
-            };
-        }
-    },
-
-    addSurvey: async (email, howHear, expRating, feedbackText) => {
-        try {
-            const newSurvey = {
-                email: email,
-                howHear: howHear,
-                expRating: expRating,
-                feedbackText: feedbackText,
-            };
-
-            const response = await axios.post(
-                `${apiUrl}/survey/newSurvey`,
-                newSurvey
-            );
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error adding new survey: ", err);
-            return {
-                success: false,
-                message: "Adding survey failed",
-                error: err.response ? err.response.data : err.message,
-            };
-        }
-    },
-};
-
-const programmeFeedBackService = {
-    getFeedbackByID: async (progID) => {
-        try {
-            const response = await axios.get(`${apiUrl}/progID/${progID}`);
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error getting feedback by ID: ",
-                err
-            );
-            throw err;
-        }
-    },
-};
-
-const dashboardService = {
-  getDashboardMetrics: async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/dashboard-metrics`);
-      return response.data;
-    } catch (err) {
-      console.error("BackendService: Error retrieving dashboard metrics: "),
-        err;
-    }
-    throw err;
-  },
-};
 
 const meetingService = {
   createMeeting: async (meetingData) => {
@@ -728,20 +615,6 @@ const meetingService = {
   },
 };
 
-
-export default {
-  programmeService,
-  progScheduleService,
-  accountService,
-  childrenService,
-  bookingService,
-  paymentService,
-  newsletterService,
-  formService,
-  programmeFeedBackService,
-  dashboardService,
-  meetingService,
-};
 
 const newsletterService = {
   getAllEmails: async () => {
@@ -941,4 +814,5 @@ export default {
     programmeFeedBackService,
     dashboardService,
     emailAdminService,
+    meetingService
 };
