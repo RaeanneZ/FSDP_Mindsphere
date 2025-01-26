@@ -25,6 +25,12 @@ import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ErrorPage from "./pages/errorPage.jsx";
 import AdminForm from "./pages/AdminForm.jsx";
+import B2BEnquiryTimelineTracker from "./pages/B2BEnquiryTimelineTracker.jsx";
+
+// Import CSS
+import "../public/css/index.css";
+import AdminB2BManagement from "./pages/AdminB2BManagement.jsx";
+
 import AdminConsultationSummaryPage from "./pages/AdminConsultationSummaryPage.jsx";
 import BookingPage from "./pages/BookingPage.jsx";
 import VideoCall from "./components/VideoCall.jsx";
@@ -148,6 +154,14 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/timeline",
+    element: <B2BEnquiryTimelineTracker />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/B2BManagement",
+    element: <AdminB2BManagement />,
+
     path: "/consultationSummary",
     element: <AdminConsultationSummaryPage />,
     errorElement: <ErrorPage />,
