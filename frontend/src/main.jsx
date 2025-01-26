@@ -8,7 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext.jsx";
 
 // Import all the pages
 import LandingPage from "./pages/LandingPage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
+import MemberVerificationPage from "./pages/MemberVerificationPage.jsx";
 import PersonalisationCoverPage from "./pages/PersonalisationCoverPage.jsx";
 import CompleteSignupMsgPage from "./pages/CompleteSignupMsgPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
@@ -16,7 +16,7 @@ import ReviewPage from "./pages/ReviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import AccountDashboardPage from "./pages/AccountDashboardPage.jsx";
 import SurveyPage from "./pages/SurveyPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
+import AccountEntry from "./pages/AccountEntry.jsx";
 import ChildrenNamePage from "./pages/ChildrenNamePage.jsx";
 import ChildrenFavPage from "./pages/ChildrenFavPage.jsx";
 import ChildrenAmbition from "./pages/ChildrenAmbition.jsx";
@@ -33,6 +33,13 @@ import B2BEnquiryTimelineTracker from "./pages/B2BEnquiryTimelineTracker.jsx";
 import "../public/css/index.css";
 import AdminB2BManagement from "./pages/AdminB2BManagement.jsx";
 
+import AdminConsultationSummaryPage from "./pages/AdminConsultationSummaryPage.jsx";
+import BookingPage from "./pages/BookingPage.jsx";
+import VideoCall from "./components/VideoCall.jsx";
+
+// Import CSS
+import "../public/css/index.css";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,13 +47,13 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/login",
-    element: <LoginPage />,
+    path: "/accountEntry",
+    element: <AccountEntry />,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/signup",
-    element: <SignupPage />,
+    path: "/verification",
+    element: <MemberVerificationPage />,
     errorElement: <ErrorPage />,
   },
   {
@@ -115,6 +122,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/bookConsult",
+    element: <BookingPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/survey",
     element: <SurveyPage />,
     errorElement: <ErrorPage />,
@@ -137,6 +149,14 @@ const router = createBrowserRouter([
   {
     path: "/B2BManagement",
     element: <AdminB2BManagement />,
+
+    path: "/consultationSummary",
+    element: <AdminConsultationSummaryPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/video-call/:meetingId",
+    element: <VideoCall />,
     errorElement: <ErrorPage />,
   },
 ]);

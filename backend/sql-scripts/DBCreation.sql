@@ -17,6 +17,10 @@ if exists (select * from sysobjects where name='Bookings' and type='U')
     drop table Bookings
 GO
 
+if exists (select * from sysobjects where name='Meetings' and type='U')
+    drop table Meetings
+GO
+
 if exists (select * from sysobjects where name='ProgrammeSchedule' and type='U')
     drop table ProgrammeSchedule
 GO
@@ -302,6 +306,35 @@ CREATE TABLE EmailTemplates (
     CreatedBy NVARCHAR(255) NOT NULL,
     CreatedAt DATETIME DEFAULT GETDATE()
 );
+
+CREATE TABLE Meetings (
+    MeetingID VARCHAR(50) PRIMARY KEY,
+    RoomURL VARCHAR(255) NOT NULL,
+	HostRoomURL NVARCHAR(MAX) NOT NULL,
+    StartTime DATETIME NOT NULL,
+    EndTime DATETIME NOT NULL,
+    UserEmail VARCHAR(50) NOT NULL,
+    IsLocked BIT NOT NULL DEFAULT 1,
+	CONSTRAINT FK_Meetings_UserEmail FOREIGN KEY (UserEmail) REFERENCES Account(Email)
+);
+go
+
+-------------------------------------------------------------------------------------------------------------
+
+CREATE VIEW ProgrammeSlotSummary AS
+SELECT 
+    P.ProgID,
+    P.Name AS ProgrammeName,
+    SUM(PS.TotalSeats) AS TotalSlots,
+    COALESCE(SUM(B.NumSeats), 0) AS SlotsTaken,
+    SUM(PS.TotalSeats) - COALESCE(SUM(B.NumSeats), 0) AS SlotsRemaining
+FROM 
+    Programmes P
+LEFT JOIN ProgrammeSchedule PS ON P.ProgID = PS.ProgID
+LEFT JOIN Bookings B ON PS.SchedID = B.SchedID
+GROUP BY 
+    P.ProgID, P.Name;
+
 go
 
 CREATE TABLE EmailLogs (

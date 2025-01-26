@@ -76,6 +76,7 @@ const emailSchedulerRoutes = require("./routes/emailSchedulerRoutes");
 const groupEmailRoutes = require("./routes/groupEmailRoutes");
 const draftRoutes = require("./routes/draftRoutes");
 const autogenCertController = require("./controllers/autogen-certController");
+const linkedinRoute = require("./routes/linkedinRoute");
 
 // APP SETUP
 const app = express();
@@ -122,6 +123,7 @@ app.post("/api/bookings", bookingsController.addBooking);
 app.delete("/api/bookings", bookingsController.deleteBooking);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
 
+app.post("/api/business/addBusiness", businessController.addBusiness);
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
@@ -142,10 +144,18 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
 app.get(
   "/api/programmes/registered/:email",
   programmesController.getRegisteredProgrammesByAccount
 );
+
+
+app.post("/api/account/verifyEmail", accountController.verifyEmail);
+app.post("/api/account/createAccount", accountController.createAccount);
+app.post("/addVerification", accountController.addVerificationCode);
+
+app.get("/api/programmes/registered/:email",programmesController.getRegisteredProgrammesByAccount);
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
 app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
 app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
@@ -154,7 +164,6 @@ app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
 app.put("/api/account/:email", accountController.updateAccountByEmail);
 app.put("/api/register", accountController.registerAccount);
-app.post("/api/signUp", accountController.signUp);
 app.post("/api/login", accountController.login);
 app.post("/api/login/admin", accountController.login);
 
@@ -197,6 +206,8 @@ app.use("/api/group-email", groupEmailRoutes);
 app.use("/api/drafts", draftRoutes);
 // autogenerate certificate
 app.post("/api/certificate", autogenCertController.generateCert);
+app.use("/api/linkedin", linkedinRoute);
+app.use("/", linkedinRoute);
 
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store
@@ -230,6 +241,11 @@ app.get("/track/statistics", (req, res) => {
 //stripe
 const paymentRoutes = require("./routes/paymentRoutes");
 app.use("/api/stripe", paymentRoutes);
+
+
+//whereby
+const wherebyRoutes = require("./routes/onlineMeetingRoutes");
+app.use("/api/whereby", wherebyRoutes);
 
 // START REMINDER SYSTEM ON SERVER START
 initializeReminderSystem();

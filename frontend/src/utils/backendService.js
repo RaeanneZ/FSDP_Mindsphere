@@ -1,5 +1,6 @@
 import axios from "axios";
-//import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
+// import { createAccount } from "../../../backend/models/account";
+// import { getAllProgrammeTiers } from "../../../backend/models/programmeTier";
 
 const isLocalhost = window.location.hostname === "localhost";
 const apiUrl = isLocalhost
@@ -454,9 +455,63 @@ const accountService = {
         }
     },
 
-    // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
-    // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
-    // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
+
+
+
+  createAccount: async (email, password) => {
+    try {
+      const response = await axios.post(`${apiUrl}/account/createAccount`, {
+        email,
+        password,
+      });
+      return {
+        success: true,
+        message:
+          "Account created successfully. Please check your email for verification.",
+
+  signUp: async (email, password, verifCode) => {
+    try {
+      const response = await axios.post(`${apiUrl}/signUp`, {
+        email,
+        password,
+        verifCode,
+      });
+      //return response.data;
+      return {
+        success: true,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        message: "Account creation failed",
+        error: err.response?.data,
+      };
+    }
+  },
+
+  verifyEmail: async (email, verificationCode) => {
+    try {
+      const response = await axios.post(`${apiUrl}/account/verifyEmail`, {
+        email,
+        verifCode: verificationCode,
+      });
+      return {
+        success: true,
+        message: "Email verified successfully.",
+      };
+    } catch (err) {
+      return {
+        success: false,
+        message: "Email verification failed",
+        error: err.response?.data,
+      };
+    }
+  },
+        message: "Sign-up failed",
+        error: err.response.data,
+      };
+    }
+  },
 };
 
 //Children methods
@@ -615,6 +670,175 @@ const programmeFeedBackService = {
             throw err;
         }
     },
+};
+
+const dashboardService = {
+  getDashboardMetrics: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/dashboard-metrics`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retrieving dashboard metrics: "),
+        err;
+    }
+    throw err;
+  },
+};
+
+const meetingService = {
+  createMeeting: async (meetingData) => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/whereby/create`,
+        meetingData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("Error creating meeting: ", err);
+      throw err;
+    }
+  },
+  getAllMeetings: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/whereby/all`);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching all meetings: ", err);
+      throw err;
+    }
+  },
+  getMeetingDetails: async (meetingId) => {
+    try {
+      const response = await axios.get(`${apiUrl}/whereby/${meetingId}`);
+      console.log(response);
+      return response.data; // Fetch meeting details from backend
+    } catch (err) {
+      console.error("Error fetching meeting details:", err);
+      throw err;
+    }
+
+    // Response is:
+    //     EndTime: "2025-01-22T06:00:00.000Z"
+    //     HostRoomURL: "https://mindsphere-online.whereby.com/8debaa42-8338-434e-9198-be6bd5c0b210?roomKey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZWV0aW5nSWQiOiI5NTY1ODIxMiIsInJvb21SZWZlcmVuY2UiOnsicm9vbU5hbWUiOiIvOGRlYmFhNDItODMzOC00MzRlLTkxOTgtYmU2YmQ1YzBiMjEwIiwib3JnYW5pemF0aW9uSWQiOiIzMDY0MjkifSwiaXNzIjoiaHR0cHM6Ly9hY2NvdW50cy5zcnYud2hlcmVieS5jb20iLCJpYXQiOjE3MzcyNjY2OTQsInJvb21LZXlUeXBlIjoibWVldGluZ0hvc3QifQ.QFNF8qjihoiEJbVKWq1KrWpqX6tbXTchjoGVQBibu_g"
+    //     IsLocked: true
+    //     MeetingID:"95658212"
+    //     RoomURL: "https://mindsphere-online.whereby.com/8debaa42-8338-434e-9198-be6bd5c0b210"
+    //     StartTime: "2025-01-22T03:00:00.000Z"
+    //     UserEmail: "raeannezou@gmail.com"
+  },
+};
+
+
+export default {
+  programmeService,
+  progScheduleService,
+  accountService,
+  childrenService,
+  bookingService,
+  paymentService,
+  newsletterService,
+  formService,
+  programmeFeedBackService,
+  dashboardService,
+  meetingService,
+};
+
+const newsletterService = {
+  getAllEmails: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/newsletter`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retrieving all emails: ", err);
+      throw err;
+    }
+  },
+
+  addEmailNewletter: async (email) => {
+    try {
+      const emailData = { Email: email };
+      const response = await axios.post(`${apiUrl}/newsletter`, emailData);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding email to newsletter: ", err);
+    }
+  },
+};
+
+const formService = {
+  addBusiness: async (
+    Name,
+    ContactNo,
+    Email,
+    exNumOfDays,
+    groupSize,
+    orgName,
+    helpText,
+    callbackRequest
+  ) => {
+    try {
+      const newBusiness = {
+        Name: Name,
+        ContactNo: ContactNo,
+        Email: Email,
+        exNumOfDays: exNumOfDays,
+        groupSize: groupSize,
+        orgName: orgName,
+        helpText: helpText,
+        callbackRequest: callbackRequest,
+      };
+
+      const response = await axios.post(
+        `${apiUrl}/business/addBusiness`,
+        newBusiness
+      );
+
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new business: ", err);
+      return {
+        success: false,
+        message: "Adding business failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
+
+  addSurvey: async (email, howHear, expRating, feedbackText) => {
+    try {
+      const newSurvey = {
+        email: email,
+        howHear: howHear,
+        expRating: expRating,
+        feedbackText: feedbackText,
+      };
+
+      const response = await axios.post(
+        `${apiUrl}/survey/newSurvey`,
+        newSurvey
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new survey: ", err);
+      return {
+        success: false,
+        message: "Adding survey failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
+};
+
+const programmeFeedBackService = {
+  getFeedbackByID: async (progID) => {
+    try {
+      const response = await axios.get(`${apiUrl}/progID/${progID}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting feedback by ID: ", err);
+      throw err;
+    }
+  },
 };
 
 const dashboardService = {

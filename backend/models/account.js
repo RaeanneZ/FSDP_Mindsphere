@@ -164,15 +164,16 @@ class Account {
         }
     }
 
-    static async signUp(Email, Password, verifCode) {
+    static async signUp(Email, salt, hashedPassword, verifCode) {
+        // Updated parameters
         try {
             const connection = await sql.connect(dbConfig);
 
             // Check if the verifCode exists in the AccountVerification table
             const verificationQuery = `
-        SELECT * FROM AccountVerification 
-        WHERE Email = @Email AND verifCode = @verifCode;
-      `;
+            SELECT * FROM AccountVerification 
+            WHERE Email = @Email AND verifCode = @verifCode;
+        `;
 
             const request = connection.request();
             request.input("Email", sql.VarChar(50), Email);
@@ -185,15 +186,10 @@ class Account {
             }
 
             // If verifCode exists, insert into Account table
-
-            // Hash the password
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(Password, salt);
-
             const insertAccountQuery = `
-        INSERT INTO Account (Email, Salt, HashedPassword) 
-        VALUES (@Email, @salt ,@hashedPassword);
-      `;
+            INSERT INTO Account (Email, Salt, HashedPassword) 
+            VALUES (@Email, @salt, @hashedPassword);
+        `;
 
             request.input("salt", sql.VarChar(255), salt);
             request.input("hashedPassword", sql.VarChar(255), hashedPassword);
@@ -207,18 +203,25 @@ class Account {
         }
     }
 
-    static async verification(Email) {
+    static async verifyEmailCode(Email, verifCode) {
         let connection;
         try {
             connection = await sql.connect(dbConfig);
-            const sqlQuery = `SELECT * FROM AccountVerification WHERE Email = @Email`;
+            const sqlQuery = `
+                SELECT * FROM AccountVerification 
+                WHERE Email = @Email AND verifCode = @verifCode;
+            `;
             const request = connection.request();
             request.input("Email", sql.VarChar(50), Email);
+            request.input("verifCode", sql.Int, verifCode);
+
             const result = await request.query(sqlQuery);
 
-            return result.recordset;
+            // Return true if a matching record exists
+            return result.recordset.length > 0;
         } catch (err) {
-            console.error("Error fetching account by email:", err);
+            console.error("Error verifying email code:", err);
+            throw err; // Re-throw the error to be handled by the caller
         } finally {
             if (connection) {
                 connection.close();
@@ -226,41 +229,32 @@ class Account {
         }
     }
 
-    static async getInactiveUsers() {
+    static async createAccount(email, password) {
         try {
             const connection = await sql.connect(dbConfig);
-            const query = `
-            SELECT * FROM Account WHERE memberStatus = 'Inactive'
-        `;
-            const result = await connection.request().query(query);
-            connection.close();
 
-            return result.recordset;
-        } catch (err) {
-            console.error("ModelError: Error fetching inactive users:", err);
-        }
-    }
+            // Generate salt and hash password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
 
-    static async getCourseParticipants(progID) {
-        try {
-            const connection = await sql.connect(dbConfig);
-            const query = `
-            SELECT DISTINCT a.AccID, a.Name, a.Email
-            FROM Account a
-            INNER JOIN Bookings b ON a.Email = b.Email
-            WHERE b.ProgID = @ProgID
-        `;
+            // Insert into Account table
+            const insertAccountQuery = `
+                INSERT INTO Account (Email, Salt, HashedPassword) 
+                VALUES (@Email, @salt, @hashedPassword);
+            `;
+
             const request = connection.request();
-            request.input("ProgID", sql.Int, progID);
-            const result = await request.query(query);
+            request.input("Email", sql.VarChar(50), email.trim());
+            request.input("salt", sql.VarChar(255), salt);
+            request.input("hashedPassword", sql.VarChar(255), hashedPassword);
+
+            await request.query(insertAccountQuery);
             connection.close();
 
-            return result.recordset;
+            return { message: "Account successfully created" };
         } catch (err) {
-            console.error(
-                "ModelError: Error fetching course participants:",
-                err
-            );
+            console.error("Error creating account:", err);
+            throw new Error("Error creating account: " + err.message);
         }
     }
 }
