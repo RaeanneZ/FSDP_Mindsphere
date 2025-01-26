@@ -73,6 +73,7 @@ const programmeTiersController = require("./controllers/programmeTierController"
 const businessController = require("./controllers/businessController");
 const surveyFormController = require("./controllers/surveyFormController");
 const reminderController = require("./controllers/reminderEmailController");
+const linkedinRoute = require("./routes/linkedinRoute");
 
 // APP SETUP
 const app = express();
@@ -111,6 +112,8 @@ app.get("/", async (req, res) => {
 app.use("/api/schedules", require("./routes/schedulesRoutes"));
 app.use("/api/survey", require("./routes/surveyRoutes"));
 app.use("/api/dashboard-metrics",require("./routes/dashboardMetricRoutes"));
+app.use("/api/business", require("./routes/businessRoutes"));
+app.use("/api/whatsapp", require("./routes/whatsappRoutes"))
 
 // routes refactor not done for the following
 // [bookings, business, payments, programmes, account, feedback, children, newsletter, reminders]
@@ -120,8 +123,6 @@ app.post("/api/bookings", bookingsController.addBooking);
 app.delete("/api/bookings", bookingsController.deleteBooking);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
 
-
-app.post("/api/business/addBusiness", businessController.addBusiness);
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
@@ -141,17 +142,20 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+app.post("/api/account/verifyEmail", accountController.verifyEmail);
+app.post("/api/account/createAccount", accountController.createAccount);
+app.post("/addVerification", accountController.addVerificationCode);
+
 app.get("/api/programmes/registered/:email",programmesController.getRegisteredProgrammesByAccount);
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
 app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
 app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
 
-
 app.get("/api/account", accountController.getAllAccount);
 app.get("/api/account/:email", accountController.getAccountByEmail);
 app.put("/api/account/:email", accountController.updateAccountByEmail);
 app.put("/api/register", accountController.registerAccount);
-app.post("/api/signUp", accountController.signUp);
 app.post("/api/login", accountController.login);
 app.post("/api/login/admin", accountController.login);
 
@@ -185,6 +189,9 @@ app.get("/api/reminders", reminderController.getScheduledReminders);
 PaymentEmailController.sendMembershipCodes;
 
 
+app.use("/api/linkedin", linkedinRoute);
+app.use("/", linkedinRoute);
+
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store
 // Every hour save to database
@@ -217,7 +224,6 @@ app.get("/track/statistics", (req, res) => {
 //stripe
 const paymentRoutes = require("./routes/paymentRoutes");
 app.use("/api/stripe", paymentRoutes);
-
 
 // START REMINDER SYSTEM ON SERVER START
 initializeReminderSystem();
