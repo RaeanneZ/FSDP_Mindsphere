@@ -195,6 +195,7 @@ create table enquiryTimeline (
 )
 go
 
+
 -- Feedback survey form
 create table surveyForm (
 	surveyID int not null identity(1,1),

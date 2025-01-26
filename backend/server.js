@@ -123,8 +123,6 @@ app.post("/api/bookings", bookingsController.addBooking);
 app.delete("/api/bookings", bookingsController.deleteBooking);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
 
-app.post("/api/business/addBusiness", businessController.addBusiness);
-
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
 app.put("/api/payments/makePayment", paymentController.makePayment);
@@ -144,6 +142,11 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+app.get(
+  "/api/programmes/registered/:email",
+  programmesController.getRegisteredProgrammesByAccount
+);
+
 
 app.get(
   "/api/programmes/registered/:email",
@@ -198,6 +201,7 @@ app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
 app.post("/api/reminders/initialize", reminderController.initializeReminders);
 app.get("/api/reminders", reminderController.getScheduledReminders);
 PaymentEmailController.sendMembershipCodes;
+
 
 // Custom Email feature route
 app.use("/api/email", emailRoutes);
