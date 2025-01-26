@@ -7,6 +7,7 @@ const uploadFileToDrive = require("../middlewares/uploadFileToDrive"); // Ensure
 require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
 const ensureDriveFolder = require("../middlewares/ensureDriveFolder");
 
+const enquiryTimeline = require("../models/enquiryTimeline");
 
 
 
@@ -25,10 +26,10 @@ const getDashboardMetrics = async (req, res) => {
     }
 }
 
-const uploadEnquiryAttachment = async (req, res) => {
+const addEnquiryTimeline = async (req, res) => {
     try {
         // MISSING ADDING DATA TO THE TIMELINE DATABASE AND SENDING OUT NOTIFICATION
-        const { BusinessID } = req.body;
+        const { BusinessID, Text, Tag } = req.body;
 
         if (!req.file) {
             return res.status(400).send("No file uploaded.");
@@ -74,12 +75,25 @@ const uploadEnquiryAttachment = async (req, res) => {
 
         const shareUrl = `https://drive.google.com/file/d/${uploadedFileId}/view`;
 
+        const enquiryData = {
+            BusinessID,
+            Text,
+            Tag,
+            linkToPDF: shareUrl, // Store the share URL of the uploaded file
+        };
+
+        const insertedEnquiry = await enquiryTimeline.addEnquiryTimeline(enquiryData);
+
+
+
+        // Send the response
         res.status(200).send({
             success: true,
-            message: "File uploaded successfully",
-            filePath, 
-            driveFileId: uploadedFileId, 
-            shareUrl, 
+            message: "File uploaded and enquiry added successfully",
+            filePath,
+            driveFileId: uploadedFileId,
+            shareUrl,
+            enquiryTimeline: insertedEnquiry, // Returning the inserted enquiry timeline data
         });
     } catch (err) {
         console.error("ControllerError: Error uploading enquiry attachment", err);
@@ -87,8 +101,37 @@ const uploadEnquiryAttachment = async (req, res) => {
     }
 };
 
+const getTimelinesByBusinessID = async (req, res) => {
+    try {
+        const { BusinessID } = req.params;  // Assuming BusinessID is passed as a parameter in the URL
+
+        // Validate that BusinessID is provided
+        if (!BusinessID) {
+            return res.status(400).send("BusinessID is required.");
+        }
+
+        // Get the timelines from the model
+        const timelines = await enquiryTimeline.getTimelinesByBusinessID(BusinessID);
+
+        // If no timelines are found
+        if (timelines.length === 0) {
+            return res.status(404).send("No timelines found for the specified BusinessID.");
+        }
+
+        // Send the retrieved timelines as a response
+        res.status(200).send({
+            success: true,
+            message: "Timelines retrieved successfully",
+            data: timelines,
+        });
+    } catch (err) {
+        console.error("ControllerError: Error retrieving timelines by business ID", err);
+        res.status(500).send("ControllerError: Error retrieving timelines by business ID");
+    }
+};
 
 module.exports = {
     getDashboardMetrics,
-    uploadEnquiryAttachment
+    addEnquiryTimeline,
+    getTimelinesByBusinessID
 }

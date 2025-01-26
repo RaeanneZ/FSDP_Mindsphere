@@ -497,10 +497,13 @@ const dashboardService = {
         }
     },
     
-    uploadEnquiryAttachment: async (formData, BusinessID) => {
+    addEnquiryTimeline: async (formData, BusinessID, Text, Tag) => {
     try {
       formData.append("BusinessID", BusinessID);
-        const response = await axios.post(`${apiUrl}/adminDashboard/uploadEnquiryAttachment`, formData, {
+      formData.append("Text", Text);
+      formData.append("Tag", Tag)
+
+        const response = await axios.post(`${apiUrl}/adminDashboard/uploadEnquiryTimeline`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
@@ -514,8 +517,23 @@ const dashboardService = {
             error: error.response ? error.response.data : error.message,
         };
     }
+    },
+
+    retrieveEnquiryTimeline: async (BusinessID) => {
+      try {
+          const response = await axios.get(`${apiUrl}/timelines/${BusinessID}`);
+          
+          return response.data;
+      } catch (error) {
+          console.error("Error retrieving timelines:", error);
+          return {
+              success: false,
+              message: "Failed to retrieve timelines",
+              error: error.response ? error.response.data : error.message,
+          };
+      }
     }
-}
+  }
 
 export default {
     programmeService,
