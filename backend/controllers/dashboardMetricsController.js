@@ -8,7 +8,7 @@ require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
 const ensureDriveFolder = require("../middlewares/ensureDriveFolder");
 
 const enquiryTimeline = require("../models/enquiryTimeline");
-
+const stakeholderEmailController = require("../controllers/stakeholderEmailController")
 
 
 const getDashboardMetrics = async (req, res) => {
@@ -36,7 +36,7 @@ const addEnquiryTimeline = async (req, res) => {
 
         const connection = await sql.connect(dbConfig);
         const request = connection.request();
-        const query = `SELECT orgName, CreatedAt FROM Businesses WHERE BusinessID = @BusinessID`;
+        const query = `SELECT orgName, CreatedAt, Email FROM Businesses WHERE BusinessID = @BusinessID`;
         request.input("BusinessID", sql.Int, BusinessID);
 
         const result = await request.query(query);
@@ -46,7 +46,7 @@ const addEnquiryTimeline = async (req, res) => {
             return res.status(404).send("Business not found.");
         }
 
-        const { orgName, CreatedAt } = result.recordset[0];
+        const { orgName, CreatedAt, Email } = result.recordset[0];
         const formattedDate = new Date(CreatedAt).toISOString().split("T")[0];
         const sanitizedBusinessName = orgName.replace(/[^a-z0-9]/gi, "_");
 
@@ -83,9 +83,18 @@ const addEnquiryTimeline = async (req, res) => {
 
         const insertedEnquiry = await enquiryTimeline.addEnquiryTimeline(enquiryData);
 
+        await stakeholderEmailController.sendBusinessEmailUpdatedEnquiry({
+            orgName,
+            Email,
+            Text,
+            Tag,
+            shareUrl,
+            filePath, 
+        });
+
         res.status(200).send({
             success: true,
-            message: "File uploaded and enquiry added successfully",
+            message: "File uploaded, enquiry added, and email sent successfully",
             filePath,
             driveFileId: uploadedFileId,
             shareUrl,
@@ -96,6 +105,7 @@ const addEnquiryTimeline = async (req, res) => {
         res.status(500).send("ControllerError: Error uploading enquiry attachment");
     }
 };
+
 
 const getTimelinesByBusinessID = async (req, res) => {
     try {
