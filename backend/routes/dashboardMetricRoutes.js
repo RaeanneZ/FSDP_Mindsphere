@@ -94,7 +94,7 @@ router.get(
     dashboardMetricsController.getDashboardMetrics
 );
 
-router.post("/uploadEnquiryAttachment", upload.single("file"), dashboardMetricsController.addEnquiryTimeline)
+router.post("/uploadEnquiryTimeline", upload.single("file"), dashboardMetricsController.addEnquiryTimeline)
 
 router.get("/timelines/:BusinessID", dashboardMetricsController.getTimelinesByBusinessID);
 
