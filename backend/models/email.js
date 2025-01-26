@@ -30,4 +30,19 @@ async function sendEmail(emailData) {
     }
 }
 
-module.exports = { sendEmail };
+async function sendEmailHTML(emailData) {
+    try {
+        const info = await transporter.sendMail({
+            from: '"Mindsphere" mindsphere@gmail.com', // Sender address
+            to: emailData.to, // Recipient address
+            subject: emailData.subject, // Subject line
+            html: emailData.html, // HTML body content
+            attachments: emailData.attachments // Attachments
+        });
+        console.log("Email sent: %s", info.messageId);
+    } catch (error) {
+        console.error("Error sending email", error);
+    }
+}
+
+module.exports = { sendEmail, sendEmailHTML };
