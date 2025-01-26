@@ -25,6 +25,13 @@ import BusinessForm from "./pages/BusinessForm.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ErrorPage from "./pages/errorPage.jsx";
 import AdminForm from "./pages/AdminForm.jsx";
+import AdminConsultationSummaryPage from "./pages/AdminConsultationSummaryPage.jsx";
+import BookingPage from "./pages/BookingPage.jsx";
+import VideoCall from "./components/VideoCall.jsx";
+
+// Import CSS
+import "../public/css/index.css";
+
 import B2BEnquiryTimelineTracker from "./pages/B2BEnquiryTimelineTracker.jsx";
 import Layout from "./components/Layout.jsx";
 
@@ -116,6 +123,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/bookConsult",
+    element: <BookingPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/survey",
     element: <SurveyPage />,
     errorElement: <ErrorPage />,
@@ -133,6 +145,16 @@ const router = createBrowserRouter([
   {
     path: "/B2BManagement",
     element: <AdminB2BManagement />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/consultationSummary",
+    element: <AdminConsultationSummaryPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/video-call/:meetingId",
+    element: <VideoCall />,
     errorElement: <ErrorPage />,
   },
 ]);
