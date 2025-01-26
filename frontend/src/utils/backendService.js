@@ -65,6 +65,19 @@ const paymentService = {
       throw err;
     }
   },
+  clientSecret: async () => {
+    try {
+      const response = await axios.post(`${apiUrl}/stripe/payment`, {
+        amount: 5000,
+        currency: "sgd",
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting client secret: ", err);
+      throw err;
+    }
+  },
 };
 
 const progScheduleService = {
@@ -263,6 +276,7 @@ const accountService = {
     }
   },
 
+  
   // signUp: async (email, password, verifCode) => {
   //     try {
   //         const response = await axios.post(`${apiUrl}/signUp`, {
@@ -293,6 +307,17 @@ const accountService = {
         success: true,
         message:
           "Account created successfully. Please check your email for verification.",
+
+  signUp: async (email, password, verifCode) => {
+    try {
+      const response = await axios.post(`${apiUrl}/signUp`, {
+        email,
+        password,
+        verifCode,
+      });
+      //return response.data;
+      return {
+        success: true,
       };
     } catch (err) {
       return {
@@ -321,6 +346,13 @@ const accountService = {
       };
     }
   },
+        message: "Sign-up failed",
+        error: err.response.data,
+      };
+    }
+  },
+
+
   // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
   // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
   // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
@@ -482,4 +514,168 @@ export default {
   newsletterService,
   formService,
   programmeFeedBackService,
+};
+
+const newsletterService = {
+  getAllEmails: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/newsletter`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retrieving all emails: ", err);
+      throw err;
+    }
+  },
+
+  addEmailNewletter: async (email) => {
+    try {
+      const emailData = { Email: email };
+      const response = await axios.post(`${apiUrl}/newsletter`, emailData);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding email to newsletter: ", err);
+    }
+  },
+};
+
+const formService = {
+  addBusiness: async (
+    Name,
+    ContactNo,
+    Email,
+    exNumOfDays,
+    groupSize,
+    orgName,
+    helpText,
+    callbackRequest
+  ) => {
+    try {
+      const newBusiness = {
+        Name: Name,
+        ContactNo: ContactNo,
+        Email: Email,
+        exNumOfDays: exNumOfDays,
+        groupSize: groupSize,
+        orgName: orgName,
+        helpText: helpText,
+        callbackRequest: callbackRequest,
+      };
+
+      const response = await axios.post(
+        `${apiUrl}/business/addBusiness`,
+        newBusiness
+      );
+
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new business: ", err);
+      return {
+        success: false,
+        message: "Adding business failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
+
+  addSurvey: async (email, howHear, expRating, feedbackText) => {
+    try {
+      const newSurvey = {
+        email: email,
+        howHear: howHear,
+        expRating: expRating,
+        feedbackText: feedbackText,
+      };
+
+      const response = await axios.post(
+        `${apiUrl}/survey/newSurvey`,
+        newSurvey
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new survey: ", err);
+      return {
+        success: false,
+        message: "Adding survey failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
+};
+
+const programmeFeedBackService = {
+  getFeedbackByID: async (progID) => {
+    try {
+      const response = await axios.get(`${apiUrl}/progID/${progID}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting feedback by ID: ", err);
+      throw err;
+    }
+  },
+};
+
+const dashboardService = {
+    getDashboardMetrics: async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/dashboard-metrics`);
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error retrieving dashboard metrics: "),
+            err
+        };
+        throw err;
+    },
+
+    updateBusinessEnquiry: async (status, BusinessID) => {
+        try {
+            const updateData = {
+                status: status,
+                BusinessID: BusinessID
+            };
+
+            const response = await axios.put(`${apiUrl}/business/updateStatus`, updateData);
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error updating business enquiry: ", err);
+            return {
+                success: false,
+                message: "Updating business enquiry failed",
+                error: err.response ? err.response.data : err.message,
+            }
+        }
+    },
+
+    sendBroadcastMessage: async (message) => {
+        try {
+            const sendData = {
+                message: message
+            };
+    
+            // Assuming your API URL for sending broadcast messages is '/whatsapp/sendBroadcast'
+            const response = await axios.post(`${apiUrl}/whatsapp/send-broadcast`, sendData);
+            
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error sending broadcast message: ", err);
+            return {
+                success: false,
+                message: "Sending broadcast message failed",
+                error: err.response ? err.response.data : err.message,
+            };
+        }
+    }
+    
+}
+
+export default {
+    programmeService,
+    progScheduleService,
+    accountService,
+    childrenService,
+    bookingService,
+    paymentService,
+    newsletterService,
+    formService,
+    programmeFeedBackService,
+    dashboardService
 };

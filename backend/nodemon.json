@@ -1,0 +1,8 @@
+{
+  "watch": ["backend"],
+  "ext": "js,json",
+  "ignore": [
+    "swagger.json",
+    "node_modules/**"
+  ]
+}

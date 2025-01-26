@@ -49,6 +49,10 @@ if exists (select * from sysobjects where name='Children' and type='U')
     drop table Children
 GO
 
+if exists (select * from sysobjects where name='WhatsappUsers' and type ='U')
+	drop table WhatsappUsers
+go
+
 if exists (select * from sysobjects where name='Newsletter' and type ='U')
 	drop table Newsletter
 go
@@ -63,6 +67,22 @@ GO
 
 if exists (select * from sysobjects where name='Roles' and type='U')
     drop table Roles
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE name = 'ProgrammeSlotSummary' AND xtype = 'V')
+    DROP VIEW ProgrammeSlotSummary;
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE name = 'MembersAndNewsletterCount' AND xtype = 'V')
+    DROP VIEW MembersAndNewsletterCount;
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesRevenue' AND xtype = 'V')
+    DROP VIEW SalesRevenue;
+GO
+
+IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesPendingPayment' AND xtype = 'V')
+    DROP VIEW SalesPendingPayment;
 GO
 
 -------------------------------------------------------------------------------------------------------------
@@ -108,6 +128,13 @@ CREATE TABLE Newsletter (
 	constraint PK_Newsletter primary key (Email)
 );
 
+CREATE TABLE WhatsappUsers (
+	WsID int not null IDENTITY(1,1),
+	Name varchar(50) not null,
+	phoneNum varchar(50) not null,
+	constraint PK_WsUsers primary key (WsID)
+);
+
 create table Children (
 	ChildID int not null IDENTITY(1,1),
 	GuardianEmail varchar(50) not null,
@@ -133,7 +160,9 @@ create table Businesses (
 	orgName varchar(50) not null,
 	helpText varchar(1000),
 	callbackRequest datetime not null,
-	constraint PK_Business primary key (BusinessID)
+	enquiryStatus varchar(50) not null default ('New Enquiry'),
+	constraint PK_Business primary key (BusinessID),
+	constraint CHK_Status check (enquiryStatus in ('New Enquiry', 'In Progress', 'Confirmed', 'Completed'))
 )
 go
 
@@ -236,6 +265,51 @@ go
 
 -------------------------------------------------------------------------------------------------------------
 
+CREATE VIEW ProgrammeSlotSummary AS
+SELECT 
+    P.ProgID,
+    P.Name AS ProgrammeName,
+    SUM(PS.TotalSeats) AS TotalSlots,
+    COALESCE(SUM(B.NumSeats), 0) AS SlotsTaken,
+    SUM(PS.TotalSeats) - COALESCE(SUM(B.NumSeats), 0) AS SlotsRemaining
+FROM 
+    Programmes P
+LEFT JOIN ProgrammeSchedule PS ON P.ProgID = PS.ProgID
+LEFT JOIN Bookings B ON PS.SchedID = B.SchedID
+GROUP BY 
+    P.ProgID, P.Name;
+
+go
+
+CREATE VIEW MembersAndNewsletterCount AS
+SELECT 
+    (SELECT COUNT(*) FROM Account) AS TotalAccounts,
+    (SELECT COUNT(*) FROM Newsletter) AS TotalNewsletterSubscriptions;
+
+go
+
+create view SalesRevenue as
+select 
+	sum(TotalCost) as TotalSalesRevenue,
+	count(*) as NumberOfSales
+from Payment
+WHERE 
+    TransacStatus = 'Paid';
+
+go
+
+create view SalesPendingPayment as
+select 
+	sum(TotalCost) as TotalPendingRevenue,
+	count(*) as NumberOfPendingSales
+from Payment
+where
+	TransacStatus = 'Pending';
+
+go
+
+-------------------------------------------------------------------------------------------------------------
+
 -- Insert data into Roles
 INSERT INTO Roles (RoleID, Name) VALUES
 (1, 'Admin'),
@@ -274,23 +348,23 @@ INSERT INTO Programmes (ProgID, Name, ProgIntro, ProgDesc, ProgType) VALUES
 (2, 'PSLE Power Up Camp', 'PSLE learning enhancement', 'Help PSLE takers learn efficiently and effectively', 'Regular'),
 (3, 'Future Entrepreneurs Labs', 'Learn about entrepreneurship', 'Study how to be an entrepreneur', 'Premium');
 
-INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest)
+INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest, enquiryStatus)
 VALUES 
 ('John Doe', '12345678', 'johndoe@company.com', 3, 20, 'Tech Innovations Ltd.', 
 'My employees here at Tech Innovations Ltd. need team bonding exercises to improve collaboration and communication skills. We are looking for interactive workshops that will help our team build trust, enhance problem-solving skills, and work more effectively together in a fast-paced tech environment. These sessions should also focus on improving leadership qualities within the team, encouraging creative thinking and better decision-making.',
-'2024-11-15 10:30:00'),
+'2024-11-15 10:30:00', 'New Enquiry'),
 ('Jane Smith', '87654321', 'janesmith@company.com', 5, 50, 'Creative Solutions Inc.', 
 'At Creative Solutions Inc., our team is looking for creative workshops to stimulate innovation and foster collaboration. We need interactive sessions where employees can work together to solve real-world problems. We are also interested in leadership development and workshops that teach employees how to think outside the box, encouraging new ideas and creative solutions. It''s important to us that these workshops are fun and engaging, yet challenge our team to think critically.',
-'2024-11-16 09:00:00'),
+'2024-11-16 09:00:00', 'In Progress'),
 ('Emily Johnson', '11223344', 'emilyj@company.com', 2, 15, 'FutureTech Corp.', 
 'At FutureTech Corp., we are in need of technical workshops to help our employees keep up with the latest developments in AI, data analytics, and software development. Our team is looking for hands-on learning experiences that will give them practical skills they can apply to real projects. Additionally, we need workshops that can foster better communication between our technical and non-technical teams, ensuring they are aligned and can collaborate effectively on projects.',
-'2024-11-18 14:00:00'),
+'2024-11-18 14:00:00', 'Confirmed'),
 ('Michael Brown', '55667788', 'michaelb@company.com', 4, 30, 'Health Solutions Co.', 
 'Our team at Health Solutions Co. is looking for workshops focused on stress management and improving mental health awareness. We need help in teaching our employees how to manage work-related stress and maintain a healthy work-life balance. Additionally, we would love to have team-building activities that strengthen relationships between departments and encourage a positive, supportive work environment. These sessions should be interactive and practical, with tips that employees can use in their day-to-day work life.',
-'2024-11-19 11:45:00'),
+'2024-11-19 11:45:00', 'Completed'),
 ('Sophia Lee', '99887766', 'sophial@company.com', 3, 25, 'Retail Enterprises Ltd.', 
 'My team at Retail Enterprises Ltd. is seeking workshops that focus on improving customer service skills and handling difficult situations. We want to provide our employees with the tools they need to enhance customer interactions, resolve conflicts, and manage customer expectations more effectively. Additionally, we are interested in team-building activities that help strengthen our sales and customer support teams, promoting better communication and collaboration across the board.',
-'2024-11-20 13:00:00');
+'2024-11-20 13:00:00', 'Completed');
 
 -- Insert data into ProgrammeTier
 INSERT INTO ProgrammeTier (TierID, ProgID, TierDesc, Lunch, Level, Duration, ClassSize, AgeRange, Cost) VALUES
@@ -355,4 +429,8 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
 ('Nancy Blue', 'nancyblue@example.com', '56789012', 4, 2, 
  '[{"name": "Ella Blue", "dob": "2013-11-10", "gender": "F", "school": "Hillcrest School", "needs": "Visual Impairment"}]', 
  'Gluten-Free', 2, 1, 5, 'Quiet room needed', '2024-11-13');
+
+
+INSERT INTO WhatsappUsers (Name, phoneNum)
+VALUES ('Neil Hadziq', '+6589217943')
 
