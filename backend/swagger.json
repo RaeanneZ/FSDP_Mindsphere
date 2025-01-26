@@ -321,6 +321,10 @@
   "components": {},
   "tags": [
     {
+      "name": "Business Enquiries",
+      "description": "API for managing business enquiries"
+    },
+    {
       "name": "Dashboard Metrics",
       "description": "API for retrieving metrics for admin"
     },

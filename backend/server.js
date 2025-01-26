@@ -13,23 +13,23 @@ const swaggerUi = require("swagger-ui-express");
 
 // Swagger options
 const swaggerOptions = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "Minsdsphere backend API Documentation",
-            version: "1.0.0",
-            description: "API for Mindsphere backend website",
-        },
-        servers: [
-            {
-                url: "http://localhost:5000",
-            },
-        ],
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Minsdsphere backend API Documentation",
+      version: "1.0.0",
+      description: "API for Mindsphere backend website",
     },
-    apis: [
-        path.join(__dirname, "server.js"), // Main server file
-        path.join(__dirname, "routes/*.js"), // All route files
+    servers: [
+      {
+        url: "http://localhost:5000",
+      },
     ],
+  },
+  apis: [
+    path.join(__dirname, "server.js"), // Main server file
+    path.join(__dirname, "routes/*.js"), // All route files
+  ],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
@@ -37,11 +37,11 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 const swaggerPath = path.join(__dirname, "swagger.json");
 // Asynchronously write the generated Swagger spec to the file, overwriting it
 fs.writeFile(swaggerPath, JSON.stringify(swaggerSpec, null, 2), (err) => {
-    if (err) {
-        console.error("Error writing swagger.json:", err);
-    } else {
-        console.log("Swagger spec saved as swagger.json");
-    }
+  if (err) {
+    console.error("Error writing swagger.json:", err);
+  } else {
+    console.log("Swagger spec saved as swagger.json");
+  }
 });
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -75,6 +75,7 @@ const emailRoutes = require("./routes/emailRoutes");
 const emailSchedulerRoutes = require("./routes/emailSchedulerRoutes");
 const groupEmailRoutes = require("./routes/groupEmailRoutes");
 const draftRoutes = require("./routes/draftRoutes");
+const autogenCertController = require("./controllers/autogen-certController");
 
 // APP SETUP
 const app = express();
@@ -109,7 +110,9 @@ app.get("/", async (req, res) => {
 
 app.use("/api/schedules", require("./routes/schedulesRoutes"));
 app.use("/api/survey", require("./routes/surveyRoutes"));
-app.use("/api/dashboard-metrics", require("./routes/dashboardMetricRoutes"));
+app.use("/api/adminDashboard",require("./routes/dashboardMetricRoutes"));
+app.use("/api/business", require("./routes/businessRoutes"));
+app.use("/api/whatsapp", require("./routes/whatsappRoutes"))
 
 // routes refactor not done for the following
 // [bookings, business, payments, programmes, account, feedback, children, newsletter, reminders]
@@ -119,7 +122,6 @@ app.post("/api/bookings", bookingsController.addBooking);
 app.delete("/api/bookings", bookingsController.deleteBooking);
 app.get("/api/bookings/:email", accountController.retrieveAccountInfo);
 
-app.post("/api/business/addBusiness", businessController.addBusiness);
 
 app.get("/api/payments", paymentController.getAllPayments);
 app.post("/api/payments", paymentController.addPayment);
@@ -141,8 +143,8 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
     }
 });
 app.get(
-    "/api/programmes/registered/:email",
-    programmesController.getRegisteredProgrammesByAccount
+  "/api/programmes/registered/:email",
+  programmesController.getRegisteredProgrammesByAccount
 );
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
 app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
@@ -163,8 +165,8 @@ app.post("/api/addChild", childrenController.addChild);
 app.post("/api/addChildPayment", childrenController.addChildPayment);
 app.put("/api/children/updateChild", childrenController.updateChild);
 app.get(
-    "/api/getChildByEmail/:GuardianEmail",
-    childrenController.getChildByEmail
+  "/api/getChildByEmail/:GuardianEmail",
+  childrenController.getChildByEmail
 );
 
 app.get("/api/newsletter", newsletterController.getAllEmail);
@@ -193,6 +195,8 @@ app.use("/api/email", emailRoutes);
 app.use("/api/email-scheduler", emailSchedulerRoutes);
 app.use("/api/group-email", groupEmailRoutes);
 app.use("/api/drafts", draftRoutes);
+// autogenerate certificate
+app.post("/api/certificate", autogenCertController.generateCert);
 
 // START OF Tracking JS -----------------------------------------------------------------
 // In-memory data store
