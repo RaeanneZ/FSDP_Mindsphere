@@ -504,6 +504,63 @@ const programmeFeedBackService = {
   },
 };
 
+const dashboardService = {
+  getDashboardMetrics: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/dashboard-metrics`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retrieving dashboard metrics: "),
+        err;
+    }
+    throw err;
+  },
+};
+
+const meetingService = {
+  createMeeting: async (meetingData) => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/whereby/create`,
+        meetingData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("Error creating meeting: ", err);
+      throw err;
+    }
+  },
+  getAllMeetings: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/whereby/all`);
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching all meetings: ", err);
+      throw err;
+    }
+  },
+  getMeetingDetails: async (meetingId) => {
+    try {
+      const response = await axios.get(`${apiUrl}/whereby/${meetingId}`);
+      console.log(response);
+      return response.data; // Fetch meeting details from backend
+    } catch (err) {
+      console.error("Error fetching meeting details:", err);
+      throw err;
+    }
+
+    // Response is:
+    //     EndTime: "2025-01-22T06:00:00.000Z"
+    //     HostRoomURL: "https://mindsphere-online.whereby.com/8debaa42-8338-434e-9198-be6bd5c0b210?roomKey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZWV0aW5nSWQiOiI5NTY1ODIxMiIsInJvb21SZWZlcmVuY2UiOnsicm9vbU5hbWUiOiIvOGRlYmFhNDItODMzOC00MzRlLTkxOTgtYmU2YmQ1YzBiMjEwIiwib3JnYW5pemF0aW9uSWQiOiIzMDY0MjkifSwiaXNzIjoiaHR0cHM6Ly9hY2NvdW50cy5zcnYud2hlcmVieS5jb20iLCJpYXQiOjE3MzcyNjY2OTQsInJvb21LZXlUeXBlIjoibWVldGluZ0hvc3QifQ.QFNF8qjihoiEJbVKWq1KrWpqX6tbXTchjoGVQBibu_g"
+    //     IsLocked: true
+    //     MeetingID:"95658212"
+    //     RoomURL: "https://mindsphere-online.whereby.com/8debaa42-8338-434e-9198-be6bd5c0b210"
+    //     StartTime: "2025-01-22T03:00:00.000Z"
+    //     UserEmail: "raeannezou@gmail.com"
+  },
+};
+
+
 export default {
   programmeService,
   progScheduleService,
@@ -514,6 +571,8 @@ export default {
   newsletterService,
   formService,
   programmeFeedBackService,
+  dashboardService,
+  meetingService,
 };
 
 const newsletterService = {
