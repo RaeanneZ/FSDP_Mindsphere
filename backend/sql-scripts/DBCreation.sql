@@ -176,7 +176,7 @@ create table enquiryTimeline (
 	Text varchar(255) not null,
 	tag varchar(50) not null,
 	linkToPDF varchar(255) null,
-	createdDate datetime not null,
+	createdDate datetime not null default getdate(),
 	constraint PK_enquiryTimeline primary key (TimelineID),
 	constraint FK_enquiryTimeline foreign key (BusinessID) references Businesses(BusinessID)
 )
@@ -371,7 +371,7 @@ VALUES
 ('John Doe', '12345678', 'johndoe@company.com', 3, 20, 'Tech Innovations Ltd.', 
 'My employees here at Tech Innovations Ltd. need team bonding exercises to improve collaboration and communication skills. We are looking for interactive workshops that will help our team build trust, enhance problem-solving skills, and work more effectively together in a fast-paced tech environment. These sessions should also focus on improving leadership qualities within the team, encouraging creative thinking and better decision-making.',
 '2024-11-15 10:30:00', 'New Enquiry'),
-('Jane Smith', '87654321', 'janesmith@company.com', 5, 50, 'Creative Solutions Inc.', 
+('Jane Smith', '87654321', 'neilhadziq31@gmail.com', 5, 50, 'Creative Solutions Inc.', 
 'At Creative Solutions Inc., our team is looking for creative workshops to stimulate innovation and foster collaboration. We need interactive sessions where employees can work together to solve real-world problems. We are also interested in leadership development and workshops that teach employees how to think outside the box, encouraging new ideas and creative solutions. It''s important to us that these workshops are fun and engaging, yet challenge our team to think critically.',
 '2024-11-16 09:00:00', 'In Progress'),
 ('Emily Johnson', '11223344', 'emilyj@company.com', 2, 15, 'FutureTech Corp.', 
