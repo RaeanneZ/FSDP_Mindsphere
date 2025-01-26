@@ -25,6 +25,21 @@ const AccountManagementPage = () => {
   });
   const autocompleteRef = useRef(null);
 
+  // Retrieve data from session storage if `linkedinData` exists
+  useEffect(() => {
+    const linkedInData = JSON.parse(sessionStorage.getItem("linkedinData"));
+    if (linkedInData) {
+      setFormData((prevData) => ({
+        ...prevData,
+        name: linkedInData.given_name + " " + linkedInData.family_name || "",
+        address: linkedInData.locale?.country || "",
+        dob: "", // LinkedIn data doesn't provide DOB by default
+        contactNumber: "", // Update if LinkedIn data includes phone numbers
+        relationship: "", // Default as empty; user needs to input manually
+      }));
+    }
+  }, []);
+
   // Load Google Maps script dynamically
   useEffect(() => {
     const loadGoogleMapsScript = () => {
@@ -139,6 +154,12 @@ const AccountManagementPage = () => {
     sessionStorage.setItem("childData", JSON.stringify(childData));
 
     // Method call to send parent account details to the backend (including email and password)
+    console.log(formData.name);
+    console.log(existingParentData[0].email);
+    console.log(formData.contactNumber);
+    console.log(formData.dob);
+    console.log(formData.relationship);
+    console.log(formData.address);
     try {
       // Format results to expected fields
       const accountData = {
