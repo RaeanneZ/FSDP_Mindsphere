@@ -27,7 +27,6 @@ function getAuthUrl() {
   const url = oauth2Client.generateAuthUrl({
     access_type: 'offline',  // To get the refresh token
     scope: SCOPES,
-    prompt: 'consent'       // Forces the consent screen to show every time
   });
 
   console.log('Authorize this app by visiting this URL:', url);
@@ -45,6 +44,9 @@ function getTokens(code) {
 
     // Set credentials in the OAuth client
     oauth2Client.setCredentials(tokens);
+
+    console.log('Access Token:', tokens.access_token);
+    console.log('Refresh Token:', tokens.refresh_token);
 
     // Save the refresh token to the .env file
     saveRefreshToken(tokens.refresh_token);
@@ -64,7 +66,7 @@ function saveRefreshToken(refreshToken) {
   ).join('\n');
 
   fs.writeFileSync(envPath, updatedConfig);
-  console.log('✅ Updated refresh token in .env file, restart the server.');
+  console.log('✅ Updated refresh token in .env file.');
 }
 
 // Start the process by generating the auth URL
