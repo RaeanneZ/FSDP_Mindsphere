@@ -1,37 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const PageTracking = ({ trackPage, onInactivity }) => {
-  const [timer, setTimer] = useState(null);
+  const timerRef = useRef(null);
 
   useEffect(() => {
-    const handleActivity = () => {
-      if (timer) clearTimeout(timer);
+    const resetTimer = () => {
+      if (timerRef.current) clearInterval(timerRef.current);
 
-      setTimer(
-        setTimeout(() => {
-          const currentPage = window.location.pathname;
-          onInactivity(currentPage); // Trigger inactivity logic
-        }, 60000) // Set to 1 minute for testing, change to 5 minutes in production
-      );
+      timerRef.current = setInterval(() => {
+        const currentPage = window.location.pathname;
+        onInactivity(currentPage); // Trigger inactivity logic every 1 minute
+      }, 60000); // Set to 1 minute for testing, change to 5 minutes in production
     };
 
-    window.addEventListener("mousemove", handleActivity);
+    const handleActivity = () => {
+      resetTimer(); // Reset the inactivity timer on user activity
+    };
+
+    // Set up activity listeners
     window.addEventListener("keypress", handleActivity);
     window.addEventListener("click", handleActivity);
 
-    handleActivity(); // Reset timer when component loads
+    // Initialize the timer
+    resetTimer();
 
     return () => {
-      window.removeEventListener("mousemove", handleActivity);
+      // Clean up listeners and timer on unmount
       window.removeEventListener("keypress", handleActivity);
       window.removeEventListener("click", handleActivity);
-      if (timer) clearTimeout(timer);
+      if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [timer, onInactivity]);
+  }, [onInactivity]);
 
   useEffect(() => {
     const handlePageChange = () => {
-      trackPage(window.location.pathname);
+      trackPage(window.location.pathname); // Track page when history changes
     };
 
     window.addEventListener("popstate", handlePageChange);
