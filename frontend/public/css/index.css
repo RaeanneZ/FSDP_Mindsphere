@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&display=swap");
 
 @tailwind base;
@@ -109,14 +108,6 @@ circle {
   margin-top: 10px;
 }
 
-/* Importing Google Fonts - Inter */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Inter", sans-serif;
-}
-
 #chatbot-toggler {
   position: fixed;
   bottom: 30px;
@@ -129,10 +120,12 @@ circle {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #dcaf27; /* Primary yellow */
+  background: #dcaf27;
+  /* Primary yellow */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  z-index: 1000; /* Ensure visibility above other elements */
+  z-index: 1000;
+  /* Ensure visibility above other elements */
 }
 
 .container.show-chatbot #chatbot-toggler {
@@ -141,8 +134,10 @@ circle {
 
 #chatbot-toggler span {
   color: #fff;
-  font-family: "Material Symbols Rounded", sans-serif; /* Google icons font */
-  font-size: 1.5rem; /* Icon size */
+  font-family: "Material Symbols Rounded", sans-serif;
+  /* Google icons font */
+  font-size: 1.5rem;
+  /* Icon size */
   position: absolute;
   transition: opacity 0.2s ease;
 }
@@ -165,13 +160,15 @@ circle {
   pointer-events: none;
   transform: scale(0.2);
   overflow: hidden;
-  background: #fff; /* Chatbot background */
+  background: #fff;
+  /* Chatbot background */
   border-radius: 15px;
   transform-origin: bottom right;
   box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
     0 32px 64px -48px rgba(0, 0, 0, 0.5);
   transition: all 0.1s ease;
-  z-index: 999; /* Below the toggle button */
+  z-index: 999;
+  /* Below the toggle button */
 }
 
 .container.show-chatbot .chatbot-popup {
@@ -184,7 +181,8 @@ circle {
   display: flex;
   padding: 15px 22px;
   align-items: center;
-  background: #dcaf27; /* Primary yellow */
+  background: #dcaf27;
+  /* Primary yellow */
   justify-content: space-between;
 }
 
@@ -199,8 +197,10 @@ circle {
   height: 35px;
   flex-shrink: 0;
   padding: 6px;
-  fill: #dcaf27; /* Yellow */
-  background: #fff; /* Chatbot-specific background */
+  fill: #dcaf27;
+  /* Yellow */
+  background: #fff;
+  /* Chatbot-specific background */
   border-radius: 50%;
 }
 
@@ -230,7 +230,8 @@ circle {
 }
 
 .chat-header button:hover {
-  background: #b5921f; /* Darker yellow for hover */
+  background: #b5921f;
+  /* Darker yellow for hover */
 }
 
 .clear-history {
@@ -238,7 +239,8 @@ circle {
   color: #fff;
   border: none;
   border-radius: 50%;
-  font-size: 1.4rem; /* Match icon size */
+  font-size: 1.4rem;
+  /* Match icon size */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,7 +248,8 @@ circle {
 }
 
 .clear-history:hover {
-  background: rgba(255, 255, 255, 0.2); /* Light hover effect */
+  background: rgba(255, 255, 255, 0.2);
+  /* Light hover effect */
 }
 
 .chat-body {
@@ -258,7 +261,8 @@ circle {
   margin-bottom: 82px;
   padding: 25px 22px;
   scrollbar-width: thin;
-  scrollbar-color: #fbe7b3 transparent; /* Light yellow scrollbar */
+  scrollbar-color: #fbe7b3 transparent;
+  /* Light yellow scrollbar */
 }
 
 .chat-body .message {
@@ -275,7 +279,8 @@ circle {
   fill: #fff;
   align-self: flex-end;
   margin-bottom: 2px;
-  background: #dcaf27; /* Yellow */
+  background: #dcaf27;
+  /* Yellow */
   border-radius: 50%;
 }
 
@@ -292,7 +297,8 @@ circle {
 }
 
 .chat-body .bot-message .message-text {
-  background: #faf2d0; /* Light yellow background for bot messages */
+  background: #faf2d0;
+  /* Light yellow background for bot messages */
   border-radius: 13px 13px 13px 3px;
 }
 
@@ -303,7 +309,8 @@ circle {
 
 .chat-body .user-message .message-text {
   color: #fff;
-  background: #dcaf27; /* Yellow */
+  background: #dcaf27;
+  /* Yellow */
   border-radius: 13px 13px 3px 13px;
 }
 
@@ -311,7 +318,8 @@ circle {
   position: absolute;
   bottom: 0;
   width: 100%;
-  background: #fff; /* Chatbot-specific background */
+  background: #fff;
+  /* Chatbot-specific background */
   padding: 15px 22px 20px;
 }
 
@@ -319,9 +327,11 @@ circle {
   display: flex;
   align-items: center;
   position: relative;
-  background: #fff; /* Chatbot-specific background */
+  background: #fff;
+  /* Chatbot-specific background */
   border-radius: 32px;
-  outline: 1px solid #fbe7b3; /* Light yellow outline */
+  outline: 1px solid #fbe7b3;
+  /* Light yellow outline */
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.06);
 }
 
@@ -348,18 +358,20 @@ circle {
   cursor: pointer;
   display: none;
   margin-right: 6px;
-  background: #dcaf27; /* Yellow */
+  background: #dcaf27;
+  /* Yellow */
   border-radius: 50%;
   font-size: 1.15rem;
   transition: 0.2s ease;
 }
 
-.chat-form .message-input:valid ~ #send-message {
+.chat-form .message-input:valid~#send-message {
   display: block;
 }
 
 .chat-form #send-message:hover {
-  background: #b5921f; /* Darker yellow for hover */
+  background: #b5921f;
+  /* Darker yellow for hover */
 }
 
 /* Responsive media query for mobile screens */

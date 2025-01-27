@@ -16,12 +16,20 @@ const AccountEntry = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [isSignup, setIsSignup] = useState(false);
+  const [isSignup, setIsSignup] = useState(true);
   const [newsletter, setNewsletter] = useState(true);
   const { login } = useAuth();
 
   useEffect(() => {
-    const signupStatus = sessionStorage.getItem("signup") == "true";
+    // Initialize isSignup from session storage
+    const params = new URLSearchParams(window.location.search);
+    const initialRouteisSignup = params.get("signup") === "true";
+
+    if (initialRouteisSignup) {
+      sessionStorage.setItem("signup", "true");
+      console.log("Signup is set to true");
+    }
+    const signupStatus = sessionStorage.getItem("signup") === "true";
     setIsSignup(signupStatus);
   }, []);
 
@@ -58,6 +66,7 @@ const AccountEntry = () => {
       const response = await accountService.createAccount(email, password);
 
       if (response.success) {
+        console.log("something happened here");
         sessionStorage.setItem("signup", "false");
         navigate("/accountSetup");
       } else {
@@ -124,6 +133,7 @@ const AccountEntry = () => {
 
       if (response.success) {
         sessionStorage.setItem("signup", "false");
+        console.log("HadleCreation signup is set to false");
         sessionStorage.setItem("linkedinData", JSON.stringify(userProfile));
         navigate("/accountSetup");
       } else {
@@ -136,17 +146,20 @@ const AccountEntry = () => {
   };
 
   useEffect(() => {
+    if (isSignup === undefined) return; // Wait until isSignup is initialized
+
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     if (code) {
       // Determine whether it's a login or signup process based on `isSignup`
       if (isSignup) {
+        console.log("HandleCreate should be working");
         handleCreateAccountWithLinkedIn(code);
       } else {
         handleLoginWithLinkedIn(code);
       }
     }
-  }, []);
+  }, [isSignup]);
 
   return (
     <>
@@ -223,7 +236,7 @@ const AccountEntry = () => {
               <>
                 Already a member?{" "}
                 <a
-                  href="/login"
+                  href="/accountEntry"
                   className="text-blue-500"
                   onClick={() => sessionStorage.setItem("signup", "false")}
                 >
@@ -234,7 +247,7 @@ const AccountEntry = () => {
               <>
                 New to Mindsphere?{" "}
                 <a
-                  href="/signup"
+                  href="/verification"
                   className="text-blue-500"
                   onClick={() => sessionStorage.setItem("signup", "true")}
                 >

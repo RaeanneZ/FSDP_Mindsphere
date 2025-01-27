@@ -52,9 +52,8 @@ const MemberVerificationPage = () => {
       );
       return;
     } else {
-      // Navigate to the next page
       sessionStorage.setItem("signup", "true");
-      navigate("/accountEntry");
+      navigate("/accountEntry?signup=true");
     }
   };
 
@@ -107,7 +106,7 @@ const MemberVerificationPage = () => {
 
           <p className="text-center text-gray-600">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-500">
+            <a href="/accountEntry" className="text-blue-500">
               Login here
             </a>
           </p>

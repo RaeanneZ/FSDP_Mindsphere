@@ -107,7 +107,10 @@ const Navbar = () => {
             </div>
           ) : (
             <a href="/accountEntry">
-              <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
+              <button
+                className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600"
+                onClick={sessionStorage.setItem("signup", "false")}
+              >
                 <FontAwesomeIcon icon={faUser} className="pr-2" />
                 Login
               </button>
