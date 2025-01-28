@@ -788,7 +788,7 @@ const dashboardService = {
 
     retrieveEnquiryTimeline: async (BusinessID) => {
       try {
-          const response = await axios.get(`${apiUrl}/timelines/${BusinessID}`);
+          const response = await axios.get(`${apiUrl}/adminDashboard/timelines/${BusinessID}`);
           
           return response.data;
       } catch (error) {
