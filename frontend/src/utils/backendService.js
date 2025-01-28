@@ -799,7 +799,18 @@ const dashboardService = {
               error: error.response ? error.response.data : error.message,
           };
       }
-    }
+    },
+
+    getBusinessEnquiries: async () => {
+      try {
+          const response = await axios.get(`${apiUrl}/business`);
+          return response.data;
+      } catch (err) {
+          console.error("BackendService: Error retrieving business enquiries: "),
+          err
+      };
+      throw err;
+  },
   }
 
 export default {
