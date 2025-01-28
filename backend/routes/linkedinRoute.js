@@ -9,26 +9,45 @@ const { LINKEDIN_CLIENT_ID, LINKEDIN_CLIENT_SECRET, LINKEDIN_CALLBACK_URL } =
     process.env;
 
 router.post("/userinfo", async (req, res) => {
-    const { accessToken } = req.body;
+    const authHeader = req.headers.authorization;
+
+    console.log("🔄 Received Auth Header:", authHeader); // Debugging
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        console.error("❌ No valid authorization header provided.");
+        return res
+            .status(400)
+            .json({
+                error: "Access token is required in Authorization header.",
+            });
+    }
+
+    const accessToken = authHeader.split(" ")[1];
 
     try {
+        console.log("🔄 Fetching LinkedIn User Info with token:", accessToken);
+
         const response = await axios.get(
             "https://api.linkedin.com/v2/userinfo",
             {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
+                headers: { Authorization: `Bearer ${accessToken}` },
             }
         );
+
+        console.log("✅ LinkedIn User Profile Response:", response.data);
         res.json(response.data);
     } catch (error) {
         console.error(
-            "Error fetching LinkedIn userinfo:",
+            "❌ Error fetching LinkedIn userinfo:",
             error.response?.data || error.message
         );
-        res.status(500).json({ error: "Failed to fetch LinkedIn userinfo" });
+        res.status(error.response?.status || 500).json({
+            error: "Failed to fetch LinkedIn user profile.",
+            details: error.response?.data || error.message,
+        });
     }
 });
+
 // Exchange Authorization Code for Access Token
 router.post("/api/linkedin/token", async (req, res) => {
     const { code } = req.body;
@@ -116,7 +135,7 @@ router.post("/api/linkedin/store", async (req, res) => {
 });
 
 // Fetch User Data Using Access Token (Optional for validation)
-router.get("/api/linkedin/user", async (req, res) => {
+router.get("userinfo", async (req, res) => {
     const authHeader = req.headers.authorization;
     const accessToken = authHeader?.split(" ")[1];
 

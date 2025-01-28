@@ -65,34 +65,36 @@ class Account {
 
     static async getAccountByEmail(Email) {
         try {
+            if (!Email || typeof Email !== "string") {
+                console.error("❌ Invalid email format received:", Email);
+                throw new Error(
+                    "Invalid email format received in getAccountByEmail"
+                );
+            }
+
+            Email = Email.trim(); // Ensure it's a string before using trim()
+
+            console.log("🔍 Checking account existence for:", Email);
+
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `SELECT * FROM Account WHERE Email = @Email`;
             const request = connection.request();
-            request.input("Email", sql.VarChar, Email); // Specify the SQL data type for security
+
+            request.input("Email", sql.VarChar(255), Email); // Ensure correct SQL type
+
             const result = await request.query(sqlQuery);
             connection.close();
 
             if (result.recordset.length > 0) {
-                const row = result.recordset[0];
-                return new Account(
-                    row.AccID,
-                    row.Name,
-                    row.Email,
-                    row.ContactNo,
-                    row.memberStatus,
-                    row.memberExpiry,
-                    row.dateOfBirth,
-                    row.relationshipToChild,
-                    row.address,
-                    row.RoleID,
-                    row.Salt,
-                    row.HashedPassword
-                );
+                console.log("✅ Account found:", result.recordset[0]);
+                return result.recordset[0]; // Return found account
             } else {
+                console.log("❌ No account found for:", Email);
                 return null;
             }
         } catch (err) {
             console.error("ModelError: Error fetching account by email:", err);
+            throw err;
         }
     }
 
@@ -229,32 +231,66 @@ class Account {
         }
     }
 
-    static async createAccount(email, password) {
+    static async createAccount(
+        email,
+        password = null,
+        firstName = null,
+        lastName = null
+    ) {
         try {
+            if (!email || typeof email !== "string") {
+                console.error(
+                    "❌ Invalid email format received in createAccount:",
+                    email
+                );
+                throw new Error("Invalid email format in createAccount");
+            }
+
+            email = email.trim();
+            console.log("🛠 Preparing to insert new account for:", email);
+
             const connection = await sql.connect(dbConfig);
 
-            // Generate salt and hash password
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
+            let salt = null;
+            let hashedPassword = null;
 
-            // Insert into Account table
+            if (password) {
+                salt = await bcrypt.genSalt(10);
+                hashedPassword = await bcrypt.hash(password, salt);
+                console.log("🔑 Password hashing successful");
+            }
+
             const insertAccountQuery = `
-                INSERT INTO Account (Email, Salt, HashedPassword) 
-                VALUES (@Email, @salt, @hashedPassword);
+                INSERT INTO Account (Email, Salt, HashedPassword, Name) 
+                VALUES (@Email, @salt, @hashedPassword, @Name);
             `;
 
+            console.log("📌 Executing SQL Insert Query:", insertAccountQuery);
+            console.log("📌 SQL Parameters:", {
+                email,
+                salt,
+                hashedPassword,
+                name: `${firstName} ${lastName}`,
+            });
+
             const request = connection.request();
-            request.input("Email", sql.VarChar(50), email.trim());
+            request.input("Email", sql.VarChar(255), email);
             request.input("salt", sql.VarChar(255), salt);
             request.input("hashedPassword", sql.VarChar(255), hashedPassword);
+            request.input(
+                "Name",
+                sql.VarChar(255),
+                `${firstName} ${lastName}`.trim()
+            );
 
             await request.query(insertAccountQuery);
             connection.close();
 
+            console.log("✅ Account successfully inserted in DB for:", email);
             return { message: "Account successfully created" };
         } catch (err) {
-            console.error("Error creating account:", err);
-            throw new Error("Error creating account: " + err.message);
+            console.error("❌ Database Error in createAccount:", err);
+            throw new Error("Error inserting account: " + err.message);
         }
     }
 }
