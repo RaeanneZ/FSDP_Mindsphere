@@ -132,7 +132,6 @@ const AccountEntry = () => {
         password: userProfile.sub, // LinkedIn sub as temp password
         firstName: userProfile.given_name,
         lastName: userProfile.family_name,
-        profilePicture: userProfile.picture,
       };
 
       console.log("📩 Sending to backend:", signupPayload);
@@ -141,8 +140,7 @@ const AccountEntry = () => {
         signupPayload.email,
         signupPayload.password,
         signupPayload.firstName,
-        signupPayload.lastName,
-        signupPayload.profilePicture
+        signupPayload.lastName
       );
 
       if (response.success) {

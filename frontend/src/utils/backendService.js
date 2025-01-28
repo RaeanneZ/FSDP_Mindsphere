@@ -439,20 +439,13 @@ const accountService = {
   //     }
   // },
 
-  createAccount: async (
-    email,
-    password,
-    firstName,
-    lastName,
-    profilePicture
-  ) => {
+  createAccount: async (email, password, firstName, lastName) => {
     try {
       const response = await axios.post(`${apiUrl}/account/createAccount`, {
         email,
         password,
         firstName,
         lastName,
-        profilePicture,
       });
       return {
         success: true,
