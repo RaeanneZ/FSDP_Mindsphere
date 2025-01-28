@@ -7,7 +7,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const AccountEntry = () => {
-  console.log(import.meta.env);
   const LINKEDIN_CLIENTID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
   const LINKEDIN_REDIRECT_URL = import.meta.env.VITE_LINKEDIN_CALLBACK_URL;
 
@@ -20,27 +19,25 @@ const AccountEntry = () => {
   const [newsletter, setNewsletter] = useState(true);
   const { login } = useAuth();
 
+  // Clear LinkedIn processed state on page load
   useEffect(() => {
-    // Initialize isSignup from session storage
+    sessionStorage.removeItem("linkedinProcessed");
+  }, []);
+
+  // Initialize `isSignup` from query params or sessionStorage
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const initialRouteisSignup = params.get("signup") === "true";
-
-    if (initialRouteisSignup) {
-      sessionStorage.setItem("signup", "true");
-      console.log("Signup is set to true");
-    }
-    const signupStatus = sessionStorage.getItem("signup") === "true";
-    setIsSignup(signupStatus);
+    sessionStorage.setItem("signup", initialRouteisSignup ? "true" : "false");
+    setIsSignup(initialRouteisSignup);
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     const credentials = { email, password };
 
     try {
       const response = await accountService.loginAccount(credentials);
-      console.log(response);
       if (response?.success) {
         login();
         navigate("/");
@@ -56,7 +53,6 @@ const AccountEntry = () => {
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();
-    console.log("Create Account button clicked");
 
     if (newsletter) {
       await newsletterService.addEmailNewsletter(email);
@@ -64,9 +60,7 @@ const AccountEntry = () => {
 
     try {
       const response = await accountService.createAccount(email, password);
-
       if (response.success) {
-        console.log("something happened here");
         sessionStorage.setItem("signup", "false");
         navigate("/accountSetup");
       } else {
@@ -86,6 +80,7 @@ const AccountEntry = () => {
       client_id: LINKEDIN_CLIENTID,
       redirect_uri: LINKEDIN_REDIRECT_URL,
       scope: "openid profile email",
+      state: isSignup ? "signup" : "login", // Pass the current state
     });
 
     window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`;
@@ -94,23 +89,20 @@ const AccountEntry = () => {
   const handleLoginWithLinkedIn = async (code) => {
     try {
       const accessToken = await linkedinService.getAccessToken(code);
-      console.log("Access Token Retrieved for Login:", accessToken);
-
       const userProfile = await linkedinService.getUserProfile(accessToken);
-      console.log("User Profile Retrieved for Login:", userProfile);
 
       const credentials = {
         email: userProfile.email,
         password: userProfile.sub,
-      }; // You might need a specific method to handle LinkedIn login passwords
-      const response = await accountService.loginAccount(credentials);
+      };
 
+      const response = await accountService.loginAccount(credentials);
       if (response?.success) {
         login();
         navigate("/");
         sessionStorage.setItem("AccountEmail", userProfile.email);
       } else {
-        setError("You do not have a Linkedin Account tied with us.");
+        setError("You do not have a LinkedIn account tied with us.");
       }
     } catch (error) {
       console.error("Error in LinkedIn Login Callback:", error);
@@ -121,20 +113,14 @@ const AccountEntry = () => {
   const handleCreateAccountWithLinkedIn = async (code) => {
     try {
       const accessToken = await linkedinService.getAccessToken(code);
-      console.log("✅ Access Token Retrieved:", accessToken);
-
       const userProfile = await linkedinService.getUserProfile(accessToken);
-      console.log("✅ User Profile Retrieved:", userProfile);
 
-      // 🛠 Fix: Ensure correct payload structure
       const signupPayload = {
-        email: userProfile.email, // Fix: Directly assign email
-        password: userProfile.sub, // LinkedIn sub as temp password
+        email: userProfile.email,
+        password: userProfile.sub,
         firstName: userProfile.given_name,
         lastName: userProfile.family_name,
       };
-
-      console.log("📩 Sending to backend:", signupPayload);
 
       const response = await accountService.createAccount(
         signupPayload.email,
@@ -145,36 +131,33 @@ const AccountEntry = () => {
 
       if (response.success) {
         sessionStorage.setItem("signup", "false");
-        console.log("✅ Account created successfully:", response);
         sessionStorage.setItem("linkedinData", JSON.stringify(userProfile));
         navigate("/accountSetup");
       } else {
         setError(response.message);
       }
     } catch (error) {
-      console.error("❌ Error in LinkedIn Signup:", error);
+      console.error("Error in LinkedIn Signup:", error);
       setError("Failed to sign up with LinkedIn.");
     }
   };
 
+  // Handle LinkedIn callback with state
   useEffect(() => {
-    if (isSignup === undefined) return; // Wait until isSignup is initialized
-
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
+    const state = params.get("state");
 
-    if (code) {
-      if (!sessionStorage.getItem("linkedinProcessed")) {
-        sessionStorage.setItem("linkedinProcessed", "true");
+    if (code && !sessionStorage.getItem("linkedinProcessed")) {
+      sessionStorage.setItem("linkedinProcessed", "true");
 
-        if (isSignup) {
-          handleCreateAccountWithLinkedIn(code);
-        } else {
-          handleLoginWithLinkedIn(code);
-        }
+      if (state === "signup") {
+        handleCreateAccountWithLinkedIn(code);
+      } else if (state === "login") {
+        handleLoginWithLinkedIn(code);
       }
     }
-  }, [isSignup]);
+  }, []);
 
   return (
     <>
@@ -207,26 +190,18 @@ const AccountEntry = () => {
               required
             />
             {isSignup && (
-              <>
-                <div className="flex items-center justify-between mt-4">
-                  <label className="text-gray-700">
-                    Newsletter subscription
-                  </label>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={newsletter}
-                      onChange={() => setNewsletter(!newsletter)}
-                    />
-                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-yellow-300 dark:peer-focus:ring-yellow peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow"></div>
-                  </label>
-                </div>
-                <p className="text-sm mt-0 text-gray-500">
-                  Receive the latest promotions and design releases.{" "}
-                  <span className="text-red-500">No spam, promise.</span>
-                </p>
-              </>
+              <div className="flex items-center justify-between mt-4">
+                <label className="text-gray-700">Newsletter subscription</label>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={newsletter}
+                    onChange={() => setNewsletter(!newsletter)}
+                  />
+                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-yellow-300 dark:peer-focus:ring-yellow peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow"></div>
+                </label>
+              </div>
             )}
             <button
               type="submit"
