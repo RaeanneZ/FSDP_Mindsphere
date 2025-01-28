@@ -45,6 +45,9 @@ const Navbar = () => {
           <a href="https://drive.google.com" className="hover:text-gray-900">
             Drive
           </a>
+          <a href="/B2BManagement" className="hover:text-gray-900">
+            Managing Business
+          </a>
         </>
       );
     } else {
