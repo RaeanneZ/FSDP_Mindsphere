@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import backendService from "../utils/backendService";
 import { introBg } from "../utils";
 
 const AdminB2BManagement = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const { dashboardService } = backendService;
 
   const handleDrag = (event) => {
     event.preventDefault();

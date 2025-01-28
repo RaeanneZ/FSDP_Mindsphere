@@ -1,5 +1,6 @@
 import React from "react";
 import Timeline from "../components/Timeline";
+import backendService from "../utils/backendService";
 
 const timelineData = [
   {
@@ -29,6 +30,14 @@ const timelineData = [
     tag: "Incomplete",
   },
 ];
+
+const { dashboardService } = backendService;
+
+const getBizData = async (e) => {
+  const result = dashboardService.retrieveEnquiryTimeline(3);
+  console.log(result);
+};
+getBizData();
 
 const B2BEnquiryTimelineTracker = () =>
   timelineData.length > 0 && (
