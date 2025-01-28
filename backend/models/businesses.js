@@ -7,6 +7,7 @@ const path = require("path");
 
 class Business {
     constructor(
+        BusinessID,
         Name,
         ContactNo,
         Email,
@@ -15,8 +16,10 @@ class Business {
         orgName,
         helpText,
         callbackRequest,
-        enquiryStatus
+        enquiryStatus,
+        createdAt
     ) {
+        this.BusinessID = BusinessID;
         this.Name = Name;
         this.ContactNo = ContactNo;
         this.Email = Email;
@@ -26,6 +29,7 @@ class Business {
         this.helpText = helpText;
         this.callbackRequest = callbackRequest;
         this.enquiryStatus = enquiryStatus;
+        this.createdAt = createdAt
     }
 
     static async addBusiness({
@@ -140,7 +144,8 @@ class Business {
                         row.orgName,
                         row.helpText,
                         row.callbackRequest,
-                        row.enquiryStatus
+                        row.enquiryStatus,
+                        row.createdAt
                     )
             );
         } catch (err) {
