@@ -133,9 +133,7 @@ CREATE TABLE Account (
 	relationshipToChild varchar(255) null,
 	RoleID int null default 2,
 	Salt varchar(255) null, 
-	HashedPassword varchar(255) null, 
-	LinkedInSub varchar(255) NOT NULL, -- Unique LinkedIn identifier
-	LinkedInAccessToken varchar(255) NOT NULL, -- Access token storage
+	HashedPassword varchar(255) null, -- Linkedin Account Password will use the Unique Identifier 'Sub'
 	constraint PK_Account primary key (AccID),
 	constraint FK_Account_RoleID foreign key (RoleID) references Roles(RoleID),
 	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))

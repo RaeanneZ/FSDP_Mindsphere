@@ -4,296 +4,283 @@ import axios from "axios";
 
 const isLocalhost = window.location.hostname === "localhost";
 const apiUrl = isLocalhost
-    ? "http://localhost:5000/api"
-    : "http://100.97.230.39:5000/api"; // neil tailscale network // laptop: http://100.83.156.26:5000/api
+  ? "http://localhost:5000/api"
+  : "http://100.97.230.39:5000/api"; // neil tailscale network // laptop: http://100.83.156.26:5000/api
 
 // Programmes methods
 
 // programmeService.js
 const programmeService = {
-    getAllProgrammes: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/programmes`);
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error getting all programmes: ",
-                err
-            );
-            throw err;
-        }
-    },
+  getAllProgrammes: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/programmes`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting all programmes: ", err);
+      throw err;
+    }
+  },
 
-    getAllProgrammeTiers: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/programmetiers`);
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error retreiving all programme tiers",
-                err
-            );
-            throw err;
-        }
-    },
+  getAllProgrammeTiers: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/programmetiers`);
+      return response.data;
+    } catch (err) {
+      console.error(
+        "BackendService: Error retreiving all programme tiers",
+        err
+      );
+      throw err;
+    }
+  },
 
-    getRegisteredProgrammesByAccount: async (email) => {
-        try {
-            const response = await axios.get(
-                `${apiUrl}/programmes/registered/${email}`
-            );
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error getting registered programmes by account: ",
-                err
-            );
-            throw err;
-        }
-    },
+  getRegisteredProgrammesByAccount: async (email) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/programmes/registered/${email}`
+      );
+      return response.data;
+    } catch (err) {
+      console.error(
+        "BackendService: Error getting registered programmes by account: ",
+        err
+      );
+      throw err;
+    }
+  },
 };
 
 // Payment methods
 const paymentService = {
-    makePayment: async (Email, Name) => {
-        try {
-            const paymentData = { email: Email, name: Name };
-            const response = await axios.put(
-                `${apiUrl}/payments/makePayment`,
-                paymentData
-            );
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error making payment: ", err);
-            throw err;
-        }
-    },
-    clientSecret: async () => {
-        try {
-            const response = await axios.post(`${apiUrl}/stripe/payment`, {
-                amount: 5000,
-                currency: "sgd",
-            });
-            console.log(response.data);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error getting client secret: ", err);
-            throw err;
-        }
-    },
+  makePayment: async (Email, Name) => {
+    try {
+      const paymentData = { email: Email, name: Name };
+      const response = await axios.put(
+        `${apiUrl}/payments/makePayment`,
+        paymentData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error making payment: ", err);
+      throw err;
+    }
+  },
+  clientSecret: async () => {
+    try {
+      const response = await axios.post(`${apiUrl}/stripe/payment`, {
+        amount: 5000,
+        currency: "sgd",
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting client secret: ", err);
+      throw err;
+    }
+  },
 };
 
 const emailAdminService = {
-    // Create or update an email template
-    saveTemplate: async (name, subject, body) => {
-        try {
-            const response = await axios.post(`${apiUrl}/emails/templates`, {
-                name,
-                subject,
-                body,
-            });
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error saving template: ", err);
-            throw err;
+  // Create or update an email template
+  saveTemplate: async (name, subject, body) => {
+    try {
+      const response = await axios.post(`${apiUrl}/emails/templates`, {
+        name,
+        subject,
+        body,
+      });
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error saving template: ", err);
+      throw err;
+    }
+  },
+
+  // Get all saved email templates
+  getAllTemplates: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/emails/templates`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error fetching templates: ", err);
+      throw err;
+    }
+  },
+
+  // Delete an email template by ID
+  deleteTemplate: async (templateID) => {
+    try {
+      const response = await axios.delete(
+        `${apiUrl}/emails/templates/${templateID}`
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error deleting template: ", err);
+      throw err;
+    }
+  },
+
+  // Save a draft email
+  saveDraft: async (subject, body, createdBy) => {
+    try {
+      const response = await axios.post(`${apiUrl}/emails/save-draft`, {
+        subject,
+        body,
+        createdBy,
+      });
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error saving draft: ", err);
+      throw err;
+    }
+  },
+
+  // Send a custom email to multiple recipients
+  sendCustomEmail: async (recipients, subject, body, attachments) => {
+    try {
+      const formData = new FormData();
+      formData.append("subject", subject);
+      formData.append("body", body);
+      formData.append("recipients", recipients.join(","));
+
+      if (attachments) {
+        attachments.forEach((file) => {
+          formData.append("attachments", file);
+        });
+      }
+
+      const response = await axios.post(`${apiUrl}/emails/send`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error sending custom email: ", err);
+      throw err;
+    }
+  },
+
+  // Schedule an email for a future date and time
+  scheduleEmail: async (emailData, scheduleTime) => {
+    try {
+      const response = await axios.post(`${apiUrl}/emails/schedule`, {
+        ...emailData,
+        scheduleTime,
+      });
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error scheduling email: ", err);
+      throw err;
+    }
+  },
+
+  // Get logs of sent emails
+  getEmailLogs: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/emails/logs`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retrieving email logs: ", err);
+      throw err;
+    }
+  },
+
+  sendEmailWithAttachment: async (recipients, subject, body, attachments) => {
+    try {
+      const formData = new FormData();
+
+      // Recipients should be an array of email addresses
+      if (Array.isArray(recipients)) {
+        formData.append("to", recipients.join(",")); // Convert array to a comma-separated string
+      } else {
+        formData.append("to", recipients); // Single recipient as a string
+      }
+
+      formData.append("subject", subject);
+      formData.append("body", body);
+
+      if (attachments && attachments.length) {
+        attachments.forEach((file) => {
+          formData.append("attachments", file);
+        });
+      }
+
+      const response = await axios.post(
+        `${apiUrl}/emails/send-with-attachment`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
         }
-    },
+      );
 
-    // Get all saved email templates
-    getAllTemplates: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/emails/templates`);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error fetching templates: ", err);
-            throw err;
-        }
-    },
-
-    // Delete an email template by ID
-    deleteTemplate: async (templateID) => {
-        try {
-            const response = await axios.delete(
-                `${apiUrl}/emails/templates/${templateID}`
-            );
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error deleting template: ", err);
-            throw err;
-        }
-    },
-
-    // Save a draft email
-    saveDraft: async (subject, body, createdBy) => {
-        try {
-            const response = await axios.post(`${apiUrl}/emails/save-draft`, {
-                subject,
-                body,
-                createdBy,
-            });
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error saving draft: ", err);
-            throw err;
-        }
-    },
-
-    // Send a custom email to multiple recipients
-    sendCustomEmail: async (recipients, subject, body, attachments) => {
-        try {
-            const formData = new FormData();
-            formData.append("subject", subject);
-            formData.append("body", body);
-            formData.append("recipients", recipients.join(","));
-
-            if (attachments) {
-                attachments.forEach((file) => {
-                    formData.append("attachments", file);
-                });
-            }
-
-            const response = await axios.post(
-                `${apiUrl}/emails/send`,
-                formData,
-                {
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
-            );
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error sending custom email: ", err);
-            throw err;
-        }
-    },
-
-    // Schedule an email for a future date and time
-    scheduleEmail: async (emailData, scheduleTime) => {
-        try {
-            const response = await axios.post(`${apiUrl}/emails/schedule`, {
-                ...emailData,
-                scheduleTime,
-            });
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error scheduling email: ", err);
-            throw err;
-        }
-    },
-
-    // Get logs of sent emails
-    getEmailLogs: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/emails/logs`);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error retrieving email logs: ", err);
-            throw err;
-        }
-    },
-
-    sendEmailWithAttachment: async (recipients, subject, body, attachments) => {
-        try {
-            const formData = new FormData();
-
-            // Recipients should be an array of email addresses
-            if (Array.isArray(recipients)) {
-                formData.append("to", recipients.join(",")); // Convert array to a comma-separated string
-            } else {
-                formData.append("to", recipients); // Single recipient as a string
-            }
-
-            formData.append("subject", subject);
-            formData.append("body", body);
-
-            if (attachments && attachments.length) {
-                attachments.forEach((file) => {
-                    formData.append("attachments", file);
-                });
-            }
-
-            const response = await axios.post(
-                `${apiUrl}/emails/send-with-attachment`,
-                formData,
-                {
-                    headers: { "Content-Type": "multipart/form-data" },
-                }
-            );
-
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error sending email with attachment: ",
-                err
-            );
-            throw err;
-        }
-    },
+      return response.data;
+    } catch (err) {
+      console.error(
+        "BackendService: Error sending email with attachment: ",
+        err
+      );
+      throw err;
+    }
+  },
 };
 
 const progScheduleService = {
-    getAllProgSchedules: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/schedules`);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error getting all schedules: ", err);
-            throw error;
-        }
-    },
+  getAllProgSchedules: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/schedules`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting all schedules: ", err);
+      throw error;
+    }
+  },
 
-    addProgrammeSchedule: async (newSchedule) => {
-        try {
-            const response = await axios.post(
-                `${apiUrl}/schedules`,
-                newSchedule
-            );
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error adding new schedule: ", err);
-            throw err;
-        }
-    },
+  addProgrammeSchedule: async (newSchedule) => {
+    try {
+      const response = await axios.post(`${apiUrl}/schedules`, newSchedule);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new schedule: ", err);
+      throw err;
+    }
+  },
 
-    getRemainingSlots: async (SchedID) => {
-        try {
-            const response = await axios.get(`${apiUrl}/schedules/${SchedID}`);
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error getting remaining slots: ",
-                err
-            );
-            throw err;
-        }
-    },
+  getRemainingSlots: async (SchedID) => {
+    try {
+      const response = await axios.get(`${apiUrl}/schedules/${SchedID}`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting remaining slots: ", err);
+      throw err;
+    }
+  },
 };
 
 const bookingService = {
-    getAllBookings: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/bookings`);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error getting all bookings: ", err);
-            throw error;
-        }
-    },
+  getAllBookings: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/bookings`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting all bookings: ", err);
+      throw error;
+    }
+  },
 
-    addBooking: async (
-        CustName,
-        CustContact,
-        CustEmail,
-        tierID,
-        progID,
-        ChildrenDetails,
-        Diet,
-        SchedID,
-        NumSeats,
-        SpecialReq,
-        TotalCost
-    ) => {
-        try {
-            /* EXAMPLE BODY 
+  addBooking: async (
+    CustName,
+    CustContact,
+    CustEmail,
+    tierID,
+    progID,
+    ChildrenDetails,
+    Diet,
+    SchedID,
+    NumSeats,
+    SpecialReq,
+    TotalCost
+  ) => {
+    try {
+      /* EXAMPLE BODY 
       {
         "custName": "John Doe",
         "custEmail": "johndoe@example.com",
@@ -323,43 +310,43 @@ const bookingService = {
         "TransacID": null
     } */
 
-            const newBooking = {
-                custName: CustName,
-                custContact: CustContact,
-                custEmail: CustEmail,
-                TierID: tierID,
-                ProgID: progID,
-                childrenDetails: ChildrenDetails,
-                diet: Diet,
-                schedID: SchedID,
-                numSeats: NumSeats,
-                specialReq: SpecialReq,
-                quantity: NumSeats,
-                totalCost: TotalCost,
-            };
+      const newBooking = {
+        custName: CustName,
+        custContact: CustContact,
+        custEmail: CustEmail,
+        TierID: tierID,
+        ProgID: progID,
+        childrenDetails: ChildrenDetails,
+        diet: Diet,
+        schedID: SchedID,
+        numSeats: NumSeats,
+        specialReq: SpecialReq,
+        quantity: NumSeats,
+        totalCost: TotalCost,
+      };
 
-            const response = await axios.post(`${apiUrl}/bookings`, newBooking);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error adding new booking: ", err);
-            throw err;
-        }
-    },
+      const response = await axios.post(`${apiUrl}/bookings`, newBooking);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding new booking: ", err);
+      throw err;
+    }
+  },
 
-    deleteBooking: async (Email, BookingDate, TierID) => {
-        try {
-            const response = await axios.delete(`${apiUrl}/bookings`, {
-                data: { Email, BookingDate, TierID },
-            });
-            return response.data;
-        } catch (err) {
-            return {
-                success: false,
-                message: "delete booking failed",
-                error: err.response?.data,
-            };
-        }
-    },
+  deleteBooking: async (Email, BookingDate, TierID) => {
+    try {
+      const response = await axios.delete(`${apiUrl}/bookings`, {
+        data: { Email, BookingDate, TierID },
+      });
+      return response.data;
+    } catch (err) {
+      return {
+        success: false,
+        message: "delete booking failed",
+        error: err.response?.data,
+      };
+    }
+  },
 };
 
 //Account Methods
@@ -432,7 +419,6 @@ const accountService = {
     }
   },
 
-  
   // signUp: async (email, password, verifCode) => {
   //     try {
   //         const response = await axios.post(`${apiUrl}/signUp`, {
@@ -453,26 +439,35 @@ const accountService = {
   //     }
   // },
 
-  createAccount: async (email, password) => {
+  createAccount: async (
+    email,
+    password,
+    firstName,
+    lastName,
+    profilePicture
+  ) => {
     try {
       const response = await axios.post(`${apiUrl}/account/createAccount`, {
         email,
         password,
+        firstName,
+        lastName,
+        profilePicture,
       });
       return {
         success: true,
         message:
           "Account created successfully. Please check your email for verification.",
-      }
+      };
     } catch (err) {
       return {
-      success: false,
-      message: "Sign-up failed",
+        success: false,
+        message: "Sign-up failed",
         error: err.response.data,
       };
     }
   },
-    
+
   signUp: async (email, password, verifCode) => {
     try {
       const response = await axios.post(`${apiUrl}/signUp`, {
@@ -511,66 +506,59 @@ const accountService = {
       };
     }
   },
-        
-
 
   // Backend: signup(email, password, verifCode) - Verify email and verification code. If successful, delete record from AccountVerification, then create an account record with just email and password
   // Backend: registerChild(GuardianEmail, Name, Gender, Dob, Needs, School, Interests)
   // Backend: getAccountByEmail(email) - Retrieve all info of member when logged in
 };
 
-
 //Children methods
 const childrenService = {
-    addChild: async (childData) => {
-        try {
-            const response = await axios.post(`${apiUrl}/addChild`, childData);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error adding child: ", err);
-            throw err;
-        }
-    },
+  addChild: async (childData) => {
+    try {
+      const response = await axios.post(`${apiUrl}/addChild`, childData);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error adding child: ", err);
+      throw err;
+    }
+  },
 
-    updateChild: async (childData) => {
-        try {
-            if (!childData.GuardianEmail || !childData.Name) {
-                throw new Error("GuardianEmail and Name are required");
-            }
+  updateChild: async (childData) => {
+    try {
+      if (!childData.GuardianEmail || !childData.Name) {
+        throw new Error("GuardianEmail and Name are required");
+      }
 
-            // Update the endpoint to match the backend route
-            const response = await axios.put(
-                `${apiUrl}/children/updateChild`,
-                childData
-            );
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error updating child: ", err);
-            return {
-                success: false,
-                message: "Update failed",
-                error: err.response?.data || err.message,
-            };
-        }
-    },
+      // Update the endpoint to match the backend route
+      const response = await axios.put(
+        `${apiUrl}/children/updateChild`,
+        childData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error updating child: ", err);
+      return {
+        success: false,
+        message: "Update failed",
+        error: err.response?.data || err.message,
+      };
+    }
+  },
 
-    getChildByEmail: async (email) => {
-        try {
-            email;
-            const response = await axios.get(
-                `${apiUrl}/getChildByEmail/${encodeURIComponent(email)}`
-            );
-            return response.data;
-        } catch (err) {
-            console.error(
-                "BackendService: Error getting child by email: ",
-                err
-            );
-            throw err;
-        }
-    },
+  getChildByEmail: async (email) => {
+    try {
+      email;
+      const response = await axios.get(
+        `${apiUrl}/getChildByEmail/${encodeURIComponent(email)}`
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error getting child by email: ", err);
+      throw err;
+    }
+  },
 };
-
 
 const meetingService = {
   createMeeting: async (meetingData) => {
@@ -614,7 +602,6 @@ const meetingService = {
     //     UserEmail: "raeannezou@gmail.com"
   },
 };
-
 
 const newsletterService = {
   getAllEmails: async () => {
@@ -715,115 +702,127 @@ const programmeFeedBackService = {
 };
 
 const dashboardService = {
-    getDashboardMetrics: async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/adminDashboard`);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error retrieving dashboard metrics: "),
-            err
-        };
-        throw err;
-    },
+  getDashboardMetrics: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/adminDashboard`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retrieving dashboard metrics: "),
+        err;
+    }
+    throw err;
+  },
 
-    updateBusinessEnquiry: async (status, BusinessID) => {
-        try {
-            const updateData = {
-                status: status,
-                BusinessID: BusinessID
-            };
+  updateBusinessEnquiry: async (status, BusinessID) => {
+    try {
+      const updateData = {
+        status: status,
+        BusinessID: BusinessID,
+      };
 
-            const response = await axios.put(`${apiUrl}/business/updateStatus`, updateData);
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error updating business enquiry: ", err);
-            return {
-                success: false,
-                message: "Updating business enquiry failed",
-                error: err.response ? err.response.data : err.message,
-            }
-        }
-    },
+      const response = await axios.put(
+        `${apiUrl}/business/updateStatus`,
+        updateData
+      );
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error updating business enquiry: ", err);
+      return {
+        success: false,
+        message: "Updating business enquiry failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
 
-    sendBroadcastMessage: async (message) => {
-        try {
-            const sendData = {
-                message: message
-            };
-    
-            const response = await axios.post(`${apiUrl}/whatsapp/send-broadcast`, sendData);
-            
-            return response.data;
-        } catch (err) {
-            console.error("BackendService: Error sending broadcast message: ", err);
-            return {
-                success: false,
-                message: "Sending broadcast message failed",
-                error: err.response ? err.response.data : err.message,
-            };
-        }
-    },
-    
-    addEnquiryTimeline: async (formData, BusinessID, Text, Tag) => {
+  sendBroadcastMessage: async (message) => {
+    try {
+      const sendData = {
+        message: message,
+      };
+
+      const response = await axios.post(
+        `${apiUrl}/whatsapp/send-broadcast`,
+        sendData
+      );
+
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error sending broadcast message: ", err);
+      return {
+        success: false,
+        message: "Sending broadcast message failed",
+        error: err.response ? err.response.data : err.message,
+      };
+    }
+  },
+
+  addEnquiryTimeline: async (formData, BusinessID, Text, Tag) => {
     try {
       formData.append("BusinessID", BusinessID);
       formData.append("Text", Text);
-      formData.append("Tag", Tag)
+      formData.append("Tag", Tag);
 
-        const response = await axios.post(`${apiUrl}/adminDashboard/uploadEnquiryTimeline`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            }
-        });
-        return response.data;
+      const response = await axios.post(
+        `${apiUrl}/adminDashboard/uploadEnquiryTimeline`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
     } catch (error) {
-        console.error("Error uploading file:", error);
-        return {
-            success: false,
-            message: "File upload failed",
-            error: error.response ? error.response.data : error.message,
-        };
-    }
-    },
-
-    retrieveEnquiryTimeline: async (BusinessID) => {
-      try {
-          const response = await axios.get(`${apiUrl}/adminDashboard/timelines/${BusinessID}`);
-          
-          return response.data;
-      } catch (error) {
-          console.error("Error retrieving timelines:", error);
-          return {
-              success: false,
-              message: "Failed to retrieve timelines",
-              error: error.response ? error.response.data : error.message,
-          };
-      }
-    },
-
-    getBusinessEnquiries: async () => {
-      try {
-          const response = await axios.get(`${apiUrl}/business`);
-          return response.data;
-      } catch (err) {
-          console.error("BackendService: Error retrieving business enquiries: "),
-          err
+      console.error("Error uploading file:", error);
+      return {
+        success: false,
+        message: "File upload failed",
+        error: error.response ? error.response.data : error.message,
       };
-      throw err;
+    }
   },
-  }
+
+  retrieveEnquiryTimeline: async (BusinessID) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/adminDashboard/timelines/${BusinessID}`
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error retrieving timelines:", error);
+      return {
+        success: false,
+        message: "Failed to retrieve timelines",
+        error: error.response ? error.response.data : error.message,
+      };
+    }
+  },
+
+  getBusinessEnquiries: async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/business`);
+      return response.data;
+    } catch (err) {
+      console.error("BackendService: Error retrieving business enquiries: "),
+        err;
+    }
+    throw err;
+  },
+};
 
 export default {
-    programmeService,
-    progScheduleService,
-    accountService,
-    childrenService,
-    bookingService,
-    paymentService,
-    newsletterService,
-    formService,
-    programmeFeedBackService,
-    dashboardService,
-    emailAdminService,
-    meetingService
+  programmeService,
+  progScheduleService,
+  accountService,
+  childrenService,
+  bookingService,
+  paymentService,
+  newsletterService,
+  formService,
+  programmeFeedBackService,
+  dashboardService,
+  emailAdminService,
+  meetingService,
 };
