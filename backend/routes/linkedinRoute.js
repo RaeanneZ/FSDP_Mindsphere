@@ -56,10 +56,10 @@ router.post("/api/linkedin/token", async (req, res) => {
 
     const params = new URLSearchParams({
       grant_type: "authorization_code",
-      code,
-      redirect_uri: LINKEDIN_CALLBACK_URL,
-      client_id: LINKEDIN_CLIENT_ID,
-      client_secret: LINKEDIN_CLIENT_SECRET,
+      code: code.trim(), // Trim spaces just in case
+      redirect_uri: LINKEDIN_CALLBACK_URL.trim(), // Ensure it's exactly as registered
+      client_id: LINKEDIN_CLIENT_ID.trim(),
+      client_secret: LINKEDIN_CLIENT_SECRET.trim(),
     });
 
     console.log("Token Exchange Payload:", params.toString());

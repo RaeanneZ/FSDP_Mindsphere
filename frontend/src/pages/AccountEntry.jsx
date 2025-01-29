@@ -74,15 +74,19 @@ const AccountEntry = () => {
     }
   };
 
-  const handleLinkedInLogin = () => {
+  const handleLinkedInLogin = (forceLogin = false) => {
     const params = new URLSearchParams({
       response_type: "code",
       client_id: LINKEDIN_CLIENTID,
       redirect_uri: LINKEDIN_REDIRECT_URL,
       scope: "openid profile w_member_social email",
       state: isSignup ? "signup" : "login", // Pass the current state
-      prompt: "login", // Forces LinkedIn to re-authenticate the user
     });
+
+    // If login failed, force re-authentication
+    if (forceLogin) {
+      params.append("prompt", "login");
+    }
 
     window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`;
   };
@@ -91,27 +95,27 @@ const AccountEntry = () => {
     try {
       const accessToken = await linkedinService.getAccessToken(code);
       const userProfile = await linkedinService.getUserProfile(accessToken);
-
       const credentials = {
         email: userProfile.email,
         password: userProfile.sub,
       };
-
       const response = await accountService.loginAccount(credentials);
+
       if (response?.success) {
         login();
         navigate("/");
         sessionStorage.setItem("AccountEmail", userProfile.email);
       } else {
-        setError("You do not have a LinkedIn account tied with us.");
+        console.warn("No LinkedIn account tied. Restarting authentication...");
+        handleLinkedInLogin(); // re-authentication
       }
     } catch (error) {
       console.error("Error in LinkedIn Login Callback:", error);
-      setError("Failed to login with LinkedIn.");
+      handleLinkedInLogin(); // re-authentication on failure
     }
   };
 
-  const handleCreateAccountWithLinkedIn = async (code) => {
+  const handleCreateAccountWithLinkedIn = async (code, retry = true) => {
     try {
       const accessToken = await linkedinService.getAccessToken(code);
       const userProfile = await linkedinService.getUserProfile(accessToken);
@@ -139,6 +143,13 @@ const AccountEntry = () => {
       }
     } catch (error) {
       console.error("Error in LinkedIn Signup:", error);
+
+      if (retry && error.response?.data?.code === "REVOKED_ACCESS_TOKEN") {
+        console.warn("🔄 Retrying LinkedIn signup due to token revocation...");
+        handleLinkedInLogin(true); // Forces LinkedIn to re-authenticate
+        return;
+      }
+
       setError("Failed to sign up with LinkedIn.");
     }
   };
