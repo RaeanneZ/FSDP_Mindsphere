@@ -79,7 +79,7 @@ const AccountEntry = () => {
       response_type: "code",
       client_id: LINKEDIN_CLIENTID,
       redirect_uri: LINKEDIN_REDIRECT_URL,
-      scope: "openid profile email",
+      scope: "openid profile w_member_social email",
       state: isSignup ? "signup" : "login", // Pass the current state
     });
 
