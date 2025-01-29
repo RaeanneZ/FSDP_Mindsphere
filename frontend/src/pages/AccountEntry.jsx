@@ -81,6 +81,7 @@ const AccountEntry = () => {
       redirect_uri: LINKEDIN_REDIRECT_URL,
       scope: "openid profile w_member_social email",
       state: isSignup ? "signup" : "login", // Pass the current state
+      prompt: "login", // Forces LinkedIn to re-authenticate the user
     });
 
     window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`;
