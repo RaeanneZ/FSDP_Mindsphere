@@ -3,6 +3,7 @@ import axios from "axios";
 const linkedinService = {
   getAccessToken: async (code, retry = true) => {
     try {
+      console.log("Sending token to backend:", code);
       const response = await axios.post("/api/linkedin/token", { code });
 
       console.log("✅ Access Token Retrieved:", response.data); // Debugging

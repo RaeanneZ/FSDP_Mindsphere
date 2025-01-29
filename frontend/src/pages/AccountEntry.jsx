@@ -19,18 +19,47 @@ const AccountEntry = () => {
   const [newsletter, setNewsletter] = useState(true);
   const { login } = useAuth();
 
-  // Clear LinkedIn processed state on page load
+  // Clear LinkedIn state on page load
   useEffect(() => {
     sessionStorage.removeItem("linkedinProcessed");
+    sessionStorage.removeItem("linkedinState");
   }, []);
 
   // Initialize `isSignup` from query params or sessionStorage
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const initialRouteisSignup = params.get("signup") === "true";
-    sessionStorage.setItem("signup", initialRouteisSignup ? "true" : "false");
-    setIsSignup(initialRouteisSignup);
+    const initialRouteIsSignup = params.get("signup") === "true";
+    const code = params.get("code");
+
+    // This now only controls the UI state
+    setIsSignup(initialRouteIsSignup);
+
+    if (code && !sessionStorage.getItem("linkedinProcessed")) {
+      sessionStorage.setItem("linkedinProcessed", "true");
+
+      // Retrieve state from sessionStorage instead of relying on URL
+      const state = sessionStorage.getItem("linkedinState") || "login";
+      sessionStorage.setItem("signup", state === "signup" ? "true" : "false"); // Sync signup state
+
+      if (state === "signup") {
+        handleCreateAccountWithLinkedIn(code);
+      } else {
+        handleLoginWithLinkedIn(code);
+      }
+    }
   }, []);
+
+  // Updating click handlers
+  const switchToLogin = () => {
+    sessionStorage.setItem("signup", "false");
+    setIsSignup(false); // Ensure UI updates
+  };
+
+  const switchToSignup = (e) => {
+    e.preventDefault();
+    sessionStorage.setItem("signup", "true");
+    navigate("/verification"); // Redirects to MemberVerificationPage
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -75,12 +104,16 @@ const AccountEntry = () => {
   };
 
   const handleLinkedInLogin = (forceLogin = false) => {
+    const stateValue =
+      sessionStorage.getItem("signup") === "true" ? "signup" : "login"; // Determine if it's signup or login
+    sessionStorage.setItem("linkedinState", stateValue); // Store it before redirection
+
     const params = new URLSearchParams({
       response_type: "code",
       client_id: LINKEDIN_CLIENTID,
       redirect_uri: LINKEDIN_REDIRECT_URL,
       scope: "openid profile w_member_social email",
-      state: isSignup ? "signup" : "login", // Pass the current state
+      state: stateValue, // Pass stored state
     });
 
     // If login failed, force re-authentication
@@ -240,7 +273,7 @@ const AccountEntry = () => {
                 <a
                   href="/accountEntry"
                   className="text-blue-500"
-                  onClick={() => sessionStorage.setItem("signup", "false")}
+                  onClick={switchToLogin}
                 >
                   Login Here
                 </a>
@@ -251,7 +284,7 @@ const AccountEntry = () => {
                 <a
                   href="/verification"
                   className="text-blue-500"
-                  onClick={() => sessionStorage.setItem("signup", "true")}
+                  onClick={switchToSignup}
                 >
                   Sign Up Here
                 </a>
