@@ -102,26 +102,6 @@ const AdminB2BManagement = () => {
             </select>
           </div>
 
-          {/* Documents relating to the Business */}
-          <div className="pt-6">
-            <h2 className="text-lg font-semibold">Current Documents</h2>
-            <div className="flex space-x-4 mt-3">
-              {["Client Enquiry", "Proposal", "Payment Form"].map(
-                (doc, idx) => (
-                  <div
-                    key={idx}
-                    className="px-6 py-4 bg-gray-100 rounded-md shadow hover:shadow-lg transition"
-                  >
-                    <p className="font-medium">{doc}</p>
-                    <a href="#" className="text-blue-600 hover:underline">
-                      View Document Here
-                    </a>
-                  </div>
-                )
-              )}
-            </div>
-          </div>
-
           {/* Upload document for business */}
           <div className="py-6">
             <h2 className="text-lg font-semibold">Upload Document</h2>
@@ -142,7 +122,6 @@ const AdminB2BManagement = () => {
               value={text}
               onChange={(e) => setText(e.target.value)}
             >
-              <option>Document Name</option>
               <option>Proposal Draft</option>
               <option>Finalized Proposal</option>
               <option>Payment Form</option>
