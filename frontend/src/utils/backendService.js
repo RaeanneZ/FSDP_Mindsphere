@@ -752,29 +752,30 @@ const dashboardService = {
 
   addEnquiryTimeline: async (formData, BusinessID, Text, Tag) => {
     try {
-      formData.append("BusinessID", BusinessID);
-      formData.append("Text", Text);
-      formData.append("Tag", Tag);
+        formData.append("BusinessID", BusinessID);
+        formData.append("Text", Text);
+        formData.append("Tag", Tag);
 
-      const response = await axios.post(
-        `${apiUrl}/adminDashboard/uploadEnquiryTimeline`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      return response.data;
+        const response = await axios.post(
+            `${apiUrl}/adminDashboard/uploadEnquiryTimeline`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+        return response.data;
     } catch (error) {
-      console.error("Error uploading file:", error);
-      return {
-        success: false,
-        message: "File upload failed",
-        error: error.response ? error.response.data : error.message,
-      };
+        console.error("Error uploading file:", error);
+        return {
+            success: false,
+            message: "File upload failed",
+            error: error.response ? error.response.data : error.message,
+        };
     }
-  },
+},
+
 
   retrieveEnquiryTimeline: async (BusinessID) => {
     try {
