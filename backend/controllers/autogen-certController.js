@@ -30,7 +30,7 @@ const generateCert = async (req, res) => {
       .replace(/\//g, "-")
       .replace(", ", ")-(");
 
-    const fileName = `Certificate_${name}_(${dateStr}).pdf`;
+    const fileName = `Certificate_${name}_${workshop}_(${dateStr}).pdf`;
 
     const FOLDER_ID = process.env.GOOGLE_CERTIFICATES_FOLDER_ID;
     const uploadedFileId = await uploadFileToDrive(
@@ -39,10 +39,12 @@ const generateCert = async (req, res) => {
       FOLDER_ID
     );
 
+    const shareUrl = `https://drive.google.com/file/d/${uploadedFileId}/view`;
+
     res.status(201).json({
       message: "Certificate generated successfully",
       name: name,
-      certPath: certPath,
+      gDriveURL: shareUrl,
       fileId: uploadedFileId,
     });
   } catch (error) {
