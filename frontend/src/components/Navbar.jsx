@@ -71,7 +71,7 @@ const Navbar = () => {
           <a href="/businessEnquiry" className="hover:text-gray-900">
             Business Enquiry
           </a>
-          <a href="#" className="hover:text-gray-900">
+          <a href="/media" className="hover:text-gray-900">
             Media
           </a>
         </>
