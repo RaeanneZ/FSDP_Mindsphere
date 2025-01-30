@@ -38,14 +38,17 @@ const AccountOverview = ({ accountdata, bookingdata, childrenData }) => {
   const [membershipDuration, setMembershipDuration] = useState(0); // Remaining months
   const [totalDuration] = useState(12); // Total duration is 12 months
   const [certificates, setCertificates] = useState([]);
-  const [children, setChildren] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [certificateLink, setCertificateLink] = useState("");
   const { childrenService } = backendService;
 
   useEffect(() => {
     setUserName(accountdata.Name);
     setRegisteredPrograms(bookingdata);
     setCertificates([{ title: "PSLE Chinese Oral Bootcamp" }]);
-    setChildren(childrenData);
+
+    console.log("Children is ", childrenData);
+    console.log("Certificates are: ", certificates);
 
     // Calculate remaining membership duration
     const calculateMembershipDuration = () => {
@@ -65,28 +68,26 @@ const AccountOverview = ({ accountdata, bookingdata, childrenData }) => {
   }, [accountdata, bookingdata]);
 
   const handleDownloadCertificate = async (childName, courseTitle) => {
-    console.log("Child Name: ", childName);
-    console.log("Course Name: ", courseTitle);
-
     try {
       const response = await childrenService.generateCertChildEvent(
         childName,
         courseTitle
       );
 
-      if (response && response.success) {
-        // Create a temporary anchor tag to trigger download
-        const link = document.createElement("a");
-        link.href = response.certificateUrl; // Assuming backend returns a certificate URL
-        link.setAttribute(
-          "download",
-          `${childName}_${courseTitle}_Certificate.pdf`
-        );
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      // Response: fileId, gDriveURL, message, name
+      console.log("Response: ", response);
+      console.log("Response link: ", response.gDriveURL);
+
+      if (response) {
+        console.log("It came here!");
+        // Set the certificate link and show the modal
+        setCertificateLink(response.gDriveURL);
+        setShowModal(true);
       } else {
-        alert("Failed to generate certificate. Please try again later.");
+        alert(
+          response?.message ||
+            "Failed to generate certificate. Please try again later."
+        );
       }
     } catch (error) {
       console.error("Error generating certificate:", error);
@@ -177,7 +178,7 @@ const AccountOverview = ({ accountdata, bookingdata, childrenData }) => {
             may take up to 2 business days to be displayed here
           </p>
           <ul className="space-y-2">
-            {children.map((child, index) => (
+            {childrenData.map((child, index) => (
               <li key={index} className="border-t border-gray-300 pt-2">
                 <div className="flex justify-between items-center">
                   <span>
@@ -198,6 +199,37 @@ const AccountOverview = ({ accountdata, bookingdata, childrenData }) => {
               </li>
             ))}
           </ul>
+
+          {/* Modal */}
+          {showModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+                <h2 className="text-lg font-bold mb-4">
+                  Certificate Generated
+                </h2>
+                <p className="mb-6">
+                  Your certificate has been successfully generated.
+                </p>
+                <div className="flex justify-end">
+                  <button
+                    className="px-4 py-2 bg-yellow text-white rounded-md hover:bg-yellow-600"
+                    onClick={() => {
+                      window.open(certificateLink, "_blank");
+                      setShowModal(false);
+                    }}
+                  >
+                    Go to Cert
+                  </button>
+                  <button
+                    className="ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
