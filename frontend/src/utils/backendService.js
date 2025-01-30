@@ -607,6 +607,25 @@ const childrenService = {
       throw err;
     }
   },
+
+  generateCertChildEvent: async (ChildName, CourseAttended) => {
+    try {
+      const response = await axios.post(`${apiUrl}/certificate`, {
+        name: ChildName,
+        workshop: CourseAttended
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error("Error generating child event certificate:", error);
+      return {
+        success: false,
+        message: "Failed to generate certificate",
+        error: error.response ? error.response.data : error.message,
+      };
+    }
+  },
+  
 };
 
 const meetingService = {
