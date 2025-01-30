@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { download, membershipIcon } from "../utils";
+import backendService from "../utils/backendService";
 
 const MembershipDurationIndicator = ({ monthsRemaining, totalMonths }) => {
   const percentage = (monthsRemaining / totalMonths) * 100;
@@ -31,17 +32,20 @@ const MembershipDurationIndicator = ({ monthsRemaining, totalMonths }) => {
   );
 };
 
-const AccountOverview = ({ accountdata, bookingdata }) => {
+const AccountOverview = ({ accountdata, bookingdata, childrenData }) => {
   const [userName, setUserName] = useState();
   const [registeredPrograms, setRegisteredPrograms] = useState({});
   const [membershipDuration, setMembershipDuration] = useState(0); // Remaining months
   const [totalDuration] = useState(12); // Total duration is 12 months
   const [certificates, setCertificates] = useState([]);
+  const [children, setChildren] = useState([]);
+  const { childrenService } = backendService;
 
   useEffect(() => {
     setUserName(accountdata.Name);
     setRegisteredPrograms(bookingdata);
     setCertificates([{ title: "PSLE Chinese Oral Bootcamp" }]);
+    setChildren(childrenData);
 
     // Calculate remaining membership duration
     const calculateMembershipDuration = () => {
@@ -59,6 +63,36 @@ const AccountOverview = ({ accountdata, bookingdata }) => {
 
     calculateMembershipDuration();
   }, [accountdata, bookingdata]);
+
+  const handleDownloadCertificate = async (childName, courseTitle) => {
+    console.log("Child Name: ", childName);
+    console.log("Course Name: ", courseTitle);
+
+    try {
+      const response = await childrenService.generateCertChildEvent(
+        childName,
+        courseTitle
+      );
+
+      if (response && response.success) {
+        // Create a temporary anchor tag to trigger download
+        const link = document.createElement("a");
+        link.href = response.certificateUrl; // Assuming backend returns a certificate URL
+        link.setAttribute(
+          "download",
+          `${childName}_${courseTitle}_Certificate.pdf`
+        );
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert("Failed to generate certificate. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error generating certificate:", error);
+      alert("An error occurred while downloading the certificate.");
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto py-20 bg-white">
@@ -143,17 +177,24 @@ const AccountOverview = ({ accountdata, bookingdata }) => {
             may take up to 2 business days to be displayed here
           </p>
           <ul className="space-y-2">
-            {certificates.map((certificate, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center border-t border-gray-300 pt-2"
-              >
-                <span>{certificate.title}</span>
-                <img
-                  src={download}
-                  alt="Download Icon"
-                  className="w-5 h-5 cursor-pointer"
-                />
+            {children.map((child, index) => (
+              <li key={index} className="border-t border-gray-300 pt-2">
+                <div className="flex justify-between items-center">
+                  <span>
+                    {child.name}'s Certificate - {certificates[0].title}
+                  </span>
+                  <img
+                    src={download}
+                    alt="Download Icon"
+                    className="w-5 h-5 cursor-pointer"
+                    onClick={() =>
+                      handleDownloadCertificate(
+                        child.name,
+                        certificates[0].title
+                      )
+                    }
+                  />
+                </div>
               </li>
             ))}
           </ul>
