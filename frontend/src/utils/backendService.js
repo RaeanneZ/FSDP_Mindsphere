@@ -84,11 +84,19 @@ const emailAdminService = {
   // Create or update an email template
   saveTemplate: async (name, subject, body) => {
     try {
-      const response = await axios.post(`${apiUrl}/email/templates`, {
-        name,
-        subject,
-        body,
-      });
+      const token = sessionStorage.getItem("jwt_token");
+
+      const response = await axios.post(
+        `${apiUrl}/email/templates`,
+        { name, subject, body },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       return response.data;
     } catch (err) {
       console.error("BackendService: Error saving template: ", err);
@@ -99,8 +107,13 @@ const emailAdminService = {
   // Get all saved email templates
   getAllTemplates: async () => {
     try {
-      const response = await axios.get(`${apiUrl}/email/templates`);
-      return response.data;
+      const token = sessionStorage.getItem("jwt_token");
+
+      const response = await axios.get(`${apiUrl}/email/templates`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });      return response.data;
     } catch (err) {
       console.error("BackendService: Error fetching templates: ", err);
       throw err;
@@ -110,117 +123,161 @@ const emailAdminService = {
   // Delete an email template by ID
   deleteTemplate: async (templateID) => {
     try {
+      const token = sessionStorage.getItem("jwt_token");
+  
       const response = await axios.delete(
-        `${apiUrl}/email/templates/${templateID}`
+        `${apiUrl}/email/templates/${templateID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+      
       return response.data;
     } catch (err) {
       console.error("BackendService: Error deleting template: ", err);
       throw err;
     }
   },
+  
 
   // Save a draft email
   saveDraft: async (subject, body, createdBy) => {
     try {
-      const response = await axios.post(`${apiUrl}/email/save-draft`, {
-        subject,
-        body,
-        createdBy,
-      });
+      const token = sessionStorage.getItem("jwt_token");
+  
+      const response = await axios.post(
+        `${apiUrl}/email/save-draft`,
+        { subject, body, createdBy },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
       return response.data;
     } catch (err) {
       console.error("BackendService: Error saving draft: ", err);
       throw err;
     }
   },
+  
 
   // Send a custom email to multiple recipients
   sendCustomEmail: async (recipients, subject, body, attachments) => {
     try {
+      const token = sessionStorage.getItem("jwt_token");
+  
       const formData = new FormData();
       formData.append("subject", subject);
       formData.append("body", body);
       formData.append("recipients", recipients.join(","));
-
+  
       if (attachments) {
         attachments.forEach((file) => {
           formData.append("attachments", file);
         });
       }
-
+  
       const response = await axios.post(`${apiUrl}/email/send`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
+  
       return response.data;
     } catch (err) {
       console.error("BackendService: Error sending custom email: ", err);
       throw err;
     }
   },
+  
 
   // Schedule an email for a future date and time
   scheduleEmail: async (emailData, scheduleTime) => {
     try {
-      const response = await axios.post(`${apiUrl}/email/schedule`, {
-        ...emailData,
-        scheduleTime,
-      });
+      const token = sessionStorage.getItem("jwt_token");
+  
+      const response = await axios.post(
+        `${apiUrl}/email/schedule`,
+        { ...emailData, scheduleTime },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
       return response.data;
     } catch (err) {
       console.error("BackendService: Error scheduling email: ", err);
       throw err;
     }
   },
+  
 
   // Get logs of sent emails
   getEmailLogs: async () => {
     try {
-      const response = await axios.get(`${apiUrl}/email/logs`);
+      const token = sessionStorage.getItem("jwt_token");
+  
+      const response = await axios.get(`${apiUrl}/email/logs`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
       return response.data;
     } catch (err) {
       console.error("BackendService: Error retrieving email logs: ", err);
       throw err;
     }
   },
+  
 
   sendEmailWithAttachment: async (recipients, subject, body, attachments) => {
     try {
+      const token = sessionStorage.getItem("jwt_token");
+  
       const formData = new FormData();
-
-      // Recipients should be an array of email addresses
+  
       if (Array.isArray(recipients)) {
-        formData.append("to", recipients.join(",")); // Convert array to a comma-separated string
+        formData.append("to", recipients.join(","));
       } else {
-        formData.append("to", recipients); // Single recipient as a string
+        formData.append("to", recipients);
       }
-
+  
       formData.append("subject", subject);
       formData.append("body", body);
-
+  
       if (attachments && attachments.length) {
         attachments.forEach((file) => {
           formData.append("attachments", file);
         });
       }
-
+  
       const response = await axios.post(
         `${apiUrl}/email/send-with-attachment`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
-
+  
       return response.data;
     } catch (err) {
-      console.error(
-        "BackendService: Error sending email with attachment: ",
-        err
-      );
+      console.error("BackendService: Error sending email with attachment: ", err);
       throw err;
     }
-  },
+  },  
 };
 
 const progScheduleService = {
@@ -375,7 +432,6 @@ const accountService = {
 
   loginAccount: async (credentials) => {
     try {
-      console.log("Credentials", credentials);
       const response = await axios.post(`${apiUrl}/login`, credentials);
       return response.data;
     } catch (err) {
