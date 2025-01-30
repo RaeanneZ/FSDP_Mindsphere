@@ -84,7 +84,7 @@ const emailAdminService = {
   // Create or update an email template
   saveTemplate: async (name, subject, body) => {
     try {
-      const response = await axios.post(`${apiUrl}/emails/templates`, {
+      const response = await axios.post(`${apiUrl}/email/templates`, {
         name,
         subject,
         body,
@@ -99,7 +99,7 @@ const emailAdminService = {
   // Get all saved email templates
   getAllTemplates: async () => {
     try {
-      const response = await axios.get(`${apiUrl}/emails/templates`);
+      const response = await axios.get(`${apiUrl}/email/templates`);
       return response.data;
     } catch (err) {
       console.error("BackendService: Error fetching templates: ", err);
@@ -111,7 +111,7 @@ const emailAdminService = {
   deleteTemplate: async (templateID) => {
     try {
       const response = await axios.delete(
-        `${apiUrl}/emails/templates/${templateID}`
+        `${apiUrl}/email/templates/${templateID}`
       );
       return response.data;
     } catch (err) {
@@ -123,7 +123,7 @@ const emailAdminService = {
   // Save a draft email
   saveDraft: async (subject, body, createdBy) => {
     try {
-      const response = await axios.post(`${apiUrl}/emails/save-draft`, {
+      const response = await axios.post(`${apiUrl}/email/save-draft`, {
         subject,
         body,
         createdBy,
@@ -149,7 +149,7 @@ const emailAdminService = {
         });
       }
 
-      const response = await axios.post(`${apiUrl}/emails/send`, formData, {
+      const response = await axios.post(`${apiUrl}/email/send`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return response.data;
@@ -162,7 +162,7 @@ const emailAdminService = {
   // Schedule an email for a future date and time
   scheduleEmail: async (emailData, scheduleTime) => {
     try {
-      const response = await axios.post(`${apiUrl}/emails/schedule`, {
+      const response = await axios.post(`${apiUrl}/email/schedule`, {
         ...emailData,
         scheduleTime,
       });
@@ -176,7 +176,7 @@ const emailAdminService = {
   // Get logs of sent emails
   getEmailLogs: async () => {
     try {
-      const response = await axios.get(`${apiUrl}/emails/logs`);
+      const response = await axios.get(`${apiUrl}/email/logs`);
       return response.data;
     } catch (err) {
       console.error("BackendService: Error retrieving email logs: ", err);
@@ -205,7 +205,7 @@ const emailAdminService = {
       }
 
       const response = await axios.post(
-        `${apiUrl}/emails/send-with-attachment`,
+        `${apiUrl}/email/send-with-attachment`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

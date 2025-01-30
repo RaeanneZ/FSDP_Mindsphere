@@ -48,6 +48,9 @@ const Navbar = () => {
           <a href="/B2BManagement" className="hover:text-gray-900">
             Managing Business
           </a>
+          <a href="/email" className="hover:text-gray-900">
+            eDMs
+          </a>
         </>
       );
     } else {
