@@ -36,6 +36,7 @@ import AdminConsultationSummaryPage from "./pages/AdminConsultationSummaryPage.j
 import BookingPage from "./pages/BookingPage.jsx";
 import VideoCall from "./components/VideoCall.jsx";
 import Layout from "./components/Layout.jsx";
+import EmailAdmin from "./pages/EmailAdmin.jsx";
 
 // Define a function to track pages
 const trackPage = (page) => {
@@ -158,6 +159,11 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <AdminForm />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/email",
+    element: <EmailAdmin />,
     errorElement: <ErrorPage />,
   },
   {

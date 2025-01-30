@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button, Input, Textarea, Card, CardContent } from "@/components/ui";
+import Button from "../components/Button";
+import Input from "../components/Input";
+import Textarea from "../components/Textarea";
+import Card from "../components/Card";
+import CardContent from "../components/CardContent";
 import { useNavigate } from "react-router-dom";
 import backendService from "../utils/backendService";
 import Navbar from "../components/Navbar";
