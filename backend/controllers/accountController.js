@@ -110,11 +110,14 @@ const login = async (req, res) => {
       AccID: account.AccID,
       Name: account.Name,
       RoleID: account.RoleID,
+      email: account.Email
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
       expiresIn: "3600s",
     });
+
+    console.log("jwttoken: ", token)
 
     return res.status(200).json({ success: true, token });
   } catch (err) {
