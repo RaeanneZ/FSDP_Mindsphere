@@ -30,6 +30,8 @@ const addEnquiryTimeline = async (req, res) => {
     try {
         const { BusinessID, Text, Tag } = req.body;
 
+        console.log("Received file:", req.file);
+
         if (!req.file) {
             return res.status(400).send("No file uploaded.");
         }
@@ -47,7 +49,8 @@ const addEnquiryTimeline = async (req, res) => {
         }
 
         const { orgName, CreatedAt, Email } = result.recordset[0];
-        const formattedDate = new Date(CreatedAt).toISOString().split("T")[0];
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
         const sanitizedBusinessName = orgName.replace(/[^a-z0-9]/gi, "_");
 
         const targetFolder = path.join(
