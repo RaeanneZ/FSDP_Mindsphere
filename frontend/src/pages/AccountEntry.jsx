@@ -71,6 +71,7 @@ const AccountEntry = () => {
         login();
         navigate("/");
         sessionStorage.setItem("AccountEmail", email);
+        sessionStorage.setItem("jwt_token", response.token);
       } else {
         setError("Invalid email or password");
       }
