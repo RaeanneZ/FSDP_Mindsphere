@@ -7,13 +7,15 @@ class enquiryTimeline {
         BusinessID,
         Text,
         Tag,
-        linkToPDF
+        linkToPDF,
+        originalEnquiryPDFlink
     ) {
         this.TimelineID = TimelineID,
         this.BusinessID = BusinessID,
         this.Text = Text,
         this.Tag = Tag,
-        this.linkToPDF = linkToPDF
+        this.linkToPDF = linkToPDF,
+        this.originalEnquiryPDFlink = originalEnquiryPDFlink
     }
 
     static async addEnquiryTimeline({
@@ -21,13 +23,14 @@ class enquiryTimeline {
         Text,
         Tag,
         linkToPDF,
+        originalEnquiryPDFlink
     }) {
         try {
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO enquiryTimeline (BusinessID, Text, Tag, linkToPDF) 
+                INSERT INTO enquiryTimeline (BusinessID, Text, Tag, linkToPDF, originalEnquiryPDFlink) 
                 OUTPUT INSERTED.* 
-                VALUES (@BusinessID, @Text, @Tag, @linkToPDF)
+                VALUES (@BusinessID, @Text, @Tag, @linkToPDF, @originalEnquiryPDFlink)
             `;
             const request = connection.request();
     
@@ -35,6 +38,7 @@ class enquiryTimeline {
             request.input("Text", sql.VarChar(255), Text);
             request.input("Tag", sql.VarChar(50), Tag);
             request.input("linkToPDF", sql.VarChar(255), linkToPDF || null);
+            request.input("originalEnquiryPDFlink", sql.VarChar(255), originalEnquiryPDFlink || null);
     
             const result = await request.query(sqlQuery);
             connection.close();
@@ -52,7 +56,7 @@ class enquiryTimeline {
         try {
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                SELECT TimelineID, BusinessID, Text, Tag, linkToPDF, createdDate
+                SELECT TimelineID, BusinessID, Text, Tag, linkToPDF, createdDate, originalEnquiryPDFlink
                 FROM enquiryTimeline
                 WHERE BusinessID = @BusinessID
                 ORDER BY createdDate DESC
