@@ -97,7 +97,7 @@ const EmailAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-lightBlue">
+    <div className="min-h-screen h-full bg-lightBlue">
       <Navbar />
       <div className="container mx-auto py-10">
         <h1 className="text-3xl font-bold text-darkBlue mb-6">
