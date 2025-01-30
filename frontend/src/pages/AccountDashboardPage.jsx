@@ -272,6 +272,7 @@ const AccountDashboardPage = () => {
         <AccountOverview
           accountdata={accountData}
           bookingdata={regCoursesData}
+          childrenData={originalChildrenData}
         />
 
         {/* Modal for Success Message */}

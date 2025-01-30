@@ -69,15 +69,10 @@ const ProductPage = () => {
     }
   };
 
-  // Scroll to WorkshopSection when the component mounts
   useEffect(() => {
     // Call the async function when the component mounts
     getAllProgrammes();
     getProgrammeTestimonials(selectedProgramme);
-
-    if (workshopSectionRef.current) {
-      workshopSectionRef.current.scrollIntoView({ behavior: "smooth" });
-    }
   }, [selectedProgramme]);
 
   // Handle programme selection
