@@ -23,6 +23,7 @@ const PaymentForm = ({ clientSecret, booking }) => {
   const elements = useElements();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { paymentService } = backendService;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,8 +47,9 @@ const PaymentForm = ({ clientSecret, booking }) => {
               email: booking.contactInfo.email,
             },
           },
-          return_url: window.location.origin, // Optional redirect after payment
+          //return_url: window.location.origin, // Optional redirect after payment
         },
+        redirect: "if_required", // Prevents automatic redirection
       });
 
       if (error) {
@@ -58,14 +60,27 @@ const PaymentForm = ({ clientSecret, booking }) => {
       }
 
       if (paymentIntent?.status === "succeeded") {
-        // Payment succeeded
-        navigate("/survey", {
-          state: {
-            title: "We can't wait to see you there!",
-            message:
-              "Meanwhile, please provide us your feedback. It will help us to improve.",
-          },
-        });
+        try {
+          // Call backend to confirm payment
+          await paymentService.makePayment(
+            booking.contactInfo.email,
+            booking.contactInfo.name
+          );
+
+          // Redirect to survey after successful backend update
+          navigate("/survey", {
+            state: {
+              title: "We can't wait to see you there!",
+              message:
+                "Meanwhile, please provide us your feedback. It will help us to improve.",
+            },
+          });
+        } catch (backendError) {
+          console.error("Backend payment update failed:", backendError);
+          alert(
+            "Payment was successful, but we encountered an issue updating your status. Please contact support."
+          );
+        }
       } else {
         console.error("Payment did not succeed:", paymentIntent);
         alert("Payment failed. Please try again.");
