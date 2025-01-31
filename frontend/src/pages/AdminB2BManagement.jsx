@@ -122,9 +122,9 @@ const AdminB2BManagement = () => {
               value={text}
               onChange={(e) => setText(e.target.value)}
             >
-              <option>Proposal Draft</option>
-              <option>Finalized Proposal</option>
-              <option>Payment Form</option>
+            <option value="Proposal Draft">Proposal Draft</option>
+            <option value="Finalized Proposal">Finalized Proposal</option>
+            <option value="Payment Form">Payment Form</option>
             </select>
 
             {/* This is for the upload document */}
