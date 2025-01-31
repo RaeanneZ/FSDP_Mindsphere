@@ -17,6 +17,7 @@ class Business {
         helpText,
         callbackRequest,
         enquiryStatus,
+        proposalPdfURL,
         createdAt
     ) {
         this.BusinessID = BusinessID;
@@ -29,7 +30,8 @@ class Business {
         this.helpText = helpText;
         this.callbackRequest = callbackRequest;
         this.enquiryStatus = enquiryStatus;
-        this.createdAt = createdAt
+        this.proposalPdfURL = proposalPdfURL;
+        this.createdAt = createdAt;
     }
 
     static async addBusiness({
@@ -41,13 +43,14 @@ class Business {
         orgName,
         helpText,
         callbackRequest,
-        enquiryStatus
+        enquiryStatus,
+        proposalPdfURL
     }) {
         try {
             const connection = await sql.connect(dbConfig);
-            const sqlQuery = `INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest, enquiryStatus) 
+            const sqlQuery = `INSERT INTO Businesses (Name, ContactNo, Email, exNumOfDays, groupSize, orgName, helpText, callbackRequest, enquiryStatus, proposalPdfURL) 
                               OUTPUT INSERTED.* 
-                              VALUES (@Name, @ContactNo, @Email, @exNumOfDays, @groupSize, @orgName, @helpText, @callbackRequest, @enquiryStatus)`; // Include callbackRequest in SQL query
+                              VALUES (@Name, @ContactNo, @Email, @exNumOfDays, @groupSize, @orgName, @helpText, @callbackRequest, @enquiryStatus, @proposalPdfURL)`; // Include callbackRequest in SQL query
 
             const request = connection.request();
             
@@ -60,6 +63,7 @@ class Business {
             request.input("helpText", helpText);
             request.input("callbackRequest", callbackRequest);
             request.input("enquiryStatus", enquiryStatus)
+            request.input("proposalPdfURL", proposalPdfURL);
 
             const result = await request.query(sqlQuery);
             connection.close();
@@ -84,27 +88,28 @@ class Business {
             const dateStr = `${day}-${month}-${year}-(${hours}-${minutes})`;
             
             const filePath = `./backend/pdf/Businesses/Business${business.orgName.replace(/\s+/g, "_")}_(${dateStr}).pdf`;
-            doc.pipe(fs.createWriteStream(filePath));
-
+            const writeStream = fs.createWriteStream(filePath);
+            doc.pipe(writeStream);
+    
             const logoPath = path.join(__dirname, "../assets/mindsphere_logo.png");
             doc.image(logoPath, { width: 100, align: "center" })
                 .moveDown(1);
-
+    
             doc.fontSize(20).font("Helvetica-Bold").text("Business Details", {
                 align: "center",
                 underline: true,
             });
             doc.moveDown(1);
-
+    
             doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
             doc.moveDown(1.5);
-
+    
             function addField(label, value) {
                 doc.fontSize(12).font("Helvetica-Bold").text(label + ":", { align: "left" });
                 doc.fontSize(12).font("Helvetica").text(value, { align: "left" });
                 doc.moveDown(1);
             }
-
+    
             addField("Business Name", business.Name);
             addField("Contact Number", business.ContactNo);
             addField("Email", business.Email);
@@ -114,16 +119,24 @@ class Business {
             addField("Help Text", business.helpText);
             addField("Callback Request Time", business.callbackRequest ? business.callbackRequest : "N/A");
             addField("Current Enquiry Status", business.enquiryStatus);
-
+    
+            // End the document, which automatically closes the writeStream
             doc.end();
-
+    
+            // Wait for the file to be fully written
+            await new Promise((resolve, reject) => {
+                writeStream.on('finish', resolve);
+                writeStream.on('error', reject);
+            });
+    
             console.log(`PDF generated at ${filePath}`);
             return filePath;
         } catch (err) {
             console.error("ModelError: Error generating PDF:", err);
+            throw err;
         }
     }
-
+    
     static async getEnquiries() {
         try {
             const connection = await sql.connect(dbConfig);

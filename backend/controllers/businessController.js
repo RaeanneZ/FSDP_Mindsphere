@@ -1,6 +1,7 @@
 const Business = require("../models/businesses");
 const stakeholderEmail = require("../controllers/stakeholderEmailController")
-
+const sql = require("mssql");
+const dbConfig = require("../dbConfig")
 const uploadFileToDrive = require("../middlewares/uploadFileToDrive");
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
@@ -45,6 +46,7 @@ const addBusiness = async (req, res) => {
     const enquiryStatus = 'New Enquiry';
 
     try {
+        // Create the business object first
         const newBusiness = await Business.addBusiness({
             Name,
             ContactNo,
@@ -57,6 +59,7 @@ const addBusiness = async (req, res) => {
             enquiryStatus
         });
 
+        // Now generate the PDF for the new business
         const pdfPath = await Business.generatePDF(newBusiness);
 
         const options = { 
@@ -77,7 +80,27 @@ const addBusiness = async (req, res) => {
         const FOLDER_ID = process.env.GOOGLE_BUSINESS_FOLDER_ID;
         const uploadedFileId = await uploadFileToDrive(pdfPath, fileName, FOLDER_ID);
 
-        const sendStakeholderEmail = await stakeholderEmail.sendBusinessEmailStakeholder(newBusiness)
+        const shareUrl = `https://drive.google.com/file/d/${uploadedFileId}/view`;
+
+        await sql.connect(dbConfig);
+
+        // Declare the parameters and their values
+        const request = new sql.Request();
+        request.input("shareUrl", sql.VarChar, shareUrl);
+        request.input("businessID", sql.Int, newBusiness.BusinessID);
+
+        // Update the new business record in the database with the shareUrl
+        const sqlQuery = `
+            UPDATE Businesses
+            SET proposalPdfURL = @shareUrl
+            WHERE BusinessID = @businessID
+        `;
+        await request.query(sqlQuery);
+
+        await sql.close();
+
+
+        const sendStakeholderEmail = await stakeholderEmail.sendBusinessEmailStakeholder(newBusiness);
 
         res.status(201).json({
             message: "Business added successfully",
@@ -85,12 +108,14 @@ const addBusiness = async (req, res) => {
             pdfPath: pdfPath,
             fileId: uploadedFileId,
             email: sendStakeholderEmail,
+            shareUrl: shareUrl,
         });
     } catch (err) {
         console.error(err);
         res.status(500).send("ControllerError: Error adding business");
     }
 };
+
 
 const getEnquiries = async (req, res) => {
     try {
