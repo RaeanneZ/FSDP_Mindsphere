@@ -494,7 +494,7 @@ INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address
 ('Oliver Red', 'oliverred@example.com', '89012345', 'Active', '2025-10-05', '753 Walnut St, Springfield, IL', '1986-08-20', 'Father', 2, 'randomsalt8', 'hashedpassword8'),
 ('Chris Green', 'chrisgreen@example.com', '90123456', 'Inactive', NULL, '951 Ash St, Springfield, IL', '1993-09-15', 'Guardian', 2, 'randomsalt9', 'hashedpassword9'),
 ('Sophia Brown', 'sophiabrown@example.com', '01234567', 'Active', '2026-05-20', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt10', 'hashedpassword10'),
-('Jovan Tan', 's10259920@connect.np.edu.sg', '12121212', 'Active', '2026-04-03', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt11', 'hashedpassword11'),
+('Jovan Tan', 's10259920@connect.np.edu.sg', '12121212', 'Active', '2026-04-03', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, '', ''),
 ('Admin', 'admin@gmail.com', '99008833', NULL, NULL, '9876 Fake St, Imaginary City, IC', '2000-12-25', NULL, 1, '$2b$10$IIJkOdfcvizT0Q2uCmw5QO', '$2b$10$IIJkOdfcvizT0Q2uCmw5QODYi5TYzkE3t2QrwBx8rlwp5TirPu7wW');
 
 -- Insert data into Children
@@ -570,9 +570,9 @@ INSERT INTO ProgrammeFeedback (ProgID, AccID, FdbkDesc) VALUES
 
 -- Insert data into ProgrammeSchedule
 INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VALUES
-(1, '2024-11-18 09:00:00', '2024-11-18 17:00:00', 'Community Hall A', 20),
-(2, '2024-11-18 10:00:00', '2024-11-18 16:00:00', 'School Auditorium', 20),
-(3, '2024-11-18 08:30:00', '2024-11-18 18:00:00', 'Activity Centre', 15);
+(1, '2025-11-18 09:00:00', '2025-11-18 17:00:00', 'Community Hall A', 20),
+(2, '2025-11-18 10:00:00', '2025-11-18 16:00:00', 'School Auditorium', 20),
+(3, '2025-11-18 08:30:00', '2025-11-18 18:00:00', 'Activity Centre', 15);
 
 -- Insert data into Bookings
 INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, TransacID, SpecialReq, BookingDate) VALUES
@@ -602,3 +602,5 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
 INSERT INTO WhatsappUsers (Name, phoneNum)
 VALUES ('Neil Hadziq', '+6589217943');
 
+/*INSERT INTO AccountVerification (Email, verifCode)
+VALUES ('redzhiyao2012@gmail.com', '121212')*/

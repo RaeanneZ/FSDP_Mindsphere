@@ -13,23 +13,23 @@ const swaggerUi = require("swagger-ui-express");
 
 // Swagger options
 const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Minsdsphere backend API Documentation",
-      version: "1.0.0",
-      description: "API for Mindsphere backend website",
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Minsdsphere backend API Documentation",
+            version: "1.0.0",
+            description: "API for Mindsphere backend website",
+        },
+        servers: [
+            {
+                url: "http://localhost:5000",
+            },
+        ],
     },
-    servers: [
-      {
-        url: "http://localhost:5000",
-      },
+    apis: [
+        path.join(__dirname, "server.js"), // Main server file
+        path.join(__dirname, "routes/*.js"), // All route files
     ],
-  },
-  apis: [
-    path.join(__dirname, "server.js"), // Main server file
-    path.join(__dirname, "routes/*.js"), // All route files
-  ],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
@@ -37,11 +37,11 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 const swaggerPath = path.join(__dirname, "swagger.json");
 // Asynchronously write the generated Swagger spec to the file, overwriting it
 fs.writeFile(swaggerPath, JSON.stringify(swaggerSpec, null, 2), (err) => {
-  if (err) {
-    console.error("Error writing swagger.json:", err);
-  } else {
-    console.log("Swagger spec saved as swagger.json");
-  }
+    if (err) {
+        console.error("Error writing swagger.json:", err);
+    } else {
+        console.log("Swagger spec saved as swagger.json");
+    }
 });
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -111,9 +111,9 @@ app.get("/", async (req, res) => {
 
 app.use("/api/schedules", require("./routes/schedulesRoutes"));
 app.use("/api/survey", require("./routes/surveyRoutes"));
-app.use("/api/adminDashboard",require("./routes/dashboardMetricRoutes"));
+app.use("/api/adminDashboard", require("./routes/dashboardMetricRoutes"));
 app.use("/api/business", require("./routes/businessRoutes"));
-app.use("/api/whatsapp", require("./routes/whatsappRoutes"))
+app.use("/api/whatsapp", require("./routes/whatsappRoutes"));
 
 // routes refactor not done for the following
 // [bookings, business, payments, programmes, account, feedback, children, newsletter, reminders]
@@ -143,22 +143,24 @@ app.get("/api/programmes/registered/:email", async (req, res) => {
     }
 });
 app.get(
-  "/api/programmes/registered/:email",
-  programmesController.getRegisteredProgrammesByAccount
+    "/api/programmes/registered/:email",
+    programmesController.getRegisteredProgrammesByAccount
 );
-
 
 app.get(
-  "/api/programmes/registered/:email",
-  programmesController.getRegisteredProgrammesByAccount
+    "/api/programmes/registered/:email",
+    programmesController.getRegisteredProgrammesByAccount
 );
-
 
 app.post("/api/account/verifyEmail", accountController.verifyEmail);
 app.post("/api/account/createAccount", accountController.createAccount);
 app.post("/addVerification", accountController.addVerificationCode);
+app.get("/api/accountExists/:email", accountController.checkUserExists);
 
-app.get("/api/programmes/registered/:email",programmesController.getRegisteredProgrammesByAccount);
+app.get(
+    "/api/programmes/registered/:email",
+    programmesController.getRegisteredProgrammesByAccount
+);
 app.get("/api/programmetiers", programmeTiersController.getAllProgrammeTiers);
 app.get("/api/progID/:ProgID", ProgrammeFeedbackController.getFeedbackByID);
 app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
@@ -177,8 +179,8 @@ app.post("/api/addChild", childrenController.addChild);
 app.post("/api/addChildPayment", childrenController.addChildPayment);
 app.put("/api/children/updateChild", childrenController.updateChild);
 app.get(
-  "/api/getChildByEmail/:GuardianEmail",
-  childrenController.getChildByEmail
+    "/api/getChildByEmail/:GuardianEmail",
+    childrenController.getChildByEmail
 );
 
 app.get("/api/newsletter", newsletterController.getAllEmail);
@@ -201,7 +203,6 @@ app.get("/api/programmes/:ProgID", progSchedController.getUpcomingBookings);
 app.post("/api/reminders/initialize", reminderController.initializeReminders);
 app.get("/api/reminders", reminderController.getScheduledReminders);
 PaymentEmailController.sendMembershipCodes;
-
 
 // Custom Email feature route
 app.use("/api/email", emailRoutes);
@@ -245,7 +246,6 @@ app.get("/track/statistics", (req, res) => {
 //stripe
 const paymentRoutes = require("./routes/paymentRoutes");
 app.use("/api/stripe", paymentRoutes);
-
 
 //whereby
 const wherebyRoutes = require("./routes/onlineMeetingRoutes");
