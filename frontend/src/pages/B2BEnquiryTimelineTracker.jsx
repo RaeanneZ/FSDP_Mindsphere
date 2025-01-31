@@ -48,7 +48,7 @@ const B2BEnquiryTimelineTracker = () => {
     const fetchBusinessName = async () => {
       try {
         const response = await dashboardService.getBusinessEnquiries();
-        console.log(response);
+        console.log("Business Enquiries Response:", response);
 
         if (response) {
           const business = response.find(
@@ -63,20 +63,35 @@ const B2BEnquiryTimelineTracker = () => {
 
     const fetchTimelineData = async () => {
       try {
-        const response = await dashboardService.retrieveEnquiryTimeline(
-          businessId
-        );
-        console.log("Response: ", response);
-
+        const response = await dashboardService.retrieveEnquiryTimeline(businessId);
+        console.log("Timeline Response:", response);
+        
         if (response.success && response.data.length > 0) {
-          // Merge backend data with template to maintain the order
           const mergedData = templateTimelineData.map((templateItem) => {
             const matchedItem = response.data.find(
-              (item) => item.Text === templateItem.Text
+              (item) => (item.Text || "Enquiry") === templateItem.Text
             );
-            return matchedItem ? matchedItem : templateItem;
+            
+            
+            if (templateItem.Text === "Enquiry") {
+              return {
+                ...templateItem,
+                Text: "Enquiry",
+                createdDate: matchedItem?.createdDate || "To Be Added",
+                Tag: matchedItem?.Tag || "Incomplete", 
+                linkToPDF: matchedItem?.originalEnquiryPDFlink || matchedItem?.linkToPDF || "",
+              };
+            }
+            
+            return {
+              ...templateItem,
+              Text: matchedItem?.Text || templateItem.Text, 
+              createdDate: matchedItem?.createdDate || templateItem.createdDate, 
+              Tag: matchedItem?.Tag || templateItem.Tag, 
+              linkToPDF: matchedItem?.linkToPDF || templateItem.linkToPDF,
+            };
           });
-
+    
           setTimelineData(mergedData);
         }
       } catch (err) {
@@ -85,6 +100,8 @@ const B2BEnquiryTimelineTracker = () => {
         setLoading(false);
       }
     };
+    
+    
 
     fetchBusinessName();
     fetchTimelineData();
@@ -101,7 +118,7 @@ const B2BEnquiryTimelineTracker = () => {
         </h1>
         <sub className="text-md font-semibold text-darkGrey w-full text-center">
           Here is a clear timeline of the process for reference. Please refer to
-          the document sent to you by our staff for the formal documents
+          the document sent to you by our staff for the formal documents.
         </sub>
       </div>
 
