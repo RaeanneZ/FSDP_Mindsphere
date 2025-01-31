@@ -191,6 +191,7 @@ create table Businesses (
 	helpText varchar(1000),
 	callbackRequest datetime not null,
 	enquiryStatus varchar(50) not null default ('New Enquiry'),
+	proposalPdfURL varchar(255) null,
 	createdAt DATETIME NOT NULL DEFAULT GETDATE(),
 	constraint PK_Business primary key (BusinessID),
 	constraint CHK_Status check (enquiryStatus in ('New Enquiry', 'In Progress', 'Confirmed', 'Completed'))
@@ -203,6 +204,7 @@ create table enquiryTimeline (
 	Text varchar(255) not null,
 	tag varchar(50) not null,
 	linkToPDF varchar(255) null,
+	originalEnquiryPDFlink varchar(255) null,
 	createdDate datetime not null default getdate(),
 	constraint PK_enquiryTimeline primary key (TimelineID),
 	constraint FK_enquiryTimeline foreign key (BusinessID) references Businesses(BusinessID)
@@ -424,7 +426,7 @@ INSERT INTO Roles (RoleID, Name) VALUES
 (2, 'User');
 
 -- Insert data into Account
-INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address, dateOfBirth, relationshipToChild, RoleID, Salt, HashedPassword, LinkedInSub, LinkedInAccessToken) VALUES
+INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address, dateOfBirth, relationshipToChild, RoleID, Salt, HashedPassword) VALUES
 ('John Doe', 'johndoe@example.com', '12345678', 'Active', '2025-12-31', '123 Main St, Springfield, IL', '1990-01-01', 'Father', 2, 'randomsalt1', 'hashedpassword1'),
 ('Jane Smith', 'janesmith@example.com', '23456789', 'Inactive', NULL, '456 Elm St, Springfield, IL', '1985-02-15', 'Mother', 2, 'randomsalt2', 'hashedpassword2'),
 ('Mark Evans', 'markevans@example.com', '34567890', 'Pending', NULL, '789 Oak St, Springfield, IL', '1992-03-22', 'Guardian', 2, 'randomsalt3', 'hashedpassword3'),
