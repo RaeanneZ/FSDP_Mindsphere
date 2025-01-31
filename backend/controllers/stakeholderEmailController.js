@@ -24,8 +24,10 @@ async function sendBusinessEmailStakeholder(business) {
     }
 };
 
-async function sendBusinessEmailUpdatedEnquiry({ orgName, Email, Text, Tag, shareUrl, filePath }) {
+async function sendBusinessEmailUpdatedEnquiry({ BusinessID, orgName, Email, Text, Tag, shareUrl, filePath }) {
     try {
+        const timelineURL = `http://localhost:5173/timeline?business=${BusinessID}`
+
         let emailData = {
             to: Email, 
             subject: `Updated Business Enquiry - ${orgName}`,
@@ -34,8 +36,8 @@ async function sendBusinessEmailUpdatedEnquiry({ orgName, Email, Text, Tag, shar
                 <p style="color: black;">Here are the details:</p>
                 <pre style="color: black;">${Text}</pre>
                 <p style="color: black;">Enquiry Status: <strong style="color: black;">${Tag}</strong></p>
-                <p style="color: black;">You can view the updated proposal via the following link or the attached file:</p>
-                <p><a href="${shareUrl}" ">View Proposal</a></p>
+                <p style="color: black;">You can view the updated proposal and timeline of your enquiry via the following link or the attached file:</p>
+                <p><a href="${shareUrl}" ">View Proposal</a> <a href="${timelineURL}" ">View Enquiry Timeline</a></p>
             `,
             attachments: []
         };

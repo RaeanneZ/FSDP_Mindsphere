@@ -88,6 +88,7 @@ const addEnquiryTimeline = async (req, res) => {
         const insertedEnquiry = await enquiryTimeline.addEnquiryTimeline(enquiryData);
 
         await stakeholderEmailController.sendBusinessEmailUpdatedEnquiry({
+            BusinessID,
             orgName,
             Email,
             Text,
