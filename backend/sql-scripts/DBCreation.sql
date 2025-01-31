@@ -109,6 +109,14 @@ GO
 IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesPendingPayment' AND xtype = 'V')
     DROP VIEW SalesPendingPayment;
 GO
+
+if exists (select * from sysobjects where name = 'trg_CompleteEnquiry' and xtype = 'V')
+	drop trigger trg_CompleteEnquiry;
+go
+
+if exists (select * from sysobjects where name = 'trg_UpdateEnquiryStatus' and xtype = 'V')
+	drop trigger trg_UpdateEnquiryStatus;
+go
 -------------------------------------------------------------------------------------------------------------
 
 
