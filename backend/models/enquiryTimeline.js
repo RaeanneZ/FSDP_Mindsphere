@@ -28,10 +28,20 @@ class enquiryTimeline {
         try {
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO enquiryTimeline (BusinessID, Text, Tag, linkToPDF, originalEnquiryPDFlink) 
-                OUTPUT INSERTED.* 
-                VALUES (@BusinessID, @Text, @Tag, @linkToPDF, @originalEnquiryPDFlink)
+                DECLARE @InsertedTable TABLE (
+                    TimelineID INT, BusinessID INT, Text VARCHAR(255), Tag VARCHAR(50), 
+                    linkToPDF VARCHAR(255), originalEnquiryPDFlink VARCHAR(255)
+                );
+
+                INSERT INTO enquiryTimeline (BusinessID, Text, Tag, linkToPDF, originalEnquiryPDFlink)
+                OUTPUT INSERTED.TimelineID, INSERTED.BusinessID, INSERTED.Text, INSERTED.Tag, 
+                    INSERTED.linkToPDF, INSERTED.originalEnquiryPDFlink
+                INTO @InsertedTable
+                VALUES (@BusinessID, @Text, @Tag, @linkToPDF, @originalEnquiryPDFlink);
+
+                SELECT * FROM @InsertedTable;
             `;
+
             const request = connection.request();
     
             request.input("BusinessID", sql.Int, BusinessID);
