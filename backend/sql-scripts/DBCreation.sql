@@ -418,6 +418,55 @@ where
 
 go
 
+------------------------------------------------------------------------------------------------------------
+-- triggers
+CREATE TRIGGER trg_CompleteEnquiry
+ON enquiryTimeline
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Only proceed if the inserted row has tag = 'Completed'
+    IF EXISTS (SELECT 1 FROM inserted WHERE tag = 'Completed')
+    BEGIN
+        -- Update Businesses table's enquiryStatus to 'Completed'
+        UPDATE B
+        SET B.enquiryStatus = 'Completed'
+        FROM Businesses B
+        INNER JOIN inserted I ON B.BusinessID = I.BusinessID
+        WHERE I.tag = 'Completed';
+
+        -- Prevent unnecessary updates to enquiryTimeline
+        UPDATE ET
+        SET ET.tag = 'Completed'
+        FROM enquiryTimeline ET
+        WHERE ET.BusinessID IN (SELECT BusinessID FROM inserted WHERE tag = 'Completed')
+        AND ET.tag <> 'Completed';  -- Only update rows that are not already 'Completed'
+    END;
+END;
+GO
+
+CREATE TRIGGER trg_UpdateEnquiryStatus
+ON enquiryTimeline
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Update enquiryStatus in Businesses table when a new row is added to enquiryTimeline
+    UPDATE Businesses
+    SET enquiryStatus = 'In Progress'
+    FROM Businesses b
+    INNER JOIN inserted i ON b.BusinessID = i.BusinessID
+    WHERE b.enquiryStatus = 'New Enquiry'; -- Update only if it's still 'New Enquiry'
+END;
+GO
+
+
+
+
+
 -------------------------------------------------------------------------------------------------------------
 
 -- Insert data into Roles
