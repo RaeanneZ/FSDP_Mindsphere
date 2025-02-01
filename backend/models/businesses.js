@@ -158,6 +158,7 @@ class Business {
                         row.helpText,
                         row.callbackRequest,
                         row.enquiryStatus,
+                        row.proposalPdfURL,
                         row.createdAt
                     )
             );
