@@ -85,13 +85,12 @@ const paymentService = {
 
 const emailAdminService = {
     // Create or update an email template
-    saveTemplate: async (name, subject, body) => {
+    saveTemplate: async (name, subject, body, tags) => {
         try {
             const token = sessionStorage.getItem("jwt_token");
-
             const response = await axios.post(
                 `${apiUrl}/email/templates`,
-                { name, subject, body },
+                { name, subject, body, tags }, // ✅ Ensure tags is included
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -99,10 +98,9 @@ const emailAdminService = {
                     },
                 }
             );
-
             return response.data;
         } catch (err) {
-            console.error("BackendService: Error saving template: ", err);
+            console.error("BackendService: Error saving template:", err);
             throw err;
         }
     },
@@ -111,16 +109,13 @@ const emailAdminService = {
     getAllTemplates: async () => {
         try {
             const token = sessionStorage.getItem("jwt_token");
-
             const response = await axios.get(`${apiUrl}/email/templates`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             });
-            return response.data;
+            return response.data.data || []; // Return only the array
         } catch (err) {
-            console.error("BackendService: Error fetching templates: ", err);
-            throw err;
+            console.error("BackendService: Error fetching templates:", err);
+            return []; // Ensure array format
         }
     },
 
@@ -168,36 +163,34 @@ const emailAdminService = {
         }
     },
 
-    // Send a custom email to multiple recipients
-    sendCustomEmail: async (recipients, subject, body, attachments) => {
+    sendCustomEmail: async (recipients, subject, body) => {
         try {
             const token = sessionStorage.getItem("jwt_token");
 
-            const formData = new FormData();
-            formData.append("subject", subject);
-            formData.append("body", body);
-            formData.append("recipients", recipients.join(","));
+            const emailData = {
+                recipients: Array.isArray(recipients)
+                    ? recipients
+                    : [recipients],
+                subject,
+                body,
+            };
 
-            if (attachments) {
-                attachments.forEach((file) => {
-                    formData.append("attachments", file);
-                });
-            }
+            console.log("Final Request Data:", emailData); // Debugging
 
             const response = await axios.post(
                 `${apiUrl}/email/send`,
-                formData,
+                emailData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        "Content-Type": "multipart/form-data",
+                        "Content-Type": "application/json",
                     },
                 }
             );
 
             return response.data;
         } catch (err) {
-            console.error("BackendService: Error sending custom email: ", err);
+            console.error("BackendService: Error sending custom email:", err);
             throw err;
         }
     },
@@ -246,18 +239,21 @@ const emailAdminService = {
     sendEmailWithAttachment: async (recipients, subject, body, attachments) => {
         try {
             const token = sessionStorage.getItem("jwt_token");
-
             const formData = new FormData();
 
+            // ✅ Ensure recipients is properly formatted
             if (Array.isArray(recipients)) {
-                formData.append("to", recipients.join(","));
+                recipients.forEach((email) =>
+                    formData.append("recipients", email)
+                );
             } else {
-                formData.append("to", recipients);
+                formData.append("recipients", recipients);
             }
 
             formData.append("subject", subject);
             formData.append("body", body);
 
+            // ✅ Ensure attachments are correctly added
             if (attachments && attachments.length) {
                 attachments.forEach((file) => {
                     formData.append("attachments", file);
@@ -278,9 +274,60 @@ const emailAdminService = {
             return response.data;
         } catch (err) {
             console.error(
-                "BackendService: Error sending email with attachment: ",
+                "BackendService: Error sending email with attachment:",
                 err
             );
+            throw err;
+        }
+    },
+
+    saveDraft: async (subject, body, createdBy) => {
+        try {
+            const token = sessionStorage.getItem("jwt_token");
+            const response = await axios.post(
+                `${apiUrl}/drafts`,
+                { subject, body, createdBy },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error saving draft:", err);
+            throw err;
+        }
+    },
+
+    // Fetch all saved drafts
+    getAllDrafts: async () => {
+        try {
+            const token = sessionStorage.getItem("jwt_token");
+            if (!token) throw new Error("Unauthorized: No JWT token found");
+
+            const response = await axios.get(`${apiUrl}/email/drafts`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error fetching drafts:", err);
+            throw err;
+        }
+    },
+
+    sendGroupEmail: async (recipients, subject, body) => {
+        try {
+            const token = sessionStorage.getItem("jwt_token");
+            const response = await axios.post(
+                `${apiUrl}/email/send-group-email`,
+                { recipients, subject, body }, // Array of emails
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            return response.data;
+        } catch (err) {
+            console.error("BackendService: Error sending group email:", err);
             throw err;
         }
     },

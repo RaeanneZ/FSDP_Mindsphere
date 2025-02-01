@@ -2,22 +2,28 @@ const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
 class DraftModel {
-    // Create a new draft
-    static async createDraft(subject, body, recipient, attachment, createdBy) {
+    static async createDraft(subject, body) {
         try {
+            console.log("Saving Draft Data (Before DB Insert):", {
+                subject,
+                body,
+            });
+
+            if (typeof subject !== "string" || typeof body !== "string") {
+                throw new Error("Subject and Body must be valid strings.");
+            }
+
             const pool = await sql.connect(dbConfig);
             const result = await pool
                 .request()
                 .input("Subject", sql.NVarChar, subject)
-                .input("Body", sql.NVarChar, body)
-                .input("Recipient", sql.NVarChar, recipient)
-                .input("Attachment", sql.NVarChar, attachment)
-                .input("CreatedBy", sql.NVarChar, createdBy).query(`
-                    INSERT INTO Drafts (Subject, Body, Recipient, Attachment, CreatedBy)
+                .input("Body", sql.NVarChar, body).query(`
+                    INSERT INTO Drafts (Subject, Body, CreatedAt, UpdatedAt)
                     OUTPUT INSERTED.*
-                    VALUES (@Subject, @Body, @Recipient, @Attachment, @CreatedBy)
+                    VALUES (@Subject, @Body, GETDATE(), GETDATE())
                 `);
 
+            console.log("Saved Draft in DB:", result.recordset[0]);
             return result.recordset[0];
         } catch (error) {
             console.error("ModelError: Error creating draft:", error);
@@ -29,9 +35,9 @@ class DraftModel {
     static async getAllDrafts() {
         try {
             const pool = await sql.connect(dbConfig);
-            const result = await pool
-                .request()
-                .query("SELECT * FROM Drafts ORDER BY CreatedAt DESC");
+            const result = await pool.request().query(`
+                SELECT DraftID, Subject, Body, CreatedAt, UpdatedAt FROM Drafts
+            `);
             return result.recordset;
         } catch (error) {
             console.error("ModelError: Error retrieving drafts:", error);
@@ -46,7 +52,9 @@ class DraftModel {
             const result = await pool
                 .request()
                 .input("DraftID", sql.Int, draftID)
-                .query("SELECT * FROM Drafts WHERE DraftID = @DraftID");
+                .query(
+                    "SELECT DraftID, Subject, Body FROM Drafts WHERE DraftID = @DraftID"
+                );
 
             return result.recordset[0];
         } catch (error) {
@@ -56,18 +64,16 @@ class DraftModel {
     }
 
     // Update an existing draft
-    static async updateDraft(draftID, subject, body, recipient, attachment) {
+    static async updateDraft(draftID, subject, body) {
         try {
             const pool = await sql.connect(dbConfig);
             const result = await pool
                 .request()
                 .input("DraftID", sql.Int, draftID)
                 .input("Subject", sql.NVarChar, subject)
-                .input("Body", sql.NVarChar, body)
-                .input("Recipient", sql.NVarChar, recipient)
-                .input("Attachment", sql.NVarChar, attachment).query(`
+                .input("Body", sql.NVarChar, body).query(`
                     UPDATE Drafts
-                    SET Subject = @Subject, Body = @Body, Recipient = @Recipient, Attachment = @Attachment, UpdatedAt = GETDATE()
+                    SET Subject = @Subject, Body = @Body, UpdatedAt = GETDATE()
                     OUTPUT INSERTED.*
                     WHERE DraftID = @DraftID
                 `);

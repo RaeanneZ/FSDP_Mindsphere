@@ -2,35 +2,36 @@ const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
 class EmailTemplateModel {
-    static async createTemplate(name, subject, body, createdBy) {
+    static async createTemplate(name, subject, body, createdBy, tags) {
         try {
-            const query = `
-                INSERT INTO EmailTemplates (Name, Subject, Body, CreatedBy)
-                VALUES (@Name, @Subject, @Body, @CreatedBy)
-            `;
-
             const pool = await sql.connect(dbConfig);
+            const query = `
+                INSERT INTO EmailTemplates (Name, Subject, Body, CreatedBy, Tags)
+                VALUES (@Name, @Subject, @Body, @CreatedBy, @Tags);
+            `;
             await pool
                 .request()
-                .input("Name", sql.NVarChar, name)
-                .input("Subject", sql.NVarChar, subject)
-                .input("Body", sql.NVarChar, body)
-                .input("CreatedBy", sql.NVarChar, createdBy)
+                .input("Name", sql.VarChar, name)
+                .input("Subject", sql.VarChar, subject)
+                .input("Body", sql.Text, body)
+                .input("CreatedBy", sql.VarChar, createdBy)
+                .input("Tags", sql.VarChar, tags)
                 .query(query);
         } catch (error) {
-            console.error("ModelError: Error creating email template:", error);
+            console.error("ModelError: Error creating template:", error);
             throw error;
         }
     }
 
     static async getTemplates() {
         try {
-            const query = `SELECT * FROM EmailTemplates`;
             const pool = await sql.connect(dbConfig);
-            const result = await pool.request().query(query);
+            const result = await pool.request().query(`
+                SELECT TemplateID, Name, Subject, Body, CreatedBy, Tags FROM EmailTemplates
+            `);
             return result.recordset;
         } catch (error) {
-            console.error("ModelError: Error fetching email templates:", error);
+            console.error("ModelError: Error fetching templates:", error);
             throw error;
         }
     }

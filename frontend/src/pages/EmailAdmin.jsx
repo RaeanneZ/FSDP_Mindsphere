@@ -10,253 +10,208 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const EmailAdmin = () => {
-  const [templates, setTemplates] = useState([]);
-  const [name, setName] = useState("");
-  const [folder, setFolder] = useState("");
-  const [tags, setTags] = useState("");
-  const [owner, setOwner] = useState("");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
-  const [preview, setPreview] = useState("");
-  const [recipients, setRecipients] = useState("");
-  const [attachments, setAttachments] = useState([]);
-  const [dragActive, setDragActive] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const navigate = useNavigate();
+    const [templates, setTemplates] = useState([]);
+    const [selectedTemplate, setSelectedTemplate] = useState("");
+    const [name, setName] = useState("");
+    const [tags, setTags] = useState("");
+    const [subject, setSubject] = useState("");
+    const [body, setBody] = useState("");
+    const [preview, setPreview] = useState("");
+    const [recipients, setRecipients] = useState("");
+    const [attachments, setAttachments] = useState([]);
+    const navigate = useNavigate();
 
-  const { emailAdminService } = backendService;
+    const { emailAdminService } = backendService;
 
-  useEffect(() => {
-    fetchTemplates();
-  }, []);
+    useEffect(() => {
+        fetchTemplates();
+    }, []);
 
-  const fetchTemplates = async () => {
-    try {
-      const response = await emailAdminService.getAllTemplates();
-      setTemplates(response);
-    } catch (err) {
-      console.error("Error fetching templates:", err);
-    }
-  };
+    const fetchTemplates = async () => {
+        try {
+            const response = await emailAdminService.getAllTemplates();
+            setTemplates(Array.isArray(response) ? response : []);
+        } catch (err) {
+            console.error("Error fetching templates:", err);
+        }
+    };
 
-  const handlePreview = () => {
-    setPreview(
-      `To: Example Contact <example@google.com>\nSubject: ${subject}\n\nHi Example,\n\n${body}`
-    );
-  };
+    const handleTemplateSelect = (templateID) => {
+        const selected = templates.find(
+            (t) => t.TemplateID.toString() === templateID
+        );
+        if (selected) {
+            setSubject(selected.Subject || "");
+            setBody(selected.Body || "");
+        }
+        setSelectedTemplate(templateID);
+    };
 
-  const handleSaveTemplate = async () => {
-    try {
-      await emailAdminService.saveTemplate(name, subject, body);
-      alert("Template saved successfully!");
-      fetchTemplates();
-    } catch (err) {
-      console.error("Error saving template:", err);
-    }
-  };
+    const handlePreview = () => {
+        setPreview(`To: ${recipients}\nSubject: ${subject}\n\n${body}`);
+    };
 
-  const handleDrag = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (event.type === "dragenter" || event.type === "dragover") {
-      setDragActive(true);
-    } else if (event.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
+    const handleSaveTemplate = async () => {
+        try {
+            await emailAdminService.saveTemplate(name, subject, body, tags);
+            alert("Template saved successfully!");
+            fetchTemplates();
+        } catch (err) {
+            console.error("Error saving template:", err);
+        }
+    };
 
-  const handleDrop = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setDragActive(false);
-    if (event.dataTransfer.files && event.dataTransfer.files[0]) {
-      setSelectedFile(event.dataTransfer.files[0]);
-    }
-  };
+    const handleSendEmail = async () => {
+        if (!recipients.trim() || !subject.trim() || !body.trim()) {
+            alert("All fields are required.");
+            return;
+        }
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+        const recipientList = recipients
+            .split(",")
+            .map((email) => email.trim());
 
-  const handleSendEmail = async () => {
-    try {
-      await emailAdminService.sendCustomEmail(
-        recipients.split(","),
-        subject,
-        body,
-        attachments
-      );
-      alert("Email sent successfully!");
-    } catch (err) {
-      console.error("Error sending email:", err);
-    }
-  };
+        try {
+            if (attachments.length > 0) {
+                await emailAdminService.sendEmailWithAttachment(
+                    recipientList,
+                    subject,
+                    body,
+                    attachments
+                );
+            } else {
+                await emailAdminService.sendCustomEmail(
+                    recipientList,
+                    subject,
+                    body
+                );
+            }
+            alert("Email sent successfully!");
+        } catch (err) {
+            alert("Failed to send email.");
+            console.error("Error sending email:", err);
+        }
+    };
 
-  const handleAttachmentChange = (e) => {
-    setAttachments([...e.target.files]);
-  };
+    return (
+        <div className="min-h-screen h-full bg-lightBlue">
+            <Navbar />
+            <div className="container mx-auto py-10">
+                <h1 className="text-3xl font-bold text-darkBlue mb-6">
+                    Email Management
+                </h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <Card className="rounded-xl shadow-md p-4">
+                        <CardContent>
+                            <h2 className="text-xl font-semibold text-darkGrey mb-4">
+                                Email Editor
+                            </h2>
+                            <div className="mb-4 flex flex-col">
+                                <label className="text-darkGrey">
+                                    Select Template
+                                </label>
+                                <select
+                                    onChange={(e) =>
+                                        handleTemplateSelect(e.target.value)
+                                    }
+                                    value={selectedTemplate}
+                                    className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
+                                >
+                                    <option value="">Select a template</option>
+                                    {templates.map((template) => (
+                                        <option
+                                            key={template.TemplateID}
+                                            value={template.TemplateID}
+                                        >
+                                            {template.Name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
-  return (
-    <div className="min-h-screen h-full bg-lightBlue">
-      <Navbar />
-      <div className="container mx-auto py-10">
-        <h1 className="text-3xl font-bold text-darkBlue mb-6">
-          Email Management
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Email Editor Section */}
-          <Card className="rounded-xl">
-            <CardContent>
-              <h2 className="text-xl font-semibold text-darkGrey mb-4">
-                Email Editor
-              </h2>
-              <div className="mb-4 flex flex-col">
-                <label className="text-darkGrey">Recipients</label>
-                <Input
-                  value={recipients}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
-                  onChange={(e) => setRecipients(e.target.value)}
-                  placeholder="Enter recipient emails (comma-separated)"
-                />
-              </div>
-              <div className="mb-4 flex flex-col">
-                <label className="text-darkGrey">Subject</label>
-                <Input
-                  value={subject}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Enter subject"
-                />
-              </div>
-              <div className="mb-4 flex flex-col">
-                <label className="text-darkGrey">Body</label>
-                <Textarea
-                  value={body}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
-                  onChange={(e) => setBody(e.target.value)}
-                  rows="5"
-                  placeholder="Enter email body"
-                />
-              </div>
-              <div
-                className={`mt-4 p-6 border-2  bg-lightBlue ${
-                  dragActive
-                    ? "border-darkBlue bg-lightBlue"
-                    : "border-gray-300 border-dashed"
-                } rounded-md flex flex-col items-center justify-center`}
-                onDragEnter={handleDrag}
-                onDragOver={handleDrag}
-                onDragLeave={handleDrag}
-                onDrop={handleDrop}
-              >
-                <p className="text-gray-600">
-                  {selectedFile
-                    ? `Selected File: ${selectedFile.name}`
-                    : "Upload your document here"}
-                </p>
-                <button
-                  className="mt-2 px-4 py-2 bg-darkBlue text-white rounded-md"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  Choose File
-                </button>
-                <Input
-                  id="fileInput"
-                  type="file"
-                  multiple
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </div>
-              <Button
-                onClick={handleSendEmail}
-                className="bg-yellow text-white mt-8 w-full"
-              >
-                Send Email
-              </Button>
-            </CardContent>
-          </Card>
+                            <Input
+                                placeholder="Recipients"
+                                value={recipients}
+                                onChange={(e) => setRecipients(e.target.value)}
+                                className="mb-4"
+                            />
+                            <Input
+                                placeholder="Subject"
+                                value={subject}
+                                onChange={(e) => setSubject(e.target.value)}
+                                className="mb-4"
+                            />
+                            <Textarea
+                                placeholder="Body"
+                                value={body}
+                                onChange={(e) => setBody(e.target.value)}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow mb-4"
+                            />
+                            <input
+                                type="file"
+                                multiple
+                                onChange={(e) =>
+                                    setAttachments([...e.target.files])
+                                }
+                                className="mb-4"
+                            />
 
-          {/* Template Management Section */}
-          <Card className="rounded-xl">
-            <CardContent>
-              <h2 className="text-xl font-semibold text-darkGrey mb-4">
-                Template Management
-              </h2>
-              <div className="mb-4 flex flex-col">
-                <label className="text-darkGrey">Template Name</label>
-                <Input
-                  value={name}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter template name"
-                />
-              </div>
-              <div className="mb-4 flex flex-col">
-                <label className="text-darkGrey">Folder</label>
-                <Input
-                  value={folder}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
-                  onChange={(e) => setFolder(e.target.value)}
-                  placeholder="Enter folder name"
-                />
-              </div>
-              <div className="mb-4 flex flex-col">
-                <label className="text-darkGrey">Tags</label>
-                <Input
-                  value={tags}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
-                  onChange={(e) => setTags(e.target.value)}
-                  placeholder="Enter tags"
-                />
-              </div>
-              <div className="mb-4 flex flex-col">
-                <label className="text-darkGrey">Owner</label>
-                <Input
-                  value={owner}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow"
-                  onChange={(e) => setOwner(e.target.value)}
-                  placeholder="Enter owner"
-                />
-              </div>
-              <Button
-                onClick={handleSaveTemplate}
-                className="bg-yellow text-white mr-4"
-              >
-                Save Template
-              </Button>
-              <Button
-                onClick={handlePreview}
-                className="bg-lightYellow text-darkGrey"
-              >
-                Preview Template
-              </Button>
-            </CardContent>
-          </Card>
+                            <Button
+                                onClick={handleSendEmail}
+                                className="bg-yellow text-white mt-6 w-full"
+                            >
+                                Send Email
+                            </Button>
+                        </CardContent>
+                    </Card>
 
-          {/* Sending test email */}
-          <Card className="col-span-2 rounded-xl">
-            <CardContent>
-              <h2 className="text-xl font-semibold text-darkGrey mb-4">
-                Template Preview
-              </h2>
-              <pre className="bg-white p-4 rounded-md border border-gray-300 whitespace-pre-wrap">
-                {preview || "Your email preview will appear here."}
-              </pre>
-              <Button
-                onClick={() => alert("Sending test email...")}
-                className="bg-yellow text-white mt-4"
-              >
-                Send Test Email To Me
-              </Button>
-            </CardContent>
-          </Card>
+                    <Card className="rounded-xl shadow-md p-4">
+                        <CardContent>
+                            <h2 className="text-xl font-semibold text-darkGrey mb-4">
+                                Template Management
+                            </h2>
+                            <div className="flex flex-col mb-4">
+                                <Input
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="Enter template name"
+                                    className="mb-2"
+                                />
+                                <Input
+                                    value={tags}
+                                    onChange={(e) => setTags(e.target.value)}
+                                    placeholder="Enter tags (comma-separated)"
+                                />
+                            </div>
+                            <Button
+                                onClick={handleSaveTemplate}
+                                className="bg-yellow text-white w-full"
+                            >
+                                Save Template
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+                <Card className="col-span-2 rounded-xl shadow-md mt-6 p-4">
+                    <CardContent>
+                        <h2 className="text-xl font-semibold text-darkGrey mb-4">
+                            Template Preview
+                        </h2>
+                        <pre className="bg-white p-4 rounded-md border border-gray-300 whitespace-pre-wrap">
+                            {preview || "Your email preview will appear here."}
+                        </pre>
+                        <Button
+                            onClick={handlePreview}
+                            className="bg-lightYellow text-darkGrey mt-4"
+                        >
+                            Preview Email
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+            <Footer />
         </div>
-      </div>
-
-      <Footer />
-    </div>
-  );
+    );
 };
 
 export default EmailAdmin;

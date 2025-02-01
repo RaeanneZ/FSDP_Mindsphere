@@ -11,7 +11,7 @@ class GroupEmailController {
             // Fetch users based on the group
             if (group === "all") {
                 const allUsers = await Account.getAllAccounts();
-                users = allUsers.filter((user) => user.RoleID === 2); // Only include standard users
+                users = allUsers.filter((user) => user.RoleID === 2);
             } else if (group === "inactive") {
                 users = await Account.getInactiveUsers();
             } else if (group === "courseParticipants" && progID) {
@@ -33,7 +33,7 @@ class GroupEmailController {
             // Send emails to each user in the group
             const emailPromises = users.map(async (user) => {
                 const personalizedBody = body.replace("{{name}}", user.Name);
-                await sendEmail({
+                await sendCustomEmail({
                     to: user.Email,
                     subject,
                     text: personalizedBody,
