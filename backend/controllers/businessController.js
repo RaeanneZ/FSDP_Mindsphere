@@ -98,9 +98,15 @@ const addBusiness = async (req, res) => {
         await request.query(sqlQuery);
 
         await sql.close();
+        console.log("EMAIL1",newBusiness.Email)
 
-
-        const sendStakeholderEmail = await stakeholderEmail.sendBusinessEmailStakeholder(newBusiness);
+        const sendEmailtoBusiness = await stakeholderEmail.sendEmailtoBusiness({
+            BusinessID: newBusiness.BusinessID,
+            orgName: newBusiness.orgName,
+            Name: newBusiness.Name,
+            Email: newBusiness.Email
+        });
+         const sendStakeholderEmail = await stakeholderEmail.sendBusinessEmailStakeholder(newBusiness);
 
         res.status(201).json({
             message: "Business added successfully",
@@ -108,6 +114,7 @@ const addBusiness = async (req, res) => {
             pdfPath: pdfPath,
             fileId: uploadedFileId,
             email: sendStakeholderEmail,
+            businessEmail: sendEmailtoBusiness,
             shareUrl: shareUrl,
         });
     } catch (err) {

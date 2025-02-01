@@ -184,7 +184,6 @@ class Business {
             throw err;
         }
     }
-    
 }
 
 module.exports = Business;
