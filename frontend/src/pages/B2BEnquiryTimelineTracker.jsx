@@ -61,45 +61,83 @@ const B2BEnquiryTimelineTracker = () => {
       }
     };
 
-    const fetchTimelineData = async () => {
-      try {
-        const response = await dashboardService.retrieveEnquiryTimeline(businessId);
-        console.log("Timeline Response:", response);
-        
-        if (response.success && response.data.length > 0) {
-          const mergedData = templateTimelineData.map((templateItem) => {
-            const matchedItem = response.data.find(
-              (item) => (item.Text || "Enquiry") === templateItem.Text
-            );
-            
-            
-            if (templateItem.Text === "Enquiry") {
-              return {
-                ...templateItem,
-                Text: "Enquiry",
-                createdDate: matchedItem?.createdDate || "To Be Added",
-                Tag: matchedItem?.Tag || "Incomplete", 
-                linkToPDF: matchedItem?.originalEnquiryPDFlink || matchedItem?.linkToPDF || "",
-              };
-            }
-            
-            return {
-              ...templateItem,
-              Text: matchedItem?.Text || templateItem.Text, 
-              createdDate: matchedItem?.createdDate || templateItem.createdDate, 
-              Tag: matchedItem?.Tag || templateItem.Tag, 
-              linkToPDF: matchedItem?.linkToPDF || templateItem.linkToPDF,
-            };
-          });
-    
-          setTimelineData(mergedData);
-        }
-      } catch (err) {
-        setError("Failed to fetch timeline data.");
-      } finally {
-        setLoading(false);
+
+
+    const fetchBusinessData = async () => {
+  try {
+    const response = await dashboardService.getBusinessEnquiries();
+    console.log("Business Enquiries Response:", response);
+
+    if (response) {
+      const business = response.find((b) => b.BusinessID === Number(businessId));
+      
+      if (business) {
+        setBusinessName(business.orgName);
+
+        return {
+          createdDate: business.createdAt,
+          Tag: business.enquiryStatus || "Incomplete",
+          linkToPDF: business.proposalPdfURL || "",
+        };
       }
-    };
+    }
+  } catch (err) {
+    console.error("Failed to fetch business data", err);
+  }
+  return null;
+};
+
+const fetchTimelineData = async () => {
+  try {
+    const businessData = await fetchBusinessData();
+    const response = await dashboardService.retrieveEnquiryTimeline(businessId);
+    console.log("Timeline Response:", response);
+
+    let mergedData;
+
+    if (response.success && response.data.length > 0) {
+      mergedData = templateTimelineData.map((templateItem) => {
+        const matchedItem = response.data.find((item) => item.Text === templateItem.Text);
+
+        if (templateItem.Text === "Enquiry") {
+          return {
+            ...templateItem,
+            createdDate: businessData?.createdDate || matchedItem?.createdDate || "To Be Added",
+            Tag: businessData?.Tag || matchedItem?.Tag || "Incomplete",
+            linkToPDF: businessData?.linkToPDF || matchedItem?.originalEnquiryPDFlink || matchedItem?.linkToPDF || "",
+          };
+        }
+
+        return {
+          ...templateItem,
+          createdDate: matchedItem?.createdDate || templateItem.createdDate,
+          Tag: matchedItem?.Tag || templateItem.Tag,
+          linkToPDF: matchedItem?.linkToPDF || templateItem.linkToPDF,
+        };
+      });
+    } else {
+      // Use template data but update the Enquiry box with business data
+      mergedData = templateTimelineData.map((item) =>
+        item.Text === "Enquiry"
+          ? {
+              ...item,
+              createdDate: businessData?.createdDate || "To Be Added",
+              Tag: businessData?.Tag || "Incomplete",
+              linkToPDF: businessData?.linkToPDF || "",
+            }
+          : item
+      );
+    }
+
+    setTimelineData(mergedData);
+  } catch (err) {
+    setError("Failed to fetch timeline data.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+    
     
     
 
