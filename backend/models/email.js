@@ -11,6 +11,37 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+async function sendEmail(emailData) {
+    try {
+      const { to, subject, text, attachments } = emailData;
+  
+      // Log to debug the data being passed
+      console.log("Email Data:", emailData);
+  
+      if (!to) {
+        throw new Error("Recipients (to) field is required.");
+      }
+  
+      const mailOptions = {
+        from: {
+          address: "mindspheredp@gmail.com",
+          name: "Mindsphere",
+        },
+        to, // Make sure this is not empty
+        subject,
+        text,
+        attachments,
+      };
+  
+      const result = await transporter.sendMail(mailOptions);
+      console.log("Email sent:", result);
+      return result;
+    } catch (error) {
+      console.error("ModelError: Error sending email:", error);
+      throw error;
+    }
+  }
+
 const sendCustomEmail = async ({ to, subject, text, attachments }) => {
     try {
         let mailOptions = {
@@ -45,4 +76,4 @@ async function sendEmailHTML(emailData) {
     }
 }
 
-module.exports = { sendCustomEmail, sendEmailHTML };
+module.exports = { sendEmail, sendCustomEmail, sendEmailHTML };
