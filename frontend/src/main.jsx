@@ -36,6 +36,8 @@ import AdminConsultationSummaryPage from "./pages/AdminConsultationSummaryPage.j
 import BookingPage from "./pages/BookingPage.jsx";
 import VideoCall from "./components/VideoCall.jsx";
 import Layout from "./components/Layout.jsx";
+import EmailAdmin from "./pages/EmailAdmin.jsx";
+import MediaPage from "./pages/MediaPage.jsx";
 
 // Define a function to track pages
 const trackPage = (page) => {
@@ -77,6 +79,7 @@ const router = createBrowserRouter([
       { path: "products", element: <ProductPage /> },
       { path: "businessEnquiry", element: <BusinessForm /> },
       { path: "about", element: <AboutPage /> },
+      { path: "media", element: <MediaPage />}
       // Add other routes
     ],
   },
@@ -161,6 +164,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/email",
+    element: <EmailAdmin />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/timeline",
     element: <B2BEnquiryTimelineTracker />,
     errorElement: <ErrorPage />,
@@ -181,109 +189,6 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 ]);
-
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <LandingPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/login",
-//     element: <LoginPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/signup",
-//     element: <SignupPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/personalisation",
-//     element: <PersonalisationCoverPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/accountSetup",
-//     element: <AccountManagementPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/childPageContainer",
-//     element: <ChildrenPageContainer />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/accountSetup/childSection",
-//     element: <ChildrenInfoHeader />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/accountSetup/childName",
-//     element: <ChildrenNamePage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/accountSetup/childFav",
-//     element: <ChildrenFavPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/accountSetup/childAmbition",
-//     element: <ChildrenAmbition />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/welcome",
-//     element: <CompleteSignupMsgPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/products",
-//     element: <ProductPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/businessEnquiry",
-//     element: <BusinessForm />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/review",
-//     element: <ReviewPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/payment",
-//     element: <PaymentPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/accountmanagement",
-//     element: <AccountDashboardPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/survey",
-//     element: <SurveyPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/about",
-//     element: <AboutPage />,
-//     errorElement: <ErrorPage />,
-//   },
-//   {
-//     path: "/admin",
-//     element: <AdminForm />,
-//     errorElement: <ErrorPage />,
-//   },
-//   // {
-//   //   path: "/adminPanel",
-//   //   element: <AdminPanel />,
-//   //   errorElement: <ErrorPage />,
-//   // },
-// ]);
 
 const MainApp = () => {
   const [autoOpenMessage, setAutoOpenMessage] = useState(null);

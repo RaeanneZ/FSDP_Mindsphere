@@ -30,13 +30,15 @@ const addEnquiryTimeline = async (req, res) => {
     try {
         const { BusinessID, Text, Tag } = req.body;
 
+        console.log("Received file:", req.file);
+
         if (!req.file) {
             return res.status(400).send("No file uploaded.");
         }
 
         const connection = await sql.connect(dbConfig);
         const request = connection.request();
-        const query = `SELECT orgName, CreatedAt, Email FROM Businesses WHERE BusinessID = @BusinessID`;
+        const query = `SELECT orgName, CreatedAt, Email, proposalPdfURL FROM Businesses WHERE BusinessID = @BusinessID`;
         request.input("BusinessID", sql.Int, BusinessID);
 
         const result = await request.query(query);
@@ -46,8 +48,9 @@ const addEnquiryTimeline = async (req, res) => {
             return res.status(404).send("Business not found.");
         }
 
-        const { orgName, CreatedAt, Email } = result.recordset[0];
-        const formattedDate = new Date(CreatedAt).toISOString().split("T")[0];
+        const { orgName, CreatedAt, Email, proposalPdfURL} = result.recordset[0];
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
         const sanitizedBusinessName = orgName.replace(/[^a-z0-9]/gi, "_");
 
         const targetFolder = path.join(
@@ -79,11 +82,13 @@ const addEnquiryTimeline = async (req, res) => {
             Text,
             Tag,
             linkToPDF: shareUrl,
+            originalEnquiryPDFlink: proposalPdfURL
         };
 
         const insertedEnquiry = await enquiryTimeline.addEnquiryTimeline(enquiryData);
 
         await stakeholderEmailController.sendBusinessEmailUpdatedEnquiry({
+            BusinessID,
             orgName,
             Email,
             Text,

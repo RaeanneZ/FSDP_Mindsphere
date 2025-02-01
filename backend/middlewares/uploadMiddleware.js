@@ -7,11 +7,11 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName); // Because you need unique names
+        cb(null, uniqueName);
     },
 });
 
-// Filter file types like pdf and images and others
+// File type filter (allowing PDF, JPEG, PNG)
 const fileFilter = (req, file, cb) => {
     const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
     if (allowedTypes.includes(file.mimetype)) {
@@ -23,11 +23,15 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Maximum file size
+// Define multer instance
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, //5mb
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file limit
     fileFilter: fileFilter,
 });
 
-module.exports = upload;
+// ✅ Fix: Export `upload` correctly as an object
+module.exports = {
+    single: upload.single("attachment"), // For single file uploads
+    multiple: upload.array("attachments", 5), // For multiple file uploads (max 5)
+};

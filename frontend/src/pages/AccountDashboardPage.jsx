@@ -39,7 +39,7 @@ const AccountDashboardPage = () => {
     const storedEmail = sessionStorage.getItem("AccountEmail");
 
     if (storedEmail === null) {
-      navigate("/login"); // Redirect to login page
+      navigate("/accountEntry"); // Redirect to login page
     } else {
       setEmail(storedEmail);
       console.log("The stored email is: ", storedEmail);
@@ -272,6 +272,7 @@ const AccountDashboardPage = () => {
         <AccountOverview
           accountdata={accountData}
           bookingdata={regCoursesData}
+          childrenData={originalChildrenData}
         />
 
         {/* Modal for Success Message */}

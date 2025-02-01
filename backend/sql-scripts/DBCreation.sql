@@ -109,6 +109,14 @@ GO
 IF EXISTS (SELECT * FROM sysobjects WHERE name = 'SalesPendingPayment' AND xtype = 'V')
     DROP VIEW SalesPendingPayment;
 GO
+
+if exists (select * from sysobjects where name = 'trg_CompleteEnquiry' and xtype = 'V')
+	drop trigger trg_CompleteEnquiry;
+go
+
+if exists (select * from sysobjects where name = 'trg_UpdateEnquiryStatus' and xtype = 'V')
+	drop trigger trg_UpdateEnquiryStatus;
+go
 -------------------------------------------------------------------------------------------------------------
 
 
@@ -133,9 +141,7 @@ CREATE TABLE Account (
 	relationshipToChild varchar(255) null,
 	RoleID int null default 2,
 	Salt varchar(255) null, 
-	HashedPassword varchar(255) null, 
-	LinkedInSub varchar(255) NOT NULL, -- Unique LinkedIn identifier
-	LinkedInAccessToken varchar(255) NOT NULL, -- Access token storage
+	HashedPassword varchar(255) null, -- Linkedin Account Password will use the Unique Identifier 'Sub'
 	constraint PK_Account primary key (AccID),
 	constraint FK_Account_RoleID foreign key (RoleID) references Roles(RoleID),
 	constraint CHK_MemberStatus check (memberStatus in ('Active','Inactive','Pending'))
@@ -193,6 +199,7 @@ create table Businesses (
 	helpText varchar(1000),
 	callbackRequest datetime not null,
 	enquiryStatus varchar(50) not null default ('New Enquiry'),
+	proposalPdfURL varchar(255) null,
 	createdAt DATETIME NOT NULL DEFAULT GETDATE(),
 	constraint PK_Business primary key (BusinessID),
 	constraint CHK_Status check (enquiryStatus in ('New Enquiry', 'In Progress', 'Confirmed', 'Completed'))
@@ -205,6 +212,7 @@ create table enquiryTimeline (
 	Text varchar(255) not null,
 	tag varchar(50) not null,
 	linkToPDF varchar(255) null,
+	originalEnquiryPDFlink varchar(255) null,
 	createdDate datetime not null default getdate(),
 	constraint PK_enquiryTimeline primary key (TimelineID),
 	constraint FK_enquiryTimeline foreign key (BusinessID) references Businesses(BusinessID)
@@ -321,7 +329,8 @@ CREATE TABLE EmailTemplates (
     Subject NVARCHAR(255) NOT NULL,
     Body NVARCHAR(MAX) NOT NULL,
     CreatedBy NVARCHAR(255) NOT NULL,
-    CreatedAt DATETIME DEFAULT GETDATE()
+    CreatedAt DATETIME DEFAULT GETDATE(),
+	Tags VARCHAR(255) NULL
 );
 
 CREATE TABLE Meetings (
@@ -418,6 +427,55 @@ where
 
 go
 
+------------------------------------------------------------------------------------------------------------
+-- triggers
+CREATE TRIGGER trg_CompleteEnquiry
+ON enquiryTimeline
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Only proceed if the inserted row has tag = 'Completed'
+    IF EXISTS (SELECT 1 FROM inserted WHERE tag = 'Completed')
+    BEGIN
+        -- Update Businesses table's enquiryStatus to 'Completed'
+        UPDATE B
+        SET B.enquiryStatus = 'Completed'
+        FROM Businesses B
+        INNER JOIN inserted I ON B.BusinessID = I.BusinessID
+        WHERE I.tag = 'Completed';
+
+        -- Prevent unnecessary updates to enquiryTimeline
+        UPDATE ET
+        SET ET.tag = 'Completed'
+        FROM enquiryTimeline ET
+        WHERE ET.BusinessID IN (SELECT BusinessID FROM inserted WHERE tag = 'Completed')
+        AND ET.tag <> 'Completed';  -- Only update rows that are not already 'Completed'
+    END;
+END;
+GO
+
+CREATE TRIGGER trg_UpdateEnquiryStatus
+ON enquiryTimeline
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Update enquiryStatus in Businesses table when a new row is added to enquiryTimeline
+    UPDATE Businesses
+    SET enquiryStatus = 'In Progress'
+    FROM Businesses b
+    INNER JOIN inserted i ON b.BusinessID = i.BusinessID
+    WHERE b.enquiryStatus = 'New Enquiry'; -- Update only if it's still 'New Enquiry'
+END;
+GO
+
+
+
+
+
 -------------------------------------------------------------------------------------------------------------
 
 -- Insert data into Roles
@@ -426,19 +484,19 @@ INSERT INTO Roles (RoleID, Name) VALUES
 (2, 'User');
 
 -- Insert data into Account
-INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address, dateOfBirth, relationshipToChild, RoleID, Salt, HashedPassword, LinkedInSub, LinkedInAccessToken) VALUES
-('John Doe', 'johndoe@example.com', '12345678', 'Active', '2025-12-31', '123 Main St, Springfield, IL', '1990-01-01', 'Father', 2, 'randomsalt1', 'hashedpassword1', '', ''),
-('Jane Smith', 'janesmith@example.com', '23456789', 'Inactive', NULL, '456 Elm St, Springfield, IL', '1985-02-15', 'Mother', 2, 'randomsalt2', 'hashedpassword2', '', ''),
-('Mark Evans', 'markevans@example.com', '34567890', 'Pending', NULL, '789 Oak St, Springfield, IL', '1992-03-22', 'Guardian', 2, 'randomsalt3', 'hashedpassword3', '', ''),
-('Lucy Gray', 'lucygray@example.com', '45678901', 'Active', '2026-01-01', '321 Pine St, Springfield, IL', '1995-04-10', 'Mother', 2, 'randomsalt4', 'hashedpassword4', '', ''),
-('Emma White', 'emmawhite@example.com', '56789012', 'Active', '2025-11-15', '654 Cedar St, Springfield, IL', '1991-05-05', 'Guardian', 2, 'randomsalt5', 'hashedpassword5', '', ''),
-('Bob', 'iamjovantan@gmail.com', '67890123', 'Pending', NULL, '987 Birch St, Springfield, IL', '1988-06-30', 'Father', 2, 'randomsalt6', 'hashedpassword6', '', ''),
-('Nancy Blue', 'nancyblue@example.com', '78901234', 'Active', '2025-12-15', '159 Maple St, Springfield, IL', '1994-07-25', 'Mother', 2, 'randomsalt7', 'hashedpassword7', '', ''),
-('Oliver Red', 'oliverred@example.com', '89012345', 'Active', '2025-10-05', '753 Walnut St, Springfield, IL', '1986-08-20', 'Father', 2, 'randomsalt8', 'hashedpassword8', '', ''),
-('Chris Green', 'chrisgreen@example.com', '90123456', 'Inactive', NULL, '951 Ash St, Springfield, IL', '1993-09-15', 'Guardian', 2, 'randomsalt9', 'hashedpassword9', '', ''),
-('Sophia Brown', 'sophiabrown@example.com', '01234567', 'Active', '2026-05-20', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt10', 'hashedpassword10', '', ''),
-('Jovan Tan', 's10259920@connect.np.edu.sg', '12121212', 'Active', '2026-04-03', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt11', 'hashedpassword11', '', ''),
-('Admin', 'admin@gmail.com', '99008833', NULL, NULL, '9876 Fake St, Imaginary City, IC', '2000-12-25', NULL, 1, '$2b$10$IIJkOdfcvizT0Q2uCmw5QO', '$2b$10$IIJkOdfcvizT0Q2uCmw5QODYi5TYzkE3t2QrwBx8rlwp5TirPu7wW', '', '');
+INSERT INTO Account (Name, Email, ContactNo, memberStatus, memberExpiry, address, dateOfBirth, relationshipToChild, RoleID, Salt, HashedPassword) VALUES
+('John Doe', 'johndoe@example.com', '12345678', 'Active', '2025-12-31', '123 Main St, Springfield, IL', '1990-01-01', 'Father', 2, 'randomsalt1', 'hashedpassword1'),
+('Jane Smith', 'janesmith@example.com', '23456789', 'Inactive', NULL, '456 Elm St, Springfield, IL', '1985-02-15', 'Mother', 2, 'randomsalt2', 'hashedpassword2'),
+('Mark Evans', 'markevans@example.com', '34567890', 'Pending', NULL, '789 Oak St, Springfield, IL', '1992-03-22', 'Guardian', 2, 'randomsalt3', 'hashedpassword3'),
+('Lucy Gray', 'lucygray@example.com', '45678901', 'Active', '2026-01-01', '321 Pine St, Springfield, IL', '1995-04-10', 'Mother', 2, 'randomsalt4', 'hashedpassword4'),
+('Emma White', 'emmawhite@example.com', '56789012', 'Active', '2025-11-15', '654 Cedar St, Springfield, IL', '1991-05-05', 'Guardian', 2, 'randomsalt5', 'hashedpassword5'),
+('Bob', 'iamjovantan@gmail.com', '67890123', 'Pending', NULL, '987 Birch St, Springfield, IL', '1988-06-30', 'Father', 2, 'randomsalt6', 'hashedpassword6'),
+('Nancy Blue', 'nancyblue@example.com', '78901234', 'Active', '2025-12-15', '159 Maple St, Springfield, IL', '1994-07-25', 'Mother', 2, 'randomsalt7', 'hashedpassword7'),
+('Oliver Red', 'oliverred@example.com', '89012345', 'Active', '2025-10-05', '753 Walnut St, Springfield, IL', '1986-08-20', 'Father', 2, 'randomsalt8', 'hashedpassword8'),
+('Chris Green', 'chrisgreen@example.com', '90123456', 'Inactive', NULL, '951 Ash St, Springfield, IL', '1993-09-15', 'Guardian', 2, 'randomsalt9', 'hashedpassword9'),
+('Sophia Brown', 'sophiabrown@example.com', '01234567', 'Active', '2026-05-20', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, 'randomsalt10', 'hashedpassword10'),
+('Jovan Tan', 's10259920@connect.np.edu.sg', '12121212', 'Active', '2026-04-03', '357 Spruce St, Springfield, IL', '1990-10-12', 'Mother', 2, '', ''),
+('Admin', 'admin@gmail.com', '99008833', NULL, NULL, '9876 Fake St, Imaginary City, IC', '2000-12-25', NULL, 1, '$2b$10$IIJkOdfcvizT0Q2uCmw5QO', '$2b$10$IIJkOdfcvizT0Q2uCmw5QODYi5TYzkE3t2QrwBx8rlwp5TirPu7wW');
 
 -- Insert data into Children
 INSERT INTO Children (GuardianEmail, Name, Gender, Dob, Needs, School, Interests) VALUES
@@ -513,9 +571,9 @@ INSERT INTO ProgrammeFeedback (ProgID, AccID, FdbkDesc) VALUES
 
 -- Insert data into ProgrammeSchedule
 INSERT INTO ProgrammeSchedule (ProgID, DateStart, DateEnd, Venue, TotalSeats) VALUES
-(1, '2024-11-18 09:00:00', '2024-11-18 17:00:00', 'Community Hall A', 20),
-(2, '2024-11-18 10:00:00', '2024-11-18 16:00:00', 'School Auditorium', 20),
-(3, '2024-11-18 08:30:00', '2024-11-18 18:00:00', 'Activity Centre', 15);
+(1, '2025-11-18 09:00:00', '2025-11-18 17:00:00', 'Community Hall A', 20),
+(2, '2025-11-18 10:00:00', '2025-11-18 16:00:00', 'School Auditorium', 20),
+(3, '2025-11-18 08:30:00', '2025-11-18 18:00:00', 'Activity Centre', 15);
 
 -- Insert data into Bookings
 INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, Diet, SchedID, NumSeats, TransacID, SpecialReq, BookingDate) VALUES
@@ -545,3 +603,5 @@ INSERT INTO Bookings (Name, Email, ContactNo, TierID, ProgID, childrenDetails, D
 INSERT INTO WhatsappUsers (Name, phoneNum)
 VALUES ('Neil Hadziq', '+6589217943');
 
+/*INSERT INTO AccountVerification (Email, verifCode)
+VALUES ('redzhiyao2012@gmail.com', '121212')*/

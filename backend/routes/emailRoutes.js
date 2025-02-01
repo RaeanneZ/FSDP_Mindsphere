@@ -29,15 +29,23 @@ router.delete(
 );
 
 // Route to send a simple email (admin only)
-router.post("/send", verifyJWT, authorizeAdmin, EmailController.sendEmail);
+router.post(
+    "/send",
+    verifyJWT,
+    authorizeAdmin,
+    EmailController.sendCustomEmail
+);
 
 // Route to send an email with an attachment (admin only)
 router.post(
     "/send-with-attachment",
     verifyJWT,
     authorizeAdmin,
-    upload.single("attachment"), // Handles single file uploads
+    upload.multiple, // Handles single file uploads
     EmailController.sendEmailWithAttachment
 );
+router.get("/drafts", verifyJWT, authorizeAdmin, EmailController.getDrafts);
+
+router.post("/save-draft", verifyJWT, EmailController.saveDraft);
 
 module.exports = router;

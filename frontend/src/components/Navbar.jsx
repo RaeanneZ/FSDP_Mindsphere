@@ -45,6 +45,12 @@ const Navbar = () => {
           <a href="https://drive.google.com" className="hover:text-gray-900">
             Drive
           </a>
+          <a href="/B2BManagement" className="hover:text-gray-900">
+            Managing Business
+          </a>
+          <a href="/email" className="hover:text-gray-900">
+            eDMs
+          </a>
         </>
       );
     } else {
@@ -65,7 +71,7 @@ const Navbar = () => {
           <a href="/businessEnquiry" className="hover:text-gray-900">
             Business Enquiry
           </a>
-          <a href="#" className="hover:text-gray-900">
+          <a href="/media" className="hover:text-gray-900">
             Media
           </a>
         </>
@@ -107,7 +113,10 @@ const Navbar = () => {
             </div>
           ) : (
             <a href="/accountEntry">
-              <button className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600">
+              <button
+                className="bg-yellow text-white px-4 py-2 rounded-full hover:bg-yellow-600"
+                onClick={sessionStorage.setItem("signup", "false")}
+              >
                 <FontAwesomeIcon icon={faUser} className="pr-2" />
                 Login
               </button>
@@ -134,25 +143,6 @@ const Navbar = () => {
             <FontAwesomeIcon className="text-xl" icon={faTimes} />
           </button>
           <nav className="flex flex-col space-y-4 text-gray-700 text-lg">
-            <a href="#" className="hover:text-gray-900">
-              Home
-            </a>
-            <a href="/about" className="hover:text-gray-900">
-              About Us
-            </a>
-            <a href="#" className="hover:text-gray-900">
-              CSR
-            </a>
-            <a href="/products" className="hover:text-gray-900">
-              Programmes
-            </a>
-            <a href="/businessEnquiry" className="hover:text-gray-900">
-              Business Enquiry
-            </a>
-            <a href="#" className="hover:text-gray-900">
-              Media
-            </a>
-
             {renderLinks()}
 
             {loggedIn ? (

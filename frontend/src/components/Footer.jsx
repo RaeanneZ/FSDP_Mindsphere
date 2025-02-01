@@ -6,26 +6,60 @@ import {
   faLinkedin,
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
+import { useAuth } from "../contexts/AuthContext";
 
 const Footer = () => {
-  return (
-    <div className="text-center w-full h-full mb-10">
-      <img
-        src={mindsphere}
-        alt="MindSphere logo"
-        className="mx-auto my-4"
-        width={200}
-      />
-      <nav className="my-4">
-        <ul className="flex justify-center space-x-8 text-lg">
+  const email = sessionStorage.getItem("AccountEmail") || "";
+  const { loggedIn } = useAuth();
+
+  // Helper function to render footer links based on user role
+  const renderLinks = () => {
+    if (email === "admin@gmail.com") {
+      return (
+        <>
+          <li>
+            <a href="/consultationSummary" className="hover:text-gray-600">
+              Consultations
+            </a>
+          </li>
+          <li>
+            <a href="/admin" className="hover:text-gray-600">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="https://drive.google.com" className="hover:text-gray-600">
+              Drive
+            </a>
+          </li>
+          <li>
+            <a href="/B2BManagement" className="hover:text-gray-600">
+              Managing Business
+            </a>
+          </li>
+          <li>
+            <a href="/email" className="hover:text-gray-600">
+              eDMs
+            </a>
+          </li>
+        </>
+      );
+    } else {
+      return (
+        <>
           <li>
             <a href="/" className="hover:text-gray-600">
               Home
             </a>
           </li>
           <li>
-            <a href="#" className="hover:text-gray-600">
+            <a href="/about" className="hover:text-gray-600">
               About Us
+            </a>
+          </li>
+          <li>
+            <a href="#" className="hover:text-gray-600">
+              CSR
             </a>
           </li>
           <li>
@@ -34,10 +68,31 @@ const Footer = () => {
             </a>
           </li>
           <li>
-            <a href="#" className="hover:text-gray-600">
-              Privacy Policy
+            <a href="/businessEnquiry" className="hover:text-gray-600">
+              Business Enquiry
             </a>
           </li>
+          <li>
+            <a href="/media" className="hover:text-gray-600">
+              Media
+            </a>
+          </li>
+        </>
+      );
+    }
+  };
+
+  return (
+    <div className="text-center w-full h-full pb-10">
+      <img
+        src={mindsphere}
+        alt="MindSphere logo"
+        className="mx-auto my-4"
+        width={200}
+      />
+      <nav className="my-4">
+        <ul className="flex justify-center space-x-8 text-lg">
+          {renderLinks()}
         </ul>
       </nav>
       <footer className="mt-8">

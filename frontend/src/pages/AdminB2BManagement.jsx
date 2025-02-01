@@ -1,11 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import backendService from "../utils/backendService";
 import { introBg } from "../utils";
 
 const AdminB2BManagement = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const [businessOptions, setBusinessOptions] = useState([]);
+  const [selectedBusinessID, setSelectedBusinessID] = useState();
+  const [tag, setTag] = useState("Incomplete");
+  const [text, setText] = useState("");
+  const { dashboardService } = backendService;
+
+  useEffect(() => {
+    const fetchBusinessEnquiries = async () => {
+      try {
+        const businesses = await dashboardService.getBusinessEnquiries();
+        setBusinessOptions(businesses);
+      } catch (error) {
+        console.error("Error fetching business enquiries:", error);
+      }
+    };
+    fetchBusinessEnquiries();
+  }, []);
+
+  console.log(businessOptions);
 
   const handleDrag = (event) => {
     event.preventDefault();
@@ -30,26 +50,29 @@ const AdminB2BManagement = () => {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleSubmit = () => {
-    if (selectedFile) {
-      // Send the file to the backend using a POST request.
-      const formData = new FormData();
-      formData.append("file", selectedFile);
+  const handleSubmit = async () => {
+    if (!selectedBusinessID) {
+      alert("Please select a business before submitting!");
+      return;
+    }
 
-      // Put it to the backend
-      fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("File uploaded successfully:", data);
-        })
-        .catch((error) => {
-          console.error("Error uploading file:", error);
-        });
-    } else {
-      alert("Please select a file before submitting!");
+    const formData = new FormData();
+    if (selectedFile) {
+      formData.append("file", selectedFile);
+    }
+
+    try {
+      console.log(selectedBusinessID);
+      await dashboardService.addEnquiryTimeline(
+        formData,
+        selectedBusinessID,
+        text,
+        tag
+      );
+      alert("Enquiry submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting enquiry:", error);
+      alert("Error submitting enquiry. Please try again.");
     }
   };
 
@@ -60,48 +83,51 @@ const AdminB2BManagement = () => {
         className="bg-cover flex justify-center items-center"
         style={{ backgroundImage: `url(${introBg})` }}
       >
-        <div className="max-w-2xl mx-auto p-6 space-y-6">
+        <div className="max-w-2xl w-full p-6 space-y-6">
           <h1 className="text-2xl font-bold">B2B Enquiries</h1>
           {/* This is to target Business */}
           <div>
             <label className="block text-sm font-medium">Business Name</label>
-            <select className="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow">
+            <select
+              className="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow"
+              onChange={(e) => setSelectedBusinessID(e.target.value)}
+              value={selectedBusinessID}
+            >
               <option>Select Business</option>
-              <option>Business A</option>
-              <option>Business B</option>
+              {businessOptions.map((business) => (
+                <option key={business.BusinessID} value={business.BusinessID}>
+                  {business.orgName}
+                </option>
+              ))}
             </select>
-          </div>
-
-          {/* Documents relating to the Business */}
-          <div className="pt-6">
-            <h2 className="text-lg font-semibold">Current Documents</h2>
-            <div className="flex space-x-4 mt-3">
-              {["Client Enquiry", "Proposal", "Payment Form"].map(
-                (doc, idx) => (
-                  <div
-                    key={idx}
-                    className="px-6 py-4 bg-gray-100 rounded-md shadow hover:shadow-lg transition"
-                  >
-                    <p className="font-medium">{doc}</p>
-                    <a href="#" className="text-blue-600 hover:underline">
-                      View Document Here
-                    </a>
-                  </div>
-                )
-              )}
-            </div>
           </div>
 
           {/* Upload document for business */}
           <div className="py-6">
             <h2 className="text-lg font-semibold">Upload Document</h2>
-            <select className="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow">
-              <option>Document Name</option>
-              <option>Enquiry</option>
-              <option>Proposal Draft</option>
-              <option>Final Proposal</option>
-              <option>Payment Form</option>
+            {/* This is for the tag */}
+            <select
+              className="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow"
+              onChange={(e) => setTag(e.target.value)}
+              value={tag}
+            >
+              <option value="Incomplete">Incomplete</option>
+              <option value="Pending">Pending</option>
+              <option value="Complete">Complete</option>
             </select>
+
+            {/* This is for the text */}
+            <select
+              className="w-full mt-2 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            >
+            <option value="Proposal Draft">Proposal Draft</option>
+            <option value="Finalized Proposal">Finalized Proposal</option>
+            <option value="Payment Form">Payment Form</option>
+            </select>
+
+            {/* This is for the upload document */}
             <div
               className={`mt-4 p-6 border-2  bg-lightBlue ${
                 dragActive

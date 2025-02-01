@@ -1,6 +1,8 @@
 const EmailTemplateModel = require("../models/emailTemplateModel");
 const EmailLogModel = require("../models/emailLogModel");
-const { sendEmail } = require("../models/email");
+const DraftModel = require("../models/draftModel");
+const { sendCustomEmail } = require("../models/email");
+const emailModel = require("../models/email");
 const fs = require("fs");
 const path = require("path");
 
@@ -8,13 +10,31 @@ class EmailController {
     // Create a new email template
     static async createTemplate(req, res) {
         try {
-            const { name, subject, body, createdBy } = req.body;
+            const { name, subject, body, tags } = req.body;
+            const createdBy = req.account?.email; // Extract admin email from JWT
+
+            console.log("Received Template Data:", {
+                name,
+                subject,
+                body,
+                tags,
+                createdBy,
+            });
+
+            if (!createdBy) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Error: CreatedBy (Admin email) is required.",
+                });
+            }
+
             await EmailTemplateModel.createTemplate(
                 name,
                 subject,
                 body,
-                createdBy
-            );
+                createdBy,
+                tags || ""
+            ); // Ensure it's not undefined
             return res.status(201).json({
                 success: true,
                 message: "Template created successfully.",
@@ -29,7 +49,6 @@ class EmailController {
         }
     }
 
-    // Retrieve all templates
     static async getTemplates(req, res) {
         try {
             const templates = await EmailTemplateModel.getTemplates();
@@ -63,90 +82,139 @@ class EmailController {
         }
     }
 
-    // Send a basic email without attachments
-    static async sendEmail(req, res) {
+    static async getDrafts(req, res) {
         try {
-            const { recipient, subject, body, sentBy } = req.body;
-            await sendEmail({ to: recipient, subject, text: body });
-            await EmailLogModel.logEmail(recipient, subject, body, sentBy);
-            return res.status(200).json({
+            const drafts = await DraftModel.getAllDrafts();
+            res.status(200).json(drafts);
+        } catch (error) {
+            console.error("ControllerError: Error fetching drafts:", error);
+            res.status(500).json({ message: "Error fetching drafts", error });
+        }
+    }
+
+    static async saveDraft(req, res) {
+        try {
+            const { subject, body, recipient, attachment } = req.body;
+
+            console.log("Received Draft Data:", {
+                subject,
+                body,
+                recipient,
+                attachment,
+            });
+
+            const result = await DraftModel.saveDraft(
+                subject,
+                body,
+                attachment,
+                recipient
+            );
+
+            return res.status(201).json({
                 success: true,
-                message: "Email sent successfully.",
+                message: "Draft saved successfully.",
+                data: result,
+            });
+        } catch (error) {
+            console.error("ControllerError: Error saving draft:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Failed to save draft.",
+                error: error.message,
+            });
+        }
+    }
+
+    // Send a basic email without attachments
+    static async sendCustomEmail(req, res) {
+        try {
+            console.log("Received email data:", req.body); // Debugging
+
+            const { recipients, subject, body } = req.body;
+
+            if (!recipients || recipients.length === 0) {
+                return res
+                    .status(400)
+                    .json({ error: "Recipients (to) field is required." });
+            }
+
+            // Ensure recipients is an array
+            const recipientList = Array.isArray(recipients)
+                ? recipients
+                : [recipients];
+
+            const emailData = {
+                to: recipientList,
+                subject,
+                text: body,
+            };
+
+            console.log("Sending Email:", emailData); // Debugging
+
+            // Call the model function to send the email
+            const response = await emailModel.sendCustomEmail(emailData);
+
+            res.status(200).json({
+                message: "Email sent successfully!",
+                response,
             });
         } catch (error) {
             console.error("ControllerError: Error sending email:", error);
-            return res.status(500).json({
-                success: false,
-                message: "Failed to send email.",
-                error: error.message,
-            });
+            res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
     // Send an email with optional attachments
     static async sendEmailWithAttachment(req, res) {
         try {
-            const { to, subject, body } = req.body;
+            const { recipients, subject, body } = req.body;
 
-            // Construct the email options
-            const emailOptions = {
-                to,
-                subject,
-                text: body,
-                attachments: [],
-            };
+            console.log("Received Request Data:", req.body);
+            console.log("Uploaded Files:", req.files); // ✅ Debugging
 
-            // Check if a file was uploaded
-            if (req.file) {
-                // Resolve the file path
-                const filePath = path.resolve("uploads", req.file.filename);
-
-                // Add debug logs to check file existence
-                console.log("Looking for file at:", filePath);
-                console.log("Does file exist?", fs.existsSync(filePath));
-
-                // If the file exists, add it to attachments
-                if (!fs.existsSync(filePath)) {
-                    console.error("File does not exist at path:", filePath);
-                    return res.status(400).json({
-                        success: false,
-                        message: "Attachment file not found.",
-                    });
-                }
-
-                emailOptions.attachments.push({
-                    filename: req.file.filename,
-                    path: filePath, // Use absolute path
-                    contentType: req.file.mimetype,
-                });
+            if (!recipients || recipients.length === 0) {
+                return res
+                    .status(400)
+                    .json({ error: "Recipients (to) field is required." });
             }
 
-            // Send the email
-            const result = await sendEmail(emailOptions);
+            const recipientList = Array.isArray(recipients)
+                ? recipients
+                : [recipients];
 
-            // Log the email in EmailLogs
-            await EmailLogModel.logEmail(
-                to,
+            // ✅ Handle attachments correctly
+            let attachments = [];
+            if (req.files) {
+                attachments = req.files.map((file) => ({
+                    filename: file.originalname,
+                    path: file.path,
+                    contentType: file.mimetype,
+                }));
+            }
+
+            // Construct email data
+            const emailData = {
+                to: recipientList,
                 subject,
-                body + (req.file ? ` (Attachment: ${req.file.filename})` : ""),
-                req.account.email // Sent by the logged-in user
-            );
+                text: body,
+                attachments, // Attach files
+            };
 
-            return res.status(200).json({
-                success: true,
-                message: "Email sent successfully.",
-                result,
+            console.log("Sending Email:", emailData);
+
+            // Call email model to send email
+            const response = await sendCustomEmail(emailData);
+
+            res.status(200).json({
+                message: "Email sent successfully!",
+                response,
             });
         } catch (error) {
             console.error(
                 "ControllerError: Error sending email with attachment:",
                 error
             );
-            return res.status(500).json({
-                success: false,
-                message: "Failed to send email.",
-                error: error.message,
-            });
+            res.status(500).json({ error: "Internal Server Error" });
         }
     }
 }

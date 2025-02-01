@@ -1,7 +1,7 @@
 const schedule = require("node-schedule");
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
-const { sendEmail } = require("../models/email");
+const { sendCustomEmail } = require("../models/email");
 
 class ReminderEmailSystem {
     static async scheduleAllReminders() {
@@ -99,7 +99,7 @@ class ReminderEmailSystem {
         console.log("Preparing to send email with content:", emailData);
 
         try {
-            await sendEmail(emailData);
+            await sendCustomEmail(emailData);
             console.log(`Email sent successfully to ${booking.Email}`);
         } catch (error) {
             console.error(`Failed to send email to ${booking.Email}:`, error);

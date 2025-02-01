@@ -5,11 +5,17 @@ class DraftController {
     static async createDraft(req, res) {
         try {
             const { subject, body, recipient, attachment } = req.body;
-            const createdBy = req.account.email; // Assuming authentication middleware adds `req.account`
+            const createdBy = req.account.email; // Authenticated user
+
+            console.log("Received draft data:", req.body); // Debug log
+
+            const draftName = subject || "Untitled Draft";
+
             const draft = await DraftModel.createDraft(
+                draftName,
                 subject,
                 body,
-                recipient,
+                recipient || "", // Ensure recipient is not NULL
                 attachment,
                 createdBy
             );
@@ -20,6 +26,46 @@ class DraftController {
             res.status(500).json({
                 success: false,
                 message: "Failed to create draft.",
+            });
+        }
+    }
+    static async saveDraft(req, res) {
+        try {
+            console.log("Received draft data (RAW):", req.body); // Debugging
+
+            // Extract string values if nested
+            const subject =
+                typeof req.body.subject === "object"
+                    ? req.body.subject.subject
+                    : req.body.subject;
+            const body =
+                typeof req.body.body === "object"
+                    ? req.body.body.body
+                    : req.body.body;
+
+            if (typeof subject !== "string" || typeof body !== "string") {
+                console.error("Error: Subject and Body must be strings.");
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Invalid data format. Subject and Body must be strings.",
+                });
+            }
+
+            console.log("Cleaned Draft Data:", { subject, body });
+
+            const newDraft = await DraftModel.createDraft(subject, body);
+            return res.status(201).json({
+                success: true,
+                message: "Draft saved successfully.",
+                data: newDraft,
+            });
+        } catch (error) {
+            console.error("ControllerError: Error saving draft:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Failed to save draft.",
+                error: error.message,
             });
         }
     }

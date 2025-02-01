@@ -7,13 +7,15 @@ class enquiryTimeline {
         BusinessID,
         Text,
         Tag,
-        linkToPDF
+        linkToPDF,
+        originalEnquiryPDFlink
     ) {
         this.TimelineID = TimelineID,
         this.BusinessID = BusinessID,
         this.Text = Text,
         this.Tag = Tag,
-        this.linkToPDF = linkToPDF
+        this.linkToPDF = linkToPDF,
+        this.originalEnquiryPDFlink = originalEnquiryPDFlink
     }
 
     static async addEnquiryTimeline({
@@ -21,20 +23,32 @@ class enquiryTimeline {
         Text,
         Tag,
         linkToPDF,
+        originalEnquiryPDFlink
     }) {
         try {
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                INSERT INTO enquiryTimeline (BusinessID, Text, Tag, linkToPDF) 
-                OUTPUT INSERTED.* 
-                VALUES (@BusinessID, @Text, @Tag, @linkToPDF)
+                DECLARE @InsertedTable TABLE (
+                    TimelineID INT, BusinessID INT, Text VARCHAR(255), Tag VARCHAR(50), 
+                    linkToPDF VARCHAR(255), originalEnquiryPDFlink VARCHAR(255)
+                );
+
+                INSERT INTO enquiryTimeline (BusinessID, Text, Tag, linkToPDF, originalEnquiryPDFlink)
+                OUTPUT INSERTED.TimelineID, INSERTED.BusinessID, INSERTED.Text, INSERTED.Tag, 
+                    INSERTED.linkToPDF, INSERTED.originalEnquiryPDFlink
+                INTO @InsertedTable
+                VALUES (@BusinessID, @Text, @Tag, @linkToPDF, @originalEnquiryPDFlink);
+
+                SELECT * FROM @InsertedTable;
             `;
+
             const request = connection.request();
     
             request.input("BusinessID", sql.Int, BusinessID);
             request.input("Text", sql.VarChar(255), Text);
             request.input("Tag", sql.VarChar(50), Tag);
             request.input("linkToPDF", sql.VarChar(255), linkToPDF || null);
+            request.input("originalEnquiryPDFlink", sql.VarChar(255), originalEnquiryPDFlink || null);
     
             const result = await request.query(sqlQuery);
             connection.close();
@@ -52,7 +66,7 @@ class enquiryTimeline {
         try {
             const connection = await sql.connect(dbConfig);
             const sqlQuery = `
-                SELECT TimelineID, BusinessID, Text, Tag, linkToPDF, createdDate
+                SELECT TimelineID, BusinessID, Text, Tag, linkToPDF, createdDate, originalEnquiryPDFlink
                 FROM enquiryTimeline
                 WHERE BusinessID = @BusinessID
                 ORDER BY createdDate DESC

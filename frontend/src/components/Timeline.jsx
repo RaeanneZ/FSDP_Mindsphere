@@ -2,15 +2,15 @@ import React from "react";
 
 const colorCodes = [
   {
-    tag: "Incomplete",
+    Tag: "Incomplete",
     color: "#dbe0e2",
   },
   {
-    tag: "Pending",
+    Tag: "Pending",
     color: "#edc55b",
   },
   {
-    tag: "Completed",
+    Tag: "Completed",
     color: "#018f69",
   },
 ];
@@ -21,15 +21,15 @@ const Timeline = ({ data }) => {
         <span
           className="tag rounded"
           style={{
-            background: colorCodes.find((obj) => obj.tag === data.tag)?.color,
+            background: colorCodes.find((obj) => obj.Tag === data.Tag)?.color,
           }}
         >
-          {data.tag}
+          {data.Tag}
         </span>
-        <time>{data.date}</time>
-        <p>{data.text}</p>
-        {data.link && (
-          <a href={data.link.url} target="_blank" rel="noopener noreferrer">
+        <time>{data.createdDate}</time>
+        <p>{data.Text}</p>
+        {data.linkToPDF && (
+          <a href={data.linkToPDF} target="_blank" rel="noopener noreferrer">
             View Document Here
           </a>
         )}
