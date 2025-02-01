@@ -64,6 +64,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
   },
+  tls: {
+    rejectUnauthorized: false, // Ignore self-signed certificate
+  },
 });
 
 const sendEmailReminder = (booking) => {
@@ -96,13 +99,13 @@ const sendBookingReminders = async () => {
 
 const getScheduleByID = async (req, res) => {
   try {
-    const schedule = await programmeSchedule.getScheduleByID(req.params.schedID);
+    const schedule = await programmeSchedule.getScheduleByID(
+      req.params.schedID
+    );
     res.status(200).json(schedule);
   } catch (err) {
     console.error(err);
-    res
-      .status(500)
-      .send("ControllerError: Error retrieving schedule by ID");
+    res.status(500).send("ControllerError: Error retrieving schedule by ID");
   }
 };
 
