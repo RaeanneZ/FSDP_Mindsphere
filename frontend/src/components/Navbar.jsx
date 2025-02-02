@@ -51,6 +51,9 @@ const Navbar = () => {
           <a href="/email" className="hover:text-gray-900">
             eDMs
           </a>
+          <a href="/broadcast-message" className="hover:text-gray-900">
+            Broadcast
+          </a>
         </>
       );
     } else {

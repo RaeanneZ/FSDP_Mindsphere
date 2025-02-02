@@ -38,6 +38,7 @@ import VideoCall from "./components/VideoCall.jsx";
 import Layout from "./components/Layout.jsx";
 import EmailAdmin from "./pages/EmailAdmin.jsx";
 import MediaPage from "./pages/MediaPage.jsx";
+import BroadcastPage from "./pages/BroadcastPage.jsx";
 
 // Define a function to track pages
 const trackPage = (page) => {
@@ -79,7 +80,7 @@ const router = createBrowserRouter([
       { path: "products", element: <ProductPage /> },
       { path: "businessEnquiry", element: <BusinessForm /> },
       { path: "about", element: <AboutPage /> },
-      { path: "media", element: <MediaPage />}
+      { path: "media", element: <MediaPage /> },
       // Add other routes
     ],
   },
@@ -166,6 +167,11 @@ const router = createBrowserRouter([
   {
     path: "/email",
     element: <EmailAdmin />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/broadcast-message",
+    element: <BroadcastPage />,
     errorElement: <ErrorPage />,
   },
   {
