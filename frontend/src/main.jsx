@@ -90,7 +90,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/verification",
+    path: "/signup",
     element: <MemberVerificationPage />,
     errorElement: <ErrorPage />,
   },
